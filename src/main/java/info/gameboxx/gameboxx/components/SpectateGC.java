@@ -9,7 +9,6 @@ import java.util.UUID;
 /**
  * Adding this component allows players to spectate the game.
  */
-//TODO: Might have to split this up in data/settings component.
 public class SpectateGC extends GameComponent {
 
     private List<UUID> spectators = new ArrayList<UUID>();
@@ -56,5 +55,13 @@ public class SpectateGC extends GameComponent {
      */
     public void removeSpectators() {
         spectators.clear();
+    }
+
+    /** @see GameComponent#deepCopy() */
+    @Override
+    public SpectateGC deepCopy() {
+        SpectateGC clone = new SpectateGC(getParent());
+        copyChildComponents(this, clone);
+        return clone;
     }
 }

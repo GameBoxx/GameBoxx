@@ -87,4 +87,35 @@ public abstract class GameComponent {
     public boolean hasComponent(Class<? extends GameComponent> component) {
         return components.containsKey(component);
     }
+
+    /**
+     * Get a map with all the child components of this component.
+     * @return Map with all components where the key is the Class type and the value is the instance.
+     */
+    public Map<Class<? extends GameComponent>, GameComponent> getComponents() {
+        return components;
+    }
+
+    /**
+     * Creates a deep copy/clone of the component.
+     * It will copy all the children of the component.
+     * Always call the deepCopy() method on the top level component you want to copy.
+     * @param <T>
+     * @return A deep copy of the component and all it's children.
+     */
+    public abstract <T extends GameComponent> T deepCopy();
+
+    /**
+     * Copies all the child components from the from GameComponent in to the to GameComponent.
+     * It will use the {@link #deepCopy()} method to clone each child component.
+     * This method should be called when overriding the deepCopy method.
+     * @param from The component to copy the children from.
+     * @param to The new cloned component to add the cloned components to.
+     */
+    protected GameComponent copyChildComponents(GameComponent from, GameComponent to) {
+        for (GameComponent child : from.getComponents().values()) {
+            to.addComponent(child.deepCopy());
+        }
+        return to;
+    }
 }

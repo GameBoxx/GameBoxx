@@ -7,7 +7,6 @@ import info.gameboxx.gameboxx.util.Utils;
 /**
  * Adding this component will add an countdown before the game starts.
  */
-//TODO: Might have to split this up in data/settings component.
 public class CountdownGC extends GameComponent {
 
     private int countdown = 30;
@@ -143,5 +142,13 @@ public class CountdownGC extends GameComponent {
      */
     public void setMessage(String message) {
         this.message = message;
+    }
+
+    /** @see GameComponent#deepCopy() */
+    @Override
+    public CountdownGC deepCopy() {
+        CountdownGC clone = new CountdownGC(getParent(), seconds, mainInterval, startSecondInterval, sound, message);
+        copyChildComponents(this, clone);
+        return clone;
     }
 }

@@ -10,7 +10,6 @@ import java.util.UUID;
  * Adding this component allows to have players in the game.
  * This component gets added by default in each {@link info.gameboxx.gameboxx.game.Arena}
  */
-//TODO: Might have to split this up in data/settings component.
 public class PlayersCP extends GameComponent {
 
     private List<UUID> players = new ArrayList<UUID>();
@@ -57,5 +56,13 @@ public class PlayersCP extends GameComponent {
      */
     public void removePlayers() {
         players.clear();
+    }
+
+    /** @see GameComponent#deepCopy() */
+    @Override
+    public PlayersCP deepCopy() {
+        PlayersCP clone = new PlayersCP(getParent());
+        copyChildComponents(this, clone);
+        return clone;
     }
 }
