@@ -1,88 +1,143 @@
 package info.gameboxx.gameboxx.game;
 
-import info.gameboxx.gameboxx.components.PlayersCP;
-import info.gameboxx.gameboxx.util.Parse;
+import info.gameboxx.gameboxx.exceptions.SessionLimitException;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 
-import java.util.UUID;
+import java.util.*;
 
 /**
  * Base Arena class.
- * This class is a GameComponent so you can add any of the components.
- * @see {@link com.jroossien.gameapi.components}
+ * Each {@link Game} can have multiple arenas.
+ * Each Arena can have one or multiple {@link GameSession}s depending on the {@link ArenaType}.
  */
-//TODO: Don't use UUID's for arena identifiers just use the name. (Commands and such need to be able to identify the arena easily and having two arenas with the same name just makes it confusing)
-//TODO: Add arena type for world/default stuff and implement this with world creation etc.
-//TODO: Implement session system.
-public abstract class Arena extends GameComponent {
+public class Arena {
 
-    protected UUID uid;
-    protected String name;
-    protected String type;
+    private Game game;
+    private ArenaType type;
+    private String name;
+
+    private Map<UUID, GameSession> sessions = new HashMap<UUID, GameSession>();
+    private int maxSessions;
 
     /**
-     * Use the {@link info.gameboxx.gameboxx.game.Game#createArena(String)} method to create a new arena.
-     * @param uid The unique ID for the arena.
-     * @param type The type of arena which is the name of the {@link info.gameboxx.gameboxx.game.Game}.
+     * Use the {@link Game#createArena(ArenaType, String)} method to create a new arena.
+     * @param game The {@link Game} that has this arena.
+     * @param type The {@link ArenaType} for the arena.
      * @param name The name of the arena.
      */
-    public Arena(UUID uid, String type, String name) {
-        super(null); //This is the base component and it has no parent.
-        this.uid = uid;
+    public Arena(Game game, ArenaType type, String name) {
+        this.game = game;
         this.type = type;
         this.name = name;
     }
 
     /**
-     * Arenas from config will instantiate using this constructor.
+     * Arenas from config will be instantiated using this constructor.
+     * @param game The {@link Game} that has this arena.
      * @param data The {@link ConfigurationSection} with all the arena data.
      */
-    public Arena(ConfigurationSection data) {
-        super(null); //This is the base component and it has no parent.
-        uid = Parse.UUID(data.getString("uid"));
+    public Arena(Game game, ConfigurationSection data) {
+        this.game = game;
         name = data.getString("name");
-        type = data.getString("type");
+        type = ArenaType.valueOf(data.getString("type"));
+        maxSessions = data.getInt("maxSessions");
     }
 
     /**
-     * Used by the {@link info.gameboxx.gameboxx.game.Game} to save all the arena data.
-     * Do not manually call this method without using {@link info.gameboxx.gameboxx.game.Game}
+     * Used by the {@link Game} to save all the arena data.
      * @param cfg The {@link YamlConfiguration} to save the data in.
      * @return The YamlConfiguration will be returned to Game to actually save the data and such.
      */
     public YamlConfiguration save(YamlConfiguration cfg) {
-        cfg.set("uid", uid.toString());
         cfg.set("name", name);
+        cfg.set("type", type.toString());
+        cfg.set("maxSessions", maxSessions);
         //TODO: When the name is changed delete the previous config file and create a new one or rename it.
         //TODO: Save the actual config file inside Game
         return cfg;
     }
 
     /**
-     * Add all the {@link GameComponent}s to the arena.
-     * This allows you to design the game like how you want it.
-     * You can add as many components as you need.
-     * For example if you want to allow people to spectate your game you would add a {@link info.gameboxx.gameboxx.components.SpectateGC}
-     * @see {@link com.jroossien.gameapi.components}
+     * Get the total amount of active sessions this arena has.
+     * @return The amount of active sessions.
      */
-    public void addComponents() {
-        addComponent(new PlayersCP(this));
+    public int getSessionCount() {
+        return sessions.size();
     }
 
     /**
-     * Get the unique ID of the arena.
-     * @return The unique ID. {@link UUID}
+     * Get a map with all the active game sessions for this arena.
+     * @return The map with active game sessions.
      */
-    public UUID getUid() {
-        return uid;
+    public Map<UUID, GameSession> getSessions() {
+        return sessions;
     }
+
+    /**
+     * Create a new {@link GameSession} for this arena.
+     * An unique ID will be created and assigned to the session to reference it further on.
+     * It will also copy all the components and child components with all settings from the {@link Game}.
+     * @return The created new GameSession.
+     * @throws SessionLimitException When the session limit has been reached.
+     */
+    public GameSession createSession() throws SessionLimitException {
+        if (sessions.size() >= getMaxSessions()) {
+            throw new SessionLimitException("Failed to create a new session for the arena " + getName() +
+                    "The maximum amount of sessions has been reached. [" + getMaxSessions() + "]");
+        }
+
+        UUID sessionUID = UUID.randomUUID();
+        while (sessions.containsKey(sessionUID)) {
+            sessionUID = UUID.randomUUID();
+        }
+
+        GameSession newSession = game.getNewGameSession(sessionUID);
+        for (GameComponent component : game.getComponents().values()) {
+            newSession.addComponent(component.deepCopy());
+        }
+
+        return newSession;
+    }
+
+    /**
+     * Check whether or not the arena has a {@link GameSession} with the given unique ID.
+     * @param uid The unique ID to check for.
+     * @return True when the arena has a session with the given unique ID.
+     */
+    public boolean hasSession(UUID uid) {
+        return sessions.containsKey(uid);
+    }
+
+    /**
+     * Remove a session by it's unique ID.
+     * @param uid
+     */
+    public void removeSession(UUID uid) {
+        sessions.remove(uid);
+    }
+
+    /**
+     * Get the game that this arena belongs to.
+     * @return The game this arena belongs to.
+     */
+    public Game getGame() {
+        return game;
+    }
+
+    /**
+     * Get the {@link ArenaType} of the arena.
+     * @return The arena type
+     */
+    public ArenaType getType() {
+        return type;
+    }
+
+    //TODO: Maybe add support for changing the arena type?
 
     /**
      * Get the name of the arena.
-     * Do not use the name to identify/reference an arena!
-     * Use {@link #getUid()} for that as that's unique to each arena.
-     * @return The name of the arena. <b>May not be unique!</b>
+     * @return The name of the arena.
      */
     public String getName() {
         return name;
@@ -97,11 +152,14 @@ public abstract class Arena extends GameComponent {
     }
 
     /**
-     * Get the type of the arena.
-     * This will be the name of the game for example Spleef.
-     * @return The arena type / game name.
+     * Get the maximum allowed sessions for this arena.
+     * It will force to return 1 if the {@link ArenaType} is a {@link ArenaType#DEFAULT} type or if the max limit is less than one.
+     * @return The maximum amount of sessions this arena can have.
      */
-    public String getType() {
-        return type;
+    public int getMaxSessions() {
+        if (maxSessions < 1 || type == ArenaType.DEFAULT) {
+            return 1;
+        }
+        return maxSessions;
     }
 }

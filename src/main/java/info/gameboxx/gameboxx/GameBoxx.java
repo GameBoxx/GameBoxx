@@ -3,6 +3,7 @@ package info.gameboxx.gameboxx;
 import info.gameboxx.gameboxx.commands.Commands;
 import info.gameboxx.gameboxx.config.PluginCfg;
 import info.gameboxx.gameboxx.config.messages.MessageCfg;
+import info.gameboxx.gameboxx.game.GameManager;
 import info.gameboxx.gameboxx.listeners.MainListener;
 import info.gameboxx.gameboxx.menu.Menu;
 import info.gameboxx.gameboxx.util.cuboid.Cuboid;
@@ -25,13 +26,14 @@ public class GameBoxx extends JavaPlugin {
     private Economy economy;
 
     private SelectionManager sm;
+    private GameManager gm;
 
     private PluginCfg cfg;
     private MessageCfg msgCfg;
 
     private Commands cmds;
 
-    private final Logger log = Logger.getLogger("GameAPI");
+    private final Logger log = Logger.getLogger("GameBoxx");
 
     @Override
     public void onDisable() {
@@ -58,10 +60,12 @@ public class GameBoxx extends JavaPlugin {
 
         ConfigurationSerialization.registerClass(Cuboid.class);
 
-        cfg = new PluginCfg("plugins/GameAPI/GameAPI.yml");
-        msgCfg = new MessageCfg("plugins/GameAPI/Messages.yml");
+        cfg = new PluginCfg("plugins/GameBoxx/GameBoxx.yml");
+        msgCfg = new MessageCfg("plugins/GameBoxx/Messages.yml");
 
         sm = new SelectionManager();
+        gm = new GameManager();
+
         cmds = new Commands(this);
 
         registerListeners();
@@ -107,6 +111,10 @@ public class GameBoxx extends JavaPlugin {
 
     public SelectionManager getSM() {
         return sm;
+    }
+
+    public GameManager getGM() {
+        return gm;
     }
 
 

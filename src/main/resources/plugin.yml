@@ -1,0 +1,11 @@
+main : ${project.groupId}.gameboxx.GameBoxx
+name: GameBoxx
+version: ${project.version}
+description: ${project.description}
+author: ${project.author}
+softdepend: [Vault]
+commands:
+  gameboxx:
+    description: Main GameBoxx Command!
+    usage: /<command> [help|reload|info|wand]
+    aliases: [gamebox, gb]

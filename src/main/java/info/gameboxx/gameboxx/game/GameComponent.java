@@ -9,12 +9,11 @@ import java.util.Map;
 /**
  * A game component.
  * The game component can have have many child components and it has one parent component.
- * Except for the top level component which is the {@link Arena} in this Game API which has no parent component.
+ * Except for the top level component which is the {@link Game} in this Game API which has no parent component.
  */
 //TODO: Add conflicts between components so that you can't add componentX when it has componentY
 //TODO: Implement dependencies and soft dependencies.
 //TODO: Keep a reference of dependencies so they can be accessed easily and quickly.
-//TODO: Might have to split components up in DataComponent and SettingsComponent instead of GameComponent for sessions. (Need to design this properly)
 public abstract class GameComponent {
 
     private GameBoxx gb;
@@ -23,7 +22,7 @@ public abstract class GameComponent {
 
     /**
      * Instantiate a new game component for the specified parent.
-     * It will not automatically add the component to provided parent.
+     * It will not automatically add the component to the provided parent.
      * <b>Example usage:</b>
      * addComponent(new SubComponent(this));
      * @param parent The parent component.
