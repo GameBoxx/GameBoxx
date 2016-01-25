@@ -113,7 +113,7 @@ public class SoundEffect {
 
     /**
      * Play the sound for the player only at the player location.
-     * @see {@link Player#playSound(Location, Sound, float, float)}
+     * @see Player#playSound(Location, Sound, float, float)
      */
     public void play(Player player) {
         player.playSound(player.getLocation(), sound, volume, pitch);
@@ -121,7 +121,7 @@ public class SoundEffect {
 
     /**
      * Play the sound for the player only at the specified location.
-     * @see {@link Player#playSound(Location, Sound, float, float)}
+     * @see Player#playSound(Location, Sound, float, float)
      */
     public void play(Player player, Location location) {
         player.playSound(location, sound, volume, pitch);
@@ -129,7 +129,7 @@ public class SoundEffect {
 
     /**
      * Play the sound for the player only at the player location with a certain offset.
-     * @see {@link Player#playSound(Location, Sound, float, float)}
+     * @see Player#playSound(Location, Sound, float, float)
      */
     public void play(Player player, double offsetX, double offsetY, double offsetZ) {
         player.playSound(player.getLocation().add(offsetX, offsetY, offsetZ), sound, volume, pitch);
@@ -137,7 +137,7 @@ public class SoundEffect {
 
     /**
      * Play the sound for all players in the specified world.
-     * @see {@link Player#playSound(Location, Sound, float, float)}
+     * @see Player#playSound(Location, Sound, float, float)
      */
     public void play(World world) {
         play(Bukkit.getServer().getOnlinePlayers());
@@ -146,7 +146,7 @@ public class SoundEffect {
     /**
      * Play the sound for all players in the specified world.
      * The sound will be played at each players location with the specified offset.
-     * @see {@link Player#playSound(Location, Sound, float, float)}
+     * @see Player#playSound(Location, Sound, float, float)
      */
     public void play(World world, double offsetX, double offsetY, double offsetZ) {
         play(Bukkit.getServer().getOnlinePlayers(), offsetX, offsetY, offsetZ);
@@ -155,7 +155,7 @@ public class SoundEffect {
     /**
      * Play the sound for all the listed players specified.
      * The sound will be played at each players location.
-     * @see {@link Player#playSound(Location, Sound, float, float)}
+     * @see Player#playSound(Location, Sound, float, float)
      */
     public void play(Collection<? extends Player> players) {
         for (Player player : Bukkit.getOnlinePlayers()) {
@@ -166,7 +166,7 @@ public class SoundEffect {
     /**
      * Play the sound for all the listed players specified.
      * The sound will be played at each players location with the specified offset.
-     * @see {@link Player#playSound(Location, Sound, float, float)}
+     * @see Player#playSound(Location, Sound, float, float)
      */
     public void play(Collection<? extends Player> players, double offsetX, double offsetY, double offsetZ) {
         for (Player player : Bukkit.getOnlinePlayers()) {
@@ -176,7 +176,7 @@ public class SoundEffect {
 
     /**
      * Play the sound for all players nearby the specified location.
-     * @see {@link World#playSound(Location, Sound, float, float)}
+     * @see World#playSound(Location, Sound, float, float)
      */
     public void play(World world, Location location) {
         world.playSound(location, sound, volume, pitch);

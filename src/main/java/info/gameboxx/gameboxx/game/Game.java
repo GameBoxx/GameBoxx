@@ -41,7 +41,7 @@ import java.util.UUID;
  * You extend this game class in your plugin to design your own game like SpleefGame.
  * <b>Make sure you register your game class using the {@link GameManager#register(Game)} method!</b>
  * This class is a GameComponent so you can add any of the components.
- * @see {@link info.gameboxx.gameboxx.components}
+ * @see info.gameboxx.gameboxx.components
  */
 //TODO: Make a sub class for GameComponent without the deepCopy method and extend that because we don't wanna confuse people with having to add a deepCopy method.
 public abstract class Game extends GameComponent {

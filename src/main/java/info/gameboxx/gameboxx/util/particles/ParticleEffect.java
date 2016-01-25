@@ -655,8 +655,6 @@ public enum ParticleEffect {
      * @throws ParticleVersionException If the particle effect is not supported by the server version
      * @throws ParticleDataException If the particle effect requires additional data
      * @throws IllegalArgumentException If the particle effect is not directional or if it requires water and none is at the center location
-     * @see ParticlePacket#ParticlePacket(ParticleEffect, Vector, float, boolean, ParticleData)
-     * @see ParticlePacket#sendTo(Location, double)
      */
     public void display(Vector direction, float speed, Location center, double range) throws ParticleVersionException, ParticleDataException, IllegalArgumentException {
         if (!isSupported()) {
@@ -684,8 +682,6 @@ public enum ParticleEffect {
      * @throws ParticleVersionException If the particle effect is not supported by the server version
      * @throws ParticleDataException If the particle effect requires additional data
      * @throws IllegalArgumentException If the particle effect is not directional or if it requires water and none is at the center location
-     * @see ParticlePacket#ParticlePacket(ParticleEffect, Vector, float, boolean, ParticleData)
-     * @see ParticlePacket#sendTo(Location, List)
      */
     public void display(Vector direction, float speed, Location center, List<Player> players) throws ParticleVersionException, ParticleDataException, IllegalArgumentException {
         if (!isSupported()) {
@@ -727,7 +723,6 @@ public enum ParticleEffect {
      * @param range Range of the visibility
      * @throws ParticleVersionException If the particle effect is not supported by the server version
      * @throws ParticleColorException If the particle effect is not colorable or the color type is incorrect
-     * @see ParticlePacket#ParticlePacket(ParticleEffect, ParticleColor, boolean)
      * @see ParticlePacket#sendTo(Location, double)
      */
     public void display(ParticleColor color, Location center, double range) throws ParticleVersionException, ParticleColorException {
@@ -751,7 +746,6 @@ public enum ParticleEffect {
      * @param players Receivers of the effect
      * @throws ParticleVersionException If the particle effect is not supported by the server version
      * @throws ParticleColorException If the particle effect is not colorable or the color type is incorrect
-     * @see ParticlePacket#ParticlePacket(ParticleEffect, ParticleColor, boolean)
      * @see ParticlePacket#sendTo(Location, List)
      */
     public void display(ParticleColor color, Location center, List<Player> players) throws ParticleVersionException, ParticleColorException {
@@ -1029,7 +1023,6 @@ public enum ParticleEffect {
          *
          * @param material Material of the item
          * @param data Data value of the item
-         * @see ParticleData#ParticleData(Material, byte)
          */
         public ItemData(Material material, byte data) {
             super(material, data);
@@ -1051,7 +1044,6 @@ public enum ParticleEffect {
          * @param material Material of the block
          * @param data Data value of the block
          * @throws IllegalArgumentException If the material is not a block
-         * @see ParticleData#ParticleData(Material, byte)
          */
         public BlockData(Material material, byte data) throws IllegalArgumentException {
             super(material, data);

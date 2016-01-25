@@ -33,10 +33,11 @@
     <artifactId>gameboxx</artifactId>
     <version>0.1-SNAPSHOT</version>
     <description>API for custom games. With things like arenas etc.</description>
+    <url>http://gameboxx.info</url>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <project.author>Rojoss</project.author>
+        <project.authors>[Rojoss, Msrules123, Web_]</project.authors>
     </properties>
 
     <repositories>
@@ -89,7 +90,38 @@
                     <target>1.7</target>
                 </configuration>
             </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>2.10.3</version>
+            </plugin>
         </plugins>
+
+        <extensions>
+            <extension>
+                <groupId>org.apache.maven.wagon</groupId>
+                <artifactId>wagon-ftp</artifactId>
+                <version>1.0-beta-3</version>
+            </extension>
+        </extensions>
     </build>
+
+    <distributionManagement>
+        <site>
+            <id>gameboxx-javadocs</id>
+            <url>ftp://ftp.gameboxx.info/javadocs</url>
+        </site>
+    </distributionManagement>
+
+    <reporting>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>2.10.3</version>
+            </plugin>
+        </plugins>
+    </reporting>
 
 </project>
