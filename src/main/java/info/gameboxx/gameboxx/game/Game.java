@@ -41,7 +41,7 @@ import java.util.UUID;
  * You extend this game class in your plugin to design your own game like SpleefGame.
  * <b>Make sure you register your game class using the {@link GameManager#register(Game)} method!</b>
  * This class is a GameComponent so you can add any of the components.
- * @see {@link com.jroossien.gameapi.components}
+ * @see {@link info.gameboxx.gameboxx.components}
  */
 //TODO: Make a sub class for GameComponent without the deepCopy method and extend that because we don't wanna confuse people with having to add a deepCopy method.
 public abstract class Game extends GameComponent {
@@ -122,7 +122,6 @@ public abstract class Game extends GameComponent {
 
     /**
      * Create/Register a new {@link Arena} with the specified name.
-     * A random unique ID will will be generated and asigned for the arena so the name is not used for referencing.
      * @return The created {@link Arena} instance.
      * @throws ArenaAlreadyExistsException If an arena with the specified name already exists.
      */
