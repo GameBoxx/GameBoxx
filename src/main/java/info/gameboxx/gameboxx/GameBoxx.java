@@ -25,7 +25,7 @@
 
 package info.gameboxx.gameboxx;
 
-import info.gameboxx.gameboxx.commands.Commands;
+import info.gameboxx.gameboxx.commands.*;
 import info.gameboxx.gameboxx.config.PluginCfg;
 import info.gameboxx.gameboxx.config.messages.MessageCfg;
 import info.gameboxx.gameboxx.game.GameManager;
@@ -35,8 +35,6 @@ import info.gameboxx.gameboxx.util.cuboid.Cuboid;
 import info.gameboxx.gameboxx.util.cuboid.SelectionManager;
 import net.milkbowl.vault.Vault;
 import net.milkbowl.vault.economy.Economy;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.RegisteredServiceProvider;
@@ -55,8 +53,6 @@ public class GameBoxx extends JavaPlugin {
 
     private PluginCfg cfg;
     private MessageCfg msgCfg;
-
-    private Commands cmds;
 
     private final Logger log = Logger.getLogger("GameBoxx");
 
@@ -91,16 +87,15 @@ public class GameBoxx extends JavaPlugin {
         sm = new SelectionManager();
         gm = new GameManager();
 
-        cmds = new Commands(this);
+        getCommand("gameboxx").setExecutor(new GameBoxxCmd(this));
+        getCommand("play").setExecutor(new PlayCmd(this));
+        getCommand("select").setExecutor(new SelectCmd(this));
+        getCommand("arena").setExecutor(new ArenaCmd(this));
+        getCommand("setup").setExecutor(new SetupCmd(this));
 
         registerListeners();
 
         log("loaded successfully");
-    }
-
-    @Override
-    public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
-        return cmds.onCommand(sender, cmd, label, args);
     }
 
     private void registerListeners() {
