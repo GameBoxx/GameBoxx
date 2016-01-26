@@ -25,6 +25,7 @@
 
 package info.gameboxx.gameboxx.components;
 
+import info.gameboxx.gameboxx.events.PlayerJoinSessionEvent;
 import info.gameboxx.gameboxx.exceptions.OptionAlreadyExistsException;
 import info.gameboxx.gameboxx.game.Game;
 import info.gameboxx.gameboxx.components.internal.GameComponent;
@@ -33,6 +34,9 @@ import info.gameboxx.gameboxx.game.LeaveReason;
 import info.gameboxx.gameboxx.util.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
+import org.bukkit.event.Listener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -116,4 +120,16 @@ public class PlayersCP extends GameComponent {
         removedPlayers.clear();
     }
     
+}
+
+private static class Events implements Listener {
+    
+    @EventHandler(priority = EventPriority.MONITOR)
+    public void onPlayerJoinSessionEvent(PlayerJoinSessionEvent event) {
+        GameSession session = event.getJoinedSession();
+        if ((session.hasComponent(MaxPlayersCP.class)) && (!(event.isCancelled()))) {
+            session.getComponent(PlayersCP.class).addPlayer(event.getPlayer().getUniqueById());
+        }
+    }
+
 }
