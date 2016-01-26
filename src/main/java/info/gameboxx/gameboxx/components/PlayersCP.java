@@ -26,10 +26,14 @@
 package info.gameboxx.gameboxx.components;
 
 import info.gameboxx.gameboxx.game.GameComponent;
+import info.gameboxx.gameboxx.game.GameSession;
+import info.gameboxx.gameboxx.game.LeaveReason;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+
+import org.bukkit.Bukkit;
 
 /**
  * Adding this component allows to have players in the game.
@@ -38,6 +42,7 @@ import java.util.UUID;
 public class PlayersCP extends GameComponent {
 
     private List<UUID> players = new ArrayList<UUID>();
+    private List<UUID> removedPlayers = new ArrayList<UUID>();
 
     public PlayersCP(GameComponent parent) {
         super(parent);
@@ -57,23 +62,33 @@ public class PlayersCP extends GameComponent {
      * @return True when the player list contains the players {@link UUID}.
      */
     public boolean isPlaying(UUID player) {
-        return players.contains(player);
+        return (players.contains(player) || removedPlayers.contains(player));
     }
 
     /**
      * Add the given players {@link UUID} to the player list.
      * @param player The players {@link UUID} to add.
+     * @return Returns whether or not the player left by disconnection earlier in the session.
      */
-    public void addPlayer(UUID player) {
+    public boolean addPlayer(UUID player) {
         players.add(player);
+        return removedPlayers.remove(player);
     }
 
     /**
      * Remove the given players {@link UUID} from the player list.
      * @param player The players {@link UUID} to remove.
+     * @param reason The reason why the player is to be removed, will add to removedPlayers if == DISCONNECT.
      */
-    public void removePlayer(UUID player) {
-        players.add(player);
+    public void removePlayer(UUID player, LeaveReason reason) {
+        players.remove(player);
+        if (reason == LeaveReason.DISCONNECT) {
+        	removedPlayers.add(player);
+        }
+        if (getParent() instanceof GameSession) {
+        	GameSession session = (GameSession) getParent();
+        	session.removePlayer(Bukkit.getPlayer(player), reason);
+        }
     }
 
     /**
@@ -81,6 +96,7 @@ public class PlayersCP extends GameComponent {
      */
     public void removePlayers() {
         players.clear();
+        removedPlayers.clear();
     }
 
     /** @see GameComponent#deepCopy() */
@@ -90,4 +106,5 @@ public class PlayersCP extends GameComponent {
         copyChildComponents(this, clone);
         return clone;
     }
+    
 }
