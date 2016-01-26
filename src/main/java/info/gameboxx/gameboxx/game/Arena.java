@@ -57,6 +57,8 @@ public class Arena {
     private File configFile;
     private YamlConfiguration config;
 
+    private Long lastSave = System.currentTimeMillis();
+
     /**
      * Use the {@link Game#createArena(ArenaType, String)} method to create a new arena.
      * @param game The {@link Game} that has this arena.
@@ -89,8 +91,24 @@ public class Arena {
 
     /**
      * Save all arena data including all the options from components.
+     * This save method will only save when the saving isn't on a delay (by default 5 seconds).
+     * Use {@link #forceSave()} if you need to make sure that everything is saved.
+     * It will automatically force save when the plugin gets disabled.
      */
     public void save() {
+        if (lastSave + game.getAPI().getCfg().saveDelay__arena > System.currentTimeMillis()) {
+            return;
+        }
+        lastSave = System.currentTimeMillis();
+        forceSave();
+    }
+
+    /**
+     * Save all arena data including the options from components.
+     * There shouldn't be a need to call this method and in most cases you should be using the regular {@link #save()} method.
+     */
+    //TODO: Call this method when the plugin disables.
+    public void forceSave() {
         config.set("name", name);
         config.set("type", type.toString());
         config.set("maxSessions", maxSessions);

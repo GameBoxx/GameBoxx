@@ -26,6 +26,9 @@
 package info.gameboxx.gameboxx.config;
 
 public class PluginCfg extends EasyConfig {
+
+    public int saveDelay__arena = 5000;
+
     public PluginCfg(String fileName) {
         this.setFile(fileName);
         load();

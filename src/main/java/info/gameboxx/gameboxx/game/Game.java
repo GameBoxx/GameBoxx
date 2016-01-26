@@ -182,7 +182,7 @@ public abstract class Game extends ComponentHolder {
 
         Arena arena = new Arena(this, configFile, config, type, name);
         arena.loadOptions();
-        arena.save();
+        arena.forceSave();
         arenas.put(name, arena);
         return arena;
     }
@@ -221,5 +221,13 @@ public abstract class Game extends ComponentHolder {
      */
     public JavaPlugin getPlugin() {
         return plugin;
+    }
+
+    /**
+     * Get the {@link GameBoxx} API.
+     * @return The {@link GameBoxx} plugin instance.
+     */
+    public GameBoxx getAPI() {
+        return gb;
     }
 }
