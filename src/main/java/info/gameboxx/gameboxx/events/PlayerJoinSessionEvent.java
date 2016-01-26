@@ -28,16 +28,18 @@ package info.gameboxx.gameboxx.events;
 import info.gameboxx.gameboxx.game.GameSession;
 
 import org.bukkit.entity.Player;
+import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
 /**
  * The event that is called whenever a player joins a {@link GameSession}.
  */
-public final class PlayerJoinSessionEvent extends Event {
+public class PlayerJoinSessionEvent extends Event implements Cancellable {
 	
 	private Player who;
 	private GameSession session;
+	private boolean isCancelled;
 	
 	/**
 	 * The constructor to call the PlayerJoinSessionEvent.
@@ -47,6 +49,7 @@ public final class PlayerJoinSessionEvent extends Event {
 	public PlayerJoinSessionEvent(Player who, GameSession session) {
 		this.who = who;
 		this.session = session;
+		this.isCancelled = false;
 	}
 	
 	/**
@@ -64,13 +67,29 @@ public final class PlayerJoinSessionEvent extends Event {
 	public GameSession getJoinedSession() {
 		return this.session;
 	}
+	
+	/**
+	 * @see Cancellable
+	 */
+	@Override
+    public boolean isCancelled() {
+        return this.isCancelled;
+    }
+	
+	/**
+	 * @see Cancellable
+	 */
+	@Override
+    public void setCancelled(boolean isCancelled) {
+        this.isCancelled = isCancelled;
+    }
 
 	private static final HandlerList handlers = new HandlerList();
 
-	@Override
-	public HandlerList getHandlers() {
-		return handlers;
-	}
+    @Override
+    public HandlerList getHandlers() {
+        return handlers;
+    }
 
 	public static HandlerList getHandlerList() {
 		return handlers;
