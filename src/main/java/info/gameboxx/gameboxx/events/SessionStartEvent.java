@@ -41,14 +41,6 @@ public class SessionStartEvent extends Event {
 	public SessionStartEvent(GameSession session) {
 		this.session = session;
 	}
-
-	/**
-	 * @see {@link Event#getHandlers()}
-	 */
-	@Override
-	public HandlerList getHandlers() {
-		return new HandlerList();
-	}
 	
 	/**
 	 * @return The session that has been started.
@@ -56,7 +48,16 @@ public class SessionStartEvent extends Event {
 	public GameSession getStartedSession() {
 		return this.session;
 	}
-	
-	
+
+	private static final HandlerList handlers = new HandlerList();
+
+	@Override
+	public HandlerList getHandlers() {
+		return handlers;
+	}
+
+	public static HandlerList getHandlerList() {
+		return handlers;
+	}
 
 }

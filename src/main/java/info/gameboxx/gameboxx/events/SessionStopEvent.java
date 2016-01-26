@@ -41,19 +41,23 @@ public class SessionStopEvent extends Event {
 	public SessionStopEvent(GameSession session) {
 		this.session = session;
 	}
-
-	/**
-	 * @see {@link Event#getHandlers()}
-	 */
-	public HandlerList getHandlers() {
-		return new HandlerList();
-	}
 	
 	/**
 	 * @return The session that has been stopped.
 	 */
 	public GameSession getStoppedSession() {
 		return this.session;
+	}
+
+	private static final HandlerList handlers = new HandlerList();
+
+	@Override
+	public HandlerList getHandlers() {
+		return handlers;
+	}
+
+	public static HandlerList getHandlerList() {
+		return handlers;
 	}
 
 }

@@ -53,15 +53,6 @@ public final class PlayerLeaveSessionEvent extends Event {
 	}
 
 	/**
-	 * @
-	 */
-	@Override
-	public HandlerList getHandlers() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	/**
 	 * Get the reason ({@link LeaveReason}) that the player left a session.
 	 * @return The reason for leaving.
 	 */
@@ -83,6 +74,17 @@ public final class PlayerLeaveSessionEvent extends Event {
 	 */
 	public GameSession getLeftSession() {
 		return this.session;
+	}
+
+	private static final HandlerList handlers = new HandlerList();
+
+	@Override
+	public HandlerList getHandlers() {
+		return handlers;
+	}
+
+	public static HandlerList getHandlerList() {
+		return handlers;
 	}
 
 }

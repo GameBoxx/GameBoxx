@@ -50,15 +50,6 @@ public final class PlayerJoinSessionEvent extends Event {
 	}
 	
 	/**
-	 * Returns all the handlers associated with this event.
-	 * @return A new HandlerList.
-	 */
-	@Override
-	public HandlerList getHandlers() {
-		return new HandlerList();
-	}
-	
-	/**
 	 * Get the {@link Player} who joined a session.
 	 * @return The Player.
 	 */
@@ -72,6 +63,17 @@ public final class PlayerJoinSessionEvent extends Event {
 	 */
 	public GameSession getJoinedSession() {
 		return this.session;
+	}
+
+	private static final HandlerList handlers = new HandlerList();
+
+	@Override
+	public HandlerList getHandlers() {
+		return handlers;
+	}
+
+	public static HandlerList getHandlerList() {
+		return handlers;
 	}
 
 }
