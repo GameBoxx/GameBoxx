@@ -223,6 +223,15 @@ public class Arena {
         return newSession;
     }
 
+
+    /**
+     * @param uid
+     * @return
+     */
+    public GameSession getSession(UUID uid) {
+        return sessions.get(uid);
+    }
+
     /**
      * Check whether or not the arena has a {@link GameSession} with the given unique ID.
      * @param uid The unique ID to check for.

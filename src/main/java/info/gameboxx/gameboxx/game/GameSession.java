@@ -39,14 +39,18 @@ import java.util.UUID;
 //TODO: Implement this class it will handle the game flow like joining/leaving/starting/stopping/resetting etc. All of that stuff will be dependent on components obviously.
 public abstract class GameSession extends ComponentHolder {
 
-    protected UUID uid;
+    private UUID uid;
     public final PluginManager PLUGIN_MANAGER = Bukkit.getPluginManager();
 
     public GameSession(Game game, UUID uid) {
         this.uid = uid;
         PLUGIN_MANAGER.callEvent(new SessionStartEvent(this));
     }
-    
+
+    public UUID getUid() {
+        return uid;
+    }
+
     /**
      * Adds a player to a session.
      * @param player The player to add.
