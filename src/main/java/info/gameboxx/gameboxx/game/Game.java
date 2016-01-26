@@ -208,6 +208,13 @@ public abstract class Game extends ComponentHolder {
     }
 
     /**
+     * @return
+     */
+    public Map<String, Arena> getArenas() {
+        return arenas;
+    }
+
+    /**
      * Get the name/type for this game. For example Spleef.
      * @return The name of the game.
      */

@@ -78,7 +78,7 @@ public class GameManager {
      * @param name The name of the game to unregister.
      */
     public void unregister(String name) {
-        name.trim().toLowerCase();
+        name = name.trim().toLowerCase();
         if (games.containsKey(name)) {
             //TODO: Unregister all arenas and all sessions..
             games.remove(name);
@@ -92,7 +92,7 @@ public class GameManager {
      * @return The game for the specified name or {@code null} if there is no game with the specified name.
      */
     public Game getGame(String name) {
-        name.trim().toLowerCase();
+        name = name.trim().toLowerCase();
         return games.get(name);
     }
 
