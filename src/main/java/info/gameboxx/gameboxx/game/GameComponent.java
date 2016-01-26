@@ -31,6 +31,9 @@ import info.gameboxx.gameboxx.util.Utils;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.bukkit.Bukkit;
+import org.bukkit.plugin.PluginManager;
+
 /**
  * A game component.
  * The game component can have have many child components and it has one parent component.
@@ -40,6 +43,8 @@ import java.util.Map;
 //TODO: Implement dependencies and soft dependencies.
 //TODO: Keep a reference of dependencies so they can be accessed easily and quickly.
 public abstract class GameComponent {
+	
+	protected static final PluginManager PLUGIN_MANAGER = Bukkit.getPluginManager(); 
 
     private GameBoxx gb;
     private GameComponent parent;
@@ -142,4 +147,6 @@ public abstract class GameComponent {
         }
         return to;
     }
+    
+
 }
