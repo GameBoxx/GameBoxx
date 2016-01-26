@@ -28,9 +28,11 @@ package info.gameboxx.gameboxx.components.internal;
 import info.gameboxx.gameboxx.GameBoxx;
 import info.gameboxx.gameboxx.exceptions.ComponentConflictException;
 import info.gameboxx.gameboxx.exceptions.DependencyNotFoundException;
+import info.gameboxx.gameboxx.exceptions.OptionAlreadyExistsException;
 import info.gameboxx.gameboxx.game.Game;
 import info.gameboxx.gameboxx.game.GameManager;
 import info.gameboxx.gameboxx.game.GameSession;
+import info.gameboxx.gameboxx.setup.SetupType;
 import info.gameboxx.gameboxx.util.Utils;
 
 import java.util.HashMap;
@@ -61,11 +63,19 @@ public abstract class GameComponent {
      * It will <b>not</b> automatically add the component to the game.
      * Use {@link Game#addComponent(GameComponent)} to add a component to the game.
      * @param game The game this component belongs to.
+     * @throws OptionAlreadyExistsException When the component tries to register a setup option and a setup option with the specified name is already registered.
      */
     public GameComponent(Game game) {
         this.game = game;
         gb = GameBoxx.get();
     }
+
+    /**
+     * Called after all components have been added to the game to register setup options.
+     * Call {@link Game#registerSetupOption(String, SetupType)} here to register setup options.
+     * Avoid registering options in the constructor. When using this method the game won't register when an exception is thrown.
+     */
+    public abstract void registerOptions() throws OptionAlreadyExistsException;
 
     /**
      * Get the {@link GameBoxx} instance.

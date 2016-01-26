@@ -31,6 +31,8 @@ import info.gameboxx.gameboxx.components.internal.GameComponent;
 import info.gameboxx.gameboxx.exceptions.ArenaAlreadyExistsException;
 import info.gameboxx.gameboxx.exceptions.ComponentConflictException;
 import info.gameboxx.gameboxx.exceptions.DependencyNotFoundException;
+import info.gameboxx.gameboxx.exceptions.OptionAlreadyExistsException;
+import info.gameboxx.gameboxx.setup.SetupType;
 import info.gameboxx.gameboxx.util.Utils;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -53,6 +55,8 @@ public abstract class Game extends ComponentHolder {
     protected GameBoxx gb;
     protected String name;
     protected JavaPlugin plugin;
+
+    private Map<String, SetupType> setupOptions = new HashMap<String, SetupType>();
 
     private File arenaDir;
     private Map<String, Arena> arenas = new HashMap<String, Arena>();
@@ -97,6 +101,41 @@ public abstract class Game extends ComponentHolder {
     }
 
     /**
+     * Register a new setup option.
+     * This is used for components to register options that have to be set per arena.
+     * Arenas will fail to create sessions if not all the options have been set up correctly.
+     * @param name The name for the option used in the setup command and such. It should be short but descriptive like boundary, spawn, spectatorspawn, lobbyboundary, lobbyspawn etc.
+     * @param type The {@link SetupType} option. This is used for validation and determines the user input for setting up.
+     * @throws OptionAlreadyExistsException When an option with the specified name is already registered.
+     */
+    public void registerSetupOption(String name, SetupType type) throws OptionAlreadyExistsException {
+        name.trim().toLowerCase();
+        if (setupOptions.containsKey(name)) {
+            throw new OptionAlreadyExistsException(name);
+        }
+        setupOptions.put(name, type);
+    }
+
+    /**
+     * Go through all the components and register setup options.
+     * This method is called when registering a game using {@link GameManager#register(Game)}
+     * @throws OptionAlreadyExistsException When a component tries to register an option with a name that is already used by another component.
+     */
+    public void registerSetupOptions() throws OptionAlreadyExistsException {
+        for (GameComponent component : getComponents().values()) {
+            component.registerOptions();
+        }
+    }
+
+    /**
+     * Get a map with all the setup options.
+     * @return Map with setup options where the key is the name and the value is the type.
+     */
+    public Map<String, SetupType> getSetupOptions() {
+        return setupOptions;
+    }
+
+    /**
      * Load all the arenas from their config files.
      * It loads the config files from the owning plugins data folder then the Arenas folder and then the game name. For example /plugins/Spleef/Arenas/Spleef
      * If there are multiple games per plugin it shouldn't have any conflicts with data files.
@@ -107,7 +146,7 @@ public abstract class Game extends ComponentHolder {
         int count = 0;
         for (Map.Entry<String, File> entry : configFiles.entrySet()) {
             YamlConfiguration arenaCfg = YamlConfiguration.loadConfiguration(entry.getValue());
-            Arena arena = new Arena(this, arenaCfg.getDefaultSection());
+            Arena arena = new Arena(this, arenaCfg);
             if (arena.getName() == null || arena.getName().trim().isEmpty()) {
                 gb.error("No valid arena name found while trying to load the arena from '" + entry.getKey() + ".yml'\n" +
                         "Please check your configuration for that arena.");
@@ -119,6 +158,7 @@ public abstract class Game extends ComponentHolder {
                         "Make sure you don't have two arenas with the same name!");
                 continue;
             }
+            arena.loadOptions(arenaCfg);
             arenas.put(name, arena);
             count++;
         }
@@ -136,6 +176,7 @@ public abstract class Game extends ComponentHolder {
         }
         Arena arena = new Arena(this, type, name);
         arenas.put(name, arena);
+        //TODO: Load arena options.
         //TODO: Save..
         return arena;
     }

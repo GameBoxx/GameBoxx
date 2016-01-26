@@ -26,9 +26,11 @@
 package info.gameboxx.gameboxx.components;
 
 import info.gameboxx.gameboxx.exceptions.DependencyNotFoundException;
+import info.gameboxx.gameboxx.exceptions.OptionAlreadyExistsException;
 import info.gameboxx.gameboxx.game.Game;
 import info.gameboxx.gameboxx.components.internal.GameComponent;
 import info.gameboxx.gameboxx.game.GameSession;
+import info.gameboxx.gameboxx.setup.SetupType;
 
 /**
  * Adding this component will make it so the game wont start till the minimum player count is reached.
@@ -48,6 +50,11 @@ public class MinPlayersCP extends GameComponent {
 		addDependency(PlayersCP.class);
 
 		this.minimumPlayers = minimumPlayers;
+	}
+
+	@Override
+	public void registerOptions() throws OptionAlreadyExistsException {
+		game.registerSetupOption("minplayers", SetupType.INT);
 	}
 
 	@Override

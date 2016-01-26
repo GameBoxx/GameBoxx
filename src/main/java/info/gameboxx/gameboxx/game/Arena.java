@@ -26,11 +26,16 @@
 package info.gameboxx.gameboxx.game;
 
 import info.gameboxx.gameboxx.components.internal.GameComponent;
+import info.gameboxx.gameboxx.exceptions.InvalidSetupDataException;
 import info.gameboxx.gameboxx.exceptions.SessionLimitException;
+import info.gameboxx.gameboxx.setup.SetupOption;
+import info.gameboxx.gameboxx.setup.SetupType;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 
 /**
  * Base Arena class.
@@ -42,6 +47,8 @@ public class Arena {
     private Game game;
     private ArenaType type;
     private String name;
+
+    private Map<String, SetupOption> setupOptions = new HashMap<String, SetupOption>();
 
     private Map<UUID, GameSession> sessions = new HashMap<UUID, GameSession>();
     private int maxSessions;
@@ -82,6 +89,40 @@ public class Arena {
         //TODO: When the name is changed delete the previous config file and create a new one or rename it.
         //TODO: Save the actual config file inside Game
         return cfg;
+    }
+
+    /**
+     * Load all the setup options from config.
+     * Any setup options that are missing or that have corrupt data will be put as null in the setupOptions map.
+     * @param data The {@link ConfigurationSection} with the arena data.
+     */
+    public void loadOptions(ConfigurationSection data) {
+        for (Map.Entry<String, SetupType> option : game.getSetupOptions().entrySet()) {
+            if (data.contains(option.getKey())) {
+                try {
+                    setupOptions.put(option.getKey(), option.getValue().newOption(option.getKey(), data));
+                } catch (InvalidSetupDataException e) {
+                    game.getPlugin().getLogger().warning("Can't load arena '" + getName() + "' because the data is corrupt. Please run setup again to fix corrupt setup data.");
+                    game.getPlugin().getLogger().warning(e.getMessage());
+                    setupOptions.put(option.getKey(), null);
+                }
+            } else {
+                setupOptions.put(option.getKey(), null);
+            }
+        }
+    }
+
+    /**
+     * Check if all the setup options have been set up correctly.
+     * @return True when all setup options have been set up.
+     */
+    public boolean isSetupCorrectly() {
+        for (SetupOption option : setupOptions.values()) {
+            if (option == null) {
+                return false;
+            }
+        }
+        return true;
     }
 
     /**

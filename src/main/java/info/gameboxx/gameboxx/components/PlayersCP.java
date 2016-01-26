@@ -25,6 +25,7 @@
 
 package info.gameboxx.gameboxx.components;
 
+import info.gameboxx.gameboxx.exceptions.OptionAlreadyExistsException;
 import info.gameboxx.gameboxx.game.Game;
 import info.gameboxx.gameboxx.components.internal.GameComponent;
 import info.gameboxx.gameboxx.game.GameSession;
@@ -49,6 +50,9 @@ public class PlayersCP extends GameComponent {
     public PlayersCP(Game game) {
         super(game);
     }
+
+    @Override
+    public void registerOptions() throws OptionAlreadyExistsException {}
 
     @Override
     public PlayersCP newInstance(GameSession session) {
