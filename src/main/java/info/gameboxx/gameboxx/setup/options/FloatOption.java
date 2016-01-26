@@ -42,6 +42,14 @@ public class FloatOption extends SetupOption {
         this.value = (float)section.getDouble(getName());
     }
 
+    public FloatOption(String name, Object value) throws InvalidSetupDataException {
+        super(name);
+        if (!(value instanceof Float)) {
+            throw new InvalidSetupDataException(getType(), value.toString(), getName());
+        }
+        this.value = (Float)value;
+    }
+
     public Float getValue() {
         return value;
     }

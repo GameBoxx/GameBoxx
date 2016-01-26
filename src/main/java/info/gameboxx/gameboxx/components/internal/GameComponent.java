@@ -32,7 +32,7 @@ import info.gameboxx.gameboxx.exceptions.OptionAlreadyExistsException;
 import info.gameboxx.gameboxx.game.Game;
 import info.gameboxx.gameboxx.game.GameManager;
 import info.gameboxx.gameboxx.game.GameSession;
-import info.gameboxx.gameboxx.setup.SetupType;
+import info.gameboxx.gameboxx.setup.OptionData;
 import info.gameboxx.gameboxx.util.Utils;
 
 import java.util.HashMap;
@@ -72,7 +72,7 @@ public abstract class GameComponent {
 
     /**
      * Called after all components have been added to the game to register setup options.
-     * Call {@link Game#registerSetupOption(String, SetupType)} here to register setup options.
+     * Call {@link Game#registerSetupOption(OptionData)} here to register setup options.
      * Avoid registering options in the constructor. When using this method the game won't register when an exception is thrown.
      */
     public abstract void registerOptions() throws OptionAlreadyExistsException;

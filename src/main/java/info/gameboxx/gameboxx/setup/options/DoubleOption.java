@@ -42,6 +42,14 @@ public class DoubleOption extends SetupOption {
         this.value = section.getDouble(getName());
     }
 
+    public DoubleOption(String name, Object value) throws InvalidSetupDataException {
+        super(name);
+        if (!(value instanceof Double)) {
+            throw new InvalidSetupDataException(getType(), value.toString(), getName());
+        }
+        this.value = (Double) value;
+    }
+
     public Double getValue() {
         return value;
     }

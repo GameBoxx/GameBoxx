@@ -30,6 +30,7 @@ import info.gameboxx.gameboxx.exceptions.OptionAlreadyExistsException;
 import info.gameboxx.gameboxx.game.Game;
 import info.gameboxx.gameboxx.components.internal.GameComponent;
 import info.gameboxx.gameboxx.game.GameSession;
+import info.gameboxx.gameboxx.setup.OptionData;
 import info.gameboxx.gameboxx.setup.SetupType;
 
 /**
@@ -39,27 +40,27 @@ import info.gameboxx.gameboxx.setup.SetupType;
 // TODO: Start game when player count is reached (How do I get to the game?)
 public class MinPlayersCP extends GameComponent {
 
-	private int minimumPlayers;
+	private int min;
 
 	/**
 	 * @see GameComponent
-	 * @param minimumPlayers The minimum amount of players required to start the game.
+	 * @param min The default value for the minimum amount of players required to start the game.
      */
-	public MinPlayersCP(Game game, int minimumPlayers) {
+	public MinPlayersCP(Game game, int min) {
 		super(game);
 		addDependency(PlayersCP.class);
 
-		this.minimumPlayers = minimumPlayers;
+		this.min = min;
 	}
 
 	@Override
 	public void registerOptions() throws OptionAlreadyExistsException {
-		game.registerSetupOption("minplayers", SetupType.INT);
+		game.registerSetupOption(new OptionData(SetupType.INT, "minPlayers", "The minimum amount of players required to start a game.", min));
 	}
 
 	@Override
 	public MinPlayersCP newInstance(GameSession session) {
-		return (MinPlayersCP) new MinPlayersCP(getGame(), minimumPlayers).setSession(session);
+		return (MinPlayersCP) new MinPlayersCP(getGame(), min).setSession(session);
 	}
 	
 	/**
@@ -68,7 +69,7 @@ public class MinPlayersCP extends GameComponent {
 	 * @throws DependencyNotFoundException If the hard dependency was not found.
 	 */
 	public boolean hasMinimumPlayers() throws DependencyNotFoundException {
-		return getDependency(PlayersCP.class).getPlayers().size() >= this.minimumPlayers;
+		return getDependency(PlayersCP.class).getPlayers().size() >= this.min;
 	}
 
 }

@@ -43,6 +43,14 @@ public class LocationOption extends SetupOption {
         this.value = (Location)section.get(getName());
     }
 
+    public LocationOption(String name, Object value) throws InvalidSetupDataException {
+        super(name);
+        if (!(value instanceof Location)) {
+            throw new InvalidSetupDataException(getType(), value.toString(), getName());
+        }
+        this.value = (Location)value;
+    }
+
     public Location getValue() {
         return value;
     }

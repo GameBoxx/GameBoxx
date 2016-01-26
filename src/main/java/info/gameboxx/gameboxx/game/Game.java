@@ -32,7 +32,7 @@ import info.gameboxx.gameboxx.exceptions.ArenaAlreadyExistsException;
 import info.gameboxx.gameboxx.exceptions.ComponentConflictException;
 import info.gameboxx.gameboxx.exceptions.DependencyNotFoundException;
 import info.gameboxx.gameboxx.exceptions.OptionAlreadyExistsException;
-import info.gameboxx.gameboxx.setup.SetupType;
+import info.gameboxx.gameboxx.setup.OptionData;
 import info.gameboxx.gameboxx.util.Utils;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -57,7 +57,7 @@ public abstract class Game extends ComponentHolder {
     protected String name;
     protected JavaPlugin plugin;
 
-    private Map<String, SetupType> setupOptions = new HashMap<String, SetupType>();
+    private Map<String, OptionData> setupOptions = new HashMap<String, OptionData>();
 
     private File arenaDir;
     private Map<String, Arena> arenas = new HashMap<String, Arena>();
@@ -105,16 +105,15 @@ public abstract class Game extends ComponentHolder {
      * Register a new setup option.
      * This is used for components to register options that have to be set per arena.
      * Arenas will fail to create sessions if not all the options have been set up correctly.
-     * @param name The name for the option used in the setup command and such. It should be short but descriptive like boundary, spawn, spectatorspawn, lobbyboundary, lobbyspawn etc.
-     * @param type The {@link SetupType} option. This is used for validation and determines the user input for setting up.
+
      * @throws OptionAlreadyExistsException When an option with the specified name is already registered.
      */
-    public void registerSetupOption(String name, SetupType type) throws OptionAlreadyExistsException {
-        name.trim().toLowerCase();
-        if (setupOptions.containsKey(name)) {
+    public void registerSetupOption(OptionData option) throws OptionAlreadyExistsException {
+        String name = option.getName().trim().toLowerCase();
+        if (setupOptions.containsKey(option.toString())) {
             throw new OptionAlreadyExistsException(name);
         }
-        setupOptions.put(name, type);
+        setupOptions.put(name, option);
     }
 
     /**
@@ -130,9 +129,9 @@ public abstract class Game extends ComponentHolder {
 
     /**
      * Get a map with all the setup options.
-     * @return Map with setup options where the key is the name and the value is the type.
+     * @return Map with setup options where the key is the name and the value is the {@link OptionData}.
      */
-    public Map<String, SetupType> getSetupOptions() {
+    public Map<String, OptionData> getSetupOptions() {
         return setupOptions;
     }
 
@@ -159,11 +158,10 @@ public abstract class Game extends ComponentHolder {
                         "Make sure you don't have two arenas with the same name!");
                 continue;
             }
-            arena.loadOptions(arenaCfg);
+            arena.loadOptions();
             arenas.put(name, arena);
             count++;
         }
-        gb.log("Loaded in " + count + " arenas for " + name + "!");
     }
 
     /**
@@ -183,6 +181,7 @@ public abstract class Game extends ComponentHolder {
         YamlConfiguration config = YamlConfiguration.loadConfiguration(configFile);
 
         Arena arena = new Arena(this, configFile, config, type, name);
+        arena.loadOptions();
         arena.save();
         arenas.put(name, arena);
         return arena;

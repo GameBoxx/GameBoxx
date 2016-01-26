@@ -43,6 +43,14 @@ public class CuboidOption extends SetupOption {
         this.value = (Cuboid)section.get(getName());
     }
 
+    public CuboidOption(String name, Object value) throws InvalidSetupDataException {
+        super(name);
+        if (!(value instanceof Cuboid)) {
+            throw new InvalidSetupDataException(getType(), value.toString(), getName());
+        }
+        this.value = (Cuboid)value;
+    }
+
     public Cuboid getValue() {
         return value;
     }

@@ -28,9 +28,8 @@ package info.gameboxx.gameboxx.game;
 import info.gameboxx.gameboxx.components.internal.GameComponent;
 import info.gameboxx.gameboxx.exceptions.InvalidSetupDataException;
 import info.gameboxx.gameboxx.exceptions.SessionLimitException;
+import info.gameboxx.gameboxx.setup.OptionData;
 import info.gameboxx.gameboxx.setup.SetupOption;
-import info.gameboxx.gameboxx.setup.SetupType;
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.File;
@@ -96,7 +95,7 @@ public class Arena {
         config.set("type", type.toString());
         config.set("maxSessions", maxSessions);
 
-        for (SetupOption option :setupOptions.values()) {
+        for (SetupOption option : setupOptions.values()) {
             if (option == null) {
                 continue;
             }
@@ -113,20 +112,31 @@ public class Arena {
     /**
      * Load all the setup options from config.
      * Any setup options that are missing or that have corrupt data will be put as null in the setupOptions map.
-     * @param data The {@link ConfigurationSection} with the arena data.
      */
-    public void loadOptions(ConfigurationSection data) {
-        for (Map.Entry<String, SetupType> option : game.getSetupOptions().entrySet()) {
-            if (data.contains(option.getKey())) {
+    public void loadOptions() {
+        for (OptionData option : game.getSetupOptions().values()) {
+            if (config.contains(option.getName())) {
+                //Load option from config.
                 try {
-                    setupOptions.put(option.getKey(), option.getValue().newOption(option.getKey(), data));
+                    setupOptions.put(option.getName().trim().toLowerCase(), option.getType().newOption(option.getName(), config));
                 } catch (InvalidSetupDataException e) {
                     game.getPlugin().getLogger().warning("Can't load arena '" + getName() + "' because the data is corrupt. Please run setup again to fix corrupt setup data.");
                     game.getPlugin().getLogger().warning(e.getMessage());
-                    setupOptions.put(option.getKey(), null);
+                    setupOptions.put(option.getName().trim().toLowerCase(), null);
                 }
             } else {
-                setupOptions.put(option.getKey(), null);
+                //Load option from defaults registered by components.
+                if (option.getDefaultValue() == null) {
+                    setupOptions.put(option.getName().trim().toLowerCase(), null);
+                } else {
+                    try {
+                        setupOptions.put(option.getName().trim().toLowerCase(), option.getType().newOption(option.getName(), option.getDefaultValue()));
+                    } catch (InvalidSetupDataException e) {
+                        game.getPlugin().getLogger().warning("Can't load arena '" + getName() + "' because the default value is invalid. Please run setup to fix any issues.");
+                        game.getPlugin().getLogger().warning(e.getMessage());
+                        setupOptions.put(option.getName().trim().toLowerCase(), null);
+                    }
+                }
             }
         }
     }

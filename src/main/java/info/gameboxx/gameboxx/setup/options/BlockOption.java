@@ -44,6 +44,14 @@ public class BlockOption extends SetupOption {
         this.value = (Location)section.get(getName());
     }
 
+    public BlockOption(String name, Object value) throws InvalidSetupDataException {
+        super(name);
+        if (!(value instanceof Location)) {
+            throw new InvalidSetupDataException(getType(), value.toString(), getName());
+        }
+        this.value = (Location)value;
+    }
+
     public Block getValue() {
         if (value == null) {
             return null;

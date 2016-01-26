@@ -91,4 +91,32 @@ public enum SetupType {
         }
         return new StringOption(name, cfgSection);
     }
+
+    public SetupOption newOption(String name, Object value) throws InvalidSetupDataException {
+        switch (this) {
+            case LOCATION:
+                return new LocationOption(name, value);
+            case MULTI_LOCATION:
+                return new MultiLocationOption(name, value);
+            case BLOCK:
+                return new BlockOption(name, value);
+            case MULTI_BLOCK:
+                return new MultiBlockOption(name, value);
+            case CUBOID:
+                return new CuboidOption(name, value);
+            case MULTI_CUBOID:
+                return new MultiCuboidOption(name, value);
+            case INT:
+                return new IntOption(name, value);
+            case DOUBLE:
+                return new DoubleOption(name, value);
+            case FLOAT:
+                return new FloatOption(name, value);
+            case BOOLEAN:
+                return new BooleanOption(name, value);
+            case STRING:
+                return new StringOption(name, value);
+        }
+        return new StringOption(name, value);
+    }
 }

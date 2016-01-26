@@ -42,6 +42,14 @@ public class StringOption extends SetupOption {
         this.value = section.getString(getName());
     }
 
+    public StringOption(String name, Object value) throws InvalidSetupDataException {
+        super(name);
+        if (!(value instanceof String)) {
+            throw new InvalidSetupDataException(getType(), value.toString(), getName());
+        }
+        this.value = (String)value;
+    }
+
     public String getValue() {
         return value;
     }

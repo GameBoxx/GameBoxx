@@ -25,11 +25,12 @@
 
 package info.gameboxx.gameboxx.components;
 
+import info.gameboxx.gameboxx.components.internal.GameComponent;
 import info.gameboxx.gameboxx.events.PlayerJoinSessionEvent;
 import info.gameboxx.gameboxx.exceptions.OptionAlreadyExistsException;
 import info.gameboxx.gameboxx.game.Game;
-import info.gameboxx.gameboxx.components.internal.GameComponent;
 import info.gameboxx.gameboxx.game.GameSession;
+import info.gameboxx.gameboxx.setup.OptionData;
 import info.gameboxx.gameboxx.setup.SetupType;
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
@@ -46,7 +47,7 @@ public class MaxPlayersCP extends GameComponent {
 	
 	/**
 	 * @see GameComponent
-	 * @param max The maximum amount of players allowed
+	 * @param max The default value for the maximum amount of players allowed.
 	 */
 	public MaxPlayersCP(Game game, int max) {
 		super(game);
@@ -58,7 +59,7 @@ public class MaxPlayersCP extends GameComponent {
 
     @Override
     public void registerOptions() throws OptionAlreadyExistsException {
-        game.registerSetupOption("maxplayers", SetupType.INT);
+        game.registerSetupOption(new OptionData(SetupType.INT, "maxPlayers", "The maximum amount of players allowed in the arena.", max));
     }
 
 	@Override

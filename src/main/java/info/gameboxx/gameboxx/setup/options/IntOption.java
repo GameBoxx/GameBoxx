@@ -42,6 +42,14 @@ public class IntOption extends SetupOption {
         this.value = section.getInt(getName());
     }
 
+    public IntOption(String name, Object value) throws InvalidSetupDataException {
+        super(name);
+        if (!(value instanceof Integer)) {
+            throw new InvalidSetupDataException(getType(), value.toString(), getName());
+        }
+        this.value = (Integer)value;
+    }
+
     public Integer getValue() {
         return value;
     }

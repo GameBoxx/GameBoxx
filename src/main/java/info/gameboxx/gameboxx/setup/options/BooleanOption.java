@@ -42,6 +42,14 @@ public class BooleanOption extends SetupOption {
         this.value = section.getBoolean(getName());
     }
 
+    public BooleanOption(String name, Object value) throws InvalidSetupDataException {
+        super(name);
+        if (!(value instanceof Boolean)) {
+            throw new InvalidSetupDataException(getType(), value.toString(), getName());
+        }
+        this.value = (Boolean)value;
+    }
+
     public Boolean getValue() {
         return value;
     }

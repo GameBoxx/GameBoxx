@@ -45,6 +45,14 @@ public class MultiCuboidOption extends SetupOption {
         value = (List<Cuboid>)section.getList(getName());
     }
 
+    public MultiCuboidOption(String name, Object value) throws InvalidSetupDataException {
+        super(name);
+        if (!(value instanceof List)) {
+            throw new InvalidSetupDataException(getType(), value.toString(), getName());
+        }
+        this.value = (List<Cuboid>)value;
+    }
+
     public List<Cuboid> getValue() {
         return value;
     }

@@ -45,6 +45,14 @@ public class MultiLocationOption extends SetupOption {
         value = (List<Location>)section.getList(getName());
     }
 
+    public MultiLocationOption(String name, Object value) throws InvalidSetupDataException {
+        super(name);
+        if (!(value instanceof List)) {
+            throw new InvalidSetupDataException(getType(), value.toString(), getName());
+        }
+        this.value = (List<Location>)value;
+    }
+
     public List<Location> getValue() {
         return value;
     }
