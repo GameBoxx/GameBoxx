@@ -25,10 +25,10 @@
 
 package info.gameboxx.gameboxx.components;
 
+import info.gameboxx.gameboxx.components.internal.GameComponent;
 import info.gameboxx.gameboxx.events.PlayerJoinSessionEvent;
 import info.gameboxx.gameboxx.exceptions.OptionAlreadyExistsException;
 import info.gameboxx.gameboxx.game.Game;
-import info.gameboxx.gameboxx.components.internal.GameComponent;
 import info.gameboxx.gameboxx.game.GameSession;
 import info.gameboxx.gameboxx.game.LeaveReason;
 import info.gameboxx.gameboxx.util.Utils;
@@ -53,6 +53,8 @@ public class PlayersCP extends GameComponent {
 
     public PlayersCP(Game game) {
         super(game);
+        
+        Bukkit.getPluginManager().registerEvents(new Events(), getAPI());
     }
 
     @Override
@@ -119,17 +121,15 @@ public class PlayersCP extends GameComponent {
         players.clear();
         removedPlayers.clear();
     }
-    
-}
 
-private static class Events implements Listener {
-    
-    @EventHandler(priority = EventPriority.MONITOR)
-    public void onPlayerJoinSessionEvent(PlayerJoinSessionEvent event) {
-        GameSession session = event.getJoinedSession();
-        if ((session.hasComponent(MaxPlayersCP.class)) && (!(event.isCancelled()))) {
-            session.getComponent(PlayersCP.class).addPlayer(event.getPlayer().getUniqueById());
+    private static class Events implements Listener {
+
+        @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+        public void onPlayerJoinSessionEvent(PlayerJoinSessionEvent event) {
+            GameSession session = event.getJoinedSession();
+            if (session.hasComponent(PlayersCP.class)) {
+                session.getComponent(PlayersCP.class).addPlayer(event.getWhoJoined().getUniqueId());
+            }
         }
     }
-
 }
