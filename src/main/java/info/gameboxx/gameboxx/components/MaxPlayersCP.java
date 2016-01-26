@@ -29,6 +29,7 @@ import info.gameboxx.gameboxx.events.PlayerJoinSessionEvent;
 import info.gameboxx.gameboxx.game.Game;
 import info.gameboxx.gameboxx.game.GameComponent;
 import info.gameboxx.gameboxx.game.GameSession;
+import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
@@ -37,7 +38,7 @@ import org.bukkit.event.Listener;
  * When the limit is reached players wont be able to join anymore.
  * If the game has a countdown it will reduce the countdown to 5 seconds if it has more than 5 seconds remaining.
  */
-public class MaxPlayersCP extends GameComponent implements Listener {
+public class MaxPlayersCP extends GameComponent {
 
 	private int maximumPlayers;
 	
@@ -50,7 +51,7 @@ public class MaxPlayersCP extends GameComponent implements Listener {
 		addDependency(PlayersCP.class);
 
 		this.maximumPlayers = maximumPlayers;
-		//PLUGIN_MANAGER.registerEvents(this, getAPI());
+		Bukkit.getPluginManager().registerEvents(new Events(), getAPI());
 	}
 
 	@Override
@@ -58,26 +59,16 @@ public class MaxPlayersCP extends GameComponent implements Listener {
 		return (MaxPlayersCP) new MaxPlayersCP(getGame(), maximumPlayers).setSession(session);
 	}
 
-	/**
-	 * Listens for the {@link PlayerJoinSessionEvent} to remove any player exceeding the limit from it's
-	 * GameComponent parent.
-	 * @param event The event to listen to.
-	 */
-	@EventHandler
-	public void onPlayerJoinSessionEvent(PlayerJoinSessionEvent event) {
-		//TODO: Event should be cancellable instead of kicking after joining.
-		/*
-		if (event.getJoinedSession().equals(getParent())) {
-			try {
-				PlayersCP players = (PlayersCP) getHardDependency(PlayersCP.class);
-				if (players.getPlayers().size() > this.maximumPlayers) {
-					players.removePlayer(event.getWhoJoined().getUniqueId(), LeaveReason.KICK);
-				}
-			} catch (DependencyNotFoundException ex) {
-				ex.printStackTrace();
+	private static class Events implements Listener {
+		@EventHandler
+		private void onJoin(PlayerJoinSessionEvent event) {
+			GameSession session = event.getJoinedSession();
+			if (!session.hasComponent(MaxPlayersCP.class)) {
+				return;
+			}
+			if (session.getComponent(MaxPlayersCP.class).maximumPlayers >= session.getComponent(PlayersCP.class).getPlayers().size()) {
+				//TODO: Cancel event.
 			}
 		}
-		*/
 	}
-
 }

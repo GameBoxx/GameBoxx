@@ -29,14 +29,11 @@ import info.gameboxx.gameboxx.events.PlayerJoinSessionEvent;
 import info.gameboxx.gameboxx.events.PlayerLeaveSessionEvent;
 import info.gameboxx.gameboxx.events.SessionStartEvent;
 import info.gameboxx.gameboxx.events.SessionStopEvent;
-
-import java.util.HashSet;
-import java.util.Set;
-import java.util.UUID;
-
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginManager;
+
+import java.util.UUID;
 
 //TODO: Implement this class it will handle the game flow like joining/leaving/starting/stopping/resetting etc. All of that stuff will be dependent on components obviously.
 public abstract class GameSession extends ComponentHolder {
