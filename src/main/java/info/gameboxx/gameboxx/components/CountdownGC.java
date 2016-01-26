@@ -29,10 +29,13 @@ import info.gameboxx.gameboxx.game.Game;
 import info.gameboxx.gameboxx.game.GameComponent;
 import info.gameboxx.gameboxx.game.GameSession;
 import info.gameboxx.gameboxx.util.SoundEffect;
+import info.gameboxx.gameboxx.util.Str;
+import org.bukkit.entity.Player;
 
 /**
  * Adding this component will add an countdown before the game starts.
  */
+//TODO: Method to start/stop/reset the countdown.
 public class CountdownGC extends GameComponent {
 
     private int countdown = 30;
@@ -54,6 +57,8 @@ public class CountdownGC extends GameComponent {
      */
     public CountdownGC(Game game, int seconds, int mainInterval, int startSecondInterval, SoundEffect sound, String message) {
         super(game);
+        addDependency(PlayersCP.class);
+
         this.seconds = seconds;
         this.countdown = seconds;
         this.mainInterval = mainInterval;
@@ -67,16 +72,37 @@ public class CountdownGC extends GameComponent {
         return (CountdownGC) new CountdownGC(getGame(), seconds, mainInterval, startSecondInterval, sound, message).setSession(session);
     }
 
-    public void count(int seconds) {
+    public void count() {
         if (countdown <= 0) {
+            countdown = 0;
             //TODO: Start the session.
             return;
         }
-        if (seconds % mainInterval == 0 || seconds <= startSecondInterval) {
-            //TODO: Play sound and broadcast message.
-            //sound.play(Utils.getPlayerList(getParent().getComponent(PlayersCP.class).getPlayers()));
+        if (countdown % mainInterval == 0 || countdown <= startSecondInterval) {
+            sound.play(getDependency(PlayersCP.class).getOnlinePlayers());
+            //TODO: Have a message component or put this somewhere else.
+            for (Player player : getDependency(PlayersCP.class).getOnlinePlayers()) {
+                player.sendMessage(Str.color(message));
+            }
         }
         countdown--;
+    }
+
+    /**
+     * Get the remaining countdown time in seconds.
+     * @return The remaining time on the countdown in seconds.
+     */
+    public int getCountdown() {
+        return countdown;
+    }
+
+    /**
+     * Force override the countdown time.
+     * There is no need to manually decrease the countdown time unless you want to force decrease it.
+     * @param countdown The countdown time in seconds to set.
+     */
+    public void setCountdown(int countdown) {
+        this.countdown = countdown;
     }
 
     /**

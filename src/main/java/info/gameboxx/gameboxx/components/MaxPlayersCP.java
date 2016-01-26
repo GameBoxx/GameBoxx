@@ -66,8 +66,23 @@ public class MaxPlayersCP extends GameComponent {
 			if (!session.hasComponent(MaxPlayersCP.class)) {
 				return;
 			}
-			if (session.getComponent(MaxPlayersCP.class).maximumPlayers >= session.getComponent(PlayersCP.class).getPlayers().size()) {
+
+			int maxPlayers = session.getComponent(MaxPlayersCP.class).maximumPlayers;
+			int playerCount = session.getComponent(PlayersCP.class).getPlayers().size();
+
+			if (playerCount >= maxPlayers) {
+				//Prevent joining.
 				//TODO: Cancel event.
+
+			} else if (playerCount + 1 >= maxPlayers) {
+				//Reduce countdown when max players have joined.
+				if (session.hasComponent(CountdownGC.class)) {
+					CountdownGC countdown = session.getComponent(CountdownGC.class);
+					//TODO: No magic number add config option.
+					if (countdown.getCountdown() > 5) {
+						countdown.setCountdown(5);
+					}
+				}
 			}
 		}
 	}

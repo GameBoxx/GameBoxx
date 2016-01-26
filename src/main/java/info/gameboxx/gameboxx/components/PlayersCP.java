@@ -29,7 +29,9 @@ import info.gameboxx.gameboxx.game.Game;
 import info.gameboxx.gameboxx.game.GameComponent;
 import info.gameboxx.gameboxx.game.GameSession;
 import info.gameboxx.gameboxx.game.LeaveReason;
+import info.gameboxx.gameboxx.util.Utils;
 import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -59,6 +61,15 @@ public class PlayersCP extends GameComponent {
      */
     public List<UUID> getPlayers() {
         return players;
+    }
+
+    /**
+     * Get the list with online players.
+     * @return List of players that are online.
+     */
+    public List<Player> getOnlinePlayers() {
+        //TODO: Cache this probably as it will prob get called a lot.
+        return Utils.getPlayerList(players);
     }
 
     /**
