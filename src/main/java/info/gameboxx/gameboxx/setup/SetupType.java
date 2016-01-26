@@ -64,59 +64,59 @@ public enum SetupType {
     STRING,
     ;
 
-    public SetupOption newOption(String name, ConfigurationSection cfgSection) throws InvalidSetupDataException {
+    public SetupOption newOption(String name, String description, ConfigurationSection cfgSection) throws InvalidSetupDataException {
         switch (this) {
             case LOCATION:
-                return new LocationOption(name, cfgSection);
+                return new LocationOption(name, description, cfgSection);
             case MULTI_LOCATION:
-                return new MultiLocationOption(name, cfgSection);
+                return new MultiLocationOption(name, description, cfgSection);
             case BLOCK:
-                return new BlockOption(name, cfgSection);
+                return new BlockOption(name, description, cfgSection);
             case MULTI_BLOCK:
-                return new MultiBlockOption(name, cfgSection);
+                return new MultiBlockOption(name, description, cfgSection);
             case CUBOID:
-                return new CuboidOption(name, cfgSection);
+                return new CuboidOption(name, description, cfgSection);
             case MULTI_CUBOID:
-                return new MultiCuboidOption(name, cfgSection);
+                return new MultiCuboidOption(name, description, cfgSection);
             case INT:
-                return new IntOption(name, cfgSection);
+                return new IntOption(name, description, cfgSection);
             case DOUBLE:
-                return new DoubleOption(name, cfgSection);
+                return new DoubleOption(name, description, cfgSection);
             case FLOAT:
-                return new FloatOption(name, cfgSection);
+                return new FloatOption(name, description, cfgSection);
             case BOOLEAN:
-                return new BooleanOption(name, cfgSection);
+                return new BooleanOption(name, description, cfgSection);
             case STRING:
-                return new StringOption(name, cfgSection);
+                return new StringOption(name, description, cfgSection);
         }
-        return new StringOption(name, cfgSection);
+        return new StringOption(name, description, cfgSection);
     }
 
-    public SetupOption newOption(String name, Object value) throws InvalidSetupDataException {
+    public SetupOption newOption(String name, String description, Object value) throws InvalidSetupDataException {
         switch (this) {
             case LOCATION:
-                return new LocationOption(name, value);
+                return new LocationOption(name, description, value);
             case MULTI_LOCATION:
-                return new MultiLocationOption(name, value);
+                return new MultiLocationOption(name, description, value);
             case BLOCK:
-                return new BlockOption(name, value);
+                return new BlockOption(name, description, value);
             case MULTI_BLOCK:
-                return new MultiBlockOption(name, value);
+                return new MultiBlockOption(name, description, value);
             case CUBOID:
-                return new CuboidOption(name, value);
+                return new CuboidOption(name, description, value);
             case MULTI_CUBOID:
-                return new MultiCuboidOption(name, value);
+                return new MultiCuboidOption(name, description, value);
             case INT:
-                return new IntOption(name, value);
+                return new IntOption(name, description, value);
             case DOUBLE:
-                return new DoubleOption(name, value);
+                return new DoubleOption(name, description, value);
             case FLOAT:
-                return new FloatOption(name, value);
+                return new FloatOption(name, description, value);
             case BOOLEAN:
-                return new BooleanOption(name, value);
+                return new BooleanOption(name, description, value);
             case STRING:
-                return new StringOption(name, value);
+                return new StringOption(name, description, value);
         }
-        return new StringOption(name, value);
+        return new StringOption(name, description, value);
     }
 }

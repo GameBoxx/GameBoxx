@@ -36,16 +36,16 @@ public class BlockOption extends SetupOption {
 
     private Location value;
 
-    public BlockOption(String name, ConfigurationSection section) throws InvalidSetupDataException {
-        super(name);
+    public BlockOption(String name, String description, ConfigurationSection section) throws InvalidSetupDataException {
+        super(name, description);
         if (!(section.get(getName()) instanceof Location)) {
             throw new InvalidSetupDataException(getType(), section.getString(getName()), getName());
         }
         this.value = (Location)section.get(getName());
     }
 
-    public BlockOption(String name, Object value) throws InvalidSetupDataException {
-        super(name);
+    public BlockOption(String name, String description, Object value) throws InvalidSetupDataException {
+        super(name, description);
         if (!(value instanceof Location)) {
             throw new InvalidSetupDataException(getType(), value.toString(), getName());
         }

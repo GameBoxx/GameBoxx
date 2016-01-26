@@ -28,9 +28,11 @@ package info.gameboxx.gameboxx.setup;
 public abstract class SetupOption {
 
     protected String name;
+    protected String description;
 
-    public SetupOption(String name) {
+    public SetupOption(String name, String description) {
         this.name = name;
+        this.description = description;
     }
 
     public abstract Object getValue();

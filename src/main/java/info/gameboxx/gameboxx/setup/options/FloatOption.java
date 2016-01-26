@@ -34,16 +34,16 @@ public class FloatOption extends SetupOption {
 
     private Float value;
 
-    public FloatOption(String name, ConfigurationSection section) throws InvalidSetupDataException {
-        super(name);
+    public FloatOption(String name, String description, ConfigurationSection section) throws InvalidSetupDataException {
+        super(name, description);
         if (!section.isDouble(getName())) {
             throw new InvalidSetupDataException(getType(), section.getString(getName()), getName());
         }
         this.value = (float)section.getDouble(getName());
     }
 
-    public FloatOption(String name, Object value) throws InvalidSetupDataException {
-        super(name);
+    public FloatOption(String name, String description, Object value) throws InvalidSetupDataException {
+        super(name, description);
         if (!(value instanceof Float)) {
             throw new InvalidSetupDataException(getType(), value.toString(), getName());
         }

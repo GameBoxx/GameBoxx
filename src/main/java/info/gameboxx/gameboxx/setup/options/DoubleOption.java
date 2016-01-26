@@ -34,16 +34,16 @@ public class DoubleOption extends SetupOption {
 
     private Double value;
 
-    public DoubleOption(String name, ConfigurationSection section) throws InvalidSetupDataException {
-        super(name);
+    public DoubleOption(String name, String description, ConfigurationSection section) throws InvalidSetupDataException {
+        super(name, description);
         if (!section.isDouble(getName())) {
             throw new InvalidSetupDataException(getType(), section.getString(getName()), getName());
         }
         this.value = section.getDouble(getName());
     }
 
-    public DoubleOption(String name, Object value) throws InvalidSetupDataException {
-        super(name);
+    public DoubleOption(String name, String description, Object value) throws InvalidSetupDataException {
+        super(name, description);
         if (!(value instanceof Double)) {
             throw new InvalidSetupDataException(getType(), value.toString(), getName());
         }

@@ -37,16 +37,16 @@ public class MultiLocationOption extends SetupOption {
 
     private List<Location> value;
 
-    public MultiLocationOption(String name, ConfigurationSection section) throws InvalidSetupDataException {
-        super(name);
+    public MultiLocationOption(String name, String description, ConfigurationSection section) throws InvalidSetupDataException {
+        super(name, description);
         if (!(section.get(getName()) instanceof List)) {
             throw new InvalidSetupDataException(getType(), section.get(getName()).getClass().getName(), getName());
         }
         value = (List<Location>)section.getList(getName());
     }
 
-    public MultiLocationOption(String name, Object value) throws InvalidSetupDataException {
-        super(name);
+    public MultiLocationOption(String name, String description, Object value) throws InvalidSetupDataException {
+        super(name, description);
         if (!(value instanceof List)) {
             throw new InvalidSetupDataException(getType(), value.toString(), getName());
         }

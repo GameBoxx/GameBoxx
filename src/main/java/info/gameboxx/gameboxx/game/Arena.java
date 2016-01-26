@@ -118,7 +118,7 @@ public class Arena {
             if (config.contains(option.getName())) {
                 //Load option from config.
                 try {
-                    setupOptions.put(option.getName().trim().toLowerCase(), option.getType().newOption(option.getName(), config));
+                    setupOptions.put(option.getName().trim().toLowerCase(), option.getType().newOption(option.getName(), option.getDescription(), config));
                 } catch (InvalidSetupDataException e) {
                     game.getPlugin().getLogger().warning("Can't load arena '" + getName() + "' because the data is corrupt. Please run setup again to fix corrupt setup data.");
                     game.getPlugin().getLogger().warning(e.getMessage());
@@ -130,7 +130,7 @@ public class Arena {
                     setupOptions.put(option.getName().trim().toLowerCase(), null);
                 } else {
                     try {
-                        setupOptions.put(option.getName().trim().toLowerCase(), option.getType().newOption(option.getName(), option.getDefaultValue()));
+                        setupOptions.put(option.getName().trim().toLowerCase(), option.getType().newOption(option.getName(), option.getDescription(), option.getDefaultValue()));
                     } catch (InvalidSetupDataException e) {
                         game.getPlugin().getLogger().warning("Can't load arena '" + getName() + "' because the default value is invalid. Please run setup to fix any issues.");
                         game.getPlugin().getLogger().warning(e.getMessage());

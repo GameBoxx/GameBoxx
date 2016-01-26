@@ -34,16 +34,16 @@ public class BooleanOption extends SetupOption {
 
     private Boolean value;
 
-    public BooleanOption(String name, ConfigurationSection section) throws InvalidSetupDataException {
-        super(name);
+    public BooleanOption(String name, String description, ConfigurationSection section) throws InvalidSetupDataException {
+        super(name, description);
         if (!section.isBoolean(getName())) {
             throw new InvalidSetupDataException(getType(), section.getString(getName()), getName());
         }
         this.value = section.getBoolean(getName());
     }
 
-    public BooleanOption(String name, Object value) throws InvalidSetupDataException {
-        super(name);
+    public BooleanOption(String name, String description, Object value) throws InvalidSetupDataException {
+        super(name, description);
         if (!(value instanceof Boolean)) {
             throw new InvalidSetupDataException(getType(), value.toString(), getName());
         }

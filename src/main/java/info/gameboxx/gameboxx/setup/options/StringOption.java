@@ -34,16 +34,16 @@ public class StringOption extends SetupOption {
 
     private String value;
 
-    public StringOption(String name, ConfigurationSection section) throws InvalidSetupDataException {
-        super(name);
+    public StringOption(String name, String description, ConfigurationSection section) throws InvalidSetupDataException {
+        super(name, description);
         if (!section.isString(getName())) {
             throw new InvalidSetupDataException(getType(), section.get(getName()).getClass().getName(), getName());
         }
         this.value = section.getString(getName());
     }
 
-    public StringOption(String name, Object value) throws InvalidSetupDataException {
-        super(name);
+    public StringOption(String name, String description, Object value) throws InvalidSetupDataException {
+        super(name, description);
         if (!(value instanceof String)) {
             throw new InvalidSetupDataException(getType(), value.toString(), getName());
         }

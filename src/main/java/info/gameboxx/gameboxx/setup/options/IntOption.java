@@ -34,16 +34,16 @@ public class IntOption extends SetupOption {
 
     private Integer value;
 
-    public IntOption(String name, ConfigurationSection section) throws InvalidSetupDataException {
-        super(name);
+    public IntOption(String name, String description, ConfigurationSection section) throws InvalidSetupDataException {
+        super(name, description);
         if (!section.isInt(getName())) {
             throw new InvalidSetupDataException(getType(), section.getString(getName()), getName());
         }
         this.value = section.getInt(getName());
     }
 
-    public IntOption(String name, Object value) throws InvalidSetupDataException {
-        super(name);
+    public IntOption(String name, String description, Object value) throws InvalidSetupDataException {
+        super(name, description);
         if (!(value instanceof Integer)) {
             throw new InvalidSetupDataException(getType(), value.toString(), getName());
         }

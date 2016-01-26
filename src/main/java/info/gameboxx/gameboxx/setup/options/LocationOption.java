@@ -35,16 +35,16 @@ public class LocationOption extends SetupOption {
 
     private Location value;
 
-    public LocationOption(String name, ConfigurationSection section) throws InvalidSetupDataException {
-        super(name);
+    public LocationOption(String name, String description, ConfigurationSection section) throws InvalidSetupDataException {
+        super(name, description);
         if (!(section.get(getName()) instanceof Location)) {
             throw new InvalidSetupDataException(getType(), section.getString(getName()), getName());
         }
         this.value = (Location)section.get(getName());
     }
 
-    public LocationOption(String name, Object value) throws InvalidSetupDataException {
-        super(name);
+    public LocationOption(String name, String description, Object value) throws InvalidSetupDataException {
+        super(name, description);
         if (!(value instanceof Location)) {
             throw new InvalidSetupDataException(getType(), value.toString(), getName());
         }

@@ -35,16 +35,16 @@ public class CuboidOption extends SetupOption {
 
     private Cuboid value;
 
-    public CuboidOption(String name, ConfigurationSection section) throws InvalidSetupDataException {
-        super(name);
+    public CuboidOption(String name, String description, ConfigurationSection section) throws InvalidSetupDataException {
+        super(name, description);
         if (!(section.get(getName()) instanceof Cuboid)) {
             throw new InvalidSetupDataException(getType(), section.getString(getName()), getName());
         }
         this.value = (Cuboid)section.get(getName());
     }
 
-    public CuboidOption(String name, Object value) throws InvalidSetupDataException {
-        super(name);
+    public CuboidOption(String name, String description, Object value) throws InvalidSetupDataException {
+        super(name, description);
         if (!(value instanceof Cuboid)) {
             throw new InvalidSetupDataException(getType(), value.toString(), getName());
         }
