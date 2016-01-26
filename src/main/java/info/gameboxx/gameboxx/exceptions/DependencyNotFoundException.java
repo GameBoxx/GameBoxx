@@ -25,7 +25,7 @@
 
 package info.gameboxx.gameboxx.exceptions;
 
-import info.gameboxx.gameboxx.game.GameComponent;
+import info.gameboxx.gameboxx.components.internal.GameComponent;
 
 /**
  * Thrown when validating components and the game is missing a hard dependency.

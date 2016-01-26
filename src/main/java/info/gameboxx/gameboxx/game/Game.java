@@ -26,6 +26,8 @@
 package info.gameboxx.gameboxx.game;
 
 import info.gameboxx.gameboxx.GameBoxx;
+import info.gameboxx.gameboxx.components.internal.ComponentHolder;
+import info.gameboxx.gameboxx.components.internal.GameComponent;
 import info.gameboxx.gameboxx.exceptions.ArenaAlreadyExistsException;
 import info.gameboxx.gameboxx.exceptions.ComponentConflictException;
 import info.gameboxx.gameboxx.exceptions.DependencyNotFoundException;

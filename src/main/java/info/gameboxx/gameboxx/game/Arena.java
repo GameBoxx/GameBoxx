@@ -25,6 +25,7 @@
 
 package info.gameboxx.gameboxx.game;
 
+import info.gameboxx.gameboxx.components.internal.GameComponent;
 import info.gameboxx.gameboxx.exceptions.SessionLimitException;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;

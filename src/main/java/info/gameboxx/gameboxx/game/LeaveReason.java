@@ -26,7 +26,6 @@
 package info.gameboxx.gameboxx.game;
 
 /**
- * @author Msrules123 (Matthew Smith)
  * An enumeration representation of why the player left a session.
  * KICK - the player was removed from the session by a plugin.
  * DISCONNECT - the player left the game.

@@ -27,7 +27,7 @@ package info.gameboxx.gameboxx.components;
 
 import info.gameboxx.gameboxx.events.PlayerJoinSessionEvent;
 import info.gameboxx.gameboxx.game.Game;
-import info.gameboxx.gameboxx.game.GameComponent;
+import info.gameboxx.gameboxx.components.internal.GameComponent;
 import info.gameboxx.gameboxx.game.GameSession;
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;

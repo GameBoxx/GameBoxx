@@ -23,7 +23,7 @@
  THE SOFTWARE.
  */
 
-package info.gameboxx.gameboxx.game;
+package info.gameboxx.gameboxx.components.internal;
 
 import info.gameboxx.gameboxx.util.Utils;
 

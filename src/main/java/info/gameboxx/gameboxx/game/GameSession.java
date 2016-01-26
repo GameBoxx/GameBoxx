@@ -25,6 +25,7 @@
 
 package info.gameboxx.gameboxx.game;
 
+import info.gameboxx.gameboxx.components.internal.ComponentHolder;
 import info.gameboxx.gameboxx.events.PlayerJoinSessionEvent;
 import info.gameboxx.gameboxx.events.PlayerLeaveSessionEvent;
 import info.gameboxx.gameboxx.events.SessionStartEvent;

@@ -23,11 +23,14 @@
  THE SOFTWARE.
  */
 
-package info.gameboxx.gameboxx.game;
+package info.gameboxx.gameboxx.components.internal;
 
 import info.gameboxx.gameboxx.GameBoxx;
 import info.gameboxx.gameboxx.exceptions.ComponentConflictException;
 import info.gameboxx.gameboxx.exceptions.DependencyNotFoundException;
+import info.gameboxx.gameboxx.game.Game;
+import info.gameboxx.gameboxx.game.GameManager;
+import info.gameboxx.gameboxx.game.GameSession;
 import info.gameboxx.gameboxx.util.Utils;
 
 import java.util.HashMap;
