@@ -38,6 +38,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -146,7 +147,7 @@ public abstract class Game extends ComponentHolder {
         int count = 0;
         for (Map.Entry<String, File> entry : configFiles.entrySet()) {
             YamlConfiguration arenaCfg = YamlConfiguration.loadConfiguration(entry.getValue());
-            Arena arena = new Arena(this, arenaCfg);
+            Arena arena = new Arena(this, entry.getValue(), arenaCfg);
             if (arena.getName() == null || arena.getName().trim().isEmpty()) {
                 gb.error("No valid arena name found while trying to load the arena from '" + entry.getKey() + ".yml'\n" +
                         "Please check your configuration for that arena.");
@@ -169,15 +170,21 @@ public abstract class Game extends ComponentHolder {
      * Create/Register a new {@link Arena} with the specified name.
      * @return The created {@link Arena} instance.
      * @throws ArenaAlreadyExistsException If an arena with the specified name already exists.
+     * @throws IOException When failing to create a new config file for the arena.
      */
-    public Arena createArena(ArenaType type, String arenaName) throws ArenaAlreadyExistsException {
+    public Arena createArena(ArenaType type, String arenaName) throws ArenaAlreadyExistsException, IOException {
         if (arenas.containsKey(arenaName.trim().toLowerCase())) {
             throw new ArenaAlreadyExistsException("An arena with the name " + arenaName + " already exists!");
         }
-        Arena arena = new Arena(this, type, name);
+        File configFile = new File(arenaDir, arenaName + ".yml");
+        if (configFile.exists()) {
+            throw new ArenaAlreadyExistsException("An arena with the name " + arenaName + " already exists!");
+        }
+        YamlConfiguration config = YamlConfiguration.loadConfiguration(configFile);
+
+        Arena arena = new Arena(this, configFile, config, type, name);
+        arena.save();
         arenas.put(name, arena);
-        //TODO: Load arena options.
-        //TODO: Save..
         return arena;
     }
 
