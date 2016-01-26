@@ -208,7 +208,7 @@ public class Arena {
         }
 
         //Create the new session.
-        GameSession newSession = game.getNewGameSession(sessionUID);
+        GameSession newSession = game.getNewGameSession(this, sessionUID);
 
         //Add new instances of all the components from the game.
         for (GameComponent component : game.getComponents().values()) {

@@ -83,7 +83,7 @@ public abstract class Game extends ComponentHolder {
      * Create a class like SpleefSession and extend from GameSession and then do return new SpleefSession(this, sessionUID);
      * @return GameSession
      */
-    public abstract GameSession getNewGameSession(UUID sessionUID);
+    public abstract GameSession getNewGameSession(Arena arena, UUID sessionUID);
 
     /**
      * Override this method and inside the method body you will add all your components.

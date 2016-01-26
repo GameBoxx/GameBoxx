@@ -39,16 +39,36 @@ import java.util.UUID;
 //TODO: Implement this class it will handle the game flow like joining/leaving/starting/stopping/resetting etc. All of that stuff will be dependent on components obviously.
 public abstract class GameSession extends ComponentHolder {
 
+    protected Game game;
+    protected Arena arena;
     private UUID uid;
     public final PluginManager PLUGIN_MANAGER = Bukkit.getPluginManager();
 
-    public GameSession(Game game, UUID uid) {
+    public GameSession(Game game, Arena arena, UUID uid) {
+        this.game = game;
+        this.arena = arena;
         this.uid = uid;
         PLUGIN_MANAGER.callEvent(new SessionStartEvent(this));
     }
 
     public UUID getUid() {
         return uid;
+    }
+
+    /**
+     * Get the {@link Game} of the session.
+     * @return The game of the session.
+     */
+    public Game getGame() {
+        return game;
+    }
+
+    /**
+     * Get the {@link Arena} of the session.
+     * @return The arena of the session.
+     */
+    public Arena getArena() {
+        return arena;
     }
 
     /**
