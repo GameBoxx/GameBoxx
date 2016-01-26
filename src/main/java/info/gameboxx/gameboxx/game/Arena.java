@@ -95,7 +95,14 @@ public class Arena {
         config.set("name", name);
         config.set("type", type.toString());
         config.set("maxSessions", maxSessions);
-        //TODO: Save component data.
+
+        for (SetupOption option :setupOptions.values()) {
+            if (option == null) {
+                continue;
+            }
+            config.set(option.getName(), option.getValue());
+        }
+
         try {
             config.save(configFile);
         } catch (IOException e) {
