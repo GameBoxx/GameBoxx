@@ -25,15 +25,49 @@
 
 package info.gameboxx.gameboxx.game;
 
+import info.gameboxx.gameboxx.events.PlayerJoinSessionEvent;
+import info.gameboxx.gameboxx.events.PlayerLeaveSessionEvent;
+import info.gameboxx.gameboxx.events.SessionStartEvent;
+import info.gameboxx.gameboxx.events.SessionStopEvent;
+
+import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
+
+import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
+import org.bukkit.plugin.PluginManager;
 
 //TODO: Implement this class it will handle the game flow like joining/leaving/starting/stopping/resetting etc. All of that stuff will be dependent on components obviously.
 public abstract class GameSession extends ComponentHolder {
 
     protected UUID uid;
+    public final PluginManager PLUGIN_MANAGER = Bukkit.getPluginManager();
 
     public GameSession(Game game, UUID uid) {
         this.uid = uid;
+        PLUGIN_MANAGER.callEvent(new SessionStartEvent(this));
+    }
+    
+    /**
+     * Adds a player to a session.
+     * @param player The player to add.
+     */
+    public void addPlayer(Player player) {
+    	PLUGIN_MANAGER.callEvent(new PlayerJoinSessionEvent(player, this));
+    }
+    
+    /**
+     * Removes a player from the active players list.
+     * @param player The player who is leaving the session.
+     * @param reason The reason for which the player is leaving the session.
+     */
+    public void removePlayer(Player player, LeaveReason reason) {
+    	PLUGIN_MANAGER.callEvent(new PlayerLeaveSessionEvent(player, this, reason));
+    }
+    
+    public void stop() {
+    	PLUGIN_MANAGER.callEvent(new SessionStopEvent(this));
     }
 
 }

@@ -26,7 +26,7 @@
 package info.gameboxx.gameboxx.events;
 
 import info.gameboxx.gameboxx.game.GameSession;
-//import info.gameboxx.gameboxx.game.LeaveReason;
+import info.gameboxx.gameboxx.game.LeaveReason;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
@@ -38,18 +38,18 @@ public final class PlayerLeaveSessionEvent extends Event {
 	
 	private Player who;
 	private GameSession session;
-	//private LeaveReason reason;
+	private LeaveReason reason;
 	
 	/**
 	 * Called whenever a Player leaves a session.
 	 * @param who The player who left a session.
 	 * @param session The session that a player left.
-	 //* @param reason The reason why a player was disconnected from their session.
+	 * @param reason The reason why a player was disconnected from their session.
 	 */
-	public PlayerLeaveSessionEvent(Player who, GameSession session/*, LeaveReason reason*/) {
+	public PlayerLeaveSessionEvent(Player who, GameSession session, LeaveReason reason) {
 		this.who = who;
 		this.session = session;
-		//this.reason = reason;
+		this.reason = reason;
 	}
 
 	/**
@@ -65,11 +65,9 @@ public final class PlayerLeaveSessionEvent extends Event {
 	 * Get the reason ({@link LeaveReason}) that the player left a session.
 	 * @return The reason for leaving.
 	 */
-	/*
 	public final LeaveReason getLeaveReason() {
 		return this.reason;
 	}
-	*/
 	
 	/**
 	 * Get the player who left a session.

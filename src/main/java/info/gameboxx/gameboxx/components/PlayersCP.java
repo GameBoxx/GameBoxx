@@ -28,6 +28,8 @@ package info.gameboxx.gameboxx.components;
 import info.gameboxx.gameboxx.game.Game;
 import info.gameboxx.gameboxx.game.GameComponent;
 import info.gameboxx.gameboxx.game.GameSession;
+import info.gameboxx.gameboxx.game.LeaveReason;
+import org.bukkit.Bukkit;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -81,16 +83,14 @@ public class PlayersCP extends GameComponent {
     /**
      * Remove the given players {@link UUID} from the player list.
      * @param player The players {@link UUID} to remove.
-     * //@param reason The reason why the player is to be removed, will add to removedPlayers if == DISCONNECT.
+     * @param reason The reason why the player is to be removed, will add to removedPlayers if == DISCONNECT.
      */
-    public void removePlayer(UUID player/*, LeaveReason reason*/) {
+    public void removePlayer(UUID player, LeaveReason reason) {
         players.remove(player);
-        /*
         if (reason == LeaveReason.DISCONNECT) {
         	removedPlayers.add(player);
         }
         session.removePlayer(Bukkit.getPlayer(player), reason);
-        */
     }
 
     /**
