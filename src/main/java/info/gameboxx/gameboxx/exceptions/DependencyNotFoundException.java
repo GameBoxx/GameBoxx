@@ -28,18 +28,11 @@ package info.gameboxx.gameboxx.exceptions;
 import info.gameboxx.gameboxx.game.GameComponent;
 
 /**
- * @author Msrules123 (Matthew Smith)
- * 
+ * Thrown when validating components and the game is missing a hard dependency.
+ * @see GameComponent#validate()
  */
-public class DependencyNotFoundException extends RuntimeException {
-
-	/**
-	 * @param errorComponent
-	 * @param notFound
-	 */
-	public DependencyNotFoundException(GameComponent errorComponent, Class<? extends GameComponent> notFound) {
-		super("Could not find dependency (" + notFound.toString() + " for component " 
-				+ errorComponent.getClass().getName() + " in session " + errorComponent.getParent());
+public class DependencyNotFoundException extends Exception {
+	public DependencyNotFoundException(GameComponent component, Class<? extends GameComponent> dependency) {
+		super("Could not find dependency " + dependency.getName() + " for component " + component.getClass().getName() + "!");
 	}
-
 }

@@ -32,8 +32,7 @@ import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
 /**
- * @author Msrules123 (Matthew Smith)
- * The event that is called whenever a player joins a {@link Session}.
+ * The event that is called whenever a player joins a {@link GameSession}.
  */
 public final class PlayerJoinSessionEvent extends Event {
 	

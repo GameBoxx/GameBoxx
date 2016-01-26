@@ -112,14 +112,23 @@ public class Arena {
                     "The maximum amount of sessions has been reached. [" + getMaxSessions() + "]");
         }
 
+        //TODO: Don't use UUID's for sessions but use indexes so they can be referenced easier by players etc.
         UUID sessionUID = UUID.randomUUID();
         while (sessions.containsKey(sessionUID)) {
             sessionUID = UUID.randomUUID();
         }
 
+        //Create the new session.
         GameSession newSession = game.getNewGameSession(sessionUID);
+
+        //Add new instances of all the components from the game.
         for (GameComponent component : game.getComponents().values()) {
-            newSession.addComponent(component.deepCopy());
+            newSession.addComponent(component.newInstance(newSession));
+        }
+
+        //Load all the dependencies for each component.
+        for (GameComponent component : newSession.getComponents().values()) {
+            component.loadDependencies();
         }
 
         return newSession;

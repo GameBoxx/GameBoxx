@@ -26,35 +26,41 @@
 package info.gameboxx.gameboxx.game;
 
 import info.gameboxx.gameboxx.GameBoxx;
+import info.gameboxx.gameboxx.exceptions.ComponentConflictException;
+import info.gameboxx.gameboxx.exceptions.DependencyNotFoundException;
 import info.gameboxx.gameboxx.util.Utils;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 /**
- * A game component.
- * The game component can have have many child components and it has one parent component.
- * Except for the top level component which is the {@link Game} in this Game API which has no parent component.
+ * The base class for a game component.
+ * See {@link info.gameboxx.gameboxx.components} for all the components.
+ * The components need to be added to the {@link Game} to design the game.
+ * When a new {@link GameSession} gets created it will copy all the components from the {@link Game} in to the session.
  */
-//TODO: Add conflicts between components so that you can't add componentX when it has componentY
-//TODO: Implement dependencies and soft dependencies.
-//TODO: Keep a reference of dependencies so they can be accessed easily and quickly.
 public abstract class GameComponent {
 
-    private GameBoxx gb;
-    private GameComponent parent;
-    private Map<Class<? extends GameComponent>, GameComponent> components = new HashMap<Class<? extends GameComponent>, GameComponent>();
+    protected GameBoxx gb;
+    protected Game game;
+    protected GameSession session;
+
+    private Set<Class<? extends GameComponent>> depends = new HashSet<Class<? extends GameComponent>>();
+    private Set<Class<? extends GameComponent>> softDepends = new HashSet<Class<? extends GameComponent>>();
+    private Set<Class<? extends GameComponent>> conflicts = new HashSet<Class<? extends GameComponent>>();
+
+    private Map<Class<? extends GameComponent>, GameComponent> dependencies = new HashMap<Class<? extends GameComponent>, GameComponent>();
 
     /**
-     * Instantiate a new game component for the specified parent.
-     * It will not automatically add the component to the provided parent.
-     * <b>Example usage:</b>
-     * addComponent(new SubComponent(this));
-     * @param parent The parent component.
-     *               This may be null for the top level component.
+     * Instantiate a new game component for the specified game.
+     * It will <b>not</b> automatically add the component to the game.
+     * Use {@link Game#addComponent(GameComponent)} to add a component to the game.
+     * @param game The game this component belongs to.
      */
-    public GameComponent(GameComponent parent) {
-        this.parent = parent;
+    public GameComponent(Game game) {
+        this.game = game;
         gb = GameBoxx.get();
     }
 
@@ -67,79 +73,116 @@ public abstract class GameComponent {
     }
 
     /**
-     * Check whether or not this component has a parent component.
-     * @return True when the component has a parent.
+     * Get the {@link Game} this component belongs too.
+     * @return The game the component has been added to.
      */
-    public boolean hasParent() {
-        return parent != null;
+    public Game getGame() {
+        return game;
     }
 
     /**
-     * Get the parent component instance.
-     * @return The parent component.
+     * Get the {@link GameSession} this component belongs too.
+     * @return The game session. This will be null for components in the {@link Game} but those should be used as templates only anyways.
      */
-    public GameComponent getParent() {
-        return parent;
+    public GameSession getSession() {
+        return session;
     }
 
     /**
-     * Adds a new component to this component.
-     * If this component already had a component of the provided type it will return the previous component.
-     * It won't overwrite the component.
-     * @param component The component instance to add.
-     * @return The added component or the previous component if it already had a component of that type.
+     * Set the {@link GameSession}.
+     * When calling {@link #newInstance(GameSession)} set the session using this method.
+     * @param session The {@link GameSession} to set
+     * @return Returns itself so you can use it easier.
      */
-    public GameComponent addComponent(GameComponent component) {
-        return components.put(component.getClass(), component);
+    protected GameComponent setSession(GameSession session) {
+        this.session = session;
+        return this;
     }
 
     /**
-     * Gets a child component from this component.
-     * Will return null if this component doesn't have the provided component type.
-     * @param <T> The type of component to get.
-     * @return A GameComponent or {@code null} if this component has no component of the specified type.
+     * Adds a hard dependency.
+     * When validating all components it won't validate if the dependency is missing.
+     * @param component The component to depend on.
      */
-    public <T extends GameComponent> T getComponent(Class<T> component) {
-        return Utils.<T>convertInstance(components.get(component), component);
+    protected void addDependency(Class<? extends GameComponent> component) {
+        depends.add(component);
     }
 
     /**
-     * Check if this component has a child component of the specified type.
-     * @param component The component type to check for.
-     * @return True when this component has a child of the specified component type.
+     * Adds a soft dependency.
+     * Adding soft dependencies makes it so you can use {@link #getDependency(Class)}.
+     * Be warned though that the getDependency method can return {@code null} for soft dependencies.
+     * @param component The component to depend on.
      */
-    public boolean hasComponent(Class<? extends GameComponent> component) {
-        return components.containsKey(component);
+    protected void addSoftDependency(Class<? extends GameComponent> component) {
+        softDepends.add(component);
     }
 
     /**
-     * Get a map with all the child components of this component.
-     * @return Map with all components where the key is the Class type and the value is the instance.
+     * Adds a conflict with another component.
+     * When validating all components it won't validate if there is a conflict.
+     * @param component The component it will conflict with.
      */
-    public Map<Class<? extends GameComponent>, GameComponent> getComponents() {
-        return components;
+    protected void addConflict(Class<? extends GameComponent> component) {
+        conflicts.add(component);
     }
 
     /**
-     * Creates a deep copy/clone of the component.
-     * It will copy all the children of the component.
-     * Always call the deepCopy() method on the top level component you want to copy.
-     * @param <T>
-     * @return A deep copy of the component and all it's children.
+     * Validate the component to check for dependencies and conflicts.
+     * Soft dependencies won't be validated.
+     * There is no need to manually call this!
+     * It gets called when you register the game using {@link GameManager#register(Game)}
+     * @throws DependencyNotFoundException When a dependency hasn't been added to the game.
+     * @throws ComponentConflictException When the game has two components that conflict with eachother.
      */
-    public abstract <T extends GameComponent> T deepCopy();
-
-    /**
-     * Copies all the child components from the from GameComponent in to the to GameComponent.
-     * It will use the {@link #deepCopy()} method to clone each child component.
-     * This method should be called when overriding the deepCopy method.
-     * @param from The component to copy the children from.
-     * @param to The new cloned component to add the cloned components to.
-     */
-    protected GameComponent copyChildComponents(GameComponent from, GameComponent to) {
-        for (GameComponent child : from.getComponents().values()) {
-            to.addComponent(child.deepCopy());
+    public void validate() throws DependencyNotFoundException, ComponentConflictException {
+        for (Class<? extends GameComponent> dependency : depends) {
+            if (!game.hasComponent(dependency)) {
+                throw new DependencyNotFoundException(this, dependency);
+            }
         }
-        return to;
+        for (Class<? extends GameComponent> conflict : conflicts) {
+            if (game.hasComponent(conflict)) {
+                throw new ComponentConflictException(this, conflict);
+            }
+        }
     }
+
+    /**
+     * Get another dependency component.
+     * It can also be a soft dependency but in that case this will return {@code null} if the {@link Game}/{@link GameSession} doesn't have the component.
+     * Regular dependencies will never return {@code null}!
+     * @param component The type of component/dependency to get.
+     * @param <T> The type of component/dependency to get.
+     * @return The component instance of the type specified or {@code null}.
+     */
+    public <T extends GameComponent> T getDependency(Class<T> component) {
+        return Utils.<T>convertInstance(dependencies.get(component), component);
+    }
+
+    /**
+     * Loads all the hard and soft dependencies into the dependencies map.
+     * When a new {@link GameSession} is created this method will be called.
+     * @throws IllegalStateException when trying to call this method before a session is created.
+     */
+    public void loadDependencies() {
+        if (session == null) {
+            throw new IllegalStateException("Dependencies can only be loaded for game sessions. This method should only be called by the API.");
+        }
+        for (Class<? extends GameComponent> dependency : depends) {
+           dependencies.put(dependency, session.getComponent(dependency));
+        }
+        for (Class<? extends GameComponent> dependency : softDepends) {
+            if (session.hasComponent(dependency)) {
+                dependencies.put(dependency, session.getComponent(dependency));
+            }
+        }
+    }
+
+    /**
+     * Return a new instance of the component for the provided {@link GameSession}.
+     * @param <T>
+     * @return A new instance of the component with the session set to the provided session.
+     */
+    public abstract <T extends GameComponent> T newInstance(GameSession session);
 }

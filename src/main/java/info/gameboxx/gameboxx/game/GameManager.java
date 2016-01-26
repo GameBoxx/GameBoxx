@@ -25,6 +25,9 @@
 
 package info.gameboxx.gameboxx.game;
 
+import info.gameboxx.gameboxx.GameBoxx;
+import info.gameboxx.gameboxx.exceptions.ComponentConflictException;
+import info.gameboxx.gameboxx.exceptions.DependencyNotFoundException;
 import info.gameboxx.gameboxx.exceptions.GameAlreadyExistsException;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -49,7 +52,7 @@ public class GameManager {
      *         You can either register it under a different name
      *         Or you can call {@link #unregister(String)} and register it again.
      */
-    public void register(Game gameClass) throws GameAlreadyExistsException {
+    public void register(Game gameClass) throws GameAlreadyExistsException, ComponentConflictException, DependencyNotFoundException {
         String name = gameClass.getName().trim().toLowerCase();
         if (games.containsKey(name)) {
             throw new GameAlreadyExistsException("Failed to register the game '" + name + "' because it's already registered.\n" +
@@ -58,12 +61,13 @@ public class GameManager {
 
         //Add components and validate them.
         gameClass.addComponents();
-        //TODO: Throw exceptions when validation fails.
         gameClass.validate();
 
         //Registered successfully!
         games.put(name, gameClass);
         gameClass.loadArenas();
+
+        GameBoxx.get().log("Successfully registered the game '" + gameClass.getName() + "'!");
     }
 
     /**

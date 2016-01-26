@@ -23,12 +23,16 @@
  THE SOFTWARE.
  */
 
-package info.gameboxx.gameboxx.game;
+package info.gameboxx.gameboxx.exceptions;
+
+import info.gameboxx.gameboxx.game.GameComponent;
 
 /**
- * @author Msrules123 (Matthew Smith)
- * 
+ * Thrown when validating components and the game has two conflicting components.
+ * @see GameComponent#validate()
  */
-public interface Conflictable {
-
+public class ComponentConflictException extends Exception {
+	public ComponentConflictException(GameComponent component, Class<? extends GameComponent> conflict) {
+		super("The component " + component.getClass().getName() + " can not be used together with " + conflict.getName() + "!");
+	}
 }

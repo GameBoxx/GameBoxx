@@ -25,7 +25,9 @@
 
 package info.gameboxx.gameboxx.components;
 
+import info.gameboxx.gameboxx.game.Game;
 import info.gameboxx.gameboxx.game.GameComponent;
+import info.gameboxx.gameboxx.game.GameSession;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,8 +40,13 @@ public class SpectateGC extends GameComponent {
 
     private List<UUID> spectators = new ArrayList<UUID>();
 
-    public SpectateGC(GameComponent parent) {
-        super(parent);
+    public SpectateGC(Game game) {
+        super(game);
+    }
+
+    @Override
+    public SpectateGC newInstance(GameSession session) {
+        return (SpectateGC) new SpectateGC(getGame()).setSession(session);
     }
 
     /**
@@ -82,11 +89,4 @@ public class SpectateGC extends GameComponent {
         spectators.clear();
     }
 
-    /** @see GameComponent#deepCopy() */
-    @Override
-    public SpectateGC deepCopy() {
-        SpectateGC clone = new SpectateGC(getParent());
-        copyChildComponents(this, clone);
-        return clone;
-    }
 }

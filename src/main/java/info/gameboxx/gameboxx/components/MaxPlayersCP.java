@@ -25,74 +25,39 @@
 
 package info.gameboxx.gameboxx.components;
 
-import java.util.HashSet;
-import java.util.Set;
-
+import info.gameboxx.gameboxx.events.PlayerJoinSessionEvent;
+import info.gameboxx.gameboxx.game.Game;
+import info.gameboxx.gameboxx.game.GameComponent;
+import info.gameboxx.gameboxx.game.GameSession;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
-import info.gameboxx.gameboxx.events.PlayerJoinSessionEvent;
-import info.gameboxx.gameboxx.exceptions.DependencyNotFoundException;
-import info.gameboxx.gameboxx.game.GameComponent;
-import info.gameboxx.gameboxx.game.HardDependable;
-import info.gameboxx.gameboxx.game.LeaveReason;
-
 /**
- * @author Msrules123 (Matthew Smith)
- * 
+ * Adding this component adds a player limit for the game session.
+ * When the limit is reached players wont be able to join anymore.
+ * If the game has a countdown it will reduce the countdown to 5 seconds if it has more than 5 seconds remaining.
  */
-public class MaxPlayersCP extends GameComponent implements HardDependable, Listener {
-	
-	private static final Set<Class<? extends GameComponent>> HARD_DEPENDENCIES = getHardDependencies();
+public class MaxPlayersCP extends GameComponent implements Listener {
 
 	private int maximumPlayers;
 	
 	/**
+	 * @see GameComponent
 	 * @param maximumPlayers The maximum amount of players allowed
 	 */
-	public MaxPlayersCP(GameComponent parent, int maximumPlayers) {
-		super(parent);
+	public MaxPlayersCP(Game game, int maximumPlayers) {
+		super(game);
+		addDependency(PlayersCP.class);
+
 		this.maximumPlayers = maximumPlayers;
-		PLUGIN_MANAGER.registerEvents(this, getAPI());
+		//PLUGIN_MANAGER.registerEvents(this, getAPI());
 	}
 
-	/**
-	 * @see {@link HardDependable}
-	 */
 	@Override
-	public Set<Class<? extends GameComponent>> getHardDependencySet() {
-		return HARD_DEPENDENCIES;
+	public MaxPlayersCP newInstance(GameSession session) {
+		return (MaxPlayersCP) new MaxPlayersCP(getGame(), maximumPlayers).setSession(session);
 	}
 
-	/**
-	 * @see {@link HardDependable}
-	 */
-	@Override
-	public GameComponent getHardDependency(Class<? extends GameComponent> clazz)
-			throws DependencyNotFoundException {
-		GameComponent parent = getParent();
-		if (parent.hasComponent(clazz)) {
-			return parent.getComponent(clazz);
-		} else {
-			throw new DependencyNotFoundException(this, clazz);
-		}
-	}
-
-	/**
-	 * @see {@link GameComponent}
-	 */
-	@Override
-	public MaxPlayersCP deepCopy() {
-		MaxPlayersCP clone = new MaxPlayersCP(getParent(), this.maximumPlayers);
-		clone.copyChildComponents(this, clone);
-		return clone;
-	}
-	
-	private static Set<Class<? extends GameComponent>> getHardDependencies() {
-		Set<Class<? extends GameComponent>> hardDependencies = new HashSet<Class<? extends GameComponent>>();
-		hardDependencies.add(PlayersCP.class);
-		return hardDependencies;
-	}
 	/**
 	 * Listens for the {@link PlayerJoinSessionEvent} to remove any player exceeding the limit from it's
 	 * GameComponent parent.
@@ -100,6 +65,8 @@ public class MaxPlayersCP extends GameComponent implements HardDependable, Liste
 	 */
 	@EventHandler
 	public void onPlayerJoinSessionEvent(PlayerJoinSessionEvent event) {
+		//TODO: Event should be cancellable instead of kicking after joining.
+		/*
 		if (event.getJoinedSession().equals(getParent())) {
 			try {
 				PlayersCP players = (PlayersCP) getHardDependency(PlayersCP.class);
@@ -110,6 +77,7 @@ public class MaxPlayersCP extends GameComponent implements HardDependable, Liste
 				ex.printStackTrace();
 			}
 		}
+		*/
 	}
 
 }

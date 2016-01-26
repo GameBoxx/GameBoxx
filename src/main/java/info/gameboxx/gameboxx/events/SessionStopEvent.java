@@ -30,9 +30,6 @@ import info.gameboxx.gameboxx.game.GameSession;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
-/**
- * @author Msrules123 (Matthew Smith)
- */
 public class SessionStopEvent extends Event {
 	
 	private GameSession session;

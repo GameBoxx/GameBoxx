@@ -27,6 +27,8 @@ package info.gameboxx.gameboxx.game;
 
 import info.gameboxx.gameboxx.GameBoxx;
 import info.gameboxx.gameboxx.exceptions.ArenaAlreadyExistsException;
+import info.gameboxx.gameboxx.exceptions.ComponentConflictException;
+import info.gameboxx.gameboxx.exceptions.DependencyNotFoundException;
 import info.gameboxx.gameboxx.util.Utils;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -44,7 +46,7 @@ import java.util.UUID;
  * @see info.gameboxx.gameboxx.components
  */
 //TODO: Make a sub class for GameComponent without the deepCopy method and extend that because we don't wanna confuse people with having to add a deepCopy method.
-public abstract class Game extends GameComponent {
+public abstract class Game extends ComponentHolder {
 
     protected GameBoxx gb;
     protected String name;
@@ -59,7 +61,6 @@ public abstract class Game extends GameComponent {
      * @param name The name of the game like for example Spleef.
      */
     public Game(JavaPlugin plugin, String name) {
-        super(null);
         gb = GameBoxx.get();
 
         this.name = name;
@@ -87,8 +88,10 @@ public abstract class Game extends GameComponent {
      * It will check for dependencies and conflicts and such.
      * If there is any validation error the game won't be registered and an exception will be thrown by the {@link GameManager#register(Game)} method.
      */
-    public void validate() {
-        //TODO: Implement this..
+    public void validate() throws DependencyNotFoundException, ComponentConflictException {
+        for (GameComponent component : getComponents().values()) {
+            component.validate();
+        }
     }
 
     /**

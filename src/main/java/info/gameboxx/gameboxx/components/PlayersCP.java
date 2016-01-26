@@ -25,15 +25,13 @@
 
 package info.gameboxx.gameboxx.components;
 
+import info.gameboxx.gameboxx.game.Game;
 import info.gameboxx.gameboxx.game.GameComponent;
 import info.gameboxx.gameboxx.game.GameSession;
-import info.gameboxx.gameboxx.game.LeaveReason;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-
-import org.bukkit.Bukkit;
 
 /**
  * Adding this component allows to have players in the game.
@@ -44,8 +42,13 @@ public class PlayersCP extends GameComponent {
     private List<UUID> players = new ArrayList<UUID>();
     private List<UUID> removedPlayers = new ArrayList<UUID>();
 
-    public PlayersCP(GameComponent parent) {
-        super(parent);
+    public PlayersCP(Game game) {
+        super(game);
+    }
+
+    @Override
+    public PlayersCP newInstance(GameSession session) {
+        return (PlayersCP) new PlayersCP(getGame()).setSession(session);
     }
 
     /**
@@ -78,17 +81,16 @@ public class PlayersCP extends GameComponent {
     /**
      * Remove the given players {@link UUID} from the player list.
      * @param player The players {@link UUID} to remove.
-     * @param reason The reason why the player is to be removed, will add to removedPlayers if == DISCONNECT.
+     * //@param reason The reason why the player is to be removed, will add to removedPlayers if == DISCONNECT.
      */
-    public void removePlayer(UUID player, LeaveReason reason) {
+    public void removePlayer(UUID player/*, LeaveReason reason*/) {
         players.remove(player);
+        /*
         if (reason == LeaveReason.DISCONNECT) {
         	removedPlayers.add(player);
         }
-        if (getParent() instanceof GameSession) {
-        	GameSession session = (GameSession) getParent();
-        	session.removePlayer(Bukkit.getPlayer(player), reason);
-        }
+        session.removePlayer(Bukkit.getPlayer(player), reason);
+        */
     }
 
     /**
@@ -97,14 +99,6 @@ public class PlayersCP extends GameComponent {
     public void removePlayers() {
         players.clear();
         removedPlayers.clear();
-    }
-
-    /** @see GameComponent#deepCopy() */
-    @Override
-    public PlayersCP deepCopy() {
-        PlayersCP clone = new PlayersCP(getParent());
-        copyChildComponents(this, clone);
-        return clone;
     }
     
 }
