@@ -40,24 +40,32 @@ import org.bukkit.event.Listener;
  */
 public class MaxPlayersCP extends GameComponent {
 
-	private int maximumPlayers;
+	private int max;
 	
 	/**
 	 * @see GameComponent
-	 * @param maximumPlayers The maximum amount of players allowed
+	 * @param max The maximum amount of players allowed
 	 */
-	public MaxPlayersCP(Game game, int maximumPlayers) {
+	public MaxPlayersCP(Game game, int max) {
 		super(game);
 		addDependency(PlayersCP.class);
 
-		this.maximumPlayers = maximumPlayers;
+		this.max = max;
 		Bukkit.getPluginManager().registerEvents(new Events(), getAPI());
 	}
 
 	@Override
 	public MaxPlayersCP newInstance(GameSession session) {
-		return (MaxPlayersCP) new MaxPlayersCP(getGame(), maximumPlayers).setSession(session);
+		return (MaxPlayersCP) new MaxPlayersCP(getGame(), max).setSession(session);
 	}
+
+    /**
+     * Get the max player count allowed in the arena.
+     * @return The maximum player amount allowed.
+     */
+    public int getMax() {
+        return max;
+    }
 
 	private static class Events implements Listener {
 		@EventHandler
@@ -67,7 +75,7 @@ public class MaxPlayersCP extends GameComponent {
 				return;
 			}
 
-			int maxPlayers = session.getComponent(MaxPlayersCP.class).maximumPlayers;
+			int maxPlayers = session.getComponent(MaxPlayersCP.class).max;
 			int playerCount = session.getComponent(PlayersCP.class).getPlayers().size();
 
 			if (playerCount >= maxPlayers) {
