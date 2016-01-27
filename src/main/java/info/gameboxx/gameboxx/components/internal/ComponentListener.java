@@ -31,16 +31,20 @@ import org.bukkit.Bukkit;
 import org.bukkit.event.Listener;
 
 /**
- * @author Msrules123 (Matthew Smith)
- * 
+ * A specific type of Listener designed for components,
+ * will only register if it hasn't been registed before.
  */
 public abstract class ComponentListener implements Listener {
 	
 	private boolean isRegistered = false;
 	
+	/**
+	 * Registers an event, if it is not already registered.
+	 * @param api The main plugin to register the event to.
+	 */
 	public void register(GameBoxx api) {
-		if (!(isRegistered)) {
-			Bukkit.getPluginManager().registerEvents(this, api);
+	    if (!(isRegistered)) {
+	        Bukkit.getPluginManager().registerEvents(this, api);
 			isRegistered = true;
 		}
 	}

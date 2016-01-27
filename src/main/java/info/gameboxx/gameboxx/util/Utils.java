@@ -25,9 +25,6 @@
 
 package info.gameboxx.gameboxx.util;
 
-import org.bukkit.Bukkit;
-import org.bukkit.entity.Player;
-
 import java.io.File;
 import java.io.FilenameFilter;
 import java.util.*;
@@ -45,17 +42,6 @@ public class Utils {
         } catch(ClassCastException e) {
             return null;
         }
-    }
-
-    public static List<Player> getPlayerList(List<UUID> uuidList) {
-        List<Player> playerList = new ArrayList<Player>();
-        for (UUID uuid : uuidList) {
-            Player p = Bukkit.getServer().getPlayer(uuid);
-            if (p != null) {
-                playerList.add(p);
-            }
-        }
-        return playerList;
     }
 
     public static Map<String, File> getFiles(File dir, final String extension) {

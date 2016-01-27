@@ -25,24 +25,22 @@
 
 package info.gameboxx.gameboxx.components;
 
-import info.gameboxx.gameboxx.GameBoxx;
 import info.gameboxx.gameboxx.components.internal.ComponentListener;
 import info.gameboxx.gameboxx.components.internal.GameComponent;
 import info.gameboxx.gameboxx.events.PlayerJoinSessionEvent;
+import info.gameboxx.gameboxx.events.PlayerLeaveSessionEvent;
 import info.gameboxx.gameboxx.exceptions.OptionAlreadyExistsException;
 import info.gameboxx.gameboxx.game.Game;
 import info.gameboxx.gameboxx.game.GameSession;
 import info.gameboxx.gameboxx.game.LeaveReason;
-import info.gameboxx.gameboxx.util.Utils;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
-import org.bukkit.event.Listener;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
 
 /**
@@ -52,8 +50,10 @@ import java.util.UUID;
 public class PlayersCP extends GameComponent {
 
 	private static final Events EVENT = new Events();
-    private List<UUID> players = new ArrayList<UUID>();
-    private List<UUID> removedPlayers = new ArrayList<UUID>();
+    private Set<UUID> players = new HashSet<UUID>();
+    private Set<UUID> removedPlayers = new HashSet<UUID>();
+    
+    private Set<Player> cachedPlayers = new HashSet<Player>();
 
     public PlayersCP(Game game) {
         super(game);
@@ -73,17 +73,16 @@ public class PlayersCP extends GameComponent {
      * Get the list with players.
      * @return List of players their {@link UUID}s
      */
-    public List<UUID> getPlayers() {
-        return players;
+    public Set<Player> getPlayers() {
+        return cachedPlayers;
     }
 
     /**
      * Get the list with online players.
      * @return List of players that are online.
      */
-    public List<Player> getOnlinePlayers() {
-        //TODO: Cache this probably as it will prob get called a lot.
-        return Utils.getPlayerList(players);
+    public Set<Player> getOnlinePlayers() {
+        return cachedPlayers;
     }
 
     /**
@@ -125,6 +124,21 @@ public class PlayersCP extends GameComponent {
         players.clear();
         removedPlayers.clear();
     }
+    /**
+     * Add a cached player to a set of cached players.
+     * @param player The player to add.
+     */
+    public void addCachedPlayer(Player player) {
+        cachedPlayers.add(player);
+    }
+    
+    /**
+     * Remove a cached player from the set of cached players.
+     * @param player The player to remove.
+     */
+    public void removeCachedPlayer(Player player) {
+        cachedPlayers.remove(player);
+    }
 
     private static class Events extends ComponentListener {
 
@@ -132,7 +146,18 @@ public class PlayersCP extends GameComponent {
         public void onPlayerJoinSessionEvent(PlayerJoinSessionEvent event) {
             GameSession session = event.getJoinedSession();
             if (session.hasComponent(PlayersCP.class)) {
-                session.getComponent(PlayersCP.class).addPlayer(event.getWhoJoined().getUniqueId());
+                PlayersCP players = session.getComponent(PlayersCP.class);
+                Player player = event.getWhoJoined();
+                players.addPlayer(player.getUniqueId());
+                players.addCachedPlayer(player);
+            }
+        }
+        
+        @EventHandler
+        public void onPlayerLeaveSessionEvent(PlayerLeaveSessionEvent event) {
+            GameSession session = event.getLeftSession();
+            if (session.hasComponent(PlayersCP.class)) {
+                session.getComponent(PlayersCP.class).removeCachedPlayer(event.getWho());
             }
         }
     }
