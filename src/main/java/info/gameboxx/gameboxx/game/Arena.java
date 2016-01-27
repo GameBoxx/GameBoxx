@@ -160,6 +160,16 @@ public class Arena {
     }
 
     /**
+     * Get a option value for the specified name.
+     * Make sure that the option is registered!
+     * @param name The name of the option to get. (Casing doesn't matter)
+     * @return Object with the value.
+     */
+    public Object getOptionValue(String name) {
+        return setupOptions.get(name.trim().toLowerCase()).getValue();
+    }
+
+    /**
      * Check if all the setup options have been set up correctly.
      * @return True when all setup options have been set up.
      */

@@ -72,7 +72,7 @@ public class MaxPlayersCP extends GameComponent {
      * @return The maximum player amount allowed.
      */
     public int getMax() {
-        return max;
+        return (int)getOption("maxPlayers");
     }
 
 	private static class Events implements Listener {

@@ -65,6 +65,14 @@ public class MinPlayersCP extends GameComponent {
 	public MinPlayersCP newInstance(GameSession session) {
 		return (MinPlayersCP) new MinPlayersCP(getGame(), min).setSession(session);
 	}
+
+    /**
+     * Get the min player count required to start the game.
+     * @return The minimum player amount required to start.
+     */
+    public int getMin() {
+        return (int)getOption("minPlayers");
+    }
 	
 	/**
 	 * Gets the boolean value by checking if the players are more than the set minimum player value.
