@@ -50,6 +50,7 @@ import java.util.UUID;
 public class PlayersCP extends GameComponent {
 
 	private static final Events EVENT = new Events();
+	
     private Set<UUID> players = new HashSet<UUID>();
     private Set<UUID> removedPlayers = new HashSet<UUID>();
     
@@ -139,6 +140,17 @@ public class PlayersCP extends GameComponent {
     public void removeCachedPlayer(Player player) {
         cachedPlayers.remove(player);
     }
+    
+    /**
+     * Gets the set of original players in this component.
+     * @return The set of original players.
+     */
+    public Set<UUID> getOriginalPlayers() {
+        Set<UUID> originals = new HashSet<UUID>();
+        originals.addAll(players);
+        originals.addAll(removedPlayers);
+        return originals;
+    }
 
     private static class Events extends ComponentListener {
 
@@ -157,7 +169,10 @@ public class PlayersCP extends GameComponent {
         public void onPlayerLeaveSessionEvent(PlayerLeaveSessionEvent event) {
             GameSession session = event.getLeftSession();
             if (session.hasComponent(PlayersCP.class)) {
-                session.getComponent(PlayersCP.class).removeCachedPlayer(event.getWho());
+                PlayersCP players = (PlayersCP) session.getComponent(PlayersCP.class);
+                Player player = event.getWho();
+                players.removeCachedPlayer(player);
+                players.removePlayer(player.getUniqueId(), event.getLeaveReason());
             }
         }
     }
