@@ -28,20 +28,20 @@ package info.gameboxx.gameboxx.events;
 import info.gameboxx.gameboxx.game.GameSession;
 
 public class SessionStopEvent extends SessionEvent {
-	
-	/**
-	 * Created whenever a {@link GameSession} has been stopped.
-	 * @param session The session which has been stopped.
-	 */
-	public SessionStopEvent(GameSession session) {
-		super(session);
-	}
-	
-	/**
-	 * @return The session that has been stopped.
-	 */
-	public GameSession getStoppedSession() {
-		return this.session;
-	}
+    
+    /**
+     * Created whenever a {@link GameSession} has been stopped.
+     * @param session The session which has been stopped.
+     */
+    public SessionStopEvent(GameSession session) {
+        super(session);
+    }
+    
+    /**
+     * @return The session that has been stopped.
+     */
+    public GameSession getStoppedSession() {
+        return this.session;
+    }
 
 }
