@@ -27,21 +27,17 @@ package info.gameboxx.gameboxx.events;
 
 import info.gameboxx.gameboxx.game.GameSession;
 
-public class SessionStartEvent extends SessionEvent {
-	
-	/**
-	 * Called whenever a new {@link GameSession} has been created.
-	 * @param session
-	 */
-	public SessionStartEvent(GameSession session) {
-		super(session);
-	}
-	
-	/**
-	 * @return The session that has been started.
-	 */
-	public GameSession getStartedSession() {
-		return this.session;
-	}
+/**
+ * 
+ */
+public class SessionResetEvent extends SessionEvent {
+    
+    public SessionResetEvent(GameSession session) {
+        super(session);
+    }
+    
+    public GameSession getSession() {
+        return this.session;
+    }
 
 }

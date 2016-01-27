@@ -29,16 +29,13 @@ import info.gameboxx.gameboxx.game.GameSession;
 
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
-import org.bukkit.event.Event;
-import org.bukkit.event.HandlerList;
 
 /**
  * The event that is called whenever a player joins a {@link GameSession}.
  */
-public class PlayerJoinSessionEvent extends Event implements Cancellable {
+public class PlayerJoinSessionEvent extends SessionEvent implements Cancellable {
 	
 	private Player who;
-	private GameSession session;
 	private boolean isCancelled;
 	
 	/**
@@ -47,8 +44,8 @@ public class PlayerJoinSessionEvent extends Event implements Cancellable {
 	 * @param session The {@link GameSession} that the player has joined.
 	 */
 	public PlayerJoinSessionEvent(Player who, GameSession session) {
+	    super(session);
 		this.who = who;
-		this.session = session;
 		this.isCancelled = false;
 	}
 	
@@ -83,16 +80,5 @@ public class PlayerJoinSessionEvent extends Event implements Cancellable {
     public void setCancelled(boolean isCancelled) {
         this.isCancelled = isCancelled;
     }
-
-	private static final HandlerList handlers = new HandlerList();
-
-    @Override
-    public HandlerList getHandlers() {
-        return handlers;
-    }
-
-	public static HandlerList getHandlerList() {
-		return handlers;
-	}
 
 }

@@ -27,19 +27,14 @@ package info.gameboxx.gameboxx.events;
 
 import info.gameboxx.gameboxx.game.GameSession;
 
-import org.bukkit.event.Event;
-import org.bukkit.event.HandlerList;
-
-public class SessionStopEvent extends Event {
-	
-	private GameSession session;
+public class SessionStopEvent extends SessionEvent {
 	
 	/**
 	 * Created whenever a {@link GameSession} has been stopped.
 	 * @param session The session which has been stopped.
 	 */
 	public SessionStopEvent(GameSession session) {
-		this.session = session;
+		super(session);
 	}
 	
 	/**
@@ -47,17 +42,6 @@ public class SessionStopEvent extends Event {
 	 */
 	public GameSession getStoppedSession() {
 		return this.session;
-	}
-
-	private static final HandlerList handlers = new HandlerList();
-
-	@Override
-	public HandlerList getHandlers() {
-		return handlers;
-	}
-
-	public static HandlerList getHandlerList() {
-		return handlers;
 	}
 
 }

@@ -28,8 +28,10 @@ package info.gameboxx.gameboxx.game;
 import info.gameboxx.gameboxx.components.internal.ComponentHolder;
 import info.gameboxx.gameboxx.events.PlayerJoinSessionEvent;
 import info.gameboxx.gameboxx.events.PlayerLeaveSessionEvent;
+import info.gameboxx.gameboxx.events.SessionResetEvent;
 import info.gameboxx.gameboxx.events.SessionStartEvent;
 import info.gameboxx.gameboxx.events.SessionStopEvent;
+
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginManager;
@@ -42,7 +44,7 @@ public abstract class GameSession extends ComponentHolder {
     protected Game game;
     protected Arena arena;
     private UUID uid;
-    public final PluginManager PLUGIN_MANAGER = Bukkit.getPluginManager();
+    public static final PluginManager PLUGIN_MANAGER = Bukkit.getPluginManager();
 
     public GameSession(Game game, Arena arena, UUID uid) {
         this.game = game;
@@ -88,8 +90,20 @@ public abstract class GameSession extends ComponentHolder {
     	PLUGIN_MANAGER.callEvent(new PlayerLeaveSessionEvent(player, this, reason));
     }
     
+    /**
+     * Stops the session.
+     */
     public void stop() {
     	PLUGIN_MANAGER.callEvent(new SessionStopEvent(this));
+    	// TODO: Handle implementation later
+    }
+    
+    /**
+     * Restarts the session.
+     */
+    public void restart() {
+        PLUGIN_MANAGER.callEvent(new SessionResetEvent(this));
+        // TODO: Handle implementation later
     }
 
 }

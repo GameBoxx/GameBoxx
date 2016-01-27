@@ -28,16 +28,13 @@ package info.gameboxx.gameboxx.events;
 import info.gameboxx.gameboxx.game.GameSession;
 import info.gameboxx.gameboxx.game.LeaveReason;
 import org.bukkit.entity.Player;
-import org.bukkit.event.Event;
-import org.bukkit.event.HandlerList;
 
 /**
  * The event that gets called whenever a player leaves a session.
  */
-public final class PlayerLeaveSessionEvent extends Event {
+public final class PlayerLeaveSessionEvent extends SessionEvent {
 	
 	private Player who;
-	private GameSession session;
 	private LeaveReason reason;
 	
 	/**
@@ -47,8 +44,8 @@ public final class PlayerLeaveSessionEvent extends Event {
 	 * @param reason The reason why a player was disconnected from their session.
 	 */
 	public PlayerLeaveSessionEvent(Player who, GameSession session, LeaveReason reason) {
+	    super(session);
 		this.who = who;
-		this.session = session;
 		this.reason = reason;
 	}
 
@@ -74,17 +71,6 @@ public final class PlayerLeaveSessionEvent extends Event {
 	 */
 	public GameSession getLeftSession() {
 		return this.session;
-	}
-
-	private static final HandlerList handlers = new HandlerList();
-
-	@Override
-	public HandlerList getHandlers() {
-		return handlers;
-	}
-
-	public static HandlerList getHandlerList() {
-		return handlers;
 	}
 
 }
