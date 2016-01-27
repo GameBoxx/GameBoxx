@@ -23,14 +23,39 @@
  THE SOFTWARE.
  */
 
-package info.gameboxx.gameboxx.exceptions;
+package info.gameboxx.gameboxx.setup.options;
 
-/**
- * Thrown when trying to register a game but it already exists.
- * For example if another plugin registers a game with the same before your plugin does.
- */
-public class GameAlreadyExistsException extends Exception {
-    public GameAlreadyExistsException(String msg) {
-        super(msg);
+import info.gameboxx.gameboxx.exceptions.InvalidSetupDataException;
+import info.gameboxx.gameboxx.setup.SetupOption;
+import info.gameboxx.gameboxx.setup.SetupType;
+import org.bukkit.configuration.ConfigurationSection;
+
+public class IntOption extends SetupOption {
+
+    private Integer value;
+
+    public IntOption(String name, String description, ConfigurationSection section) throws InvalidSetupDataException {
+        super(name, description);
+        if (!section.isInt(getName())) {
+            throw new InvalidSetupDataException(getType(), section.getString(getName()), getName());
+        }
+        this.value = section.getInt(getName());
+    }
+
+    public IntOption(String name, String description, Object value) throws InvalidSetupDataException {
+        super(name, description);
+        if (!(value instanceof Integer)) {
+            throw new InvalidSetupDataException(getType(), value.toString(), getName());
+        }
+        this.value = (Integer)value;
+    }
+
+    public Integer getValue() {
+        return value;
+    }
+
+    @Override
+    public SetupType getType() {
+        return SetupType.INT;
     }
 }

@@ -25,14 +25,11 @@
 
 package info.gameboxx.gameboxx.exceptions;
 
-import info.gameboxx.gameboxx.components.internal.GameComponent;
-
 /**
- * Thrown when validating components and the game is missing a hard dependency.
- * @see GameComponent#validate()
+ * Thrown when trying to register a setup option but another component already registerd an option with the same name.
  */
-public class DependencyNotFoundException extends Exception {
-	public DependencyNotFoundException(GameComponent component, Class<? extends GameComponent> dependency) {
-		super("Could not find dependency " + dependency.getName() + " for component " + component.getClass().getName() + "!");
-	}
+public class OptionAlreadyExistsException extends Exception {
+    public OptionAlreadyExistsException(String name) {
+        super("Failed to register the setup option for '" + name + "' because it's already registered for something else! Use a different name.");
+    }
 }

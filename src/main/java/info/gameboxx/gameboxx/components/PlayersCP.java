@@ -25,15 +25,22 @@
 
 package info.gameboxx.gameboxx.components;
 
-import info.gameboxx.gameboxx.game.GameComponent;
+import info.gameboxx.gameboxx.components.internal.GameComponent;
+import info.gameboxx.gameboxx.events.PlayerJoinSessionEvent;
+import info.gameboxx.gameboxx.exceptions.OptionAlreadyExistsException;
+import info.gameboxx.gameboxx.game.Game;
 import info.gameboxx.gameboxx.game.GameSession;
 import info.gameboxx.gameboxx.game.LeaveReason;
+import info.gameboxx.gameboxx.util.Utils;
+import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
+import org.bukkit.event.Listener;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-
-import org.bukkit.Bukkit;
 
 /**
  * Adding this component allows to have players in the game.
@@ -44,8 +51,18 @@ public class PlayersCP extends GameComponent {
     private List<UUID> players = new ArrayList<UUID>();
     private List<UUID> removedPlayers = new ArrayList<UUID>();
 
-    public PlayersCP(GameComponent parent) {
-        super(parent);
+    public PlayersCP(Game game) {
+        super(game);
+        
+        Bukkit.getPluginManager().registerEvents(new Events(), getAPI());
+    }
+
+    @Override
+    public void registerOptions() throws OptionAlreadyExistsException {}
+
+    @Override
+    public PlayersCP newInstance(GameSession session) {
+        return (PlayersCP) new PlayersCP(getGame()).setSession(session);
     }
 
     /**
@@ -54,6 +71,15 @@ public class PlayersCP extends GameComponent {
      */
     public List<UUID> getPlayers() {
         return players;
+    }
+
+    /**
+     * Get the list with online players.
+     * @return List of players that are online.
+     */
+    public List<Player> getOnlinePlayers() {
+        //TODO: Cache this probably as it will prob get called a lot.
+        return Utils.getPlayerList(players);
     }
 
     /**
@@ -85,10 +111,7 @@ public class PlayersCP extends GameComponent {
         if (reason == LeaveReason.DISCONNECT) {
         	removedPlayers.add(player);
         }
-        if (getParent() instanceof GameSession) {
-        	GameSession session = (GameSession) getParent();
-        	session.removePlayer(Bukkit.getPlayer(player), reason);
-        }
+        session.removePlayer(Bukkit.getPlayer(player), reason);
     }
 
     /**
@@ -99,12 +122,14 @@ public class PlayersCP extends GameComponent {
         removedPlayers.clear();
     }
 
-    /** @see GameComponent#deepCopy() */
-    @Override
-    public PlayersCP deepCopy() {
-        PlayersCP clone = new PlayersCP(getParent());
-        copyChildComponents(this, clone);
-        return clone;
+    private static class Events implements Listener {
+
+        @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+        public void onPlayerJoinSessionEvent(PlayerJoinSessionEvent event) {
+            GameSession session = event.getJoinedSession();
+            if (session.hasComponent(PlayersCP.class)) {
+                session.getComponent(PlayersCP.class).addPlayer(event.getWhoJoined().getUniqueId());
+            }
+        }
     }
-    
 }

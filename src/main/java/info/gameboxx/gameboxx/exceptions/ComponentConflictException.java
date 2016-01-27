@@ -23,28 +23,16 @@
  THE SOFTWARE.
  */
 
-package info.gameboxx.gameboxx.game;
+package info.gameboxx.gameboxx.exceptions;
 
-import java.util.Set;
-
-import info.gameboxx.gameboxx.exceptions.DependencyNotFoundException;
+import info.gameboxx.gameboxx.components.internal.GameComponent;
 
 /**
- * @author Msrules123 (Matthew Smith)
- * 
+ * Thrown when validating components and the game has two conflicting components.
+ * @see GameComponent#validate()
  */
-public interface HardDependable {
-	
-	/**
-	 * @return The set of hard dependencies individual to each class.
-	 */
-	Set<Class<? extends GameComponent>> getHardDependencySet();
-	
-	/**
-	 * @param clazz The class to search for in the list of the parent's subcomponents.
-	 * @return The GameComponent dependency if it is found.
-	 * @throws DependencyNotFoundException If the dependency is not found, throw this exception.
-	 */
-	GameComponent getHardDependency(Class<? extends GameComponent> clazz) throws DependencyNotFoundException;
-
+public class ComponentConflictException extends Exception {
+	public ComponentConflictException(GameComponent component, Class<? extends GameComponent> conflict) {
+		super("The component " + component.getClass().getName() + " can not be used together with " + conflict.getName() + "!");
+	}
 }

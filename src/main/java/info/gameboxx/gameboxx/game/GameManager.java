@@ -25,7 +25,11 @@
 
 package info.gameboxx.gameboxx.game;
 
+import info.gameboxx.gameboxx.GameBoxx;
+import info.gameboxx.gameboxx.exceptions.ComponentConflictException;
+import info.gameboxx.gameboxx.exceptions.DependencyNotFoundException;
 import info.gameboxx.gameboxx.exceptions.GameAlreadyExistsException;
+import info.gameboxx.gameboxx.exceptions.OptionAlreadyExistsException;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.ArrayList;
@@ -49,7 +53,7 @@ public class GameManager {
      *         You can either register it under a different name
      *         Or you can call {@link #unregister(String)} and register it again.
      */
-    public void register(Game gameClass) throws GameAlreadyExistsException {
+    public void register(Game gameClass) throws GameAlreadyExistsException, ComponentConflictException, DependencyNotFoundException, OptionAlreadyExistsException {
         String name = gameClass.getName().trim().toLowerCase();
         if (games.containsKey(name)) {
             throw new GameAlreadyExistsException("Failed to register the game '" + name + "' because it's already registered.\n" +
@@ -58,12 +62,14 @@ public class GameManager {
 
         //Add components and validate them.
         gameClass.addComponents();
-        //TODO: Throw exceptions when validation fails.
+        gameClass.registerSetupOptions();
         gameClass.validate();
 
         //Registered successfully!
         games.put(name, gameClass);
         gameClass.loadArenas();
+
+        GameBoxx.get().log("Successfully registered the game '" + gameClass.getName() + "'!");
     }
 
     /**
@@ -72,7 +78,7 @@ public class GameManager {
      * @param name The name of the game to unregister.
      */
     public void unregister(String name) {
-        name.trim().toLowerCase();
+        name = name.trim().toLowerCase();
         if (games.containsKey(name)) {
             //TODO: Unregister all arenas and all sessions..
             games.remove(name);
@@ -86,7 +92,7 @@ public class GameManager {
      * @return The game for the specified name or {@code null} if there is no game with the specified name.
      */
     public Game getGame(String name) {
-        name.trim().toLowerCase();
+        name = name.trim().toLowerCase();
         return games.get(name);
     }
 

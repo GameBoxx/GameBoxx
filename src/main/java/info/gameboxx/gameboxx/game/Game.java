@@ -26,12 +26,19 @@
 package info.gameboxx.gameboxx.game;
 
 import info.gameboxx.gameboxx.GameBoxx;
+import info.gameboxx.gameboxx.components.internal.ComponentHolder;
+import info.gameboxx.gameboxx.components.internal.GameComponent;
 import info.gameboxx.gameboxx.exceptions.ArenaAlreadyExistsException;
+import info.gameboxx.gameboxx.exceptions.ComponentConflictException;
+import info.gameboxx.gameboxx.exceptions.DependencyNotFoundException;
+import info.gameboxx.gameboxx.exceptions.OptionAlreadyExistsException;
+import info.gameboxx.gameboxx.setup.OptionData;
 import info.gameboxx.gameboxx.util.Utils;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -44,11 +51,13 @@ import java.util.UUID;
  * @see info.gameboxx.gameboxx.components
  */
 //TODO: Make a sub class for GameComponent without the deepCopy method and extend that because we don't wanna confuse people with having to add a deepCopy method.
-public abstract class Game extends GameComponent {
+public abstract class Game extends ComponentHolder {
 
     protected GameBoxx gb;
     protected String name;
     protected JavaPlugin plugin;
+
+    private Map<String, OptionData> setupOptions = new HashMap<String, OptionData>();
 
     private File arenaDir;
     private Map<String, Arena> arenas = new HashMap<String, Arena>();
@@ -59,7 +68,6 @@ public abstract class Game extends GameComponent {
      * @param name The name of the game like for example Spleef.
      */
     public Game(JavaPlugin plugin, String name) {
-        super(null);
         gb = GameBoxx.get();
 
         this.name = name;
@@ -75,7 +83,7 @@ public abstract class Game extends GameComponent {
      * Create a class like SpleefSession and extend from GameSession and then do return new SpleefSession(this, sessionUID);
      * @return GameSession
      */
-    public abstract GameSession getNewGameSession(UUID sessionUID);
+    public abstract GameSession getNewGameSession(Arena arena, UUID sessionUID);
 
     /**
      * Override this method and inside the method body you will add all your components.
@@ -87,8 +95,44 @@ public abstract class Game extends GameComponent {
      * It will check for dependencies and conflicts and such.
      * If there is any validation error the game won't be registered and an exception will be thrown by the {@link GameManager#register(Game)} method.
      */
-    public void validate() {
-        //TODO: Implement this..
+    public void validate() throws DependencyNotFoundException, ComponentConflictException {
+        for (GameComponent component : getComponents().values()) {
+            component.validate();
+        }
+    }
+
+    /**
+     * Register a new setup option.
+     * This is used for components to register options that have to be set per arena.
+     * Arenas will fail to create sessions if not all the options have been set up correctly.
+
+     * @throws OptionAlreadyExistsException When an option with the specified name is already registered.
+     */
+    public void registerSetupOption(OptionData option) throws OptionAlreadyExistsException {
+        String name = option.getName().trim().toLowerCase();
+        if (setupOptions.containsKey(option.toString())) {
+            throw new OptionAlreadyExistsException(name);
+        }
+        setupOptions.put(name, option);
+    }
+
+    /**
+     * Go through all the components and register setup options.
+     * This method is called when registering a game using {@link GameManager#register(Game)}
+     * @throws OptionAlreadyExistsException When a component tries to register an option with a name that is already used by another component.
+     */
+    public void registerSetupOptions() throws OptionAlreadyExistsException {
+        for (GameComponent component : getComponents().values()) {
+            component.registerOptions();
+        }
+    }
+
+    /**
+     * Get a map with all the setup options.
+     * @return Map with setup options where the key is the name and the value is the {@link OptionData}.
+     */
+    public Map<String, OptionData> getSetupOptions() {
+        return setupOptions;
     }
 
     /**
@@ -102,7 +146,7 @@ public abstract class Game extends GameComponent {
         int count = 0;
         for (Map.Entry<String, File> entry : configFiles.entrySet()) {
             YamlConfiguration arenaCfg = YamlConfiguration.loadConfiguration(entry.getValue());
-            Arena arena = new Arena(this, arenaCfg.getDefaultSection());
+            Arena arena = new Arena(this, entry.getValue(), arenaCfg);
             if (arena.getName() == null || arena.getName().trim().isEmpty()) {
                 gb.error("No valid arena name found while trying to load the arena from '" + entry.getKey() + ".yml'\n" +
                         "Please check your configuration for that arena.");
@@ -114,24 +158,32 @@ public abstract class Game extends GameComponent {
                         "Make sure you don't have two arenas with the same name!");
                 continue;
             }
+            arena.loadOptions();
             arenas.put(name, arena);
             count++;
         }
-        gb.log("Loaded in " + count + " arenas for " + name + "!");
     }
 
     /**
      * Create/Register a new {@link Arena} with the specified name.
      * @return The created {@link Arena} instance.
      * @throws ArenaAlreadyExistsException If an arena with the specified name already exists.
+     * @throws IOException When failing to create a new config file for the arena.
      */
-    public Arena createArena(ArenaType type, String arenaName) throws ArenaAlreadyExistsException {
+    public Arena createArena(ArenaType type, String arenaName) throws ArenaAlreadyExistsException, IOException {
         if (arenas.containsKey(arenaName.trim().toLowerCase())) {
             throw new ArenaAlreadyExistsException("An arena with the name " + arenaName + " already exists!");
         }
-        Arena arena = new Arena(this, type, name);
+        File configFile = new File(arenaDir, arenaName + ".yml");
+        if (configFile.exists()) {
+            throw new ArenaAlreadyExistsException("An arena with the name " + arenaName + " already exists!");
+        }
+        YamlConfiguration config = YamlConfiguration.loadConfiguration(configFile);
+
+        Arena arena = new Arena(this, configFile, config, type, name);
+        arena.loadOptions();
+        arena.forceSave();
         arenas.put(name, arena);
-        //TODO: Save..
         return arena;
     }
 
@@ -156,6 +208,13 @@ public abstract class Game extends GameComponent {
     }
 
     /**
+     * @return
+     */
+    public Map<String, Arena> getArenas() {
+        return arenas;
+    }
+
+    /**
      * Get the name/type for this game. For example Spleef.
      * @return The name of the game.
      */
@@ -169,5 +228,13 @@ public abstract class Game extends GameComponent {
      */
     public JavaPlugin getPlugin() {
         return plugin;
+    }
+
+    /**
+     * Get the {@link GameBoxx} API.
+     * @return The {@link GameBoxx} plugin instance.
+     */
+    public GameBoxx getAPI() {
+        return gb;
     }
 }

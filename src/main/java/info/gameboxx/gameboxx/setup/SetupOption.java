@@ -23,12 +23,23 @@
  THE SOFTWARE.
  */
 
-package info.gameboxx.gameboxx.game;
+package info.gameboxx.gameboxx.setup;
 
-/**
- * @author Msrules123 (Matthew Smith)
- * 
- */
-public interface Conflictable {
+public abstract class SetupOption {
 
+    protected String name;
+    protected String description;
+
+    public SetupOption(String name, String description) {
+        this.name = name;
+        this.description = description;
+    }
+
+    public abstract Object getValue();
+
+    public abstract SetupType getType();
+
+    public String getName() {
+        return name;
+    }
 }

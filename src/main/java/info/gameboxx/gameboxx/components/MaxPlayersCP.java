@@ -25,91 +25,81 @@
 
 package info.gameboxx.gameboxx.components;
 
-import java.util.HashSet;
-import java.util.Set;
-
+import info.gameboxx.gameboxx.components.internal.GameComponent;
+import info.gameboxx.gameboxx.events.PlayerJoinSessionEvent;
+import info.gameboxx.gameboxx.exceptions.OptionAlreadyExistsException;
+import info.gameboxx.gameboxx.game.Game;
+import info.gameboxx.gameboxx.game.GameSession;
+import info.gameboxx.gameboxx.setup.OptionData;
+import info.gameboxx.gameboxx.setup.SetupType;
+import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
-import info.gameboxx.gameboxx.events.PlayerJoinSessionEvent;
-import info.gameboxx.gameboxx.exceptions.DependencyNotFoundException;
-import info.gameboxx.gameboxx.game.GameComponent;
-import info.gameboxx.gameboxx.game.HardDependable;
-import info.gameboxx.gameboxx.game.LeaveReason;
-
 /**
- * @author Msrules123 (Matthew Smith)
- * 
+ * Adding this component adds a player limit for the game session.
+ * When the limit is reached players wont be able to join anymore.
+ * If the game has a countdown it will reduce the countdown to 5 seconds if it has more than 5 seconds remaining.
  */
-public class MaxPlayersCP extends GameComponent implements HardDependable, Listener {
-	
-	private static final Set<Class<? extends GameComponent>> HARD_DEPENDENCIES = getHardDependencies();
+public class MaxPlayersCP extends GameComponent {
 
-	private int maximumPlayers;
+	private int max;
 	
 	/**
-	 * @param maximumPlayers The maximum amount of players allowed
+	 * @see GameComponent
+	 * @param max The default value for the maximum amount of players allowed.
 	 */
-	public MaxPlayersCP(GameComponent parent, int maximumPlayers) {
-		super(parent);
-		this.maximumPlayers = maximumPlayers;
-		PLUGIN_MANAGER.registerEvents(this, getAPI());
+	public MaxPlayersCP(Game game, int max) {
+		super(game);
+		addDependency(PlayersCP.class);
+
+		this.max = max;
+		Bukkit.getPluginManager().registerEvents(new Events(), getAPI());
 	}
 
-	/**
-	 * @see {@link HardDependable}
-	 */
+    @Override
+    public void registerOptions() throws OptionAlreadyExistsException {
+        game.registerSetupOption(new OptionData(SetupType.INT, "maxPlayers", "The maximum amount of players allowed in the arena.", max));
+    }
+
 	@Override
-	public Set<Class<? extends GameComponent>> getHardDependencySet() {
-		return HARD_DEPENDENCIES;
+	public MaxPlayersCP newInstance(GameSession session) {
+		return (MaxPlayersCP) new MaxPlayersCP(getGame(), max).setSession(session);
 	}
 
-	/**
-	 * @see {@link HardDependable}
-	 */
-	@Override
-	public GameComponent getHardDependency(Class<? extends GameComponent> clazz)
-			throws DependencyNotFoundException {
-		GameComponent parent = getParent();
-		if (parent.hasComponent(clazz)) {
-			return parent.getComponent(clazz);
-		} else {
-			throw new DependencyNotFoundException(this, clazz);
-		}
-	}
+    /**
+     * Get the max player count allowed in the arena.
+     * @return The maximum player amount allowed.
+     */
+    public int getMax() {
+        return max;
+    }
 
-	/**
-	 * @see {@link GameComponent}
-	 */
-	@Override
-	public MaxPlayersCP deepCopy() {
-		MaxPlayersCP clone = new MaxPlayersCP(getParent(), this.maximumPlayers);
-		clone.copyChildComponents(this, clone);
-		return clone;
-	}
-	
-	private static Set<Class<? extends GameComponent>> getHardDependencies() {
-		Set<Class<? extends GameComponent>> hardDependencies = new HashSet<Class<? extends GameComponent>>();
-		hardDependencies.add(PlayersCP.class);
-		return hardDependencies;
-	}
-	/**
-	 * Listens for the {@link PlayerJoinSessionEvent} to remove any player exceeding the limit from it's
-	 * GameComponent parent.
-	 * @param event The event to listen to.
-	 */
-	@EventHandler
-	public void onPlayerJoinSessionEvent(PlayerJoinSessionEvent event) {
-		if (event.getJoinedSession().equals(getParent())) {
-			try {
-				PlayersCP players = (PlayersCP) getHardDependency(PlayersCP.class);
-				if (players.getPlayers().size() > this.maximumPlayers) {
-					players.removePlayer(event.getWhoJoined().getUniqueId(), LeaveReason.KICK);
+	private static class Events implements Listener {
+		@EventHandler
+		private void onJoin(PlayerJoinSessionEvent event) {
+			GameSession session = event.getJoinedSession();
+			if (!session.hasComponent(MaxPlayersCP.class)) {
+				return;
+			}
+
+			int maxPlayers = session.getComponent(MaxPlayersCP.class).max;
+			int playerCount = session.getComponent(PlayersCP.class).getPlayers().size();
+
+			if (playerCount >= maxPlayers) {
+				//Prevent joining.
+				//TODO: Cancel event.
+
+			} else if (playerCount + 1 >= maxPlayers) {
+				//Reduce countdown when max players have joined.
+				if (session.hasComponent(CountdownGC.class)) {
+					CountdownGC countdown = session.getComponent(CountdownGC.class);
+					//TODO: No magic number add config option.
+					if (countdown.getCountdown() > 5) {
+						countdown.setCountdown(5);
+					}
 				}
-			} catch (DependencyNotFoundException ex) {
-				ex.printStackTrace();
 			}
 		}
 	}
-
 }

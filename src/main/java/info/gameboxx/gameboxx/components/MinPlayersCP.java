@@ -25,72 +25,42 @@
 
 package info.gameboxx.gameboxx.components;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import info.gameboxx.gameboxx.exceptions.DependencyNotFoundException;
-import info.gameboxx.gameboxx.game.GameComponent;
-import info.gameboxx.gameboxx.game.HardDependable;
+import info.gameboxx.gameboxx.exceptions.OptionAlreadyExistsException;
+import info.gameboxx.gameboxx.game.Game;
+import info.gameboxx.gameboxx.components.internal.GameComponent;
+import info.gameboxx.gameboxx.game.GameSession;
+import info.gameboxx.gameboxx.setup.OptionData;
+import info.gameboxx.gameboxx.setup.SetupType;
 
 /**
- * @author Msrules123 (Matthew Smith)
+ * Adding this component will make it so the game wont start till the minimum player count is reached.
+ * If the game has no countdown it will start as soon as the minimum player count is reached.
  */
 // TODO: Start game when player count is reached (How do I get to the game?)
+public class MinPlayersCP extends GameComponent {
 
-public class MinPlayersCP extends GameComponent implements HardDependable {
-	
-	private static final Set<Class<? extends GameComponent>> HARD_DEPENDENCIES = getHardDependencies();
+	private int min;
 
-	private int minimumPlayers;
-	
 	/**
-	 * @see {@link GameComponent}
-	 */
-	public MinPlayersCP(GameComponent parent, int minimumPlayers) {
-		super(parent);
-		this.minimumPlayers = minimumPlayers;
+	 * @see GameComponent
+	 * @param min The default value for the minimum amount of players required to start the game.
+     */
+	public MinPlayersCP(Game game, int min) {
+		super(game);
+		addDependency(PlayersCP.class);
+
+		this.min = min;
 	}
 
-	/**
-	 * @see {@link GameComponent}
-	 */
 	@Override
-	public MinPlayersCP deepCopy() {
-		MinPlayersCP clone = new MinPlayersCP(getParent(), this.minimumPlayers);
-		copyChildComponents(this, clone);
-		return clone;
+	public void registerOptions() throws OptionAlreadyExistsException {
+		game.registerSetupOption(new OptionData(SetupType.INT, "minPlayers", "The minimum amount of players required to start a game.", min));
 	}
 
-	/**
-	 * @see {@link HardDependable}
-	 */
 	@Override
-	public Set<Class<? extends GameComponent>> getHardDependencySet() {
-		return HARD_DEPENDENCIES;
-	}
-
-	/**
-	 * @see {@link HardDependable}
-	 */
-	@Override
-	public GameComponent getHardDependency(Class<? extends GameComponent> clazz) 
-			throws DependencyNotFoundException {
-		GameComponent parent = getParent();
-		if (parent.hasComponent(clazz)) {
-			return parent.getComponent(clazz);
-		} else {
-			throw new DependencyNotFoundException(this, clazz);
-		}
-	}
-	
-	/**
-	 * Gets the set implementation of this class's hard dependencies.
-	 * @return The set implementation.
-	 */
-	private static Set<Class<? extends GameComponent>> getHardDependencies() {
-		Set<Class<? extends GameComponent>> hardDependencies = new HashSet<Class<? extends GameComponent>>();
-		hardDependencies.add(PlayersCP.class);
-		return hardDependencies;
+	public MinPlayersCP newInstance(GameSession session) {
+		return (MinPlayersCP) new MinPlayersCP(getGame(), min).setSession(session);
 	}
 	
 	/**
@@ -99,8 +69,7 @@ public class MinPlayersCP extends GameComponent implements HardDependable {
 	 * @throws DependencyNotFoundException If the hard dependency was not found.
 	 */
 	public boolean hasMinimumPlayers() throws DependencyNotFoundException {
-		PlayersCP players = (PlayersCP) getHardDependency(PlayersCP.class);
-		return (players.getPlayers().size() >= this.minimumPlayers);
+		return getDependency(PlayersCP.class).getPlayers().size() >= this.min;
 	}
 
 }

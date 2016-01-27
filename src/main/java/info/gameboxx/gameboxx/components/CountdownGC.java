@@ -25,13 +25,18 @@
 
 package info.gameboxx.gameboxx.components;
 
-import info.gameboxx.gameboxx.game.GameComponent;
+import info.gameboxx.gameboxx.exceptions.OptionAlreadyExistsException;
+import info.gameboxx.gameboxx.game.Game;
+import info.gameboxx.gameboxx.components.internal.GameComponent;
+import info.gameboxx.gameboxx.game.GameSession;
 import info.gameboxx.gameboxx.util.SoundEffect;
-import info.gameboxx.gameboxx.util.Utils;
+import info.gameboxx.gameboxx.util.Str;
+import org.bukkit.entity.Player;
 
 /**
  * Adding this component will add an countdown before the game starts.
  */
+//TODO: Method to start/stop/reset the countdown.
 public class CountdownGC extends GameComponent {
 
     private int countdown = 30;
@@ -43,8 +48,7 @@ public class CountdownGC extends GameComponent {
     private String message;
 
     /**
-     * Creates a new countdown component.
-     * @param parent The parent {@link GameComponent}.
+     * @see GameComponent
      * @param seconds The amount of seconds to count down from.
      * @param mainInterval The interval to send a message and play a sound. (Recommended at 10)
      * @param startSecondInterval At which time the second countdown starts.
@@ -52,8 +56,10 @@ public class CountdownGC extends GameComponent {
      * @param message The message to broadcast when the countdown triggers.
      *                Use the {seconds} placeholder in the message for displaying the time!
      */
-    public CountdownGC(GameComponent parent, int seconds, int mainInterval, int startSecondInterval, SoundEffect sound, String message) {
-        super(parent);
+    public CountdownGC(Game game, int seconds, int mainInterval, int startSecondInterval, SoundEffect sound, String message) {
+        super(game);
+        addDependency(PlayersCP.class);
+
         this.seconds = seconds;
         this.countdown = seconds;
         this.mainInterval = mainInterval;
@@ -62,26 +68,45 @@ public class CountdownGC extends GameComponent {
         this.message = message;
     }
 
-    /**
-     * Creates a new countdown component with the default settings.
-     * @param parent The parent {@link GameComponent}.
-     */
-    public CountdownGC(GameComponent parent) {
-        super(parent);
-        //TODO: Get defaults from config. (Not like below that was just for testing) There should be a separate config for defaults.
-        /**
-        this.seconds = getAPI().getCfg().arena__defaults__countdown__time;
-        this.countdown = seconds;
-        this.mainInterval = getAPI().getCfg().arena__defaults__countdown__interval;
-        this.startSecondInterval = getAPI().getCfg().arena__defaults__countdown__startSecondInterval;
-        this.sound = new SoundEffect(Sound.valueOf(getAPI().getCfg().arena__defaults__countdown__sound),
-                (float)getAPI().getCfg().arena__defaults__countdown__soundVolume, (float)getAPI().getCfg().arena__defaults__countdown__soundPitch);
-        this.message = GameMsg.COUNTDOWN.getMsg();
-         */
+    @Override
+    public void registerOptions() throws OptionAlreadyExistsException {}
+
+    @Override
+    public CountdownGC newInstance(GameSession session) {
+        return (CountdownGC) new CountdownGC(getGame(), seconds, mainInterval, startSecondInterval, sound, message).setSession(session);
     }
 
-    public void count(int seconds) {
-        sound.play(Utils.getPlayerList(getParent().getComponent(PlayersCP.class).getPlayers()));
+    public void count() {
+        if (countdown <= 0) {
+            countdown = 0;
+            //TODO: Start the session.
+            return;
+        }
+        if (countdown % mainInterval == 0 || countdown <= startSecondInterval) {
+            sound.play(getDependency(PlayersCP.class).getOnlinePlayers());
+            //TODO: Have a message component or put this somewhere else.
+            for (Player player : getDependency(PlayersCP.class).getOnlinePlayers()) {
+                player.sendMessage(Str.color(message));
+            }
+        }
+        countdown--;
+    }
+
+    /**
+     * Get the remaining countdown time in seconds.
+     * @return The remaining time on the countdown in seconds.
+     */
+    public int getCountdown() {
+        return countdown;
+    }
+
+    /**
+     * Force override the countdown time.
+     * There is no need to manually decrease the countdown time unless you want to force decrease it.
+     * @param countdown The countdown time in seconds to set.
+     */
+    public void setCountdown(int countdown) {
+        this.countdown = countdown;
     }
 
     /**
@@ -167,13 +192,5 @@ public class CountdownGC extends GameComponent {
      */
     public void setMessage(String message) {
         this.message = message;
-    }
-
-    /** @see GameComponent#deepCopy() */
-    @Override
-    public CountdownGC deepCopy() {
-        CountdownGC clone = new CountdownGC(getParent(), seconds, mainInterval, startSecondInterval, sound, message);
-        copyChildComponents(this, clone);
-        return clone;
     }
 }

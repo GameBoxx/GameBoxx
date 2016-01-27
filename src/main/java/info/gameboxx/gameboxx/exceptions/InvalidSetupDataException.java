@@ -23,24 +23,15 @@
  THE SOFTWARE.
  */
 
-package info.gameboxx.gameboxx.game;
+package info.gameboxx.gameboxx.exceptions;
 
-import java.util.Set;
+import info.gameboxx.gameboxx.setup.SetupType;
 
 /**
- * @author Msrules123 (Matthew Smith)
- * 
+ * Thrown when trying to register a setup option but another component already registerd an option with the same name.
  */
-public interface SoftDependable {
-	
-	/**
-	 * @return The set of soft dependencies.
-	 */
-	Set<Class<? extends GameComponent>> getSoftDependencySet();
-	
-	/**
-	 * @return The soft dependency as defined by the class name. If not found, this will return null.
-	 */
-	GameComponent getSoftDependency(Class<? extends GameComponent> clazz);
-
+public class InvalidSetupDataException extends Exception {
+    public InvalidSetupDataException(SetupType expectedType, String dataFound, String option) {
+        super("Failed to load arena data! Expected a '" + expectedType.toString() + "' value but found '" + dataFound + "' for option '" + option + "'.");
+    }
 }
