@@ -25,15 +25,13 @@
 
 package info.gameboxx.gameboxx.components;
 
-import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
 
-import info.gameboxx.gameboxx.GameBoxx;
 import info.gameboxx.gameboxx.events.PlayerJoinSessionEvent;
 import info.gameboxx.gameboxx.exceptions.DependencyNotFoundException;
 import info.gameboxx.gameboxx.exceptions.OptionAlreadyExistsException;
 import info.gameboxx.gameboxx.game.Game;
+import info.gameboxx.gameboxx.components.internal.ComponentListener;
 import info.gameboxx.gameboxx.components.internal.GameComponent;
 import info.gameboxx.gameboxx.game.GameSession;
 import info.gameboxx.gameboxx.setup.OptionData;
@@ -46,6 +44,7 @@ import info.gameboxx.gameboxx.setup.SetupType;
 // TODO: Start game when player count is reached (How do I get to the game?)
 public class MinPlayersCP extends GameComponent {
 
+	private static final Events EVENT = new Events();
 	private int min;
 
 	/**
@@ -58,7 +57,7 @@ public class MinPlayersCP extends GameComponent {
 		
 		this.min = min;
 		
-		Events.register(getAPI());
+		EVENT.register(getAPI());
 	}
 
 	@Override
@@ -91,18 +90,7 @@ public class MinPlayersCP extends GameComponent {
 	/**
 	 * Listens for events relating to this component.
 	 */
-	private static class Events implements Listener {
-		
-		private Events() {}
-		
-		private static boolean isRegistered = false;
-		
-		public static void register(GameBoxx api) {
-			if (!(isRegistered)) {
-				Bukkit.getPluginManager().registerEvents(new Events(), api);
-				isRegistered = true;
-			}
-		}
+	private static class Events extends ComponentListener {
 		
 		@EventHandler
 		public void onPlayerJoinSessionEvent(PlayerJoinSessionEvent event) {

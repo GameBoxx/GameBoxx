@@ -25,7 +25,7 @@
 
 package info.gameboxx.gameboxx.components;
 
-import info.gameboxx.gameboxx.GameBoxx;
+import info.gameboxx.gameboxx.components.internal.ComponentListener;
 import info.gameboxx.gameboxx.components.internal.GameComponent;
 import info.gameboxx.gameboxx.events.PlayerJoinSessionEvent;
 import info.gameboxx.gameboxx.exceptions.OptionAlreadyExistsException;
@@ -34,9 +34,7 @@ import info.gameboxx.gameboxx.game.GameSession;
 import info.gameboxx.gameboxx.setup.OptionData;
 import info.gameboxx.gameboxx.setup.SetupType;
 
-import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
 
 /**
  * Adding this component adds a player limit for the game session.
@@ -45,6 +43,7 @@ import org.bukkit.event.Listener;
  */
 public class MaxPlayersCP extends GameComponent {
 
+	private static final Events EVENT = new Events();
 	private int max;
 	
 	/**
@@ -56,7 +55,7 @@ public class MaxPlayersCP extends GameComponent {
 		addDependency(PlayersCP.class);
 
 		this.max = max;
-		Events.register(getAPI());
+		EVENT.register(getAPI());
 	}
 
     @Override
@@ -77,18 +76,7 @@ public class MaxPlayersCP extends GameComponent {
         return (int)getOption("maxPlayers");
     }
 
-	private static class Events implements Listener {
-		
-		private Events() {}
-		
-		private static boolean isRegistered = false;
-		
-		public static void register(GameBoxx api) {
-			if (!(isRegistered)) {
-				Bukkit.getPluginManager().registerEvents(new Events(), api);
-				isRegistered = true;
-			}
-		}
+	private static class Events extends ComponentListener {
 		
 		@EventHandler
 		private void onJoin(PlayerJoinSessionEvent event) {

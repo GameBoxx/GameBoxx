@@ -26,6 +26,7 @@
 package info.gameboxx.gameboxx.components;
 
 import info.gameboxx.gameboxx.GameBoxx;
+import info.gameboxx.gameboxx.components.internal.ComponentListener;
 import info.gameboxx.gameboxx.components.internal.GameComponent;
 import info.gameboxx.gameboxx.events.PlayerJoinSessionEvent;
 import info.gameboxx.gameboxx.exceptions.OptionAlreadyExistsException;
@@ -50,13 +51,14 @@ import java.util.UUID;
  */
 public class PlayersCP extends GameComponent {
 
+	private static final Events EVENT = new Events();
     private List<UUID> players = new ArrayList<UUID>();
     private List<UUID> removedPlayers = new ArrayList<UUID>();
 
     public PlayersCP(Game game) {
         super(game);
         
-        Events.register(getAPI());
+        EVENT.register(getAPI());
     }
 
     @Override
@@ -124,18 +126,7 @@ public class PlayersCP extends GameComponent {
         removedPlayers.clear();
     }
 
-    private static class Events implements Listener {
-    	
-    	private Events() {}
-		
-		private static boolean isRegistered = false;
-		
-		public static void register(GameBoxx api) {
-			if (!(isRegistered)) {
-				Bukkit.getPluginManager().registerEvents(new Events(), api);
-				isRegistered = true;
-			}
-		}
+    private static class Events extends ComponentListener {
 
         @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
         public void onPlayerJoinSessionEvent(PlayerJoinSessionEvent event) {
