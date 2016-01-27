@@ -25,6 +25,7 @@
 
 package info.gameboxx.gameboxx.components;
 
+import info.gameboxx.gameboxx.GameBoxx;
 import info.gameboxx.gameboxx.components.internal.GameComponent;
 import info.gameboxx.gameboxx.events.PlayerJoinSessionEvent;
 import info.gameboxx.gameboxx.exceptions.OptionAlreadyExistsException;
@@ -32,6 +33,7 @@ import info.gameboxx.gameboxx.game.Game;
 import info.gameboxx.gameboxx.game.GameSession;
 import info.gameboxx.gameboxx.setup.OptionData;
 import info.gameboxx.gameboxx.setup.SetupType;
+
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -54,7 +56,7 @@ public class MaxPlayersCP extends GameComponent {
 		addDependency(PlayersCP.class);
 
 		this.max = max;
-		Bukkit.getPluginManager().registerEvents(new Events(), getAPI());
+		Events.register(getAPI());
 	}
 
     @Override
@@ -76,6 +78,18 @@ public class MaxPlayersCP extends GameComponent {
     }
 
 	private static class Events implements Listener {
+		
+		private Events() {}
+		
+		private static boolean isRegistered = false;
+		
+		public static void register(GameBoxx api) {
+			if (!(isRegistered)) {
+				Bukkit.getPluginManager().registerEvents(new Events(), api);
+				isRegistered = true;
+			}
+		}
+		
 		@EventHandler
 		private void onJoin(PlayerJoinSessionEvent event) {
 			GameSession session = event.getJoinedSession();
@@ -101,5 +115,6 @@ public class MaxPlayersCP extends GameComponent {
 				}
 			}
 		}
+		
 	}
 }

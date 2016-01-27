@@ -25,9 +25,11 @@
 
 package info.gameboxx.gameboxx.components;
 
+import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
+import info.gameboxx.gameboxx.GameBoxx;
 import info.gameboxx.gameboxx.events.PlayerJoinSessionEvent;
 import info.gameboxx.gameboxx.exceptions.DependencyNotFoundException;
 import info.gameboxx.gameboxx.exceptions.OptionAlreadyExistsException;
@@ -53,7 +55,10 @@ public class MinPlayersCP extends GameComponent {
 	public MinPlayersCP(Game game, int min) {
 		super(game);
 		addDependency(PlayersCP.class);
+		
 		this.min = min;
+		
+		Events.register(getAPI());
 	}
 
 	@Override
@@ -87,6 +92,17 @@ public class MinPlayersCP extends GameComponent {
 	 * Listens for events relating to this component.
 	 */
 	private static class Events implements Listener {
+		
+		private Events() {}
+		
+		private static boolean isRegistered = false;
+		
+		public static void register(GameBoxx api) {
+			if (!(isRegistered)) {
+				Bukkit.getPluginManager().registerEvents(new Events(), api);
+				isRegistered = true;
+			}
+		}
 		
 		@EventHandler
 		public void onPlayerJoinSessionEvent(PlayerJoinSessionEvent event) {

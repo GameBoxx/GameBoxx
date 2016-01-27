@@ -25,6 +25,7 @@
 
 package info.gameboxx.gameboxx.components;
 
+import info.gameboxx.gameboxx.GameBoxx;
 import info.gameboxx.gameboxx.components.internal.GameComponent;
 import info.gameboxx.gameboxx.events.PlayerJoinSessionEvent;
 import info.gameboxx.gameboxx.exceptions.OptionAlreadyExistsException;
@@ -32,6 +33,7 @@ import info.gameboxx.gameboxx.game.Game;
 import info.gameboxx.gameboxx.game.GameSession;
 import info.gameboxx.gameboxx.game.LeaveReason;
 import info.gameboxx.gameboxx.util.Utils;
+
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -54,7 +56,7 @@ public class PlayersCP extends GameComponent {
     public PlayersCP(Game game) {
         super(game);
         
-        Bukkit.getPluginManager().registerEvents(new Events(), getAPI());
+        Events.register(getAPI());
     }
 
     @Override
@@ -123,6 +125,17 @@ public class PlayersCP extends GameComponent {
     }
 
     private static class Events implements Listener {
+    	
+    	private Events() {}
+		
+		private static boolean isRegistered = false;
+		
+		public static void register(GameBoxx api) {
+			if (!(isRegistered)) {
+				Bukkit.getPluginManager().registerEvents(new Events(), api);
+				isRegistered = true;
+			}
+		}
 
         @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
         public void onPlayerJoinSessionEvent(PlayerJoinSessionEvent event) {
