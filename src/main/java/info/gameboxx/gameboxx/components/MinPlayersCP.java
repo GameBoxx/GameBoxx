@@ -25,6 +25,10 @@
 
 package info.gameboxx.gameboxx.components;
 
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+
+import info.gameboxx.gameboxx.events.PlayerJoinSessionEvent;
 import info.gameboxx.gameboxx.exceptions.DependencyNotFoundException;
 import info.gameboxx.gameboxx.exceptions.OptionAlreadyExistsException;
 import info.gameboxx.gameboxx.game.Game;
@@ -49,7 +53,6 @@ public class MinPlayersCP extends GameComponent {
 	public MinPlayersCP(Game game, int min) {
 		super(game);
 		addDependency(PlayersCP.class);
-
 		this.min = min;
 	}
 
@@ -70,6 +73,28 @@ public class MinPlayersCP extends GameComponent {
 	 */
 	public boolean hasMinimumPlayers() throws DependencyNotFoundException {
 		return getDependency(PlayersCP.class).getPlayers().size() >= this.min;
+	}
+	
+	/**
+	 * Listens for events relating to this component.
+	 */
+	private static class Events implements Listener {
+		
+		@EventHandler
+		public void onPlayerJoinSessionEvent(PlayerJoinSessionEvent event) {
+			try {
+				if (event.getJoinedSession().hasComponent(MinPlayersCP.class)) {
+					MinPlayersCP players = (MinPlayersCP) event.getJoinedSession().getComponent(MinPlayersCP.class);
+					if (event.getJoinedSession().hasComponent(CountdownGC.class) && players.hasMinimumPlayers()) {
+						CountdownGC countdown = (CountdownGC) event.getJoinedSession().getComponent(CountdownGC.class);
+						// TODO: Implement the when the new Thread is created
+					}
+				}
+			} catch (DependencyNotFoundException ex) {
+				ex.printStackTrace();
+			}
+		}
+		
 	}
 
 }
