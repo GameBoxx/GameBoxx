@@ -39,9 +39,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * Represents a game instance.
@@ -208,10 +206,19 @@ public abstract class Game extends ComponentHolder {
     }
 
     /**
-     * @return
+     * Get all the registered arenas for this game.
+     * @return Map with arenas where the key is the lowercase arena name and the value is the arena instance.
      */
     public Map<String, Arena> getArenas() {
         return arenas;
+    }
+
+    /**
+     * Get a list with all the registered arena names.
+     * @return List of arena names.
+     */
+    public List<String> getArenaNames() {
+        return new ArrayList<String>(arenas.keySet());
     }
 
     /**

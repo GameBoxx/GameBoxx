@@ -44,31 +44,31 @@ import info.gameboxx.gameboxx.setup.SetupType;
 // TODO: Start game when player count is reached (How do I get to the game?)
 public class MinPlayersCP extends GameComponent {
 
-	private static final Events EVENT = new Events();
-	private int min;
+    private static final Events EVENT = new Events();
+    private int min;
 
-	/**
-	 * @see GameComponent
-	 * @param min The default value for the minimum amount of players required to start the game.
+    /**
+     * @see GameComponent
+     * @param min The default value for the minimum amount of players required to start the game.
      */
-	public MinPlayersCP(Game game, int min) {
-		super(game);
-		addDependency(PlayersCP.class);
-		
-		this.min = min;
-		
-		EVENT.register(getAPI());
-	}
+    public MinPlayersCP(Game game, int min) {
+        super(game);
+        addDependency(PlayersCP.class);
+        
+        this.min = min;
+        
+        EVENT.register(getAPI());
+    }
 
-	@Override
-	public void registerOptions() throws OptionAlreadyExistsException {
-		game.registerSetupOption(new OptionData(SetupType.INT, "minPlayers", "The minimum amount of players required to start a game.", min));
-	}
+    @Override
+    public void registerOptions() throws OptionAlreadyExistsException {
+        game.registerSetupOption(new OptionData(SetupType.INT, "minPlayers", "The minimum amount of players required to start a game.", min));
+    }
 
-	@Override
-	public MinPlayersCP newInstance(GameSession session) {
-		return (MinPlayersCP) new MinPlayersCP(getGame(), min).setSession(session);
-	}
+    @Override
+    public MinPlayersCP newInstance(GameSession session) {
+        return (MinPlayersCP) new MinPlayersCP(getGame(), min).setSession(session);
+    }
 
     /**
      * Get the min player count required to start the game.
@@ -77,36 +77,31 @@ public class MinPlayersCP extends GameComponent {
     public int getMin() {
         return (int) getOption("minPlayers");
     }
-	
-	/**
-	 * Gets the boolean value by checking if the players are more than the set minimum player value.
-	 * @return The boolean value.
-	 * @throws DependencyNotFoundException If the hard dependency was not found.
-	 */
-	public boolean hasMinimumPlayers() throws DependencyNotFoundException {
-		return getDependency(PlayersCP.class).getPlayers().size() >= this.min;
-	}
-	
-	/**
-	 * Listens for events relating to this component.
-	 */
-	private static class Events extends ComponentListener {
-		
-		@EventHandler
-		public void onPlayerJoinSessionEvent(PlayerJoinSessionEvent event) {
-			try {
-				if (event.getJoinedSession().hasComponent(MinPlayersCP.class)) {
-					MinPlayersCP players = (MinPlayersCP) event.getJoinedSession().getComponent(MinPlayersCP.class);
-					if (event.getJoinedSession().hasComponent(CountdownGC.class) && players.hasMinimumPlayers()) {
-						CountdownGC countdown = (CountdownGC) event.getJoinedSession().getComponent(CountdownGC.class);
-						// TODO: Implement the when the new Thread is created
-					}
-				}
-			} catch (DependencyNotFoundException ex) {
-				ex.printStackTrace();
-			}
-		}
-		
-	}
+    
+    /**
+     * Gets the boolean value by checking if the players are more than the set minimum player value.
+     * @return The boolean value.
+     * @throws DependencyNotFoundException If the hard dependency was not found.
+     */
+    public boolean hasMinimumPlayers() {
+        return getDependency(PlayersCP.class).getPlayers().size() >= this.min;
+    }
+    
+    /**
+     * Listens for events relating to this component.
+     */
+    private static class Events extends ComponentListener {
+        
+        @EventHandler
+        public void onPlayerJoinSessionEvent(PlayerJoinSessionEvent event) {
+                if (event.getJoinedSession().hasComponent(MinPlayersCP.class)) {
+                    MinPlayersCP players = (MinPlayersCP) event.getJoinedSession().getComponent(MinPlayersCP.class);
+                    if (event.getJoinedSession().hasComponent(CountdownGC.class) && players.hasMinimumPlayers()) {
+                        event.getJoinedSession().getComponent(CountdownGC.class).startCountdown();
+                    }
+                }
+        }
+        
+    }
 
 }

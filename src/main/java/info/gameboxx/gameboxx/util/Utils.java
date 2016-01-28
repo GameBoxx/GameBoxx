@@ -25,9 +25,18 @@
 
 package info.gameboxx.gameboxx.util;
 
+import org.bukkit.Material;
+import org.bukkit.World;
+import org.bukkit.WorldCreator;
+import org.bukkit.WorldType;
+import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
+
 import java.io.File;
 import java.io.FilenameFilter;
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class Utils {
 
@@ -61,6 +70,106 @@ public class Utils {
         }
 
         return names;
+    }
+
+    /**
+     * Fixes the specified list of command arguments.
+     * It will combine arguments that are quoted with spaces.
+     * For example the following string: 'Hello there "you''re awesome"!'
+     * Would result in 0:Hello 1:there 2:You''re awesome 3:!
+     * @param args The list of arguments to fix.
+     * @return The modified array with arguments.
+     */
+    public static String[] fixCommandArgs(String[] args) {
+        StringBuilder builder = new StringBuilder();
+        for (int i = 0 ; i < args.length; i++) {
+            builder.append(args[i]);
+            if (i+1 < args.length) {
+                builder.append(" ");
+            }
+        }
+
+        List<String> newArgList = Str.splitQuotes(builder.toString());
+        return newArgList.toArray(new String[newArgList.size()]);
+    }
+
+
+    /**
+     * Gets a {@link WorldCreator} based on the specified string arguments.
+     * This does not actually create a world it just builds the generator and return it.
+     * You can then use {@link WorldCreator#createWorld()} to create the actual world.
+     * If any of the options are missing or if they are invalid it will set it to default. (default world, default type and no generator)
+     * <b>The options are:</b><ul>
+     *     <li>environment:{environment} (default, nether, end)</li>
+     *     <li>type:{type} (normal, amplified, flat, largebiomes)</li>
+     *     <li>generator:{plugin:generator} or just {plugin}</li>
+     *     <li>settings:{settings...} extra settings for the generator</li>
+     * </ul>
+     * @param name The name for the world to create.
+     * @param args The list of arguments to parse.
+     * @param startIndex The start index for the arguments to start parsing at.
+     * @return A new WorldCreator.
+     */
+    public static WorldCreator getWorldCreator(String name, String[] args, int startIndex) {
+        WorldCreator worldCreator = new WorldCreator(name);
+
+        if (args.length > startIndex) {
+            for (int i = startIndex; i < args.length; i++) {
+                String[] arg = args[i].split(":", 2);
+                if (arg.length < 2) {
+                    continue;
+                }
+                String key = arg[0].toLowerCase();
+                String val = arg[1].toLowerCase();
+
+                if (key.equals("environment") || key.equals("env") || key.equals("e")) {
+                    if (val.equals("default") || val.equals("normal")) {
+                        worldCreator.environment(World.Environment.NORMAL);
+                    } else if (val.equals("nether") || val.equals("hell")) {
+                        worldCreator.environment(World.Environment.NETHER);
+                    } else if (val.equals("end") || val.equals("theend")) {
+                        worldCreator.environment(World.Environment.THE_END);
+                    }
+                } else if (key.equals("worldtype") || key.equals("type") || key.equals("t") ||key.equals("wt")) {
+                    if (val.equals("default") || val.equals("normal")) {
+                        worldCreator.type(WorldType.NORMAL);
+                    } else if (val.equals("amplified") || val.equals("hills") || val.equals("mountains")) {
+                        worldCreator.type(WorldType.AMPLIFIED);
+                    } else if (val.equals("flat") || val.equals("creative")) {
+                        worldCreator.type(WorldType.FLAT);
+                    } else if (val.equals("largebiomes") || val.equals("bigbiomes") || val.equals("extremebiomes") || val.equals("bb") || val.equals("lb") || val.equals("eb")) {
+                        worldCreator.type(WorldType.LARGE_BIOMES);
+                    }
+                } else if (key.equals("generator") || key.equals("gen") || key.equals("g")) {
+                    worldCreator.generator(arg[1]);
+                } else if (key.equals("settings") || key.equals("set") || key.equals("s")) {
+                    worldCreator.generatorSettings(args[1]);
+                }
+            }
+        }
+
+        return worldCreator;
+    }
+
+    /**
+     * Get the highest block at the given x and z coordinate.
+     * It will work properly for the nether and such.
+     * Basically instead of starting from the top it will first scan down for the first empty block.
+     * From there on it will scan down for air and then return the first non air block.
+     * @param world The world to look in.
+     * @param x The x coordinate.
+     * @param z The z coordinate.
+     * @return The highest non air block respecting the nether ceiling.
+     */
+    public static Block getHighestBlockAt(World world, int x, int z) {
+        Block block = world.getBlockAt(x, world.getEnvironment() == World.Environment.NETHER ? 127 : 255, z);
+        while(block.getType() != Material.AIR && block.getY() > 0) {
+            block = block.getRelative(BlockFace.DOWN);
+        }
+        while(block.getType() == Material.AIR && block.getY() > 0) {
+            block = block.getRelative(BlockFace.DOWN);
+        }
+        return block;
     }
 
     /**

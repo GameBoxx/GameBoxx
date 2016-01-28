@@ -26,6 +26,12 @@
 package info.gameboxx.gameboxx.commands;
 
 import info.gameboxx.gameboxx.GameBoxx;
+import info.gameboxx.gameboxx.GameMsg;
+import info.gameboxx.gameboxx.config.messages.Param;
+import info.gameboxx.gameboxx.game.Arena;
+import info.gameboxx.gameboxx.game.Game;
+import info.gameboxx.gameboxx.util.Str;
+import info.gameboxx.gameboxx.util.Utils;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -40,8 +46,27 @@ public class SelectCmd implements CommandExecutor {
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+        args = Utils.fixCommandArgs(args);
 
+        if (args.length < 2) {
+            GameMsg.INVALID_USAGE.send(sender, Param.P("{usage}", "/" + label + " {game} {arena}"));
+            return true;
+        }
 
+        Game game = gb.getGM().getGame(args[0]);
+        if (game == null) {
+            GameMsg.INVALID_GAME.send(sender, Param.P("{name}", args[0]), Param.P("{games}", Str.implode(gb.getGM().getGameNames(), ", ", " & ")));
+            return true;
+        }
+
+        Arena arena = game.getArena(args[1]);
+        if (arena == null) {
+            GameMsg.INVALID_ARENA.send(sender, Param.P("{name}", args[0]), Param.P("{arenas}", Str.implode(game.getArenaNames(), ", ", " & ")));
+            return true;
+        }
+
+        ArenaSelection.setSel(sender, arena);
+        GameMsg.ARENA_SELECTED.send(sender, Param.P("{game}", game.getName()), Param.P("{arena}", arena.getName()));
         return true;
     }
 }

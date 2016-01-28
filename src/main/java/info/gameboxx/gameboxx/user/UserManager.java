@@ -26,6 +26,7 @@
 package info.gameboxx.gameboxx.user;
 
 import com.google.common.collect.Maps;
+import org.bukkit.OfflinePlayer;
 
 import java.util.Map;
 import java.util.UUID;
@@ -65,6 +66,33 @@ public class UserManager {
         if (usersById.containsKey(uuid)) {
             usersById.remove(uuid);
         }
+    }
+
+    /**
+     * Get the {@link User} instance for the specified {@link OfflinePlayer}.
+     * @param player The player to get the {@link User} from.
+     * @return The {@link User} instance that belongs to the player.
+     */
+    public User getUser(OfflinePlayer player) {
+        return getUser(player.getUniqueId());
+    }
+
+    /**
+     * Get the {@link User} instance for the specified player {@link UUID}.
+     * @param uuid The players UUID to get the {@link User} from.
+     * @return The {@link User} instance that belongs to the player.
+     */
+    public User getUser(UUID uuid) {
+        return usersById.get(uuid);
+    }
+
+    /**
+     * Get the {@link User} instance for the specified player name.
+     * @param name The players name to get the {@link User} from.
+     * @return The {@link User} instance that belongs to the player.
+     */
+    public User getUser(String name) {
+        return usersByName.get(name);
     }
 
 }

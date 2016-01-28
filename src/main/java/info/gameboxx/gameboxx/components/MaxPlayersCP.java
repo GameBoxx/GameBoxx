@@ -43,30 +43,30 @@ import org.bukkit.event.EventHandler;
  */
 public class MaxPlayersCP extends GameComponent {
 
-	private static final Events EVENT = new Events();
-	private int max;
-	
-	/**
-	 * @see GameComponent
-	 * @param max The default value for the maximum amount of players allowed.
-	 */
-	public MaxPlayersCP(Game game, int max) {
-		super(game);
-		addDependency(PlayersCP.class);
+    private static final Events EVENT = new Events();
+    private int max;
+    
+    /**
+     * @see GameComponent
+     * @param max The default value for the maximum amount of players allowed.
+     */
+    public MaxPlayersCP(Game game, int max) {
+        super(game);
+        addDependency(PlayersCP.class);
 
-		this.max = max;
-		EVENT.register(getAPI());
-	}
+        this.max = max;
+        EVENT.register(getAPI());
+    }
 
     @Override
     public void registerOptions() throws OptionAlreadyExistsException {
         game.registerSetupOption(new OptionData(SetupType.INT, "maxPlayers", "The maximum amount of players allowed in the arena.", max));
     }
 
-	@Override
-	public MaxPlayersCP newInstance(GameSession session) {
-		return (MaxPlayersCP) new MaxPlayersCP(getGame(), max).setSession(session);
-	}
+    @Override
+    public MaxPlayersCP newInstance(GameSession session) {
+        return (MaxPlayersCP) new MaxPlayersCP(getGame(), max).setSession(session);
+    }
 
     /**
      * Get the max player count allowed in the arena.
@@ -76,33 +76,32 @@ public class MaxPlayersCP extends GameComponent {
         return (int)getOption("maxPlayers");
     }
 
-	private static class Events extends ComponentListener {
-		
-		@EventHandler
-		private void onJoin(PlayerJoinSessionEvent event) {
-			GameSession session = event.getJoinedSession();
-			if (!session.hasComponent(MaxPlayersCP.class)) {
-				return;
-			}
+    private static class Events extends ComponentListener {
+        
+        @EventHandler
+        private void onJoin(PlayerJoinSessionEvent event) {
+            GameSession session = event.getJoinedSession();
+            if (!session.hasComponent(MaxPlayersCP.class)) {
+                return;
+            }
 
-			int maxPlayers = session.getComponent(MaxPlayersCP.class).max;
-			int playerCount = session.getComponent(PlayersCP.class).getPlayers().size();
+            int maxPlayers = session.getComponent(MaxPlayersCP.class).getMax();
+            int playerCount = session.getComponent(PlayersCP.class).getPlayers().size();
 
-			if (playerCount >= maxPlayers) {
-				//Prevent joining.
-				//TODO: Cancel event.
-
-			} else if (playerCount + 1 >= maxPlayers) {
-				//Reduce countdown when max players have joined.
-				if (session.hasComponent(CountdownGC.class)) {
-					CountdownGC countdown = session.getComponent(CountdownGC.class);
-					//TODO: No magic number add config option.
-					if (countdown.getCountdown() > 5) {
-						countdown.setCountdown(5);
-					}
-				}
-			}
-		}
-		
-	}
+            if (playerCount >= maxPlayers) {
+                event.setCancelled(true);
+                
+            } else if (playerCount + 1 >= maxPlayers) {
+                //Reduce countdown when max players have joined.
+                if (session.hasComponent(CountdownGC.class)) {
+                    CountdownGC countdown = session.getComponent(CountdownGC.class);
+                    //TODO: No magic number add config option.
+                    if (countdown.getCountdown() > 5) {
+                        countdown.setCountdown(5);
+                    }
+                }
+            }
+        }
+        
+    }
 }
