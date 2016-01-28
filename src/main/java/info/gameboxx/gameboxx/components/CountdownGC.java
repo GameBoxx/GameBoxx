@@ -213,6 +213,29 @@ public class CountdownGC extends GameComponent {
         runnable.runTaskTimer(getAPI(), 0L, TICKS_IN_SECOND);
     }
     
+    /**
+     * Stops the countdown.
+     */
+    public void stopCountdown() {
+        runnable.cancel();
+    }
+    
+    /**
+     * Resets the countdown.
+     */
+    public void resetCountdown() {
+        stopCountdown();
+        this.countdown = 30;
+        startCountdown();
+    }
+    
+    /**
+     * Resumes the countdown.
+     */
+    public void resumeCountdown() {
+        startCountdown();
+    }
+    
     private class CountdownRunnable extends BukkitRunnable {
         
         @Override
