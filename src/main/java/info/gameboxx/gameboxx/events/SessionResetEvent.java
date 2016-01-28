@@ -35,9 +35,5 @@ public class SessionResetEvent extends SessionEvent {
     public SessionResetEvent(GameSession session) {
         super(session);
     }
-    
-    public GameSession getSession() {
-        return this.session;
-    }
 
 }

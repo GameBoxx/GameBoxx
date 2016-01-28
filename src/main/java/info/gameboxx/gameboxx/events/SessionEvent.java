@@ -46,5 +46,9 @@ public class SessionEvent extends Event {
     public HandlerList getHandlers() {
         return HANDLERS;
     }
+    
+    public GameSession getSession() {
+        return this.session;
+    }
 
 }

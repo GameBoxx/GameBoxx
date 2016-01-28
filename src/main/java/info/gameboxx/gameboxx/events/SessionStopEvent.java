@@ -36,12 +36,6 @@ public class SessionStopEvent extends SessionEvent {
     public SessionStopEvent(GameSession session) {
         super(session);
     }
-    
-    /**
-     * @return The session that has been stopped.
-     */
-    public GameSession getStoppedSession() {
-        return this.session;
-    }
+
 
 }

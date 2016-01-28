@@ -49,8 +49,8 @@ import java.util.UUID;
  */
 public class PlayersCP extends GameComponent {
 
-	private static final Events EVENT = new Events();
-	
+    private static final Events EVENT = new Events();
+    
     private Set<UUID> players = new HashSet<UUID>();
     private Set<UUID> removedPlayers = new HashSet<UUID>();
     
@@ -113,7 +113,7 @@ public class PlayersCP extends GameComponent {
     public void removePlayer(UUID player, LeaveReason reason) {
         players.remove(player);
         if (reason == LeaveReason.DISCONNECT) {
-        	removedPlayers.add(player);
+            removedPlayers.add(player);
         }
         session.removePlayer(Bukkit.getPlayer(player), reason);
     }
@@ -159,7 +159,7 @@ public class PlayersCP extends GameComponent {
             GameSession session = event.getJoinedSession();
             if (session.hasComponent(PlayersCP.class)) {
                 PlayersCP players = session.getComponent(PlayersCP.class);
-                Player player = event.getWhoJoined();
+                Player player = event.getPlayer();
                 players.addPlayer(player.getUniqueId());
                 players.addCachedPlayer(player);
             }
@@ -167,10 +167,10 @@ public class PlayersCP extends GameComponent {
         
         @EventHandler
         public void onPlayerLeaveSessionEvent(PlayerLeaveSessionEvent event) {
-            GameSession session = event.getLeftSession();
+            GameSession session = event.getSession();
             if (session.hasComponent(PlayersCP.class)) {
                 PlayersCP players = (PlayersCP) session.getComponent(PlayersCP.class);
-                Player player = event.getWho();
+                Player player = event.getPlayer();
                 players.removeCachedPlayer(player);
                 players.removePlayer(player.getUniqueId(), event.getLeaveReason());
             }
