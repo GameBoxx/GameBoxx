@@ -31,6 +31,7 @@ import info.gameboxx.gameboxx.config.messages.MessageCfg;
 import info.gameboxx.gameboxx.game.GameManager;
 import info.gameboxx.gameboxx.listeners.MainListener;
 import info.gameboxx.gameboxx.menu.Menu;
+import info.gameboxx.gameboxx.user.UserManager;
 import info.gameboxx.gameboxx.util.cuboid.Cuboid;
 import info.gameboxx.gameboxx.util.cuboid.SelectionManager;
 import net.milkbowl.vault.Vault;
@@ -48,6 +49,7 @@ public class GameBoxx extends JavaPlugin {
     private Vault vault;
     private Economy economy;
 
+    private UserManager um;
     private SelectionManager sm;
     private GameManager gm;
 
@@ -84,6 +86,7 @@ public class GameBoxx extends JavaPlugin {
         cfg = new PluginCfg("plugins/GameBoxx/GameBoxx.yml");
         msgCfg = new MessageCfg("plugins/GameBoxx/Messages.yml");
 
+        um = new UserManager();
         sm = new SelectionManager();
         gm = new GameManager();
 
@@ -129,12 +132,28 @@ public class GameBoxx extends JavaPlugin {
     }
 
 
+    /**
+     * Get the {@link SelectionManager} for getting {@link Cuboid} selections and such.
+     * @return The {@link SelectionManager}
+     */
     public SelectionManager getSM() {
         return sm;
     }
 
+    /**
+     * Get the {@link GameManager} for registering {@link info.gameboxx.gameboxx.game.Game}s and such.
+     * @return The {@link GameManager}
+     */
     public GameManager getGM() {
         return gm;
+    }
+
+    /**
+     * Get the {@link UserManager} for manager {@link info.gameboxx.gameboxx.user.User}s
+     * @return The {@link UserManager}
+     */
+    public UserManager getUM() {
+        return um;
     }
 
 
