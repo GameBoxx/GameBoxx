@@ -210,7 +210,7 @@ public class CountdownGC extends GameComponent {
      * Starts the countdown associated with this class.
      */
     public void startCountdown() {
-        runnable.runTaskTimer(getAPI(), TICKS_IN_SECOND, TICKS_IN_SECOND * seconds);
+        runnable.runTaskTimer(getAPI(), 0L, TICKS_IN_SECOND);
     }
     
     private class CountdownRunnable extends BukkitRunnable {
