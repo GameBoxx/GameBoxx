@@ -42,13 +42,17 @@ public class SessionEvent extends Event {
         this.session = session;
     }
     
+    public GameSession getSession() {
+        return this.session;
+    }
+
     @Override
     public HandlerList getHandlers() {
         return HANDLERS;
     }
-    
-    public GameSession getSession() {
-        return this.session;
+
+    public static HandlerList getHandlerList() {
+        return HANDLERS;
     }
 
 }

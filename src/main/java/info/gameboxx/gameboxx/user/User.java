@@ -40,6 +40,8 @@ public class User {
     private UUID uuid;
     private String name;
 
+    private Arena selectedArena = null;
+
     public User(Player player) {
         this.player = player;
         this.uuid = player.getUniqueId();
@@ -74,5 +76,23 @@ public class User {
         Arena arenaObj = gameObj.getArena(arena);
         GameSession sessionObj = arenaObj.getSession(gameSession);
         sessionObj.addPlayer(player);
+    }
+
+    /**
+     * Get the selected arena using the /select command.
+     * Many other commands will use this selected arena.
+     * @return The selected arena.
+     */
+    public Arena getSelectedArena() {
+        return selectedArena;
+    }
+
+    /**
+     * Set the selected arena.
+     * Many commands will use this selected arena.
+     * @param arena The arena to set as selected.
+     */
+    public void setSelectedArena(Arena arena) {
+        this.selectedArena = arena;
     }
 }
