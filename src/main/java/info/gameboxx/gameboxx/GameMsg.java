@@ -37,9 +37,13 @@ public enum GameMsg {
     INVALID_USAGE(Cat.GENERAL, "&cInvalid usage! &7{usage}"),
     INVALID_ONLINE_PLAYER(Cat.GENERAL, "&cInvalid player name specified! &7(The player must be online!)"),
 
+    INVALID_GAME(Cat.ERROR, "&cThere is no game registered with the name &4{name}&c! &8(&8Games: &7{games}&8)"),
+    INVALID_ARENA(Cat.ERROR, "&cThere is no arena registered with the name &4{name}&c! &8(&8Arenas: &7{arenas}&8)"),
+
     HELP(Cat.COMMAND, "&8======== &4&l/gameapi help &8========\n&6/gameapi [help] &8- &7Display this help page.\n&6/gameapi info &8- &7Display plugin information.\n" +
             "&6/gameapi reload &8- &7Reload configuration files.\n&6/gameapi wand &8- &7Get the selection wand."),
     RELOADED(Cat.COMMAND, "&6All configurations reloaded!"),
+    ARENA_SELECTED(Cat.COMMAND, "&6You've selected the &a{arena} &6arena for &a{game}&6!"),
 
     NO_ITEM_SPECIFIED(Cat.ITEM_PARSER, "&cNo item specified!"),
     UNKNOWN_ITEM_NAME(Cat.ITEM_PARSER, "&cThe item &4{input} &cis not a valid item!"),
@@ -125,6 +129,7 @@ public enum GameMsg {
 
     private enum Cat {
         GENERAL,
+        ERROR,
         COMMAND,
         ITEM_PARSER,
         SELECTION,
