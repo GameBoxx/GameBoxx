@@ -83,7 +83,7 @@ public class MinPlayersCP extends GameComponent {
      * @return The boolean value.
      * @throws DependencyNotFoundException If the hard dependency was not found.
      */
-    public boolean hasMinimumPlayers() throws DependencyNotFoundException {
+    public boolean hasMinimumPlayers() {
         return getDependency(PlayersCP.class).getPlayers().size() >= this.min;
     }
     
@@ -94,16 +94,12 @@ public class MinPlayersCP extends GameComponent {
         
         @EventHandler
         public void onPlayerJoinSessionEvent(PlayerJoinSessionEvent event) {
-            try {
                 if (event.getJoinedSession().hasComponent(MinPlayersCP.class)) {
                     MinPlayersCP players = (MinPlayersCP) event.getJoinedSession().getComponent(MinPlayersCP.class);
                     if (event.getJoinedSession().hasComponent(CountdownGC.class) && players.hasMinimumPlayers()) {
                         event.getJoinedSession().getComponent(CountdownGC.class).startCountdown();
                     }
                 }
-            } catch (DependencyNotFoundException ex) {
-                ex.printStackTrace();
-            }
         }
         
     }
