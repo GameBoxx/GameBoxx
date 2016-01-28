@@ -30,8 +30,10 @@ import info.gameboxx.gameboxx.GameBoxx;
 import info.gameboxx.gameboxx.game.Arena;
 import info.gameboxx.gameboxx.game.Game;
 import info.gameboxx.gameboxx.game.GameSession;
+import info.gameboxx.gameboxx.util.Random;
 import org.bukkit.entity.Player;
 
+import java.util.Collections;
 import java.util.UUID;
 
 public class User {
@@ -56,8 +58,10 @@ public class User {
 
     public void join(String game) {
         Game gameObj = GameBoxx.get().getGM().getGame(game);
-        Arena arenaObj = gameObj.getArenas().get(0);
-        GameSession sessionObj = arenaObj.getSessions().get(0);
+        int rand = Random.Int(gameObj.getArenas().size());
+        Arena arenaObj= (Arena) Collections.singletonList(gameObj.getArenas().values()).get(rand);
+        rand = Random.Int(arenaObj.getSessions().size());
+        GameSession sessionObj = (GameSession) Collections.singletonList(arenaObj.getSessions().values()).get(rand);
         sessionObj.addPlayer(player);
     }
 
