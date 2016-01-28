@@ -27,6 +27,7 @@ package info.gameboxx.gameboxx.commands;
 
 import info.gameboxx.gameboxx.GameBoxx;
 import info.gameboxx.gameboxx.game.Arena;
+import info.gameboxx.gameboxx.game.Game;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -53,6 +54,33 @@ public class ArenaSelection {
     }
 
     /**
+     * Get the {@link Arena} selection for the specified {@link CommandSender}.
+     * It will then check the specified command arguments for a arena:{game}:{arena} argument.
+     * If it has that argument it will try to parse it and override the selection.
+     * @param sender The sender of the command.
+     * @param commandArgs The command arguments used to scan for a arena:{game}:{arena} arg.
+     * @return The {@link Arena} selection for the specified sender or the specified arena in the command args.
+     */
+    public static Arena getSel(CommandSender sender, String[] commandArgs) {
+        Arena arena = getSel(sender);
+        for (String arg : commandArgs) {
+            if (arg.startsWith("arena:") || arg.startsWith("ar:")) {
+                String[] split = arg.split(":");
+                if (split.length > 2) {
+                    Game game = GameBoxx.get().getGM().getGame(split[1]);
+                    if (game != null) {
+                        Arena override = game.getArena(split[2]);
+                        if (override != null) {
+                            arena = override;
+                        }
+                    }
+                }
+            }
+        }
+        return arena;
+    }
+
+    /**
      * Set the {@link Arena} selection for the specified {@link CommandSender}.
      * @param sender The sender of the command.
      * @param arena The {@link Arena} to set.
@@ -64,4 +92,6 @@ public class ArenaSelection {
             consoleSelection = arena;
         }
     }
+
+
 }
