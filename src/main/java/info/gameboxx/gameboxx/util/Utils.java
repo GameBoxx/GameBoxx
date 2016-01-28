@@ -27,7 +27,9 @@ package info.gameboxx.gameboxx.util;
 
 import java.io.File;
 import java.io.FilenameFilter;
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class Utils {
 
@@ -61,6 +63,27 @@ public class Utils {
         }
 
         return names;
+    }
+
+    /**
+     * Fixes the specified list of command arguments.
+     * It will combine arguments that are quoted with spaces.
+     * For example the following string: 'Hello there "you''re awesome"!'
+     * Would result in 0:Hello 1:there 2:You''re awesome 3:!
+     * @param args The list of arguments to fix.
+     * @return The modified array with arguments.
+     */
+    public static String[] fixCommandArgs(String[] args) {
+        StringBuilder builder = new StringBuilder();
+        for (int i = 0 ; i < args.length; i++) {
+            builder.append(args[i]);
+            if (i+1 < args.length) {
+                builder.append(" ");
+            }
+        }
+
+        List<String> newArgList = Str.splitQuotes(builder.toString());
+        return newArgList.toArray(new String[newArgList.size()]);
     }
 
     /**
