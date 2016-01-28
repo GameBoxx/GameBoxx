@@ -39,6 +39,9 @@ public enum GameMsg {
 
     INVALID_GAME(Cat.ERROR, "&cThere is no game registered with the name &4{name}&c! &8(&8Games: &7{games}&8)"),
     INVALID_ARENA(Cat.ERROR, "&cThere is no arena registered with the name &4{name}&c! &8(&8Arenas: &7{arenas}&8)"),
+    NO_ARENA_SELECTION(Cat.ERROR, "&cYou don't have an arena selected! &7/select {game} {arena}"),
+    ARENA_NAME_ALREADY_EXISTS(Cat.ERROR, "&cAn arena with the name &4{name} &calready exists! &8(&8Arenas: &7{arenas}&8)"),
+    INVALID_ARENA_TYPE(Cat.ERROR, "&4{type} &cis not a valid arena type! &7Use either default, world or generateworld"),
 
     HELP(Cat.COMMAND, "&8======== &4&l/gameapi help &8========\n&6/gameapi [help] &8- &7Display this help page.\n&6/gameapi info &8- &7Display plugin information.\n" +
             "&6/gameapi reload &8- &7Reload configuration files.\n&6/gameapi wand &8- &7Get the selection wand."),
