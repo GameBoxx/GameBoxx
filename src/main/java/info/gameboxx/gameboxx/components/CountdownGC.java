@@ -31,21 +31,25 @@ import info.gameboxx.gameboxx.components.internal.GameComponent;
 import info.gameboxx.gameboxx.game.GameSession;
 import info.gameboxx.gameboxx.util.SoundEffect;
 import info.gameboxx.gameboxx.util.Str;
+
 import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitRunnable;
 
 /**
  * Adding this component will add an countdown before the game starts.
  */
 //TODO: Method to start/stop/reset the countdown.
 public class CountdownGC extends GameComponent {
+    
+    public static final long TICKS_IN_SECOND = 20L;
 
     private int countdown = 30;
-
     private int seconds;
     private int mainInterval;
     private int startSecondInterval;
     private SoundEffect sound;
     private String message;
+    private CountdownRunnable runnable;
 
     /**
      * @see GameComponent
@@ -56,7 +60,8 @@ public class CountdownGC extends GameComponent {
      * @param message The message to broadcast when the countdown triggers.
      *                Use the {seconds} placeholder in the message for displaying the time!
      */
-    public CountdownGC(Game game, int seconds, int mainInterval, int startSecondInterval, SoundEffect sound, String message) {
+    public CountdownGC(Game game, int seconds, int mainInterval, int startSecondInterval, 
+            SoundEffect sound, String message) {
         super(game);
         addDependency(PlayersCP.class);
 
@@ -66,6 +71,7 @@ public class CountdownGC extends GameComponent {
         this.startSecondInterval = startSecondInterval;
         this.sound = sound;
         this.message = message;
+        this.runnable = new CountdownRunnable();
     }
 
     @Override
@@ -73,13 +79,19 @@ public class CountdownGC extends GameComponent {
 
     @Override
     public CountdownGC newInstance(GameSession session) {
-        return (CountdownGC) new CountdownGC(getGame(), seconds, mainInterval, startSecondInterval, sound, message).setSession(session);
+        return (CountdownGC) new CountdownGC(getGame(), seconds, mainInterval, startSecondInterval, 
+                sound, message).setSession(session);
     }
-
+    
+    /**
+     * Executes the countdown.
+     * @return The number of seconds that the countdown has left.
+     */
     public void count() {
         if (countdown <= 0) {
             countdown = 0;
-            //TODO: Start the session.
+            runnable.cancel();
+            // TODO: Start the session.
             return;
         }
         if (countdown % mainInterval == 0 || countdown <= startSecondInterval) {
@@ -192,5 +204,21 @@ public class CountdownGC extends GameComponent {
      */
     public void setMessage(String message) {
         this.message = message;
+    }
+    
+    /**
+     * Starts the countdown associated with this class.
+     */
+    public void startCountdown() {
+        runnable.runTaskTimer(getAPI(), TICKS_IN_SECOND, TICKS_IN_SECOND * seconds);
+    }
+    
+    private class CountdownRunnable extends BukkitRunnable {
+        
+        @Override
+        public void run() {
+            count();
+        }
+        
     }
 }
