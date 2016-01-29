@@ -190,10 +190,10 @@ public abstract class Game extends ComponentHolder {
         }
         YamlConfiguration config = YamlConfiguration.loadConfiguration(configFile);
 
-        Arena arena = new Arena(this, configFile, config, type, name);
+        Arena arena = new Arena(this, configFile, config, type, arenaName);
         arena.loadOptions();
         arena.forceSave();
-        arenas.put(name, arena);
+        arenas.put(arenaName, arena);
         return arena;
     }
 
