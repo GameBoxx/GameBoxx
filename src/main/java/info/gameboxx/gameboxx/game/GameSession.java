@@ -37,6 +37,8 @@ public abstract class GameSession extends ComponentHolder {
     protected Game game;
     protected Arena arena;
     private int id;
+    private boolean ready = false;
+
     public static final PluginManager PLUGIN_MANAGER = Bukkit.getPluginManager();
 
     public GameSession(Game game, Arena arena, int id) {
@@ -68,6 +70,26 @@ public abstract class GameSession extends ComponentHolder {
      */
     public Arena getArena() {
         return arena;
+    }
+
+    /**
+     * Get whether or not the session is ready to be joined and played.
+     * After the world is generated this will be set to true.
+     * While this is false players shouldn't be able to join etc.
+     * @return True when the session is ready and false if not.
+     */
+    public boolean isReady() {
+        return ready;
+    }
+
+    /**
+     * Set whether or not the session is ready to be joined and played etc.
+     * This method is used when creating sessions when worlds are generated/loaded.
+     * There is no need to manually call this.
+     * @param ready The ready state to set.
+     */
+    public void setReady(boolean ready) {
+        this.ready = ready;
     }
 
     /**
