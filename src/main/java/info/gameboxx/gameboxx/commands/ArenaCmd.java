@@ -145,6 +145,45 @@ public class ArenaCmd implements CommandExecutor {
             return true;
         }
 
+        //arena save
+        if (args[0].equalsIgnoreCase("save")) {
+            World world = gb.getServer().getWorld(arena.getName() + "_TEMPLATE");
+            if (world == null) {
+                sender.sendMessage("Nothing to save...");
+                return true;
+            }
+
+            //Remove all players from world.
+            World defaultWorld = gb.getServer().getWorld(gb.getCfg().defaultWorld);
+            if (defaultWorld == null) {
+                defaultWorld = gb.getServer().getWorlds().get(0);
+            }
+            for (Player player : world.getPlayers()) {
+                player.teleport(defaultWorld.getSpawnLocation());
+                player.sendMessage("Send back to the default world because the arena is being saved...");
+            }
+
+            //Unload the world and save it.
+            gb.getServer().unloadWorld(world, true);
+
+            //Copy the world back to template world directory.
+            File worldFile = new File(".", arena.getName() + "_TEMPLATE");
+            File mapDir = new File(gb.getDataFolder().getAbsolutePath() + File.separator + "maps" + File.separator + arena.getGame().getName() + File.separator + arena.getName());
+            mapDir.mkdirs();
+            try {
+                FileUtils.copyDirectory(worldFile, mapDir);
+                sender.sendMessage("World saved...");
+                try {
+                    FileUtils.deleteDirectory(worldFile);
+                    sender.sendMessage("World deleted...");
+                } catch (IOException e) {
+                    sender.sendMessage("Failed to delete world...");
+                }
+            } catch (IOException e) {
+                sender.sendMessage("Failed to save...");
+            }
+            return true;
+        }
 
         //GameMsg.ARENA_HELP.send(sender, false, true);
         return true;
