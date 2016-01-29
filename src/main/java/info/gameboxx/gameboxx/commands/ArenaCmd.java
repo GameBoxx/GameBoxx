@@ -34,6 +34,7 @@ import info.gameboxx.gameboxx.game.ArenaType;
 import info.gameboxx.gameboxx.game.Game;
 import info.gameboxx.gameboxx.util.Str;
 import info.gameboxx.gameboxx.util.Utils;
+import org.apache.commons.io.FileUtils;
 import org.bukkit.World;
 import org.bukkit.WorldCreator;
 import org.bukkit.block.Block;
@@ -41,7 +42,9 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitRunnable;
 
+import java.io.File;
 import java.io.IOException;
 
 public class ArenaCmd implements CommandExecutor {
@@ -53,14 +56,14 @@ public class ArenaCmd implements CommandExecutor {
     }
 
     @Override
-    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+    public boolean onCommand(final CommandSender sender, Command command, String label, String[] args) {
         if (args.length < 1 || args[0].equalsIgnoreCase("help")) {
             //GameMsg.ARENA_HELP.send(sender, false, true);
             return true;
         }
         args = Utils.fixCommandArgs(args);
 
-        //arena create {name} {type} [world gen data]
+        //arena create {game} {name} {type} [world gen data]
         if (args[0].equalsIgnoreCase("create") || args[0].equalsIgnoreCase("generate") || args[0].equalsIgnoreCase("new")) {
             if (args.length < 4) {
                 GameMsg.INVALID_USAGE.send(sender, Param.P("{usage}", "/" + label + " " + args[0] + " {game} {name} {type} [world data]"));
@@ -97,7 +100,7 @@ public class ArenaCmd implements CommandExecutor {
 
             //Get the world creator based on remaining arguments.
             //TODO: Add support for copying other worlds like copy:{game}:{arena} for WORLD type only.
-            WorldCreator worldCreator = Utils.getWorldCreator(args[2] + "_TEMPLATE", args, 4);
+            final WorldCreator worldCreator = Utils.getWorldCreator(args[2] + "_TEMPLATE", args, 4);
             //TODO: Save world creator data to arena.
 
             if (type == ArenaType.GENERATE_WORLD) {
@@ -108,18 +111,29 @@ public class ArenaCmd implements CommandExecutor {
 
             sender.sendMessage("Creating the world for world arena.");
             //Create the template world and set spawn location at the center
-            World world = worldCreator.createWorld();
-            Block block = Utils.getHighestBlockAt(world, 0, 0);
-            world.setSpawnLocation(0, block.getY(), 0);
-            world.save();
+            new BukkitRunnable() {
+                @Override
+                public void run() {
+                    final World world = gb.getWorldLoader().createAsyncWorld(worldCreator);
+                    new BukkitRunnable() {
+                        @Override
+                        public void run() {
+                            Block block = Utils.getHighestBlockAt(world, 0, 0);
+                            world.setSpawnLocation(0, block.getY(), 0);
+                            world.save();
 
-            //Teleport the player to the new world.
-            if (sender instanceof Player) {
-                sender.sendMessage("Teleporting the player to the new spawn!");
-                ((Player)sender).teleport(block.getLocation());
-            }
+                            //Teleport the player to the new world.
+                            if (sender instanceof Player) {
+                                sender.sendMessage("Teleporting the player to the new spawn!");
+                                ((Player)sender).teleport(block.getLocation());
+                            }
 
-            sender.sendMessage("World arena created...");
+                            sender.sendMessage("World arena created...");
+                        }
+                    }.runTaskLater(gb, 1);
+                }
+            }.runTaskAsynchronously(gb);
+
             //TODO: Arena created..
             return true;
         }
