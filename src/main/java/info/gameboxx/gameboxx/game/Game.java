@@ -79,9 +79,11 @@ public abstract class Game extends ComponentHolder {
      * Override this method and return your own version of the {@link GameSession}
      * Each time a new session will be created it will call this method to create the new session.
      * Create a class like SpleefSession and extend from GameSession and then do return new SpleefSession(this, sessionUID);
+     * @param arena The arena which the session will belong to.
+     * @param sessionID The unique session ID used to reference the session.
      * @return GameSession
      */
-    public abstract GameSession getNewGameSession(Arena arena, UUID sessionUID);
+    public abstract GameSession getNewGameSession(Arena arena, int sessionID);
 
     /**
      * Override this method and inside the method body you will add all your components.
@@ -243,5 +245,23 @@ public abstract class Game extends ComponentHolder {
      */
     public GameBoxx getAPI() {
         return gb;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Game other = (Game)obj;
+        if (!other.getName().equals(this.getName())) {
+            return false;
+        }
+        if (!other.getPlugin().getName().equals(this.getPlugin().getName())) {
+            return false;
+        }
+        return true;
     }
 }

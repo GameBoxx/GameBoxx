@@ -26,35 +26,32 @@
 package info.gameboxx.gameboxx.game;
 
 import info.gameboxx.gameboxx.components.internal.ComponentHolder;
-import info.gameboxx.gameboxx.events.PlayerJoinSessionEvent;
-import info.gameboxx.gameboxx.events.PlayerLeaveSessionEvent;
-import info.gameboxx.gameboxx.events.SessionResetEvent;
-import info.gameboxx.gameboxx.events.SessionStartEvent;
-import info.gameboxx.gameboxx.events.SessionStopEvent;
-
+import info.gameboxx.gameboxx.events.*;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginManager;
-
-import java.util.UUID;
 
 //TODO: Implement this class it will handle the game flow like joining/leaving/starting/stopping/resetting etc. All of that stuff will be dependent on components obviously.
 public abstract class GameSession extends ComponentHolder {
 
     protected Game game;
     protected Arena arena;
-    private UUID uid;
+    private int id;
     public static final PluginManager PLUGIN_MANAGER = Bukkit.getPluginManager();
 
-    public GameSession(Game game, Arena arena, UUID uid) {
+    public GameSession(Game game, Arena arena, int id) {
         this.game = game;
         this.arena = arena;
-        this.uid = uid;
+        this.id = id;
         PLUGIN_MANAGER.callEvent(new SessionStartEvent(this));
     }
 
-    public UUID getUid() {
-        return uid;
+    /**
+     * Get the session ID.
+     * @return The session ID.
+     */
+    public int getID() {
+        return id;
     }
 
     /**
@@ -104,6 +101,24 @@ public abstract class GameSession extends ComponentHolder {
     public void restart() {
         PLUGIN_MANAGER.callEvent(new SessionResetEvent(this));
         // TODO: Handle implementation later
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final GameSession other = (GameSession)obj;
+        if (other.getID() != this.getID()) {
+            return false;
+        }
+        if (!other.getArena().equals(this.getArena())) {
+            return false;
+        }
+        return true;
     }
 
 }

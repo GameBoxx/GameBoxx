@@ -62,8 +62,7 @@ public class User {
         Game gameObj = GameBoxx.get().getGM().getGame(game);
         int rand = Random.Int(gameObj.getArenas().size());
         Arena arenaObj= (Arena) Collections.singletonList(gameObj.getArenas().values()).get(rand);
-        rand = Random.Int(arenaObj.getSessions().size());
-        GameSession sessionObj = (GameSession) Collections.singletonList(arenaObj.getSessions().values()).get(rand);
+        GameSession sessionObj = Random.Item(arenaObj.getActiveSessions().toArray(new GameSession[arenaObj.getActiveSessions().size()]));
         sessionObj.addPlayer(player);
     }
 
@@ -71,11 +70,11 @@ public class User {
     public void join(String game, String arena) {
         Game gameObj = GameBoxx.get().getGM().getGame(game);
         Arena arenaObj = gameObj.getArena(arena);
-        GameSession sessionObj = arenaObj.getSessions().get(0);
+        GameSession sessionObj = Random.Item(arenaObj.getActiveSessions().toArray(new GameSession[arenaObj.getActiveSessions().size()]));
         sessionObj.addPlayer(player);
     }
 
-    public void join(String game, String arena, UUID gameSession) {
+    public void join(String game, String arena, int gameSession) {
         Game gameObj = GameBoxx.get().getGM().getGame(game);
         Arena arenaObj = gameObj.getArena(arena);
         GameSession sessionObj = arenaObj.getSession(gameSession);

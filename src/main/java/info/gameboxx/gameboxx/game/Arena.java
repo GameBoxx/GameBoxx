@@ -34,9 +34,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * Base Arena class.
@@ -51,7 +49,8 @@ public class Arena {
 
     private Map<String, SetupOption> setupOptions = new HashMap<String, SetupOption>();
 
-    private Map<UUID, GameSession> sessions = new HashMap<UUID, GameSession>();
+    private GameSession[] sessions;
+    private Set<GameSession> activeSessions = new HashSet<>();
     private int maxSessions;
 
     private File configFile;
@@ -72,6 +71,8 @@ public class Arena {
         this.config = config;
         this.type = type;
         this.name = name;
+        this.maxSessions = 16;
+        sessions = new GameSession[getMaxSessions()];
     }
 
     /**
@@ -87,6 +88,7 @@ public class Arena {
         name = config.getString("name");
         type = ArenaType.valueOf(config.getString("type"));
         maxSessions = config.getInt("maxSessions");
+        sessions = new GameSession[getMaxSessions()];
     }
 
     /**
@@ -183,19 +185,29 @@ public class Arena {
     }
 
     /**
-     * Get the total amount of active sessions this arena has.
+     * Get the total amount of active {@link GameSession}s this arena has.
      * @return The amount of active sessions.
      */
     public int getSessionCount() {
-        return sessions.size();
+        return sessions.length;
     }
 
     /**
-     * Get a map with all the active game sessions for this arena.
-     * @return The map with active game sessions.
+     * Get the array with all the {@link GameSession}s for this arena.
+     * This is the entire array which can contain {@code null} values.
+     * Use {@link #getActiveSessions()} to get a set with only the active sessions.
+     * @return The array with game sessions. (Can contain {@code null} values!)
      */
-    public Map<UUID, GameSession> getSessions() {
+    public GameSession[] getSessions() {
         return sessions;
+    }
+
+    /**
+     * Get a set with all the active {@link GameSession}s for this arena.
+     * @return The set with active game sessions.
+     */
+    public Set<GameSession> getActiveSessions() {
+        return activeSessions;
     }
 
     /**
@@ -206,19 +218,23 @@ public class Arena {
      * @throws SessionLimitException When the session limit has been reached.
      */
     public GameSession createSession() throws SessionLimitException {
-        if (sessions.size() >= getMaxSessions()) {
+        //Get and validate a new session id.
+        int id = -1;
+        for (int i = 0; i < sessions.length; i++) {
+            if (sessions[i] == null) {
+                id = i;
+                break;
+            }
+        }
+        if (id < 0) {
             throw new SessionLimitException("Failed to create a new session for the arena " + getName() +
                     "The maximum amount of sessions has been reached. [" + getMaxSessions() + "]");
         }
 
-        //TODO: Don't use UUID's for sessions but use indexes so they can be referenced easier by players etc.
-        UUID sessionUID = UUID.randomUUID();
-        while (sessions.containsKey(sessionUID)) {
-            sessionUID = UUID.randomUUID();
-        }
-
         //Create the new session.
-        GameSession newSession = game.getNewGameSession(this, sessionUID);
+        GameSession newSession = game.getNewGameSession(this, id);
+        sessions[id] = newSession;
+        activeSessions.add(newSession);
 
         //Add new instances of all the components from the game.
         for (GameComponent component : game.getComponents().values()) {
@@ -235,28 +251,41 @@ public class Arena {
 
 
     /**
-     * @param uid
-     * @return
+     * Get the {@link GameSession} for the given ID.
+     * @param id The index/ID of the session to get.
+     * @return The {@link GameSession} for the specified ID or {@code null} if there is no session for the given ID.
      */
-    public GameSession getSession(UUID uid) {
-        return sessions.get(uid);
+    public GameSession getSession(int id) {
+        if (id >= getMaxSessions()) {
+            return null;
+        }
+        return sessions[id];
     }
 
     /**
      * Check whether or not the arena has a {@link GameSession} with the given unique ID.
-     * @param uid The unique ID to check for.
-     * @return True when the arena has a session with the given unique ID.
+     * @param id The session id to check for.
+     * @return True when the arena has a session with the given ID.
      */
-    public boolean hasSession(UUID uid) {
-        return sessions.containsKey(uid);
+    public boolean hasSession(int id) {
+        if (id >= getMaxSessions()) {
+            return false;
+        }
+        return sessions[id] != null;
     }
 
     /**
-     * Remove a session by it's unique ID.
-     * @param uid
+     * Remove a {@link GameSession} by it's ID.
+     * @param id The session ID to remove.
      */
-    public void removeSession(UUID uid) {
-        sessions.remove(uid);
+    public void removeSession(int id) {
+        if (id >= getMaxSessions()) {
+            return;
+        }
+        if (sessions[id] != null) {
+            activeSessions.remove(sessions[id]);
+        }
+        sessions[id] = null;
     }
 
     /**
@@ -303,5 +332,26 @@ public class Arena {
             return 1;
         }
         return maxSessions;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Arena other = (Arena)obj;
+        if (!other.getName().equals(this.getName())) {
+            return false;
+        }
+        if (!other.getType().equals(this.getType())) {
+            return false;
+        }
+        if (!other.getGame().equals(this.getGame())) {
+            return false;
+        }
+        return true;
     }
 }
