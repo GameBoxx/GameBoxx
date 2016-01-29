@@ -31,6 +31,7 @@ import info.gameboxx.gameboxx.config.messages.MessageCfg;
 import info.gameboxx.gameboxx.game.GameManager;
 import info.gameboxx.gameboxx.listeners.MainListener;
 import info.gameboxx.gameboxx.menu.Menu;
+import info.gameboxx.gameboxx.nms.IWorldLoader;
 import info.gameboxx.gameboxx.user.UserManager;
 import info.gameboxx.gameboxx.util.cuboid.Cuboid;
 import info.gameboxx.gameboxx.util.cuboid.SelectionManager;
@@ -48,6 +49,8 @@ public class GameBoxx extends JavaPlugin {
     private static GameBoxx instance;
     private Vault vault;
     private Economy economy;
+
+    private IWorldLoader worldLoader;
 
     private UserManager um;
     private SelectionManager sm;
@@ -81,6 +84,12 @@ public class GameBoxx extends JavaPlugin {
             log("Failed to load Economy from Vault. The plugin will still work fine but some features might not work!");
         }
 
+        if (!setupNMS()) {
+            log("Failed to load GameBoxx because your server version isn't supported! This version of GameBoxx supports the following server versions: v1_8_R3");
+            getPluginLoader().disablePlugin(this);
+            return;
+        }
+
         ConfigurationSerialization.registerClass(Cuboid.class);
 
         cfg = new PluginCfg("plugins/GameBoxx/GameBoxx.yml");
@@ -107,6 +116,22 @@ public class GameBoxx extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new MainListener(this), this);
     }
 
+    private boolean setupNMS() {
+        String version;
+        try {
+            version = getServer().getClass().getPackage().getName().replace(".",  ",").split(",")[3];
+        } catch (ArrayIndexOutOfBoundsException whatVersionAreYouUsingException) {
+            return false;
+        }
+
+        if (version.equals("v1_8_R3")) {
+            worldLoader = new info.gameboxx.gameboxx.nms.v1_8_R3.WorldLoader(this);
+            return true;
+        }
+
+        return false;
+    }
+
     public void log(Object msg) {
         log.info("[GameBoxx " + getDescription().getVersion() + "] " + msg.toString());
     }
@@ -131,6 +156,14 @@ public class GameBoxx extends JavaPlugin {
         return economy;
     }
 
+
+    /**
+     * Get the {@link IWorldLoader} that can load worlds async using {@link net.minecraft.server} (NMS) code.
+     * @return The world loader.
+     */
+    public IWorldLoader getWorldLoader() {
+        return worldLoader;
+    }
 
     /**
      * Get the {@link SelectionManager} for getting {@link Cuboid} selections and such.
