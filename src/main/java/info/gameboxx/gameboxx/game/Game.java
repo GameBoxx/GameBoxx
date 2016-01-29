@@ -28,10 +28,7 @@ package info.gameboxx.gameboxx.game;
 import info.gameboxx.gameboxx.GameBoxx;
 import info.gameboxx.gameboxx.components.internal.ComponentHolder;
 import info.gameboxx.gameboxx.components.internal.GameComponent;
-import info.gameboxx.gameboxx.exceptions.ArenaAlreadyExistsException;
-import info.gameboxx.gameboxx.exceptions.ComponentConflictException;
-import info.gameboxx.gameboxx.exceptions.DependencyNotFoundException;
-import info.gameboxx.gameboxx.exceptions.OptionAlreadyExistsException;
+import info.gameboxx.gameboxx.exceptions.*;
 import info.gameboxx.gameboxx.setup.OptionData;
 import info.gameboxx.gameboxx.util.Utils;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -161,6 +158,19 @@ public abstract class Game extends ComponentHolder {
             arena.loadOptions();
             arenas.put(name, arena);
             count++;
+        }
+
+        //Create a session for each arena.
+        for (Arena arena : arenas.values()) {
+            try {
+                arena.createSession();
+            } catch (SessionLimitException e) {
+                getPlugin().getLogger().warning(e.getMessage());
+            } catch (MissingArenaWorldException e) {
+                getPlugin().getLogger().warning(e.getMessage());
+            } catch (IOException e) {
+                getPlugin().getLogger().warning(e.getMessage());
+            }
         }
     }
 
