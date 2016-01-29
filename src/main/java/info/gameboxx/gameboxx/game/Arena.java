@@ -27,14 +27,20 @@ package info.gameboxx.gameboxx.game;
 
 import info.gameboxx.gameboxx.components.internal.GameComponent;
 import info.gameboxx.gameboxx.exceptions.InvalidSetupDataException;
+import info.gameboxx.gameboxx.exceptions.MissingArenaWorldException;
 import info.gameboxx.gameboxx.exceptions.SessionLimitException;
 import info.gameboxx.gameboxx.setup.OptionData;
 import info.gameboxx.gameboxx.setup.SetupOption;
+import org.apache.commons.io.FileUtils;
+import org.bukkit.WorldCreator;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.*;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Base Arena class.
@@ -216,8 +222,10 @@ public class Arena {
      * It will also copy all the components and child components with all settings from the {@link Game}.
      * @return The created new GameSession.
      * @throws SessionLimitException When the session limit has been reached.
+     * @throws MissingArenaWorldException When the arena type is {@link ArenaType#WORLD} and there is no world for the arena.
+     * @throws IOException When the arena type is {@link ArenaType#WORLD} and it failed to create a copy of the template world.
      */
-    public GameSession createSession() throws SessionLimitException {
+    public GameSession createSession() throws SessionLimitException, MissingArenaWorldException, IOException {
         //Get and validate a new session id.
         int id = -1;
         for (int i = 0; i < sessions.length; i++) {
@@ -244,6 +252,24 @@ public class Arena {
         //Load all the dependencies for each component.
         for (GameComponent component : newSession.getComponents().values()) {
             component.loadDependencies();
+        }
+
+        if (getType() == ArenaType.DEFAULT) {
+            newSession.setReady(true);
+        } else if (getType() == ArenaType.WORLD) {
+            File mapDir = new File(game.getAPI().getDataFolder().getAbsolutePath() + File.separator + "maps" + File.separator + game.getName() + File.separator + getName());
+            if (!mapDir.exists()) {
+                throw new MissingArenaWorldException(game, this);
+            }
+            String mapName = getName() + "_" + id;
+            FileUtils.copyDirectory(mapDir, new File(mapName));
+
+            WorldCreator wc = new WorldCreator(mapName);
+            wc.createWorld();
+
+            newSession.setReady(true);
+        } else if (getType() == ArenaType.GENERATE_WORLD) {
+            //TODO: Implement this.
         }
 
         return newSession;
