@@ -27,6 +27,7 @@ package info.gameboxx.gameboxx.config;
 
 public class PluginCfg extends EasyConfig {
 
+    public String defaultWorld = "world";
     public int saveDelay__arena = 5000;
 
     public PluginCfg(String fileName) {
