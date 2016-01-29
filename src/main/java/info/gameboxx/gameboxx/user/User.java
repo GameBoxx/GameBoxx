@@ -31,6 +31,8 @@ import info.gameboxx.gameboxx.game.Arena;
 import info.gameboxx.gameboxx.game.Game;
 import info.gameboxx.gameboxx.game.GameSession;
 import info.gameboxx.gameboxx.util.Random;
+import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 
 import java.util.Collections;
@@ -38,16 +40,34 @@ import java.util.UUID;
 
 public class User {
 
-    private Player player;
     private UUID uuid;
     private String name;
 
     private Arena selectedArena = null;
 
     public User(Player player) {
-        this.player = player;
         this.uuid = player.getUniqueId();
         this.name = player.getName();
+    }
+
+    public User(UUID uuid) {
+        this.uuid = uuid;
+        OfflinePlayer player = Bukkit.getServer().getOfflinePlayer(uuid);
+        if (player != null) {
+            this.name = player.getName();
+        }
+    }
+
+    public User(String name) {
+        this.name = name;
+        OfflinePlayer player = Bukkit.getServer().getOfflinePlayer(name);
+        if (player != null) {
+            this.uuid = player.getUniqueId();
+        }
+    }
+
+    public Player getPlayer() {
+        return Bukkit.getServer().getPlayer(uuid);
     }
 
     public UUID getUuid() {
@@ -63,7 +83,7 @@ public class User {
         int rand = Random.Int(gameObj.getArenas().size());
         Arena arenaObj= (Arena) Collections.singletonList(gameObj.getArenas().values()).get(rand);
         GameSession sessionObj = Random.Item(arenaObj.getActiveSessions().toArray(new GameSession[arenaObj.getActiveSessions().size()]));
-        sessionObj.addPlayer(player);
+        sessionObj.addPlayer(getPlayer());
     }
 
     // TODO: 1/26/2016 Choose session based on player count
@@ -71,14 +91,14 @@ public class User {
         Game gameObj = GameBoxx.get().getGM().getGame(game);
         Arena arenaObj = gameObj.getArena(arena);
         GameSession sessionObj = Random.Item(arenaObj.getActiveSessions().toArray(new GameSession[arenaObj.getActiveSessions().size()]));
-        sessionObj.addPlayer(player);
+        sessionObj.addPlayer(getPlayer());
     }
 
     public void join(String game, String arena, int gameSession) {
         Game gameObj = GameBoxx.get().getGM().getGame(game);
         Arena arenaObj = gameObj.getArena(arena);
         GameSession sessionObj = arenaObj.getSession(gameSession);
-        sessionObj.addPlayer(player);
+        sessionObj.addPlayer(getPlayer());
     }
 
     /**

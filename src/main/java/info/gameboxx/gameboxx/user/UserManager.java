@@ -42,7 +42,9 @@ public class UserManager {
      * @param user {@link User} instance.
      */
     public void register(User user) {
-        if (usersById.containsKey(user.getUuid()) || usersByName.containsKey(user.getName())) return;
+        if (usersById.containsKey(user.getUuid()) || usersByName.containsKey(user.getName())) {
+            return;
+        }
         usersById.put(user.getUuid(), user);
         usersByName.put(user.getName(), user);
     }
@@ -83,15 +85,22 @@ public class UserManager {
      * @return The {@link User} instance that belongs to the player.
      */
     public User getUser(UUID uuid) {
+        if (!usersById.containsKey(uuid)) {
+            register(new User(uuid));
+        }
         return usersById.get(uuid);
     }
 
     /**
      * Get the {@link User} instance for the specified player name.
+     * Only use this for user input and such.
      * @param name The players name to get the {@link User} from.
      * @return The {@link User} instance that belongs to the player.
      */
     public User getUser(String name) {
+        if (!usersByName.containsKey(name)) {
+            register(new User(name));
+        }
         return usersByName.get(name);
     }
 
