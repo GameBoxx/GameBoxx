@@ -31,6 +31,8 @@ import org.bukkit.WorldCreator;
 /**
  * This allows loading/creating worlds async.
  * It's not really async but it won't freeze the server.
+ *
+ * @author Friwi (https://www.spigotmc.org/resources/lib-asyncworldloader.7370/)
  */
 public interface IWorldLoader {
 

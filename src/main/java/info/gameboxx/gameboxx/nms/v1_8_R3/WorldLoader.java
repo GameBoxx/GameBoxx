@@ -49,6 +49,9 @@ import java.lang.reflect.Field;
 import java.util.Map;
 import java.util.logging.Level;
 
+/**
+ * @author Friwi (https://www.spigotmc.org/resources/lib-asyncworldloader.7370/)
+ */
 public class WorldLoader implements IWorldLoader {
 
     private GameBoxx gb;
@@ -57,6 +60,7 @@ public class WorldLoader implements IWorldLoader {
     private World ret = null;
     private boolean aborted = false;
     private Chunk wait = null;
+    private ChunkGenerator generator = null;
     
     public WorldLoader(GameBoxx gb) {
         this.gb = gb;
@@ -81,7 +85,7 @@ public class WorldLoader implements IWorldLoader {
         }
 
         //Initialize world loading.
-        final ChunkGenerator generator = creator.generator() == null ? getGenerator(name) : creator.generator();
+        generator = creator.generator() == null ? getGenerator(name) : creator.generator();
         aborted = false;
         wait = null;
         ret = null;
@@ -376,13 +380,8 @@ public class WorldLoader implements IWorldLoader {
                                         return false;
                                     }
 
-                                    private Chunk getOrCreateChunk(
-                                            ChunkProviderServer ip,
-                                            int i, int j) {
-
-
+                                    private Chunk getOrCreateChunk(ChunkProviderServer ip, int i, int j) {
                                         Chunk chunk = (Chunk) ip.chunks.get(LongHash.toLong(i, j));
-
                                         chunk = chunk == null ? getChunkAt(ip, i, j) : (!ip.world.ad()) && (!ip.forceChunkLoad) ? ip.emptyChunk : chunk;
 
                                         if (chunk == ip.emptyChunk) return chunk;
@@ -438,11 +437,7 @@ public class WorldLoader implements IWorldLoader {
             settings.setAccessible(true);
             File co = (File) container.get(getCraftServer());
             if (co == null) {
-                container.set(
-                        getCraftServer(),
-                        new File(((YamlConfiguration) settings
-                                .get(getCraftServer())).getString(
-                                "settings.world-container", ".")));
+                container.set(getCraftServer(), new File(((YamlConfiguration) settings.get(getCraftServer())).getString("settings.world-container", ".")));
             }
 
             return (File) container.get(getCraftServer());
@@ -464,58 +459,38 @@ public class WorldLoader implements IWorldLoader {
         try {
             Field settings = CraftServer.class.getDeclaredField("configuration");
             settings.setAccessible(true);
-            ConfigurationSection section = ((YamlConfiguration) settings
-                    .get(getCraftServer())).getConfigurationSection("worlds");
+            ConfigurationSection section = ((YamlConfiguration) settings.get(getCraftServer())).getConfigurationSection("worlds");
             ChunkGenerator result = null;
 
-            if (section != null) {
-                section = section.getConfigurationSection(world);
+            if (section == null) {
+                return result;
+            }
+            section = section.getConfigurationSection(world);
+            if (section == null) {
+                return result;
+            }
 
-                if (section != null) {
-                    String name = section.getString("generator");
+            String name = section.getString("generator");
+            if (name == null || name.isEmpty()) {
+                return result;
+            }
 
-                    if ((name != null) && (!name.equals(""))) {
-                        String[] split = name.split(":", 2);
-                        String id = split.length > 1 ? split[1] : null;
-                        Plugin plugin = Bukkit.getPluginManager().getPlugin(
-                                split[0]);
+            String[] split = name.split(":", 2);
+            String id = split.length > 1 ? split[1] : null;
+            Plugin plugin = Bukkit.getPluginManager().getPlugin(split[0]);
 
-                        if (plugin == null)
-                            Bukkit.getLogger().severe(
-                                    "Could not set generator for default world '"
-                                            + world + "': Plugin '" + split[0]
-                                            + "' does not exist");
-                        else if (!plugin.isEnabled())
-                            Bukkit.getLogger()
-                                    .severe("Could not set generator for default world '"
-                                            + world
-                                            + "': Plugin '"
-                                            + plugin.getDescription()
-                                            .getFullName()
-                                            + "' is not enabled yet (is it load:STARTUP?)");
-                        else {
-                            try {
-                                result = plugin.getDefaultWorldGenerator(world,
-                                        id);
-                                if (result == null)
-                                    Bukkit.getLogger()
-                                            .severe("Could not set generator for default world '"
-                                                    + world
-                                                    + "': Plugin '"
-                                                    + plugin.getDescription()
-                                                    .getFullName()
-                                                    + "' lacks a default world generator");
-                            } catch (Throwable t) {
-                                plugin.getLogger().log(
-                                        Level.SEVERE,
-                                        "Could not set generator for default world '"
-                                                + world
-                                                + "': Plugin '"
-                                                + plugin.getDescription()
-                                                .getFullName(), t);
-                            }
-                        }
+            if (plugin == null) {
+                Bukkit.getLogger().severe("Could not set generator for default world '" + world + "': Plugin '" + split[0] + "' does not exist");
+            } else if (!plugin.isEnabled()) {
+                Bukkit.getLogger().severe("Could not set generator for default world '" + world + "': Plugin '" + plugin.getDescription().getFullName() + "' is not enabled yet (is it load:STARTUP?)");
+            } else {
+                try {
+                    result = plugin.getDefaultWorldGenerator(world, id);
+                    if (result == null) {
+                        Bukkit.getLogger().severe("Could not set generator for default world '" + world + "': Plugin '" + plugin.getDescription().getFullName() + "' lacks a default world generator");
                     }
+                } catch (Throwable t) {
+                    plugin.getLogger().log(Level.SEVERE, "Could not set generator for default world '" + world + "': Plugin '" + plugin.getDescription().getFullName(), t);
                 }
             }
 
