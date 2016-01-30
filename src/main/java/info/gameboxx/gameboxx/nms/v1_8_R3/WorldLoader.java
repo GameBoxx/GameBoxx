@@ -61,11 +61,12 @@ public class WorldLoader implements IWorldLoader {
     private boolean aborted = false;
     private Chunk wait = null;
     private ChunkGenerator generator = null;
-    
+
     public WorldLoader(GameBoxx gb) {
         this.gb = gb;
     }
 
+    @SuppressWarnings("unchecked")
     public World createAsyncWorld(final WorldCreator creator) {
         //Only allow loading 1 world at a time.
         while (alreadyLoading) {
@@ -213,13 +214,12 @@ public class WorldLoader implements IWorldLoader {
                                             }
                                         }.runTask(gb);
 
-                                        ret = (World) internal.getWorld();
+                                        ret = internal.getWorld();
                                     }
 
                                     private Chunk getChunkAt(final ChunkProviderServer cps, final int i, final int j) {
-                                        Runnable runnable = null;
                                         cps.unloadQueue.remove(i, j);
-                                        Chunk chunk = (Chunk) cps.chunks.get(LongHash.toLong(i, j));
+                                        Chunk chunk = cps.chunks.get(LongHash.toLong(i, j));
                                         ChunkRegionLoader loader = null;
                                         try {
                                             Field f = ChunkProviderServer.class.getDeclaredField("chunkLoader");
@@ -252,16 +252,12 @@ public class WorldLoader implements IWorldLoader {
                                             chunk = originalGetChunkAt(cps, i, j);
                                         }
 
-                                        if (runnable != null) {
-                                            runnable.run();
-                                        }
-
                                         return chunk;
                                     }
 
                                     public Chunk originalGetChunkAt(final ChunkProviderServer cps, final int i, final int j) {
                                         cps.unloadQueue.remove(i, j);
-                                        Chunk chunk = (Chunk) cps.chunks.get(LongHash.toLong(i, j));
+                                        Chunk chunk = cps.chunks.get(LongHash.toLong(i, j));
                                         boolean newChunk = false;
 
                                         if (chunk == null) {
@@ -278,7 +274,7 @@ public class WorldLoader implements IWorldLoader {
                                                         CrashReportSystemDetails crashreportsystemdetails = crashreport.a("Chunk to be generated");
 
                                                         crashreportsystemdetails.a("Location", String.format("%d,%d", new Object[]{Integer.valueOf(i), Integer.valueOf(j)}));
-                                                        crashreportsystemdetails.a("Position hash", Long.valueOf(LongHash.toLong(i, j)));
+                                                        crashreportsystemdetails.a("Position hash", LongHash.toLong(i, j));
                                                         crashreportsystemdetails.a("Generator", cps.chunkProvider.getName());
                                                         throw new ReportedException(crashreport);
                                                     }
@@ -381,7 +377,7 @@ public class WorldLoader implements IWorldLoader {
                                     }
 
                                     private Chunk getOrCreateChunk(ChunkProviderServer ip, int i, int j) {
-                                        Chunk chunk = (Chunk) ip.chunks.get(LongHash.toLong(i, j));
+                                        Chunk chunk = ip.chunks.get(LongHash.toLong(i, j));
                                         chunk = chunk == null ? getChunkAt(ip, i, j) : (!ip.world.ad()) && (!ip.forceChunkLoad) ? ip.emptyChunk : chunk;
 
                                         if (chunk == ip.emptyChunk) return chunk;
@@ -463,16 +459,16 @@ public class WorldLoader implements IWorldLoader {
             ChunkGenerator result = null;
 
             if (section == null) {
-                return result;
+                return null;
             }
             section = section.getConfigurationSection(world);
             if (section == null) {
-                return result;
+                return null;
             }
 
             String name = section.getString("generator");
             if (name == null || name.isEmpty()) {
-                return result;
+                return null;
             }
 
             String[] split = name.split(":", 2);
