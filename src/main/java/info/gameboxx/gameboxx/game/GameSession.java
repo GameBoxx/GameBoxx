@@ -28,6 +28,7 @@ package info.gameboxx.gameboxx.game;
 import info.gameboxx.gameboxx.components.internal.ComponentHolder;
 import info.gameboxx.gameboxx.events.*;
 import org.bukkit.Bukkit;
+import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginManager;
 
@@ -37,7 +38,9 @@ public abstract class GameSession extends ComponentHolder {
     protected Game game;
     protected Arena arena;
     private int id;
+
     private boolean ready = false;
+    private World world = null;
 
     public static final PluginManager PLUGIN_MANAGER = Bukkit.getPluginManager();
 
@@ -90,6 +93,23 @@ public abstract class GameSession extends ComponentHolder {
      */
     public void setReady(boolean ready) {
         this.ready = ready;
+    }
+
+    /**
+     * Get the {@link World} the session is hosted in.
+     * @return The world of the session.
+     */
+    public World getWorld() {
+        return world;
+    }
+
+    /**
+     * Set the {@link World} the session is hosted in.
+     * There is no need to call this as this will be set when new sessions get created.
+     * @param world The world of the session.
+     */
+    public void setWorld(World world) {
+        this.world = world;
     }
 
     /**

@@ -34,6 +34,7 @@ import info.gameboxx.gameboxx.setup.SetupOption;
 import org.apache.commons.io.FileUtils;
 import org.bukkit.WorldCreator;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.io.File;
 import java.io.IOException;
@@ -240,7 +241,7 @@ public class Arena {
         }
 
         //Create the new session.
-        GameSession newSession = game.getNewGameSession(this, id);
+        final GameSession newSession = game.getNewGameSession(this, id);
         sessions[id] = newSession;
         activeSessions.add(newSession);
 
@@ -262,14 +263,27 @@ public class Arena {
                 throw new MissingArenaWorldException(game, this);
             }
             String mapName = getName() + "_" + id;
-            FileUtils.copyDirectory(mapDir, new File(mapName));
+            FileUtils.copyDirectory(mapDir, new File(getGame().getAPI().getServer().getWorldContainer(), mapName));
 
-            WorldCreator wc = new WorldCreator(mapName);
-            wc.createWorld();
-
-            newSession.setReady(true);
+            final WorldCreator wc = new WorldCreator(mapName);
+            new BukkitRunnable() {
+                @Override
+                public void run() {
+                    newSession.setWorld(getGame().getAPI().getWorldLoader().createAsyncWorld(wc));
+                    newSession.setReady(true);
+                }
+            }.runTaskAsynchronously(getGame().getAPI());
         } else if (getType() == ArenaType.GENERATE_WORLD) {
-            //TODO: Implement this.
+            String mapName = getName() + "_" + id;
+            final WorldCreator wc = new WorldCreator(mapName);
+            new BukkitRunnable() {
+                @Override
+                public void run() {
+                    //TODO: Check for WorldBorderCP and load all the chunks to the border.
+                    newSession.setWorld(getGame().getAPI().getWorldLoader().createAsyncWorld(wc));
+                    newSession.setReady(true);
+                }
+            }.runTaskAsynchronously(getGame().getAPI());
         }
 
         return newSession;

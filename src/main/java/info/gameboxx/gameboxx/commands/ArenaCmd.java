@@ -167,7 +167,7 @@ public class ArenaCmd implements CommandExecutor {
             gb.getServer().unloadWorld(world, true);
 
             //Copy the world back to template world directory.
-            File worldFile = new File(".", arena.getName() + "_TEMPLATE");
+            File worldFile = new File(gb.getServer().getWorldContainer(), arena.getName() + "_TEMPLATE");
             File mapDir = new File(gb.getDataFolder().getAbsolutePath() + File.separator + "maps" + File.separator + arena.getGame().getName() + File.separator + arena.getName());
             mapDir.mkdirs();
             try {
