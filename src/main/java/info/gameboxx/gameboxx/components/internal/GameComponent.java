@@ -193,17 +193,6 @@ public abstract class GameComponent {
     }
 
     /**
-     * Get a option value for the specified name.
-     * Make sure that the option is registered!
-     * You can also access options from other components if you know the right name.
-     * @param name The name of the option to get. (Casing doesn't matter)
-     * @return Object with the value.
-     */
-    public Object getOption(String name) {
-        return session.getArena().getOptionValue(name);
-    }
-
-    /**
      * Return a new instance of the component for the provided {@link GameSession}.
      * @param <T>
      * @return A new instance of the component with the session set to the provided session.

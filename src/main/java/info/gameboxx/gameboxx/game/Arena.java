@@ -170,9 +170,10 @@ public class Arena {
 
     /**
      * Get a option value for the specified name.
-     * Make sure that the option is registered!
+     * This method returns the {@link Object} and you should use the methods in {@link GameSession} to get the proper values.
+     * For example {@link GameSession#getLocationOption(String)} this will also replace the world of the location with the world of the session.
      * @param name The name of the option to get. (Casing doesn't matter)
-     * @return Object with the value.
+     * @return Object with the raw value.
      */
     public Object getOptionValue(String name) {
         return setupOptions.get(name.trim().toLowerCase()).getValue();

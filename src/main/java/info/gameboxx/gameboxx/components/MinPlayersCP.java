@@ -75,7 +75,7 @@ public class MinPlayersCP extends GameComponent {
      * @return The minimum player amount required to start.
      */
     public int getMin() {
-        return (int) getOption("minPlayers");
+        return session.getIntOption("minPlayers");
     }
     
     /**
