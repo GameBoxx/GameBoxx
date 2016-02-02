@@ -26,16 +26,20 @@
 package info.gameboxx.gameboxx.user;
 
 
+import com.google.common.collect.Maps;
 import info.gameboxx.gameboxx.GameBoxx;
+import info.gameboxx.gameboxx.components.PlayersCP;
 import info.gameboxx.gameboxx.game.Arena;
 import info.gameboxx.gameboxx.game.Game;
 import info.gameboxx.gameboxx.game.GameSession;
+import info.gameboxx.gameboxx.util.Numbers;
 import info.gameboxx.gameboxx.util.Random;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 
 import java.util.Collections;
+import java.util.Map;
 import java.util.UUID;
 
 public class User {
@@ -81,8 +85,8 @@ public class User {
     public void join(String game) {
         Game gameObj = GameBoxx.get().getGM().getGame(game);
         int rand = Random.Int(gameObj.getArenas().size());
-        Arena arenaObj= (Arena) Collections.singletonList(gameObj.getArenas().values()).get(rand);
-        GameSession sessionObj = Random.Item(arenaObj.getActiveSessions().toArray(new GameSession[arenaObj.getActiveSessions().size()]));
+        Arena arenaObj = (Arena) Collections.singletonList(gameObj.getArenas().values()).get(rand);
+        GameSession sessionObj = getOptimalSession(arenaObj);
         sessionObj.addPlayer(getPlayer());
     }
 
@@ -90,7 +94,7 @@ public class User {
     public void join(String game, String arena) {
         Game gameObj = GameBoxx.get().getGM().getGame(game);
         Arena arenaObj = gameObj.getArena(arena);
-        GameSession sessionObj = Random.Item(arenaObj.getActiveSessions().toArray(new GameSession[arenaObj.getActiveSessions().size()]));
+        GameSession sessionObj = getOptimalSession(arenaObj);
         sessionObj.addPlayer(getPlayer());
     }
 
@@ -104,6 +108,7 @@ public class User {
     /**
      * Get the selected arena using the /select command.
      * Many other commands will use this selected arena.
+     *
      * @return The selected arena.
      */
     public Arena getSelectedArena() {
@@ -113,9 +118,20 @@ public class User {
     /**
      * Set the selected arena.
      * Many commands will use this selected arena.
+     *
      * @param arena The arena to set as selected.
      */
     public void setSelectedArena(Arena arena) {
         this.selectedArena = arena;
+    }
+
+    private GameSession getOptimalSession(Arena arena) {
+        GameSession[] sessions = arena.getSessions();
+        Map<Integer, GameSession> sessionMap = Maps.newHashMap();
+        for (GameSession gameSession : sessions) {
+            sessionMap.put(gameSession.getComponent(PlayersCP.class).getOnlinePlayers().size(), gameSession);
+        }
+        int resKey = Numbers.smallest(sessionMap.keySet().toArray(new Integer[sessionMap.keySet().size()]));
+        return sessionMap.get(resKey);
     }
 }
