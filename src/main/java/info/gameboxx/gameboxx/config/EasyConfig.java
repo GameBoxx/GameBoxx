@@ -70,6 +70,16 @@ public abstract class EasyConfig {
 
     protected transient File file = null;
     protected transient YamlConfiguration conf = new YamlConfiguration();
+    private transient Field[] fields;
+
+    public void setFields(Field... fields) {
+        this.fields = new Field[fields.length];
+        int i = 0;
+        for (Field field : fields) {
+            this.fields[i] = field;
+            i++;
+        }
+    }
 
     /**
      * Set the file (location) for the config.
@@ -104,12 +114,10 @@ public abstract class EasyConfig {
                 }
 
                 conf.load(file);
-                onLoad(conf);
+                if (fields == null) {
+                    onLoad(conf);
+                } else onLoad(conf, fields);
                 conf.save(file);
-            } catch (IOException e) {
-                e.printStackTrace();
-            } catch (InvalidConfigurationException e) {
-                e.printStackTrace();
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -131,13 +139,10 @@ public abstract class EasyConfig {
                     }
                     file.createNewFile();
                 }
-
-                onSave(conf);
+                if (fields == null) {
+                    onSave(conf);
+                } else onSave(conf, fields);
                 conf.save(file);
-            } catch (IOException e) {
-                e.printStackTrace();
-            } catch (InvalidConfigurationException e) {
-                e.printStackTrace();
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -148,7 +153,11 @@ public abstract class EasyConfig {
 
 
     private void onLoad(ConfigurationSection cs) throws Exception {
-        for (Field field : getClass().getDeclaredFields()) {
+        onLoad(cs, getClass().getDeclaredFields());
+    }
+
+    private void onLoad(ConfigurationSection cs, Field[] fields) throws Exception {
+        for (Field field : fields) {
             String path = field.getName().replaceAll("__", ".");
             if (doSkip(field)) {
                 continue;
@@ -162,7 +171,11 @@ public abstract class EasyConfig {
     }
 
     private void onSave(ConfigurationSection cs) throws Exception {
-        for (Field field : getClass().getDeclaredFields()) {
+        onSave(cs, getClass().getDeclaredFields());
+    }
+
+    private void onSave(ConfigurationSection cs, Field[] fields) throws Exception {
+        for (Field field : fields) {
             String path = field.getName().replaceAll("__", ".");
             if (doSkip(field)) {
                 continue;
@@ -239,7 +252,7 @@ public abstract class EasyConfig {
             if (className.length() >= 6 && className.substring(0, 6).equalsIgnoreCase("class ")) {
                 className = className.substring(6);
             }
-            if (className.indexOf("<") >= 0) {
+            if (className.contains("<")) {
                 className = className.substring(0, className.indexOf("<"));
             }
             try {

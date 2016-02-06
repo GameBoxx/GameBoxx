@@ -26,6 +26,8 @@
 package info.gameboxx.gameboxx.components.internal;
 
 import info.gameboxx.gameboxx.GameBoxx;
+import info.gameboxx.gameboxx.config.PluginCfg;
+import info.gameboxx.gameboxx.config.components.ComponentCfg;
 import info.gameboxx.gameboxx.exceptions.ComponentConflictException;
 import info.gameboxx.gameboxx.exceptions.DependencyNotFoundException;
 import info.gameboxx.gameboxx.exceptions.OptionAlreadyExistsException;
@@ -51,6 +53,7 @@ public abstract class GameComponent {
     protected GameBoxx gb;
     protected Game game;
     protected GameSession session;
+    protected ComponentCfg config;
 
     private Set<Class<? extends GameComponent>> depends = new HashSet<Class<? extends GameComponent>>();
     private Set<Class<? extends GameComponent>> softDepends = new HashSet<Class<? extends GameComponent>>();
@@ -68,6 +71,7 @@ public abstract class GameComponent {
     public GameComponent(Game game) {
         this.game = game;
         gb = GameBoxx.get();
+        config = new ComponentCfg(getClass(), getClass().getSimpleName());
     }
 
     /**

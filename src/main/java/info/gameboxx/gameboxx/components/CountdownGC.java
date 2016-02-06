@@ -51,6 +51,10 @@ public class CountdownGC extends GameComponent {
     private String message;
     private CountdownRunnable runnable;
 
+    public CountdownGC(Game game) {
+        super(game);
+    }
+
     /**
      * @see GameComponent
      * @param seconds The amount of seconds to count down from.

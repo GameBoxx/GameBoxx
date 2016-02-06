@@ -39,7 +39,7 @@ import java.util.UUID;
  */
 public class SpectateGC extends GameComponent {
 
-    private List<UUID> spectators = new ArrayList<UUID>();
+    private List<UUID> spectators = new ArrayList<>();
 
     public SpectateGC(Game game) {
         super(game);

@@ -47,6 +47,10 @@ public class MinPlayersCP extends GameComponent {
     private static final Events EVENT = new Events();
     private int min;
 
+    public MinPlayersCP(Game game) {
+        super(game);
+    }
+
     /**
      * @see GameComponent
      * @param min The default value for the minimum amount of players required to start the game.

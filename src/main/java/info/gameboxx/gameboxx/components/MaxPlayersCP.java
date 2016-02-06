@@ -45,6 +45,10 @@ public class MaxPlayersCP extends GameComponent {
 
     private static final Events EVENT = new Events();
     private int max;
+
+    public MaxPlayersCP(Game game) {
+        super(game);
+    }
     
     /**
      * @see GameComponent

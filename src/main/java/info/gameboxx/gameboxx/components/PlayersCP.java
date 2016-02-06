@@ -51,10 +51,10 @@ public class PlayersCP extends GameComponent {
 
     private static final Events EVENT = new Events();
     
-    private Set<UUID> players = new HashSet<UUID>();
-    private Set<UUID> removedPlayers = new HashSet<UUID>();
+    private Set<UUID> players = new HashSet<>();
+    private Set<UUID> removedPlayers = new HashSet<>();
     
-    private Set<Player> cachedPlayers = new HashSet<Player>();
+    private Set<Player> cachedPlayers = new HashSet<>();
 
     public PlayersCP(Game game) {
         super(game);
@@ -146,7 +146,7 @@ public class PlayersCP extends GameComponent {
      * @return The set of original players.
      */
     public Set<UUID> getOriginalPlayers() {
-        Set<UUID> originals = new HashSet<UUID>();
+        Set<UUID> originals = new HashSet<>();
         originals.addAll(players);
         originals.addAll(removedPlayers);
         return originals;
