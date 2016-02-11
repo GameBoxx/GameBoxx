@@ -26,8 +26,6 @@
 package info.gameboxx.gameboxx.components.internal;
 
 import info.gameboxx.gameboxx.GameBoxx;
-import info.gameboxx.gameboxx.config.PluginCfg;
-import info.gameboxx.gameboxx.config.components.ComponentCfg;
 import info.gameboxx.gameboxx.exceptions.ComponentConflictException;
 import info.gameboxx.gameboxx.exceptions.DependencyNotFoundException;
 import info.gameboxx.gameboxx.exceptions.OptionAlreadyExistsException;
@@ -53,7 +51,9 @@ public abstract class GameComponent {
     protected GameBoxx gb;
     protected Game game;
     protected GameSession session;
-    protected ComponentCfg config;
+
+    private String configKey;
+    private String name;
 
     private Set<Class<? extends GameComponent>> depends = new HashSet<Class<? extends GameComponent>>();
     private Set<Class<? extends GameComponent>> softDepends = new HashSet<Class<? extends GameComponent>>();
@@ -71,7 +71,30 @@ public abstract class GameComponent {
     public GameComponent(Game game) {
         this.game = game;
         gb = GameBoxx.get();
-        config = new ComponentCfg(getClass(), getClass().getSimpleName());
+
+        name = getClass().getSimpleName();
+        name = Utils.splitCamelCase(name, " ");
+
+        configKey = name.toLowerCase();
+        configKey = name.replace(" ", "-");
+    }
+
+    /**
+     * Get the display name for the component.
+     * For example for MinPlayersComponent the name would be 'Min Players'.
+     * @return Configuration key name.
+     */
+    public String getName() {
+        return name;
+    }
+
+    /**
+     * Get the config key name for the component to use in game setting files.
+     * For example for MinPlayersComponent the key would be 'min-players'
+     * @return Configuration key name.
+     */
+    public String getConfigKey() {
+        return configKey;
     }
 
     /**
