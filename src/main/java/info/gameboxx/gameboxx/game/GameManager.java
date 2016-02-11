@@ -62,8 +62,9 @@ public class GameManager {
 
         //Add components and validate them.
         gameClass.addComponents();
-        gameClass.registerSetupOptions();
         gameClass.validate();
+        gameClass.loadSettings();
+        gameClass.registerSetupOptions();
 
         //Registered successfully!
         games.put(name, gameClass);
