@@ -32,6 +32,7 @@ import info.gameboxx.gameboxx.game.GameSession;
 import info.gameboxx.gameboxx.util.SoundEffect;
 import info.gameboxx.gameboxx.util.Str;
 
+import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -39,74 +40,39 @@ import org.bukkit.scheduler.BukkitRunnable;
  * Adding this component will add an countdown before the game starts.
  */
 //TODO: Method to start/stop/reset the countdown.
-public class CountdownGC extends GameComponent {
+public class CountdownCP extends GameComponent {
     
     public static final long TICKS_IN_SECOND = 20L;
 
     private int countdown = 30;
-    private int seconds;
-    private int mainInterval;
-    private int startSecondInterval;
-    private SoundEffect sound;
-    private String message;
     private CountdownRunnable runnable;
 
-    public CountdownGC(Game game) {
+    public CountdownCP(Game game) {
         super(game);
-    }
 
-    /**
-     * @see GameComponent
-     * @param seconds The amount of seconds to count down from.
-     * @param mainInterval The interval to send a message and play a sound. (Recommended at 10)
-     * @param startSecondInterval At which time the second countdown starts.
-     * @param sound The {@link SoundEffect} to play when the countdown triggers. (may be null for no sound)
-     * @param message The message to broadcast when the countdown triggers.
-     *                Use the {seconds} placeholder in the message for displaying the time!
-     */
-    public CountdownGC(Game game, int seconds, int mainInterval, int startSecondInterval, 
-            SoundEffect sound, String message) {
-        super(game);
         addDependency(PlayersCP.class);
 
-        this.seconds = seconds;
-        this.countdown = seconds;
-        this.mainInterval = mainInterval;
-        this.startSecondInterval = startSecondInterval;
-        this.sound = sound;
-        this.message = message;
+        addSetting("seconds", 30);
+        addSetting("main-interval", 10);
+        addSetting("start-second-interval", 5);
+        addSetting("sound.name", "NOTE_PLING");
+        addSetting("sound.volume", 0.5f);
+        addSetting("sound.pitch", 1f);
+        addSetting("message", "&6&l{game} will start in &a&l{seconds} &6&lsecond{s}!");
+
         this.runnable = new CountdownRunnable();
     }
 
     @Override
-    public void registerOptions() throws OptionAlreadyExistsException {}
+    public void registerOptions() throws OptionAlreadyExistsException {
+        //No options
+    }
 
     @Override
-    public CountdownGC newInstance(GameSession session) {
-        return (CountdownGC) new CountdownGC(getGame(), seconds, mainInterval, startSecondInterval, 
-                sound, message).setSession(session);
+    public CountdownCP newInstance(GameSession session) {
+        return (CountdownCP) new CountdownCP(getGame()).setSession(session);
     }
-    
-    /**
-     * Executes the countdown.
-     * @return The number of seconds that the countdown has left.
-     */
-    public void count() {
-        if (countdown <= 0) {
-            countdown = 0;
-            runnable.cancel();
-            // TODO: Start the session.
-            return;
-        }
-        if (countdown % mainInterval == 0 || countdown <= startSecondInterval) {
-            sound.play(getDependency(PlayersCP.class).getOnlinePlayers());
-            //TODO: Have a message component or put this somewhere else.
-            for (Player player : getDependency(PlayersCP.class).getOnlinePlayers()) {
-                player.sendMessage(Str.color(message));
-            }
-        }
-        countdown--;
-    }
+
 
     /**
      * Get the remaining countdown time in seconds.
@@ -130,15 +96,7 @@ public class CountdownGC extends GameComponent {
      * @return Seconds.
      */
     public int getSeconds() {
-        return seconds;
-    }
-
-    /**
-     * Set the amount in seconds to start the countdown from.
-     * @param seconds The seconds to start the countdown from.
-     */
-    public void setSeconds(int seconds) {
-        this.seconds = seconds;
+        return getSettings().getInt("seconds");
     }
 
     /**
@@ -146,17 +104,7 @@ public class CountdownGC extends GameComponent {
      * @return The interval between counts in seconds.
      */
     public int getMainInterval() {
-        return mainInterval;
-    }
-
-    /**
-     * Set the main interval between counts.
-     * It will be used like: (time % interval == 0)
-     * The higher it is the less frequent it will count.
-     * @param mainInterval The interval between counts in seconds.
-     */
-    public void setMainInterval(int mainInterval) {
-        this.mainInterval = mainInterval;
+        return getSettings().getInt("main-interval");
     }
 
     /**
@@ -164,16 +112,7 @@ public class CountdownGC extends GameComponent {
      * @return The start time for the second interval.
      */
     public int getStartSecondInterval() {
-        return startSecondInterval;
-    }
-
-    /**
-     * Set the start time in seconds when to start the second interval.
-     * For example if you set it to 5 it would count like 30, 20, 10, 5, 4, 3, 2, 1...
-     * @param startSecondInterval The start time for the second interval.
-     */
-    public void setStartSecondInterval(int startSecondInterval) {
-        this.startSecondInterval = startSecondInterval;
+        return getSettings().getInt("start-second-interval");
     }
 
     /**
@@ -181,34 +120,18 @@ public class CountdownGC extends GameComponent {
      * @return The {@link SoundEffect} to play on each count. May be null if there is no sound to play!
      */
     public SoundEffect getSound() {
-        return sound;
-    }
-
-    /**
-     * Set the {@link SoundEffect} to play on each count.
-     * @param sound The {@link SoundEffect} to play on each count. Set to null to have no sound play.
-     */
-    public void setSound(SoundEffect sound) {
-        this.sound = sound;
+        //TODO: Make SoundEffect serializable
+        return getSettings().getString("sound.name").isEmpty() ? null : new SoundEffect(Sound.valueOf(getSettings().getString("sound.name")), (float) getSettings().getDouble("sound.volume"), (float) getSettings().getDouble("sound.pitch"));
     }
 
     /**
      * Get the message that will be broadcasted on each count.
-     * Before displaying the message replace {seconds} with the remaining seconds on the countdown.
      * @return The message that will be broadcasted.
      */
     public String getMessage() {
-        return message;
+        return getSettings().getString("message").replace("{game}", game.getName()).replace("{seconds}", String.valueOf(getCountdown())).replace("{s}", getCountdown() == 1 ? "" : "s");
     }
 
-    /**
-     * Set the message that will be broadcasted on each count.
-     * Use the {seconds} placeholder in the message for displaying the time!
-     * @param message The message that will be broadcasted.
-     */
-    public void setMessage(String message) {
-        this.message = message;
-    }
     
     /**
      * Starts the countdown associated with this class.
@@ -239,13 +162,32 @@ public class CountdownGC extends GameComponent {
     public void resumeCountdown() {
         startCountdown();
     }
+
+
+    public void count() {
+        if (countdown <= 0) {
+            countdown = 0;
+            runnable.cancel();
+            // TODO: Start the session.
+            return;
+        }
+        if (countdown % getMainInterval() == 0 || countdown <= getStartSecondInterval()) {
+            SoundEffect sound = getSound();
+            if (sound != null) {
+                sound.play(getDependency(PlayersCP.class).getOnlinePlayers());
+            }
+            //TODO: Have a message component or put this somewhere else.
+            for (Player player : getDependency(PlayersCP.class).getOnlinePlayers()) {
+                player.sendMessage(Str.color(getMessage()));
+            }
+        }
+        countdown--;
+    }
     
     private class CountdownRunnable extends BukkitRunnable {
-        
         @Override
         public void run() {
             count();
         }
-        
     }
 }
