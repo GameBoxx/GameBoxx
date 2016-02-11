@@ -73,6 +73,25 @@ public class Utils {
     }
 
     /**
+     * Split a camel cased string and put something else in between each word.
+     * For example a space and then a string like 'GameSession' would change to 'Game Session'
+     * Some other examples: 'SimpleXMLParser' -> 'Simple XML Parser', 'May12' -> 'May 12'
+     * http://stackoverflow.com/a/2560017
+     * @param string The string to split and replace.
+     * @param splitReplace The string to put between each split.
+     * @return The formatted string.
+     */
+    public static String splitCamelCase(String string, String splitReplace) {
+        return string.replaceAll(
+                String.format("%s|%s|%s",
+                        "(?<=[A-Z])(?=[A-Z][a-z])",
+                        "(?<=[^A-Z])(?=[A-Z])",
+                        "(?<=[A-Za-z])(?=[^A-Za-z])"
+                ), splitReplace
+        );
+    }
+
+    /**
      * Fixes the specified list of command arguments.
      * It will combine arguments that are quoted with spaces.
      * For example the following string: 'Hello there "you''re awesome"!'
