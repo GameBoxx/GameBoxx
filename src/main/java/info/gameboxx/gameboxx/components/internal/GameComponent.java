@@ -34,6 +34,7 @@ import info.gameboxx.gameboxx.game.GameManager;
 import info.gameboxx.gameboxx.game.GameSession;
 import info.gameboxx.gameboxx.setup.OptionData;
 import info.gameboxx.gameboxx.util.Utils;
+import org.bukkit.configuration.ConfigurationSection;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -55,11 +56,14 @@ public abstract class GameComponent {
     private String configKey;
     private String name;
 
-    private Set<Class<? extends GameComponent>> depends = new HashSet<Class<? extends GameComponent>>();
-    private Set<Class<? extends GameComponent>> softDepends = new HashSet<Class<? extends GameComponent>>();
-    private Set<Class<? extends GameComponent>> conflicts = new HashSet<Class<? extends GameComponent>>();
+    private ConfigurationSection config;
+    private Map<String, Object> defaultSettings = new HashMap<>();
 
-    private Map<Class<? extends GameComponent>, GameComponent> dependencies = new HashMap<Class<? extends GameComponent>, GameComponent>();
+    private Set<Class<? extends GameComponent>> depends = new HashSet<>();
+    private Set<Class<? extends GameComponent>> softDepends = new HashSet<>();
+    private Set<Class<? extends GameComponent>> conflicts = new HashSet<>();
+
+    private Map<Class<? extends GameComponent>, GameComponent> dependencies = new HashMap<>();
 
     /**
      * Instantiate a new game component for the specified game.
@@ -73,15 +77,15 @@ public abstract class GameComponent {
         gb = GameBoxx.get();
 
         name = getClass().getSimpleName();
+        name = name.substring(0, name.length()-2);
         name = Utils.splitCamelCase(name, " ");
 
-        configKey = name.toLowerCase();
-        configKey = name.replace(" ", "-");
+        configKey = name.replace(" ", "-").toLowerCase();
     }
 
     /**
      * Get the display name for the component.
-     * For example for MinPlayersComponent the name would be 'Min Players'.
+     * For example for MinPlayersCP the name would be 'Min Players'.
      * @return Configuration key name.
      */
     public String getName() {
@@ -90,12 +94,51 @@ public abstract class GameComponent {
 
     /**
      * Get the config key name for the component to use in game setting files.
-     * For example for MinPlayersComponent the key would be 'min-players'
+     * For example for MinPlayersCP the key would be 'min-players'
      * @return Configuration key name.
      */
     public String getConfigKey() {
         return configKey;
     }
+
+
+    /**
+     * Get the map with all the default configuration settings.
+     * @return Map with default configuration settings.
+     */
+    public Map<String, Object> getDefaultSettings() {
+        return defaultSettings;
+    }
+
+    /**
+     * Add a setting for the component which will be added to the game configuration.
+     * @param key The key name for the configuration it can contain dots like normal config sections to seperate sections.
+     * @param defaultValue The value to put in the config for default.
+     */
+    protected void addSetting(String key, Object defaultValue) {
+        defaultSettings.put(key, defaultValue);
+    }
+
+    /**
+     * Get the configuration settings for this component.
+     * <b>This will be {@code null} in the constructor as it gets set later on!</b>
+     * Use the key names that you specified with {@link #addSetting(String, Object)}
+     * @return {@link ConfigurationSection} for the component with all the settings.
+     */
+    public ConfigurationSection getSettings() {
+        return config;
+    }
+
+    /**
+     * Set the configuration section for the component.
+     * Do not call this manually!
+     * It will be set by the Game/GameSession after everything is loaded.
+     * @param config The ConfigurationSection for this component.
+     */
+    public void setConfig(ConfigurationSection config) {
+        this.config = config;
+    }
+
 
     /**
      * Called after all components have been added to the game to register setup options.
