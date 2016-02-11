@@ -97,8 +97,8 @@ public class MaxPlayersCP extends GameComponent {
                 
             } else if (playerCount + 1 >= maxPlayers) {
                 //Reduce countdown when max players have joined.
-                if (session.hasComponent(CountdownGC.class)) {
-                    CountdownGC countdown = session.getComponent(CountdownGC.class);
+                if (session.hasComponent(CountdownCP.class)) {
+                    CountdownCP countdown = session.getComponent(CountdownCP.class);
                     //TODO: No magic number add config option.
                     if (countdown.getCountdown() > 5) {
                         countdown.setCountdown(5);

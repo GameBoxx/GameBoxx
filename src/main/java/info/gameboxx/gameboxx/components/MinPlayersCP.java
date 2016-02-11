@@ -100,8 +100,8 @@ public class MinPlayersCP extends GameComponent {
         public void onPlayerJoinSessionEvent(PlayerJoinSessionEvent event) {
                 if (event.getJoinedSession().hasComponent(MinPlayersCP.class)) {
                     MinPlayersCP players = (MinPlayersCP) event.getJoinedSession().getComponent(MinPlayersCP.class);
-                    if (event.getJoinedSession().hasComponent(CountdownGC.class) && players.hasMinimumPlayers()) {
-                        event.getJoinedSession().getComponent(CountdownGC.class).startCountdown();
+                    if (event.getJoinedSession().hasComponent(CountdownCP.class) && players.hasMinimumPlayers()) {
+                        event.getJoinedSession().getComponent(CountdownCP.class).startCountdown();
                     }
                 }
         }

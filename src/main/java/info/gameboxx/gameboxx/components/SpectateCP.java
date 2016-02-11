@@ -37,11 +37,11 @@ import java.util.UUID;
 /**
  * Adding this component allows players to spectate the game.
  */
-public class SpectateGC extends GameComponent {
+public class SpectateCP extends GameComponent {
 
     private List<UUID> spectators = new ArrayList<>();
 
-    public SpectateGC(Game game) {
+    public SpectateCP(Game game) {
         super(game);
     }
 
@@ -49,8 +49,8 @@ public class SpectateGC extends GameComponent {
     public void registerOptions() throws OptionAlreadyExistsException {}
 
     @Override
-    public SpectateGC newInstance(GameSession session) {
-        return (SpectateGC) new SpectateGC(getGame()).setSession(session);
+    public SpectateCP newInstance(GameSession session) {
+        return (SpectateCP) new SpectateCP(getGame()).setSession(session);
     }
 
     /**
