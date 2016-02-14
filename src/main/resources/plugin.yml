@@ -20,3 +20,6 @@ commands:
   setup:
     description: Arena setup.
     aliases: [setuparena, arenasetup, as, sa, arenas, sarena, set]
+  option:
+    description: Arena setup options.
+    aliases: [set, setoption, options, arenaoption, ao, opt]

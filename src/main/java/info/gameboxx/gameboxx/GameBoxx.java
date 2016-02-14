@@ -104,6 +104,7 @@ public class GameBoxx extends JavaPlugin {
         getCommand("select").setExecutor(new SelectCmd(this));
         getCommand("arena").setExecutor(new ArenaCmd(this));
         getCommand("setup").setExecutor(new SetupCmd(this));
+        getCommand("option").setExecutor(new OptionCmd(this));
 
         registerListeners();
 
