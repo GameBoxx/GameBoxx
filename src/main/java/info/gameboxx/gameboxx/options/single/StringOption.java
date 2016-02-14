@@ -93,6 +93,9 @@ public class StringOption extends SingleOption {
     }
 
     public StringOption match(List<String> strings) {
+        if (strings == null) {
+            return this;
+        }
         for (String str : strings) {
             str.toLowerCase();
         }
@@ -112,6 +115,9 @@ public class StringOption extends SingleOption {
     }
 
     public StringOption match(Map<String, List<String>> strings) {
+        if (strings == null) {
+            return this;
+        }
         for (Map.Entry<String, List<String>> entry : strings.entrySet()) {
             for (String str : entry.getValue()) {
                 str.toLowerCase();
