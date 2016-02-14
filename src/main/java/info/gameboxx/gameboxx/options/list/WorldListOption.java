@@ -65,4 +65,9 @@ public class WorldListOption extends ListOption {
     public World getValue(int index) {
         return (World)getValueOrDefault(index);
     }
+
+    @Override
+    public WorldListOption clone() {
+        return new WorldListOption(name, (World)defaultValue);
+    }
 }

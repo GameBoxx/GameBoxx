@@ -96,4 +96,9 @@ public class BoolOption extends SingleOption {
     public Class getRawClass() {
         return Boolean.class;
     }
+
+    @Override
+    public BoolOption clone() {
+        return new BoolOption(name, (Boolean)defaultValue);
+    }
 }

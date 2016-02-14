@@ -78,4 +78,9 @@ public class DoubleListOption extends ListOption {
     public Double getValue(int index) {
         return (Double)getValueOrDefault(index);
     }
+
+    @Override
+    public DoubleListOption clone() {
+        return new DoubleListOption(name, (Double)defaultValue).min(min).max(max);
+    }
 }

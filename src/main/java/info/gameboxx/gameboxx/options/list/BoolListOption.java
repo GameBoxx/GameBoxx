@@ -64,4 +64,9 @@ public class BoolListOption extends ListOption {
     public Boolean getValue(int index) {
         return (Boolean)getValueOrDefault(index);
     }
+
+    @Override
+    public BoolListOption clone() {
+        return new BoolListOption(name, (Boolean)defaultValue);
+    }
 }

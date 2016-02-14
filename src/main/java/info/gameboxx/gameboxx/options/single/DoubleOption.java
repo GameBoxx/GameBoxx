@@ -107,4 +107,9 @@ public class DoubleOption extends SingleOption {
     public Class getRawClass() {
         return Double.class;
     }
+
+    @Override
+    public DoubleOption clone() {
+        return new DoubleOption(name, (Double)defaultValue).min(min).max(max);
+    }
 }

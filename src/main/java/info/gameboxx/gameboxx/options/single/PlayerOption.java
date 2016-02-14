@@ -131,4 +131,9 @@ public class PlayerOption extends SingleOption {
     public Class getRawClass() {
         return Player.class;
     }
+
+    @Override
+    public PlayerOption clone() {
+        return new PlayerOption(name, (Player)defaultValue);
+    }
 }

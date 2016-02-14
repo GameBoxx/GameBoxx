@@ -198,4 +198,9 @@ public class StringOption extends SingleOption {
     public Class getRawClass() {
         return String.class;
     }
+
+    @Override
+    public StringOption clone() {
+        return new StringOption(name, (String)defaultValue).minChars(minChars).maxChars(maxChars).match(matchList).match(matchMap).matchRegex(regex);
+    }
 }

@@ -78,4 +78,9 @@ public class IntListOption extends ListOption {
     public Integer getValue(int index) {
         return (Integer)getValueOrDefault(index);
     }
+
+    @Override
+    public IntListOption clone() {
+        return new IntListOption(name, (Integer)defaultValue).min(min).max(max);
+    }
 }

@@ -189,4 +189,9 @@ public class BlockOption extends SingleOption {
     public Class getRawClass() {
         return Block.class;
     }
+
+    @Override
+    public BlockOption clone() {
+        return new BlockOption(name, (Block)defaultValue);
+    }
 }

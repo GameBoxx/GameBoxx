@@ -65,4 +65,9 @@ public class BlockListOption extends ListOption {
     public Block getValue(int index) {
         return (Block)getValueOrDefault(index);
     }
+
+    @Override
+    public BlockListOption clone() {
+        return new BlockListOption(name, (Block)defaultValue);
+    }
 }

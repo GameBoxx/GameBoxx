@@ -184,4 +184,9 @@ public class LocationOption extends SingleOption {
     public Class getRawClass() {
         return Location.class;
     }
+
+    @Override
+    public LocationOption clone() {
+        return new LocationOption(name, (Location) defaultValue);
+    }
 }

@@ -65,4 +65,9 @@ public class LocationListOption extends ListOption {
     public Location getValue(int index) {
         return (Location)getValueOrDefault(index);
     }
+
+    @Override
+    public LocationListOption clone() {
+        return new LocationListOption(name, (Location) defaultValue);
+    }
 }

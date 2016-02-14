@@ -107,4 +107,9 @@ public class IntOption extends SingleOption {
     public Class getRawClass() {
         return Integer.class;
     }
+
+    @Override
+    public IntOption clone() {
+        return new IntOption(name, (Integer)defaultValue).min(min).max(max);
+    }
 }

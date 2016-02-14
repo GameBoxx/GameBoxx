@@ -90,4 +90,9 @@ public abstract class Option {
         return this;
     }
 
+    /**
+     * Clone the option by creating a new instance.
+     * @return Cloned option
+     */
+    public abstract Option clone();
 }

@@ -149,4 +149,9 @@ public class StringListOption extends ListOption {
         }
         return ((StringOption)value.get(index)).getMatchResult();
     }
+
+    @Override
+    public StringListOption clone() {
+        return new StringListOption(name, (String)defaultValue).minChars(minChars).maxChars(maxChars).match(matchList).match(matchMap).matchRegex(regex);
+    }
 }

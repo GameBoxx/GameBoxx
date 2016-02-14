@@ -65,4 +65,9 @@ public class PlayerListOption extends ListOption {
     public Player getValue(int index) {
         return (Player)getValueOrDefault(index);
     }
+
+    @Override
+    public PlayerListOption clone() {
+        return new PlayerListOption(name, (Player) defaultValue);
+    }
 }

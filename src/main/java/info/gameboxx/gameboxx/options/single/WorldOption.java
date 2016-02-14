@@ -118,4 +118,9 @@ public class WorldOption extends SingleOption {
     public Class getRawClass() {
         return World.class;
     }
+
+    @Override
+    public WorldOption clone() {
+        return new WorldOption(name, (World)defaultValue);
+    }
 }
