@@ -26,11 +26,11 @@
 package info.gameboxx.gameboxx.game;
 
 import info.gameboxx.gameboxx.components.internal.GameComponent;
-import info.gameboxx.gameboxx.exceptions.InvalidSetupDataException;
 import info.gameboxx.gameboxx.exceptions.MissingArenaWorldException;
 import info.gameboxx.gameboxx.exceptions.SessionLimitException;
-import info.gameboxx.gameboxx.setup.OptionData;
-import info.gameboxx.gameboxx.setup.SetupOption;
+import info.gameboxx.gameboxx.options.ListOption;
+import info.gameboxx.gameboxx.options.Option;
+import info.gameboxx.gameboxx.options.SingleOption;
 import org.apache.commons.io.FileUtils;
 import org.bukkit.WorldCreator;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -38,10 +38,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Base Arena class.
@@ -54,7 +51,7 @@ public class Arena {
     private ArenaType type;
     private String name;
 
-    private Map<String, SetupOption> setupOptions = new HashMap<String, SetupOption>();
+    private Map<String, Option> setupOptions = new HashMap<>();
 
     private GameSession[] sessions;
     private Set<GameSession> activeSessions = new HashSet<>();
@@ -122,11 +119,15 @@ public class Arena {
         config.set("type", type.toString());
         config.set("maxSessions", maxSessions);
 
-        for (SetupOption option : setupOptions.values()) {
+        for (Option option : setupOptions.values()) {
             if (option == null) {
                 continue;
             }
-            config.set(option.getName(), option.getValue());
+            if (option instanceof SingleOption) {
+                config.set(option.getName(), ((SingleOption)option).getValue());
+            } else if (option instanceof ListOption) {
+                config.set(option.getName(), ((ListOption)option).getValues());
+            }
         }
 
         try {
@@ -141,42 +142,36 @@ public class Arena {
      * Any setup options that are missing or that have corrupt data will be put as null in the setupOptions map.
      */
     public void loadOptions() {
-        for (OptionData option : game.getSetupOptions().values()) {
+        for (Option option : game.getSetupOptions().values()) {
             if (config.contains(option.getName())) {
-                //Load option from config.
-                try {
-                    setupOptions.put(option.getName().trim().toLowerCase(), option.getType().newOption(option.getName(), option.getDescription(), config));
-                } catch (InvalidSetupDataException e) {
+                //Load option from config. (Try to parse config value)
+                Option clone = option.clone();
+                if (clone instanceof SingleOption) {
+                    ((SingleOption)clone).parse(config.get(option.getName()));
+                } else if (clone instanceof ListOption) {
+                    List<?> list = config.getList(option.getName());
+                    ((ListOption)clone).parse(false, list.toArray(new Object[list.size()]));
+                }
+                if (clone.hasError()) {
                     game.getPlugin().getLogger().warning("Can't load arena '" + getName() + "' because the data is corrupt. Please run setup again to fix corrupt setup data.");
-                    game.getPlugin().getLogger().warning(e.getMessage());
-                    setupOptions.put(option.getName().trim().toLowerCase(), null);
+                    game.getPlugin().getLogger().warning(clone.getError() + " [option=" + clone.getName() + "]");
                 }
+                setupOptions.put(option.getName().trim().toLowerCase(), clone);
             } else {
-                //Load option from defaults registered by components.
-                if (option.getDefaultValue() == null) {
-                    setupOptions.put(option.getName().trim().toLowerCase(), null);
-                } else {
-                    try {
-                        setupOptions.put(option.getName().trim().toLowerCase(), option.getType().newOption(option.getName(), option.getDescription(), option.getDefaultValue()));
-                    } catch (InvalidSetupDataException e) {
-                        game.getPlugin().getLogger().warning("Can't load arena '" + getName() + "' because the default value is invalid. Please run setup to fix any issues.");
-                        game.getPlugin().getLogger().warning(e.getMessage());
-                        setupOptions.put(option.getName().trim().toLowerCase(), null);
-                    }
-                }
+                setupOptions.put(option.getName().trim().toLowerCase(), option.clone());
             }
         }
     }
 
     /**
-     * Get a option value for the specified name.
-     * This method returns the {@link Object} and you should use the methods in {@link GameSession} to get the proper values.
-     * For example {@link GameSession#getLocationOption(String)} this will also replace the world of the location with the world of the session.
+     * Get a option for the specified name.
+     * This method returns the {@link Option} and you should use the methods in {@link GameSession} to get the proper values.
+     * For example {@link GameSession#getLocation(String)} this will also replace the world of the location with the world of the session.
      * @param name The name of the option to get. (Casing doesn't matter)
-     * @return Object with the raw value.
+     * @return Option which most likely contains the config value unless it's not set.
      */
-    public Object getOptionValue(String name) {
-        return setupOptions.get(name.trim().toLowerCase()).getValue();
+    public Option getOption(String name) {
+        return setupOptions.get(name.trim().toLowerCase());
     }
 
     /**
@@ -184,9 +179,19 @@ public class Arena {
      * @return True when all setup options have been set up.
      */
     public boolean isSetupCorrectly() {
-        for (SetupOption option : setupOptions.values()) {
+        for (Option option : setupOptions.values()) {
             if (option == null) {
                 return false;
+            }
+            if (option instanceof SingleOption) {
+                if (!((SingleOption)option).hasValue()) {
+                    return false;
+                }
+            }
+            if (option instanceof ListOption) {
+                if (((ListOption)option).getValues().isEmpty()) {
+                    return false;
+                }
             }
         }
         return true;

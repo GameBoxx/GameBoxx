@@ -25,17 +25,15 @@
 
 package info.gameboxx.gameboxx.components;
 
-import org.bukkit.event.EventHandler;
-
+import info.gameboxx.gameboxx.components.internal.ComponentListener;
+import info.gameboxx.gameboxx.components.internal.GameComponent;
 import info.gameboxx.gameboxx.events.PlayerJoinSessionEvent;
 import info.gameboxx.gameboxx.exceptions.DependencyNotFoundException;
 import info.gameboxx.gameboxx.exceptions.OptionAlreadyExistsException;
 import info.gameboxx.gameboxx.game.Game;
-import info.gameboxx.gameboxx.components.internal.ComponentListener;
-import info.gameboxx.gameboxx.components.internal.GameComponent;
 import info.gameboxx.gameboxx.game.GameSession;
-import info.gameboxx.gameboxx.setup.OptionData;
-import info.gameboxx.gameboxx.setup.SetupType;
+import info.gameboxx.gameboxx.options.single.IntOption;
+import org.bukkit.event.EventHandler;
 
 /**
  * Adding this component will make it so the game wont start till the minimum player count is reached.
@@ -66,7 +64,7 @@ public class MinPlayersCP extends GameComponent {
 
     @Override
     public void registerOptions() throws OptionAlreadyExistsException {
-        game.registerSetupOption(new OptionData(SetupType.INT, "minPlayers", "The minimum amount of players required to start a game.", min));
+        new IntOption("MinPlayers", 2).min(1).setDescription("The minimum amount of players required to start a game.");
     }
 
     @Override
@@ -79,7 +77,7 @@ public class MinPlayersCP extends GameComponent {
      * @return The minimum player amount required to start.
      */
     public int getMin() {
-        return session.getIntOption("minPlayers");
+        return session.getInt("minPlayers");
     }
     
     /**

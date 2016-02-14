@@ -29,7 +29,7 @@ import info.gameboxx.gameboxx.GameBoxx;
 import info.gameboxx.gameboxx.components.internal.ComponentHolder;
 import info.gameboxx.gameboxx.components.internal.GameComponent;
 import info.gameboxx.gameboxx.exceptions.*;
-import info.gameboxx.gameboxx.setup.OptionData;
+import info.gameboxx.gameboxx.options.Option;
 import info.gameboxx.gameboxx.util.Utils;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.InvalidConfigurationException;
@@ -60,7 +60,7 @@ public abstract class Game extends ComponentHolder {
     private File configFile;
     private YamlConfiguration config;
     private Map<String, Object> defaultSettings = new HashMap<>();
-    private Map<String, OptionData> setupOptions = new HashMap<>();
+    private Map<String, Option> setupOptions = new HashMap<>();
 
     private File arenaFolder;
     private Map<String, Arena> arenas = new HashMap<>();
@@ -232,19 +232,27 @@ public abstract class Game extends ComponentHolder {
     //region Setup options
 
     /**
-     * Register a new setup option.
-     * This is used for components to register options that have to be set per arena.
+     * Register a new setup option. (Make sure you give the option a name!)
+     * This can be used to register custom setup options that your game needs.
+     * It's also used for components to register options.
      * Arenas will fail to create sessions if not all the options have been set up correctly.
-
-     * @throws OptionAlreadyExistsException When an option with the specified name is already registered.
+     * @throws OptionAlreadyExistsException When an option with the specified name is already registered or when there is no option name specified.
      */
-    public void registerSetupOption(OptionData option) throws OptionAlreadyExistsException {
+    public void registerSetupOption(Option option) throws OptionAlreadyExistsException {
         String name = option.getName().trim().toLowerCase();
-        if (setupOptions.containsKey(option.toString())) {
+        if (name.isEmpty() || setupOptions.containsKey(option.toString())) {
             throw new OptionAlreadyExistsException(name);
         }
         setupOptions.put(name, option);
     }
+
+    /**
+     * Used for games to register custom setup options for the game.
+     * These are component independent options for custom gameplay elements.
+     * Call {@link #registerSetupOption(Option)} for each option you want to register in this method.
+     * @throws OptionAlreadyExistsException When an option with the specified name is already registered or when there is no option name specified.
+     */
+    public abstract void registerOptions() throws OptionAlreadyExistsException;
 
     /**
      * Go through all the components and register setup options.
@@ -259,9 +267,9 @@ public abstract class Game extends ComponentHolder {
 
     /**
      * Get a map with all the setup options.
-     * @return Map with setup options where the key is the name and the value is the {@link OptionData}.
+     * @return Map with setup options where the key is the name and the value is the {@link Option}.
      */
-    public Map<String, OptionData> getSetupOptions() {
+    public Map<String, Option> getSetupOptions() {
         return setupOptions;
     }
     //endregion

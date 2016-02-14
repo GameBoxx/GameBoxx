@@ -27,7 +27,14 @@ package info.gameboxx.gameboxx.game;
 
 import info.gameboxx.gameboxx.components.internal.ComponentHolder;
 import info.gameboxx.gameboxx.events.*;
-import info.gameboxx.gameboxx.util.cuboid.Cuboid;
+import info.gameboxx.gameboxx.exceptions.InvalidOptionCastException;
+import info.gameboxx.gameboxx.exceptions.OptionNotRegisteredException;
+import info.gameboxx.gameboxx.exceptions.OptionNotSetException;
+import info.gameboxx.gameboxx.options.ListOption;
+import info.gameboxx.gameboxx.options.Option;
+import info.gameboxx.gameboxx.options.SingleOption;
+import info.gameboxx.gameboxx.options.list.*;
+import info.gameboxx.gameboxx.options.single.*;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -35,10 +42,8 @@ import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginManager;
 
-import java.util.ArrayList;
 import java.util.List;
 
-//TODO: Implement this class it will handle the game flow like joining/leaving/starting/stopping/resetting etc. All of that stuff will be dependent on components obviously.
 public abstract class GameSession extends ComponentHolder {
 
     protected Game game;
@@ -82,6 +87,23 @@ public abstract class GameSession extends ComponentHolder {
     }
 
     /**
+     * Get the {@link World} the session is hosted in.
+     * @return The world of the session.
+     */
+    public World getWorld() {
+        return world;
+    }
+
+    /**
+     * Set the {@link World} the session is hosted in.
+     * There is no need to call this as this will be set when new sessions get created.
+     * @param world The world of the session.
+     */
+    public void setWorld(World world) {
+        this.world = world;
+    }
+
+    /**
      * Get whether or not the session is ready to be joined and played.
      * After the world is generated this will be set to true.
      * While this is false players shouldn't be able to join etc.
@@ -101,22 +123,8 @@ public abstract class GameSession extends ComponentHolder {
         this.ready = ready;
     }
 
-    /**
-     * Get the {@link World} the session is hosted in.
-     * @return The world of the session.
-     */
-    public World getWorld() {
-        return world;
-    }
 
-    /**
-     * Set the {@link World} the session is hosted in.
-     * There is no need to call this as this will be set when new sessions get created.
-     * @param world The world of the session.
-     */
-    public void setWorld(World world) {
-        this.world = world;
-    }
+    //region Management
 
     /**
      * Adds a player to a session.
@@ -150,210 +158,163 @@ public abstract class GameSession extends ComponentHolder {
         PLUGIN_MANAGER.callEvent(new SessionResetEvent(this));
         // TODO: Handle implementation later
     }
+    //endregion
 
 
-    /**
-     * Get a {@link Location} option value for the specified name.
-     * Make sure that the option is registered!
-     * @param name The name of the option to get. (Casing doesn't matter)
-     * @return Location with the proper world.
-     */
-    public Location getLocationOption(String name) {
-        Object value = arena.getOptionValue(name);
-        if (value instanceof Location) {
-            Location loc = (Location)value;
-            if (getWorld() == null) {
-                return loc;
-            }
-            loc.setWorld(getWorld());
-            return loc;
-        }
-        return null;
-    }
+    //region Options
 
     /**
-     * Get a list with {@link Location} option values for the specified name.
-     * Make sure that the option is registered!
+     * Get a option value for the specified name.
+     * You should only use this method for custom options because all the other options have their own methods like {@link #getLocation(String)} etc.
      * @param name The name of the option to get. (Casing doesn't matter)
-     * @return List with locations with the proper world.
+     * @param optionClass The type of option for example LocationOption.class.
+     * @return The value as {@link Object}. You can cast this to the value of the optionclass you specified.
      */
-    public List<Location> getLocationsOption(String name) {
-        Object value = arena.getOptionValue(name);
-        if (value instanceof List) {
-            try {
-                List<Location> locations = (List<Location>)value;
-                if (getWorld() == null) {
-                    return locations;
-                }
-                for (Location loc : locations) {
-                    loc.setWorld(getWorld());
-                }
-                return locations;
-            } catch (ClassCastException e) {
-                return null;
-            }
+    public Object getObject(String name, Class<? extends Option> optionClass) {
+        Option option = arena.getOption(name);
+        if (option == null) {
+            throw new OptionNotRegisteredException(name);
         }
-        return null;
-    }
 
-    /**
-     * Get a {@link Block} option value for the specified name.
-     * Make sure that the option is registered!
-     * @param name The name of the option to get. (Casing doesn't matter)
-     * @return Block with the proper world.
-     */
-    public Block getBlockOption(String name) {
-        Object value = arena.getOptionValue(name);
-        if (value instanceof Location) {
-            Location loc = (Location)value;
-            if (getWorld() == null) {
-                return loc.getBlock();
-            }
-            loc.setWorld(getWorld());
-            return loc.getBlock();
+        if (!option.getClass().equals(optionClass)) {
+            throw new InvalidOptionCastException(name, optionClass, option.getClass());
         }
-        return null;
-    }
 
-    /**
-     * Get a list with {@link Block} option values for the specified name.
-     * Make sure that the option is registered!
-     * @param name The name of the option to get. (Casing doesn't matter)
-     * @return List with blocks with the proper world.
-     */
-    public List<Block> getBlocksOption(String name) {
-        Object value = arena.getOptionValue(name);
-        if (value instanceof List) {
-            try {
-                List<Location> locations = (List<Location>)value;
-                List<Block> blocks = new ArrayList<>();
-                for (Location loc : locations) {
-                    if (getWorld() != null) {
-                        loc.setWorld(getWorld());
-                    }
-                    blocks.add(loc.getBlock());
-                }
-                return blocks;
-            } catch (ClassCastException e) {
-                return null;
-            }
+        Object value = null;
+        if (option instanceof SingleOption) {
+            value = ((SingleOption)option).getValue();
+        } else if (option instanceof ListOption) {
+            value = ((ListOption)option).getValues();
         }
-        return null;
-    }
 
-    /**
-     * Get a {@link Cuboid} option value for the specified name.
-     * Make sure that the option is registered!
-     * @param name The name of the option to get. (Casing doesn't matter)
-     * @return Cuboid with the proper world.
-     */
-    public Cuboid getCuboidOption(String name) {
-        Object value = arena.getOptionValue(name);
-        if (value instanceof Cuboid) {
-            Cuboid cub = (Cuboid)value;
-            if (getWorld() == null) {
-                return cub;
-            }
-            cub.setWorld(getWorld());
-            return cub;
+        if (value == null) {
+            throw new OptionNotSetException(name);
         }
-        return null;
-    }
-
-    /**
-     * Get a list with {@link Cuboid} option values for the specified name.
-     * Make sure that the option is registered!
-     * @param name The name of the option to get. (Casing doesn't matter)
-     * @return List with locations with the proper world.
-     */
-    public List<Cuboid> getLCuboidsOption(String name) {
-        Object value = arena.getOptionValue(name);
-        if (value instanceof List) {
-            try {
-                List<Cuboid> cuboids = (List<Cuboid>)value;
-                if (getWorld() == null) {
-                    return cuboids;
-                }
-                for (Cuboid cub : cuboids) {
-                    cub.setWorld(getWorld());
-                }
-                return cuboids;
-            } catch (ClassCastException e) {
-                return null;
-            }
-        }
-        return null;
+        return value;
     }
 
     /**
      * Get a {@link String} option value for the specified name.
-     * Make sure that the option is registered!
      * @param name The name of the option to get. (Casing doesn't matter)
      * @return String value.
      */
-    public String getStringOption(String name) {
-        Object value = arena.getOptionValue(name);
-        if (value instanceof String) {
-            return (String)value;
-        }
-        return value.toString();
+    public String getString(String name) {
+        return (String) getObject(name, StringOption.class);
+    }
+
+    /**
+     * Get a list with {@link String} option values for the specified name.
+     * @param name The name of the option to get. (Casing doesn't matter)
+     * @return List with string values.
+     */
+    public List<String> getStringList(String name) {
+        return (List<String>) getObject(name, StringListOption.class);
     }
 
     /**
      * Get a {@link Boolean} option value for the specified name.
-     * Make sure that the option is registered!
      * @param name The name of the option to get. (Casing doesn't matter)
      * @return Boolean value.
      */
-    public Boolean getBoolOption(String name) {
-        Object value = arena.getOptionValue(name);
-        if (value instanceof Boolean) {
-            return (Boolean)value;
-        }
-        return null;
+    public Boolean getBool(String name) {
+        return (Boolean) getObject(name, BoolOption.class);
+    }
+
+    /**
+     * Get a list with {@link Boolean} option values for the specified name.
+     * @param name The name of the option to get. (Casing doesn't matter)
+     * @return List with boolean values.
+     */
+    public List<Boolean> getBoolList(String name) {
+        return (List<Boolean>) getObject(name, BoolListOption.class);
     }
 
     /**
      * Get a {@link Integer} option value for the specified name.
-     * Make sure that the option is registered!
      * @param name The name of the option to get. (Casing doesn't matter)
      * @return Integer value.
      */
-    public Integer getIntOption(String name) {
-        Object value = arena.getOptionValue(name);
-        if (value instanceof Integer) {
-            return (Integer)value;
-        }
-        return null;
+    public Integer getInt(String name) {
+        return (Integer) getObject(name, IntOption.class);
+    }
+
+    /**
+     * Get a list with {@link Integer} option values for the specified name.
+     * @param name The name of the option to get. (Casing doesn't matter)
+     * @return List with integer values.
+     */
+    public List<Integer> getIntList(String name) {
+        return (List<Integer>) getObject(name, IntListOption.class);
     }
 
     /**
      * Get a {@link Double} option value for the specified name.
-     * Make sure that the option is registered!
      * @param name The name of the option to get. (Casing doesn't matter)
      * @return Double value.
      */
-    public Double getDoubleOption(String name) {
-        Object value = arena.getOptionValue(name);
-        if (value instanceof Double) {
-            return (Double)value;
-        }
-        return null;
+    public Double getDouble(String name) {
+        return (Double) getObject(name, DoubleOption.class);
     }
 
     /**
-     * Get a {@link Float} option value for the specified name.
-     * Make sure that the option is registered!
+     * Get a list with {@link Double} option values for the specified name.
      * @param name The name of the option to get. (Casing doesn't matter)
-     * @return Float value.
+     * @return List with double values.
      */
-    public Float getFloatOption(String name) {
-        Object value = arena.getOptionValue(name);
-        if (value instanceof Float) {
-            return (Float)value;
-        }
-        return null;
+    public List<Double> getDoubleList(String name) {
+        return (List<Double>) getObject(name, DoubleListOption.class);
     }
+
+    /**
+     * Get a {@link Location} option value for the specified name.
+     * @param name The name of the option to get. (Casing doesn't matter)
+     * @return Location with the proper world.
+     */
+    public Location getLocation(String name) {
+        Location loc = (Location) getObject(name, LocationOption.class);
+        loc.setWorld(getWorld());
+        return loc;
+    }
+
+    /**
+     * Get a list with {@link Location} option values for the specified name.
+     * @param name The name of the option to get. (Casing doesn't matter)
+     * @return List with locations with the proper world.
+     */
+    public List<Location> getLocationList(String name) {
+        List<Location> locs = (List<Location>) getObject(name, LocationListOption.class);
+        for (Location loc : locs) {
+            loc.setWorld(getWorld());
+        }
+        return locs;
+    }
+
+    /**
+     * Get a {@link Block} option value for the specified name.
+     * @param name The name of the option to get. (Casing doesn't matter)
+     * @return Block with the proper world.
+     */
+    public Block getBlock(String name) {
+        Location loc = ((Block) getObject(name, BlockOption.class)).getLocation();
+        loc.setWorld(getWorld());
+        return loc.getBlock();
+    }
+
+    /**
+     * Get a list with {@link Block} option values for the specified name.
+     * @param name The name of the option to get. (Casing doesn't matter)
+     * @return List with blocks with the proper world.
+     */
+    public List<Block> getBlockList(String name) {
+        List<Block> blocks = (List<Block>) getObject(name, BlockListOption.class);
+        for (int i = 0; i < blocks.size(); i++) {
+            Location loc = blocks.get(i).getLocation();
+            loc.setWorld(getWorld());
+            blocks.set(i, loc.getBlock());
+        }
+        return blocks;
+    }
+    //endregion
 
 
     @Override

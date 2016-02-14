@@ -64,6 +64,7 @@ public class GameManager {
         gameClass.addComponents();
         gameClass.validate();
         gameClass.loadSettings();
+        gameClass.registerOptions();
         gameClass.registerSetupOptions();
 
         //Registered successfully!

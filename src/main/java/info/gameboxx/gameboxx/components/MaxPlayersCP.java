@@ -31,9 +31,8 @@ import info.gameboxx.gameboxx.events.PlayerJoinSessionEvent;
 import info.gameboxx.gameboxx.exceptions.OptionAlreadyExistsException;
 import info.gameboxx.gameboxx.game.Game;
 import info.gameboxx.gameboxx.game.GameSession;
-import info.gameboxx.gameboxx.setup.OptionData;
-import info.gameboxx.gameboxx.setup.SetupType;
 
+import info.gameboxx.gameboxx.options.single.IntOption;
 import org.bukkit.event.EventHandler;
 
 /**
@@ -64,7 +63,7 @@ public class MaxPlayersCP extends GameComponent {
 
     @Override
     public void registerOptions() throws OptionAlreadyExistsException {
-        game.registerSetupOption(new OptionData(SetupType.INT, "maxPlayers", "The maximum amount of players allowed in the arena.", max));
+        game.registerSetupOption(new IntOption("MaxPlayers", max).setDescription("The maximum amount of players allowed in the arena."));
     }
 
     @Override
@@ -77,7 +76,7 @@ public class MaxPlayersCP extends GameComponent {
      * @return The maximum player amount allowed.
      */
     public int getMax() {
-        return session.getIntOption("maxPlayers");
+        return session.getInt("maxPlayers");
     }
 
     private static class Events extends ComponentListener {
