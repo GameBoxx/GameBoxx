@@ -34,9 +34,7 @@ import org.bukkit.block.BlockFace;
 
 import java.io.File;
 import java.io.FilenameFilter;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class Utils {
 
@@ -44,6 +42,15 @@ public class Utils {
     public static final int MSEC_IN_HOUR = 3600000;
     public static final int MSEC_IN_MIN = 60000;
     public static final int MSEC_IN_SEC = 1000;
+    public static final Set<Material> TRANSPARENT_MATERIALS = new HashSet<Material>();
+
+    static {
+        for (Material material : Material.values()) {
+            if (material.isTransparent()) {
+                TRANSPARENT_MATERIALS.add(material);
+            }
+        }
+    }
 
     public static <T> T convertInstance(Object o, Class<T> clazz) {
         try {

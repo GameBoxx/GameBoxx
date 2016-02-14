@@ -27,6 +27,7 @@ package info.gameboxx.gameboxx.options.single;
 
 import info.gameboxx.gameboxx.options.SingleOption;
 import info.gameboxx.gameboxx.util.Parse;
+import info.gameboxx.gameboxx.util.Utils;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
@@ -71,7 +72,7 @@ public class BlockOption extends SingleOption {
     @Override
     public boolean parse(Player player, String input) {
         //Get block from player location. @[Player name/uuid]
-        if (input.startsWith("@")) {
+        if (input.startsWith("@") || input.startsWith("#")) {
             PlayerOption playerOption = new PlayerOption();
             playerOption.setDefault(player);
             playerOption.parse(player, input.substring(1));
@@ -79,7 +80,11 @@ public class BlockOption extends SingleOption {
                 error = playerOption.getError().isEmpty() ? "Invalid player to get the block from." : playerOption.getError();
                 return false;
             }
-            value = playerOption.getValue().getLocation().getBlock();
+            if (input.startsWith("#")) {
+                value = playerOption.getValue().getTargetBlock(Utils.TRANSPARENT_MATERIALS, 64);
+            } else  {
+                value = playerOption.getValue().getLocation().getBlock();
+            }
             return true;
         }
 
@@ -90,7 +95,7 @@ public class BlockOption extends SingleOption {
         String[] split = input.split(":");
         if (split.length > 1) {
             String data = split[1];
-            if (data.startsWith("@")) {
+            if (data.startsWith("@") || data.startsWith("#")) {
                 //Get block/location from player
                 PlayerOption playerOption = new PlayerOption();
                 playerOption.setDefault(player);
@@ -99,7 +104,11 @@ public class BlockOption extends SingleOption {
                     error = playerOption.getError().isEmpty() ? "Invalid player to get the world/block from." : playerOption.getError();
                     return false;
                 }
-                location = playerOption.getValue().getLocation();
+                if (input.startsWith("#")) {
+                    location = playerOption.getValue().getTargetBlock(Utils.TRANSPARENT_MATERIALS, 64).getLocation();
+                } else {
+                    location = playerOption.getValue().getLocation();
+                }
             } else {
                 //Get world.
                 WorldOption worldOption = new WorldOption();
