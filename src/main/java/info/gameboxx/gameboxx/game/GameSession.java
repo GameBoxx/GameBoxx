@@ -271,6 +271,9 @@ public abstract class GameSession extends ComponentHolder {
      * @return Location with the proper world.
      */
     public Location getLocation(String name) {
+        if (getWorld() == null) {
+            return (Location)getObject(name, LocationOption.class);
+        }
         Location loc = (Location) getObject(name, LocationOption.class);
         loc.setWorld(getWorld());
         return loc;
@@ -283,6 +286,9 @@ public abstract class GameSession extends ComponentHolder {
      */
     public List<Location> getLocationList(String name) {
         List<Location> locs = (List<Location>) getObject(name, LocationListOption.class);
+        if (getWorld() == null) {
+            return locs;
+        }
         for (Location loc : locs) {
             loc.setWorld(getWorld());
         }
@@ -295,6 +301,9 @@ public abstract class GameSession extends ComponentHolder {
      * @return Block with the proper world.
      */
     public Block getBlock(String name) {
+        if (getWorld() == null) {
+            return (Block)getObject(name, BlockOption.class);
+        }
         Location loc = ((Block) getObject(name, BlockOption.class)).getLocation();
         loc.setWorld(getWorld());
         return loc.getBlock();
@@ -307,6 +316,9 @@ public abstract class GameSession extends ComponentHolder {
      */
     public List<Block> getBlockList(String name) {
         List<Block> blocks = (List<Block>) getObject(name, BlockListOption.class);
+        if (getWorld() == null) {
+            return blocks;
+        }
         for (int i = 0; i < blocks.size(); i++) {
             Location loc = blocks.get(i).getLocation();
             loc.setWorld(getWorld());
