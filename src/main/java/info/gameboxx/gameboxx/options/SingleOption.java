@@ -25,7 +25,10 @@
 
 package info.gameboxx.gameboxx.options;
 
+import org.bukkit.configuration.MemorySection;
 import org.bukkit.entity.Player;
+
+import java.util.LinkedHashMap;
 
 public abstract class SingleOption extends Option {
 
@@ -119,15 +122,21 @@ public abstract class SingleOption extends Option {
     protected boolean parseObject(Object input) {
         reset();
         if (input == null) {
-            error = "Invalid input, must be a string or a " + getTypeName() + ".";
+            error = "Invalid input, must be a string or a " + getTypeName() + ". [type=null]";
             return false;
         }
         if (!(input instanceof String)) {
+            if (input instanceof MemorySection && this instanceof SerializableOptionValue) {
+                return ((SerializableOptionValue)this).parse(((MemorySection)input).getValues(true));
+            }
+            if (input instanceof LinkedHashMap && this instanceof SerializableOptionValue) {
+                return ((SerializableOptionValue)this).parse((LinkedHashMap)input);
+            }
             if (input.getClass().equals(getRawClass())) {
                 value = input;
                 return true;
             } else {
-                error = "Invalid input, must be a string or a " + getTypeName() + ".";
+                error = "Invalid input, must be a string or a " + getTypeName() + ". [type=" + input.getClass().getSimpleName() + "]";
                 return false;
             }
         }

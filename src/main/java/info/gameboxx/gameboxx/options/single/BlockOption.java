@@ -25,16 +25,25 @@
 
 package info.gameboxx.gameboxx.options.single;
 
+import info.gameboxx.gameboxx.options.SerializableOptionValue;
 import info.gameboxx.gameboxx.options.SingleOption;
 import info.gameboxx.gameboxx.util.Parse;
 import info.gameboxx.gameboxx.util.Utils;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.block.Block;
+import org.bukkit.configuration.serialization.ConfigurationSerialization;
 import org.bukkit.entity.Player;
 
+import java.util.LinkedHashMap;
 import java.util.Map;
 
-public class BlockOption extends SingleOption {
+public class BlockOption extends SingleOption implements SerializableOptionValue {
+
+    static {
+        ConfigurationSerialization.registerClass(BlockOption.class);
+    }
 
     public BlockOption() {
         super();
@@ -149,18 +158,18 @@ public class BlockOption extends SingleOption {
                 relative = true;
             }
             //Parse the value.
-            Double val = Parse.Double(value);
+            Integer val = Parse.Int(value);
             if (val == null && !value.isEmpty()) {
-                error = "The " + mapKeys[i] + " value is not a decimal number.";
+                error = "The " + mapKeys[i] + " value is not a whole number.";
                 return false;
             }
 
             //Add relative coords to the value.
             if (relative) {
                 if (val == null) {
-                    val = 0d;
+                    val = 0;
                 }
-                val += (Double)locMap.get(mapKeys[i]);
+                val += (Integer)locMap.get(mapKeys[i]);
             }
 
             locMap.put(mapKeys[i], val);
@@ -172,6 +181,22 @@ public class BlockOption extends SingleOption {
             error = "Invalid block string it needs to have a format like x,y,z:world.";
             return false;
         }
+        return true;
+    }
+
+    @Override
+    public boolean parse(Map<String, Object> data) {
+        if (!data.containsKey("x") || !data.containsKey("y") || !data.containsKey("z") || !data.containsKey("world")) {
+            error = "Configuration data needs to have an x, y, z and world key/value.";
+            return false;
+        }
+        World world = Bukkit.getServer().getWorld((String)data.get("world"));
+        Location loc = new Location(world, (Integer)data.get("x"), (Integer)data.get("y"), (Integer)data.get("z"));
+        if (loc == null) {
+            error = "Failed to create a block location from the config data.";
+            return false;
+        }
+        value = loc.getBlock();
         return true;
     }
 
@@ -193,5 +218,17 @@ public class BlockOption extends SingleOption {
     @Override
     public BlockOption clone() {
         return new BlockOption(name, (Block)defaultValue);
+    }
+
+    @Override
+    public Map<String, Object> serialize() {
+        Map<String, Object> map = new LinkedHashMap<>();
+        if (getValue() != null) {
+            map.put("x", getValue().getX());
+            map.put("y", getValue().getY());
+            map.put("z", getValue().getZ());
+            map.put("world", getValue().getWorld().getName());
+        }
+        return map;
     }
 }

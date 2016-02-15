@@ -34,6 +34,7 @@ import info.gameboxx.gameboxx.options.SingleOption;
 import org.apache.commons.io.FileUtils;
 import org.bukkit.WorldCreator;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.io.File;
@@ -123,10 +124,21 @@ public class Arena {
             if (option == null) {
                 continue;
             }
-            if (option instanceof SingleOption) {
+            if (option instanceof ConfigurationSerializable) {
+                config.set(option.getName(), ((ConfigurationSerializable)option).serialize());
+            } else if (option instanceof SingleOption) {
                 config.set(option.getName(), ((SingleOption)option).getValue());
             } else if (option instanceof ListOption) {
-                config.set(option.getName(), ((ListOption)option).getValues());
+                ListOption listOption = (ListOption)option;
+                if (listOption.getSingleOption() instanceof ConfigurationSerializable) {
+                    List<Map<String, Object>> serializedValues = new ArrayList<>();
+                    for (SingleOption singleOption : listOption.getOptions()) {
+                        serializedValues.add(((ConfigurationSerializable)singleOption).serialize());
+                    }
+                    config.set(option.getName(), serializedValues);
+                } else {
+                    config.set(option.getName(), ((ListOption)option).getValues());
+                }
             }
         }
 
