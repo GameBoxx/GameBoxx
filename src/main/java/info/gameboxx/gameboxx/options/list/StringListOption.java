@@ -91,6 +91,9 @@ public class StringListOption extends ListOption {
     }
 
     public StringListOption match(List<String> strings) {
+        if (strings == null) {
+            return this;
+        }
         for (String str : strings) {
             str.toLowerCase();
         }
@@ -110,6 +113,9 @@ public class StringListOption extends ListOption {
     }
 
     public StringListOption match(Map<String, List<String>> strings) {
+        if (strings == null) {
+            return this;
+        }
         for (Map.Entry<String, List<String>> entry : strings.entrySet()) {
             for (String str : entry.getValue()) {
                 str.toLowerCase();
