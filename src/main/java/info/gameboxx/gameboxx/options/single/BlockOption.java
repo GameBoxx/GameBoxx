@@ -169,7 +169,7 @@ public class BlockOption extends SingleOption implements SerializableOptionValue
                 if (val == null) {
                     val = 0;
                 }
-                val += (Integer)locMap.get(mapKeys[i]);
+                val += (int)Math.round((Double)locMap.get(mapKeys[i]));
             }
 
             locMap.put(mapKeys[i], val);

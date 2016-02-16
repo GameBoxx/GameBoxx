@@ -168,7 +168,7 @@ public class CuboidOption extends SingleOption {
                     if (val == null) {
                         val = 0;
                     }
-                    val += (Integer)locMap.get(mapKeys[c]);
+                    val += (int)Math.round((Double)locMap.get(mapKeys[c]));
                 }
 
                 locMap.put(mapKeys[c], val);
