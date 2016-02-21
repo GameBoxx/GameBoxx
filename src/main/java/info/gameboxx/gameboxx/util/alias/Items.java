@@ -168,18 +168,20 @@ public class Items {
     /**
      * Get the display name for the specified materialdata item.
      * For example if you put WOOL with data 9 it would return 'Cyan Wool'.
+     * If no name is found with the data the data value will be appended like 'Wool:9'
      * @see #getItem(MaterialData)
      * @see ItemData#getName()
      * @param materialData The materialdata to get the name from.
      * @return The display name for the specified materialdata item.
      */
     public static String getName(MaterialData materialData) {
-        return getItem(materialData).getName();
+        return getName(materialData.getItemType(), materialData.getData());
     }
 
     /**
      * Get the display name for the specified material and data item.
      * For example if you put WOOL with data 9 it would return 'Cyan Wool'.
+     * If no name is found with the data the data value will be appended like 'Wool:9'
      * @see #getItem(Material, short)
      * @see ItemData#getName()
      * @param material The material to get the name from.
@@ -187,7 +189,11 @@ public class Items {
      * @return The display name for the specified material and data item.
      */
     public static String getName(Material material, short data) {
-        return getItem(material, data).getName();
+        ItemData item = getItem(material, data);
+        if (item.getData() == data) {
+            return item.getName();
+        }
+        return item.getName() + ":" + data;
     }
 
     /**
