@@ -26,7 +26,7 @@
 package info.gameboxx.gameboxx.config.messages;
 
 import info.gameboxx.gameboxx.GameMsg;
-import info.gameboxx.gameboxx.config.EasyConfig;
+import info.gameboxx.gameboxx.config.internal.EasyConfig;
 
 import java.util.HashMap;
 import java.util.Map;

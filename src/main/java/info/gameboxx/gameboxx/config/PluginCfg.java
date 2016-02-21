@@ -25,6 +25,8 @@
 
 package info.gameboxx.gameboxx.config;
 
+import info.gameboxx.gameboxx.config.internal.EasyConfig;
+
 public class PluginCfg extends EasyConfig {
 
     public String defaultWorld = "world";
