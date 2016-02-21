@@ -96,6 +96,24 @@ public class MaterialOption extends SingleOption {
     }
 
     @Override
+    public String serialize() {
+        MaterialData value = getValue();
+        if (value == null) {
+            return null;
+        }
+        return value.getItemType().toString() + ":" + value.getData();
+    }
+
+    @Override
+    public String getDisplayValue() {
+        MaterialData value = getValue();
+        if (value == null) {
+            return null;
+        }
+        return Items.getName(value);
+    }
+
+    @Override
     public String getTypeName() {
         return "materialdata";
     }

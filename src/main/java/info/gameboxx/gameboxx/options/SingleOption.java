@@ -68,6 +68,22 @@ public abstract class SingleOption extends Option {
     public abstract Object getValue();
 
     /**
+     * Get the value with user friendly format for displaying purposes.
+     * If a option doesn't override this value it will return the same as the {@link #serialize()} output.
+     * @return String with user friendly formatting.
+     */
+    public String getDisplayValue() {
+        return serialize();
+    }
+
+    /**
+     * Serialize the value to a string so it can be saved.
+     * The serialized string has the same format as the parse method accepts.
+     * @return Serialized value as string.
+     */
+    public abstract String serialize();
+
+    /**
      * Used by {@link #getValue()} to return the value and if it's null the default value.
      * <b>Please note that the default value can be null too!</b>
      * @return The value or the default value if it's null.

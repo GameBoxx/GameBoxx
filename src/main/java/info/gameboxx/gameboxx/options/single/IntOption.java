@@ -99,6 +99,15 @@ public class IntOption extends SingleOption {
     }
 
     @Override
+    public String serialize() {
+        Integer value = getValue();
+        if (value == null) {
+            return null;
+        }
+        return value.toString();
+    }
+
+    @Override
     public String getTypeName() {
         return "whole number";
     }

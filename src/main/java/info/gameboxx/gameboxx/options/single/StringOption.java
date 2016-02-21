@@ -196,6 +196,11 @@ public class StringOption extends SingleOption {
     }
 
     @Override
+    public String serialize() {
+        return getValue();
+    }
+
+    @Override
     public String getTypeName() {
         return "string";
     }

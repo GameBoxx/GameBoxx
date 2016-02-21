@@ -176,6 +176,15 @@ public class LocationOption extends SingleOption {
     }
 
     @Override
+    public String serialize() {
+        Location value = getValue();
+        if (value == null) {
+            return null;
+        }
+        return value.getX() + "," + value.getY() + "," + value.getZ() + "," + value.getYaw() + "," + value.getPitch() + ":" + value.getWorld().getName();
+    }
+
+    @Override
     public String getTypeName() {
         return "location";
     }

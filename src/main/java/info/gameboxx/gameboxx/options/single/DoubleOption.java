@@ -99,6 +99,15 @@ public class DoubleOption extends SingleOption {
     }
 
     @Override
+    public String serialize() {
+        Double value = getValue();
+        if (value == null) {
+            return null;
+        }
+        return value.toString();
+    }
+
+    @Override
     public String getTypeName() {
         return "decimal number";
     }

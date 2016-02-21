@@ -88,6 +88,15 @@ public class BoolOption extends SingleOption {
     }
 
     @Override
+    public String serialize() {
+        Boolean value = getValue();
+        if (value == null) {
+            return null;
+        }
+        return value.toString();
+    }
+
+    @Override
     public String getTypeName() {
         return "boolean";
     }

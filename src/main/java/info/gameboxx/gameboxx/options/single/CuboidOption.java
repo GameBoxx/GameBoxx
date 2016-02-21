@@ -196,6 +196,15 @@ public class CuboidOption extends SingleOption {
     }
 
     @Override
+    public String serialize() {
+        Cuboid value = getValue();
+        if (value == null) {
+            return null;
+        }
+        return value.getMinX() + "," + value.getMinY() + "," + value.getMinZ() + ":" + value.getMaxX() + "," + value.getMaxY() + value.getMaxZ() + ":" + value.getWorld().getName();
+    }
+
+    @Override
     public String getTypeName() {
         return "cuboid";
     }

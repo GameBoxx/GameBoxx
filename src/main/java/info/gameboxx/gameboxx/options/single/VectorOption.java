@@ -112,6 +112,15 @@ public class VectorOption extends SingleOption {
     }
 
     @Override
+    public String serialize() {
+        Vector value = getValue();
+        if (value == null) {
+            return null;
+        }
+        return value.toString();
+    }
+
+    @Override
     public String getTypeName() {
         return "vector";
     }

@@ -110,6 +110,15 @@ public class WorldOption extends SingleOption {
     }
 
     @Override
+    public String serialize() {
+        World value = getValue();
+        if (value == null) {
+            return null;
+        }
+        return value.getName();
+    }
+
+    @Override
     public String getTypeName() {
         return "world";
     }

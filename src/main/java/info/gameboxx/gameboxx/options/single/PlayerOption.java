@@ -123,6 +123,24 @@ public class PlayerOption extends SingleOption {
     }
 
     @Override
+    public String serialize() {
+        Player value = getValue();
+        if (value == null) {
+            return null;
+        }
+        return value.getUniqueId().toString();
+    }
+
+    @Override
+    public String getDisplayValue() {
+        Player value = getValue();
+        if (value == null) {
+            return null;
+        }
+        return value.getName();
+    }
+
+    @Override
     public String getTypeName() {
         return "player";
     }

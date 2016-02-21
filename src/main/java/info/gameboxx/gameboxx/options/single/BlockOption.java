@@ -25,25 +25,16 @@
 
 package info.gameboxx.gameboxx.options.single;
 
-import info.gameboxx.gameboxx.options.SerializableOptionValue;
 import info.gameboxx.gameboxx.options.SingleOption;
 import info.gameboxx.gameboxx.util.Parse;
 import info.gameboxx.gameboxx.util.Utils;
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.World;
 import org.bukkit.block.Block;
-import org.bukkit.configuration.serialization.ConfigurationSerialization;
 import org.bukkit.entity.Player;
 
-import java.util.LinkedHashMap;
 import java.util.Map;
 
-public class BlockOption extends SingleOption implements SerializableOptionValue {
-
-    static {
-        ConfigurationSerialization.registerClass(BlockOption.class);
-    }
+public class BlockOption extends SingleOption {
 
     public BlockOption() {
         super();
@@ -185,24 +176,17 @@ public class BlockOption extends SingleOption implements SerializableOptionValue
     }
 
     @Override
-    public boolean parse(Map<String, Object> data) {
-        if (!data.containsKey("x") || !data.containsKey("y") || !data.containsKey("z") || !data.containsKey("world")) {
-            error = "Configuration data needs to have an x, y, z and world key/value.";
-            return false;
-        }
-        World world = Bukkit.getServer().getWorld((String)data.get("world"));
-        Location loc = new Location(world, (Integer)data.get("x"), (Integer)data.get("y"), (Integer)data.get("z"));
-        if (loc == null) {
-            error = "Failed to create a block location from the config data.";
-            return false;
-        }
-        value = loc.getBlock();
-        return true;
+    public Block getValue() {
+        return (Block)getValueOrDefault();
     }
 
     @Override
-    public Block getValue() {
-        return (Block)getValueOrDefault();
+    public String serialize() {
+        Block value = getValue();
+        if (value == null) {
+            return null;
+        }
+        return value.getX() + "," + value.getY() + "," + value.getZ() + ":" + value.getWorld().getName();
     }
 
     @Override
@@ -218,17 +202,5 @@ public class BlockOption extends SingleOption implements SerializableOptionValue
     @Override
     public BlockOption clone() {
         return new BlockOption(name, (Block)defaultValue);
-    }
-
-    @Override
-    public Map<String, Object> serialize() {
-        Map<String, Object> map = new LinkedHashMap<>();
-        if (getValue() != null) {
-            map.put("x", getValue().getX());
-            map.put("y", getValue().getY());
-            map.put("z", getValue().getZ());
-            map.put("world", getValue().getWorld().getName());
-        }
-        return map;
     }
 }
