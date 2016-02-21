@@ -219,13 +219,44 @@ public abstract class ListOption extends Option {
     }
 
     protected Object getValueOrDefault(int index) {
+
+        return value.get(index).getValueOrDefault();
+    }
+
+    public List<String> serialize() {
+        List<String> values = new ArrayList<>();
+        for (SingleOption option : value) {
+            values.add(option.serialize());
+        }
+        return values;
+    }
+
+    public String serialize(int index) {
         if (index >= value.size()) {
             throw new IndexOutOfBoundsException();
         }
         if (value.get(index) == null) {
             return null;
         }
-        return value.get(index).getValueOrDefault();
+        return value.get(index).serialize();
+    }
+
+    public List<String> getDisplayValues() {
+        List<String> values = new ArrayList<>();
+        for (SingleOption option : value) {
+            values.add(option.getDisplayValue());
+        }
+        return values;
+    }
+
+    public String getDisplayValue(int index) {
+        if (index >= value.size()) {
+            throw new IndexOutOfBoundsException();
+        }
+        if (value.get(index) == null) {
+            return null;
+        }
+        return value.get(index).getDisplayValue();
     }
 
     public abstract List<?> getValues();
