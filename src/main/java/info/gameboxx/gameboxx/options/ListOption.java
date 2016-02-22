@@ -36,6 +36,9 @@ public abstract class ListOption extends Option {
     protected List<Object> defaultValues = new ArrayList<>();
     protected Object defaultValue = null;
 
+    protected int minValues = -1;
+    protected int maxValues = -1;
+
     public ListOption() {}
 
     public ListOption(String name) {
@@ -96,12 +99,8 @@ public abstract class ListOption extends Option {
             this.defaultValue = null;
         } else {
             this.defaultValue = defaultValue;
-            for (SingleOption option : value) {
-                if (option.getDefault() == null) {
-                    option.setDefault(defaultValue);
-                }
-            }
         }
+        updateList();
         return this;
     }
 
@@ -123,11 +122,12 @@ public abstract class ListOption extends Option {
      * The order you specify the values will be the indexes of the the values.
      * The value must of the same type as the raw class type of the single option. So a IntList can only have an integer as default option here.
      * @param defaultValues Object array with default values for this list.
+     * @return The option instance.
      */
-    public void setDefaults(Object... defaultValues) {
+    public ListOption setDefaults(Object... defaultValues) {
         this.defaultValues.clear();
         if (defaultValues == null) {
-            return;
+            return this;
         }
         for (int i = 0; i < defaultValues.length; i++) {
             Object obj = defaultValues[i];
@@ -136,26 +136,89 @@ public abstract class ListOption extends Option {
             } else {
                 this.defaultValues.add(obj);
             }
-            if (i < value.size()) {
-                value.get(i).setDefault(obj);
-            }
+        }
+        updateList();
+        return this;
+    }
+
+    /**
+     * Get the minimum amount of required values this list must have.
+     * @return The minimum amount of values the list must have.
+     */
+    public int getMinValues() {
+        return minValues;
+    }
+
+    /**
+     * Set the minimum amount of required values in this list.
+     * Set to -1 or 0 to not have a minimum requirement.
+     * @param minValues The amount of values this list must have.
+     * @return The option instance.
+     */
+    public ListOption setMinValues(int minValues) {
+        this.minValues = minValues;
+        updateList();
+        return this;
+    }
+
+    /**
+     * Get the maximum amount of allowed values this list can have.
+     * @return The maximum amount of values this list can have.
+     */
+    public int getMaxValues() {
+        return maxValues;
+    }
+
+    /**
+     * Set the maximum amount of allowed values in this list.
+     * Set to -1 to not have a maximum limit.
+     * @param maxValues The amount of values allowed in this list.
+     * @return The option instance.
+     */
+    public ListOption setMaxValues(int maxValues) {
+        this.maxValues = maxValues;
+        updateList();
+        return this;
+    }
+
+    /**
+     * Update the value list after setting properties like min/max values and default values.
+     * It will first update the default value for all the existing values.
+     * Then it will add missing values and remove values that exceed the limit.
+     */
+    private void updateList() {
+        //Update defaults
+        for (int i = 0; i < value.size(); i++) {
+            value.get(i).setDefault(getDefault(i));
         }
 
+        //Add missing default values to list.
         int index = value.size();
-        while (this.defaultValues.size() > value.size()) {
+        while ((this.defaultValues.size() > value.size()) || (minValues > 0 && minValues > value.size())) {
             value.add(getSingleOption(index));
             index++;
         }
-    }
 
+        //Remove values that exceed limit
+        while (maxValues > 0 && value.size() > maxValues) {
+            value.remove(value.size()-1);
+        }
+    }
 
     public boolean parse(boolean ignoreErrors, Object... input) {
         if (input == null || input.length == 0) {
-            error = "Missing input value.";
-            return false;
+            if (minValues > 0) {
+                error = "List must have at least " + minValues + " values!";
+                return false;
+            }
+            return true;
         }
 
         for (int i = 0; i < input.length; i++) {
+            if (maxValues > 0 && i > maxValues) {
+                error = "List can not have more than " + maxValues + " values!";
+                return false;
+            }
             Object obj = input[i];
 
             SingleOption option = getSingleOption(i);
@@ -181,11 +244,18 @@ public abstract class ListOption extends Option {
     public boolean parse(boolean ignoreErrors, Player player, String... input) {
         reset();
         if (input == null || input.length == 0) {
-            error = "Missing input value.";
-            return false;
+            if (minValues > 0) {
+                error = "List must have at least " + minValues + " values!";
+                return false;
+            }
+            return true;
         }
 
         for (int i = 0; i < input.length; i++) {
+            if (maxValues > 0 && i > maxValues) {
+                error = "List can not have more than " + maxValues + " values!";
+                return false;
+            }
             String str = input[i];
 
             SingleOption option = getSingleOption(i);
@@ -205,6 +275,10 @@ public abstract class ListOption extends Option {
     }
 
     public boolean parse(int index, Object input) {
+        if (maxValues > 0 && index > maxValues) {
+            error = "List can not have more than " + maxValues + " values!";
+            return false;
+        }
         if (index >= value.size()) {
             value.add(getSingleOption(index));
             index = value.size()-1;
@@ -220,6 +294,10 @@ public abstract class ListOption extends Option {
     }
 
     public boolean parse(Player player, int index, String input) {
+        if (maxValues > 0 && index > maxValues) {
+            error = "List can not have more than " + maxValues + " values!";
+            return false;
+        }
         if (index >= value.size()) {
             value.add(getSingleOption(index));
             index = value.size()-1;
@@ -241,17 +319,20 @@ public abstract class ListOption extends Option {
     }
 
     public String getError(int index) {
-        if (index >= value.size()) {
+        if (index >= value.size() || (maxValues > 0 && index > maxValues)) {
             throw new IndexOutOfBoundsException();
         }
         if (value.get(index) == null) {
-            return "Missing value for index " + index + ".";
+            if (!hasError()) {
+                return "Unknown parsing error. [Index:" + index + "]";
+            }
+            return getError();
         }
         return value.get(index).getError();
     }
 
     public boolean hasValue(int index) {
-        if (index >= value.size()) {
+        if (index >= value.size() || (maxValues > 0 && index > maxValues)) {
             throw new IndexOutOfBoundsException();
         }
         if (value.get(index) == null) {
@@ -261,7 +342,7 @@ public abstract class ListOption extends Option {
     }
 
     public boolean success(int index) {
-        if (index >= value.size()) {
+        if (index >= value.size() || (maxValues > 0 && index > maxValues)) {
             throw new IndexOutOfBoundsException();
         }
         if (value.get(index) == null) {
@@ -271,7 +352,7 @@ public abstract class ListOption extends Option {
     }
 
     protected Object getValueOrDefault(int index) {
-        if (index >= value.size()) {
+        if (index >= value.size() || (maxValues > 0 && index > maxValues)) {
             throw new IndexOutOfBoundsException();
         }
         if (value.get(index) == null) {
@@ -289,7 +370,7 @@ public abstract class ListOption extends Option {
     }
 
     public String serialize(int index) {
-        if (index >= value.size()) {
+        if (index >= value.size() || (maxValues > 0 && index > maxValues)) {
             throw new IndexOutOfBoundsException();
         }
         if (value.get(index) == null) {
@@ -307,7 +388,7 @@ public abstract class ListOption extends Option {
     }
 
     public String getDisplayValue(int index) {
-        if (index >= value.size()) {
+        if (index >= value.size() || (maxValues > 0 && index > maxValues)) {
             throw new IndexOutOfBoundsException();
         }
         if (value.get(index) == null) {
