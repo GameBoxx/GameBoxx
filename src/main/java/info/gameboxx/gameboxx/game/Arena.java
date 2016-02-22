@@ -26,6 +26,7 @@
 package info.gameboxx.gameboxx.game;
 
 import info.gameboxx.gameboxx.components.internal.GameComponent;
+import info.gameboxx.gameboxx.config.internal.OptionCfg;
 import info.gameboxx.gameboxx.exceptions.MissingArenaWorldException;
 import info.gameboxx.gameboxx.exceptions.SessionLimitException;
 import info.gameboxx.gameboxx.options.ListOption;
@@ -33,13 +34,12 @@ import info.gameboxx.gameboxx.options.Option;
 import info.gameboxx.gameboxx.options.SingleOption;
 import org.apache.commons.io.FileUtils;
 import org.bukkit.WorldCreator;
-import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Base Arena class.
@@ -52,14 +52,9 @@ public class Arena {
     private ArenaType type;
     private String name;
 
-    private Map<String, Option> setupOptions = new HashMap<>();
+    private Map<Integer, GameSession> sessions = new HashMap<>();
 
-    private GameSession[] sessions;
-    private Set<GameSession> activeSessions = new HashSet<>();
-    private int maxSessions;
-
-    private File configFile;
-    private YamlConfiguration config;
+    private OptionCfg config;
 
     private Long lastSave = System.currentTimeMillis();
 
@@ -70,120 +65,46 @@ public class Arena {
      * @param type The {@link ArenaType} for the arena.
      * @param name The name of the arena.
      */
-    public Arena(Game game, File configFile, YamlConfiguration config, ArenaType type, String name) {
+    public Arena(Game game, File configFile, ArenaType type, String name) {
         this.game = game;
-        this.configFile = configFile;
-        this.config = config;
         this.type = type;
         this.name = name;
-        this.maxSessions = 16;
-        sessions = new GameSession[getMaxSessions()];
+
+        config = new OptionCfg(configFile);
+
+        loadOptions();
+        config.load(false);
+        config.getConfig().set("general.name", name);
+        config.getConfig().set("general.type", type.toString());
+        config.getConfig().set("general.world-settings", "");
+        config.save(true);
     }
 
     /**
      * Arenas from config will be instantiated using this constructor.
      * @param game The {@link Game} that has this arena.
      * @param configFile The {@link File} for the arena config.
-     * @param config The {@link YamlConfiguration} with all the arena data.
      */
-    public Arena(Game game, File configFile, YamlConfiguration config) {
+    public Arena(Game game, File configFile) {
         this.game = game;
-        this.configFile = configFile;
-        this.config = config;
-        name = config.getString("name");
-        type = ArenaType.valueOf(config.getString("type"));
-        maxSessions = config.getInt("maxSessions");
-        sessions = new GameSession[getMaxSessions()];
+
+        config = new OptionCfg(configFile);
+        loadOptions();
+        config.load();
+
+        name = config.getConfig().getString("general.name");
+        type = ArenaType.valueOf(config.getConfig().getString("general.type"));
     }
 
     /**
-     * Save all arena data including all the options from components.
-     * This save method will only save when the saving isn't on a delay (by default 5 seconds).
-     * Use {@link #forceSave()} if you need to make sure that everything is saved.
-     * It will automatically force save when the plugin gets disabled.
-     */
-    public void save() {
-        if (lastSave + game.getAPI().getCfg().saveDelay__arena > System.currentTimeMillis()) {
-            return;
-        }
-        lastSave = System.currentTimeMillis();
-        forceSave();
-    }
-
-    /**
-     * Save all arena data including the options from components.
-     * There shouldn't be a need to call this method and in most cases you should be using the regular {@link #save()} method.
-     */
-    //TODO: Call this method when the plugin disables.
-    public void forceSave() {
-        config.set("name", name);
-        config.set("type", type.toString());
-        config.set("maxSessions", maxSessions);
-
-        for (Option option : setupOptions.values()) {
-            if (option == null) {
-                continue;
-            }
-            if (option instanceof ConfigurationSerializable) {
-                config.set(option.getName(), ((ConfigurationSerializable)option).serialize());
-            } else if (option instanceof SingleOption) {
-                config.set(option.getName(), ((SingleOption)option).getValue());
-            } else if (option instanceof ListOption) {
-                ListOption listOption = (ListOption)option;
-                if (listOption.getSingleOption() instanceof ConfigurationSerializable) {
-                    List<Map<String, Object>> serializedValues = new ArrayList<>();
-                    for (SingleOption singleOption : listOption.getOptions()) {
-                        serializedValues.add(((ConfigurationSerializable)singleOption).serialize());
-                    }
-                    config.set(option.getName(), serializedValues);
-                } else {
-                    config.set(option.getName(), ((ListOption)option).getValues());
-                }
-            }
-        }
-
-        try {
-            config.save(configFile);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    /**
-     * Load all the setup options from config.
-     * Any setup options that are missing or that have corrupt data will be put as null in the setupOptions map.
+     * Load all the arena options from the game.
+     * Creates a copy of all the options.
+     * The arena options in the game are used as templates only.
      */
     public void loadOptions() {
-        for (Option option : game.getSetupOptions().values()) {
-            if (config.contains(option.getName())) {
-                //Load option from config. (Try to parse config value)
-                Option clone = option.clone();
-                if (clone instanceof SingleOption) {
-                    ((SingleOption)clone).parse(config.get(option.getName()));
-                } else if (clone instanceof ListOption) {
-                    List<?> list = config.getList(option.getName());
-                    ((ListOption)clone).parse(false, list.toArray(new Object[list.size()]));
-                }
-                if (clone.hasError()) {
-                    game.getPlugin().getLogger().warning("Can't load arena '" + getName() + "' because the data is corrupt. Please run setup again to fix corrupt setup data.");
-                    game.getPlugin().getLogger().warning(clone.getError() + " [option=" + clone.getName() + "]");
-                }
-                setupOptions.put(option.getName().trim().toLowerCase(), clone);
-            } else {
-                setupOptions.put(option.getName().trim().toLowerCase(), option.clone());
-            }
+        for (Map.Entry<String, Option> entry : game.getArenaOptions().entrySet()) {
+            config.setOption(entry.getKey(), entry.getValue().clone());
         }
-    }
-
-    /**
-     * Get a option for the specified name.
-     * This method returns the {@link Option} and you should use the methods in {@link GameSession} to get the proper values.
-     * For example {@link GameSession#getLocation(String)} this will also replace the world of the location with the world of the session.
-     * @param name The name of the option to get. (Casing doesn't matter)
-     * @return Option which most likely contains the config value unless it's not set.
-     */
-    public Option getOption(String name) {
-        return setupOptions.get(name.trim().toLowerCase());
     }
 
     /**
@@ -191,7 +112,7 @@ public class Arena {
      * @return True when all setup options have been set up.
      */
     public boolean isSetupCorrectly() {
-        for (Option option : setupOptions.values()) {
+        for (Option option : config.getOptions()) {
             if (option == null) {
                 return false;
             }
@@ -205,34 +126,25 @@ public class Arena {
                     return false;
                 }
             }
+            //TODO: Map options
         }
         return true;
     }
 
     /**
-     * Get the total amount of active {@link GameSession}s this arena has.
+     * Get the total amount of sessions this arena has.
      * @return The amount of active sessions.
      */
     public int getSessionCount() {
-        return sessions.length;
+        return sessions.size();
     }
 
     /**
-     * Get the array with all the {@link GameSession}s for this arena.
-     * This is the entire array which can contain {@code null} values.
-     * Use {@link #getActiveSessions()} to get a set with only the active sessions.
-     * @return The array with game sessions. (Can contain {@code null} values!)
+     * Get the map with all the game sessions.
+     * @return map with sessions where the key is the session ID and the value is the session instance.
      */
-    public GameSession[] getSessions() {
+    public Map<Integer, GameSession> getSessions() {
         return sessions;
-    }
-
-    /**
-     * Get a set with all the active {@link GameSession}s for this arena.
-     * @return The set with active game sessions.
-     */
-    public Set<GameSession> getActiveSessions() {
-        return activeSessions;
     }
 
     /**
@@ -247,21 +159,21 @@ public class Arena {
     public GameSession createSession() throws SessionLimitException, MissingArenaWorldException, IOException {
         //Get and validate a new session id.
         int id = -1;
-        for (int i = 0; i < sessions.length; i++) {
-            if (sessions[i] == null) {
+        //TODO: Implement this properly with game/arena max session limit and support infinite sessions.
+        for (int i = 0; i < 16; i++) {
+            if (!hasSession(i)) {
                 id = i;
                 break;
             }
         }
         if (id < 0) {
             throw new SessionLimitException("Failed to create a new session for the arena " + getName() +
-                    "The maximum amount of sessions has been reached. [" + getMaxSessions() + "]");
+                    "The maximum amount of sessions has been reached. [" + 16 + "]");
         }
 
         //Create the new session.
         final GameSession newSession = game.getNewGameSession(this, id);
-        sessions[id] = newSession;
-        activeSessions.add(newSession);
+        sessions.put(id, newSession);
 
         //Add new instances of all the components from the game.
         for (GameComponent component : game.getComponents().values()) {
@@ -273,6 +185,7 @@ public class Arena {
             component.loadDependencies();
         }
 
+        //TODO: Clean this up (This code doesn't really belong here) (Need general API for arena types)
         if (getType() == ArenaType.DEFAULT) {
             newSession.setReady(true);
         } else if (getType() == ArenaType.WORLD) {
@@ -314,22 +227,16 @@ public class Arena {
      * @return The {@link GameSession} for the specified ID or {@code null} if there is no session for the given ID.
      */
     public GameSession getSession(int id) {
-        if (id >= getMaxSessions()) {
-            return null;
-        }
-        return sessions[id];
+        return sessions.get(id);
     }
 
     /**
-     * Check whether or not the arena has a {@link GameSession} with the given unique ID.
-     * @param id The session id to check for.
+     * Check whether or not the arena has a {@link GameSession} with the given ID.
+     * @param id The session ID to check for.
      * @return True when the arena has a session with the given ID.
      */
     public boolean hasSession(int id) {
-        if (id >= getMaxSessions()) {
-            return false;
-        }
-        return sessions[id] != null;
+        return sessions.containsKey(id);
     }
 
     /**
@@ -337,13 +244,16 @@ public class Arena {
      * @param id The session ID to remove.
      */
     public void removeSession(int id) {
-        if (id >= getMaxSessions()) {
-            return;
-        }
-        if (sessions[id] != null) {
-            activeSessions.remove(sessions[id]);
-        }
-        sessions[id] = null;
+        //TODO: More cleanup with the session itself.
+        sessions.remove(id);
+    }
+
+    /**
+     * Get the arena options config.
+     * @return {@link OptionCfg} with all the arena options.
+     */
+    public OptionCfg getConfig() {
+        return config;
     }
 
     /**
@@ -362,8 +272,6 @@ public class Arena {
         return type;
     }
 
-    //TODO: Maybe add support for changing the arena type?
-
     /**
      * Get the name of the arena.
      * @return The name of the arena.
@@ -372,25 +280,8 @@ public class Arena {
         return name;
     }
 
-    /**
-     * Set the name of the arena.
-     * @param name The new name for the arena.
-     */
-    public void setName(String name) {
-        this.name = name;
-    }
+    //TODO: Add support for changing arena name.
 
-    /**
-     * Get the maximum allowed sessions for this arena.
-     * It will force to return 1 if the {@link ArenaType} is a {@link ArenaType#DEFAULT} type or if the max limit is less than one.
-     * @return The maximum amount of sessions this arena can have.
-     */
-    public int getMaxSessions() {
-        if (maxSessions < 1 || type == ArenaType.DEFAULT) {
-            return 1;
-        }
-        return maxSessions;
-    }
 
     @Override
     public boolean equals(Object obj) {

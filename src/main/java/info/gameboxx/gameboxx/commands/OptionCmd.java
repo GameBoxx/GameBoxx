@@ -60,7 +60,7 @@ public class OptionCmd implements CommandExecutor {
             return true;
         }
 
-        Option option = arena.getOption(args[0]);
+        Option option = arena.getConfig().getOption(args[0]);
         if (option == null) {
             sender.sendMessage("Invalid option...");
             return true;
@@ -81,7 +81,8 @@ public class OptionCmd implements CommandExecutor {
                 sender.sendMessage(singleOption.getError());
                 return true;
             }
-            arena.save();
+
+            arena.getConfig().save();
             sender.sendMessage("Option value set!");
             return true;
         } else if (option instanceof ListOption) {
@@ -115,7 +116,8 @@ public class OptionCmd implements CommandExecutor {
                 sender.sendMessage(listOption.getError());
                 return true;
             }
-            arena.save();
+
+            arena.getConfig().save();
             sender.sendMessage("Option value set!");
             return true;
         }

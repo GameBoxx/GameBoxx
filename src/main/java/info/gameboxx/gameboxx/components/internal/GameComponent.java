@@ -26,15 +26,17 @@
 package info.gameboxx.gameboxx.components.internal;
 
 import info.gameboxx.gameboxx.GameBoxx;
+import info.gameboxx.gameboxx.config.internal.OptionCfg;
 import info.gameboxx.gameboxx.exceptions.ComponentConflictException;
 import info.gameboxx.gameboxx.exceptions.DependencyNotFoundException;
 import info.gameboxx.gameboxx.exceptions.OptionAlreadyExistsException;
+import info.gameboxx.gameboxx.game.Arena;
 import info.gameboxx.gameboxx.game.Game;
 import info.gameboxx.gameboxx.game.GameManager;
 import info.gameboxx.gameboxx.game.GameSession;
 import info.gameboxx.gameboxx.options.Option;
 import info.gameboxx.gameboxx.util.Utils;
-import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -49,15 +51,11 @@ import java.util.Set;
  */
 public abstract class GameComponent {
 
-    protected GameBoxx gb;
-    protected Game game;
-    protected GameSession session;
+    private Game game;
+    private GameSession session;
 
     private String configKey;
     private String name;
-
-    private ConfigurationSection config;
-    private Map<String, Object> defaultSettings = new HashMap<>();
 
     private Set<Class<? extends GameComponent>> depends = new HashSet<>();
     private Set<Class<? extends GameComponent>> softDepends = new HashSet<>();
@@ -74,7 +72,6 @@ public abstract class GameComponent {
      */
     public GameComponent(Game game) {
         this.game = game;
-        gb = GameBoxx.get();
 
         name = getClass().getSimpleName();
         name = name.substring(0, name.length()-2);
@@ -83,104 +80,88 @@ public abstract class GameComponent {
         configKey = name.replace(" ", "-").toLowerCase();
     }
 
+
+    //region Options
+
     /**
-     * Get the display name for the component.
-     * For example for MinPlayersCP the name would be 'Min Players'.
-     * @return Configuration key name.
+     * Register an arena option.
+     * Make sure to call this from the {@link #registerOptions()} method.
+     * These options will be passed on to all arenas.
+     *
+     * The path/name should be all lower cased and words should be separated with a dash 'my-awesome-option'.
+     * You can use the dot '.' to create different sections like 'items.example-option'
+     *
+     * @param path The path/name for the option. (lower cased with a dash '-' as word separator)
+     * @param option The option instance.
      */
-    public String getName() {
-        return name;
+    public void registerArenaOption(String path, Option option) {
+        if (!path.startsWith("components")) {
+            path = path(path);
+        }
+        game.registerArenaOption(path, option);
     }
 
     /**
-     * Get the config key name for the component to use in game setting files.
-     * For example for MinPlayersCP the key would be 'min-players'
-     * @return Configuration key name.
+     * Register a game option.
+     * Make sure to call this from the {@link #registerOptions()} method.
+     *
+     * The path/name should be all lower cased and words should be separated with a dash 'my-awesome-option'.
+     * You can use the dot '.' to create different sections like 'items.example-option'
+     *
+     * @param path The path/name for the option. (lower cased with a dash '-' as word separator)
+     * @param option The option instance.
      */
-    public String getConfigKey() {
-        return configKey;
-    }
-
-
-    /**
-     * Get the map with all the default configuration settings.
-     * @return Map with default configuration settings.
-     */
-    public Map<String, Object> getDefaultSettings() {
-        return defaultSettings;
-    }
-
-    /**
-     * Add a setting for the component which will be added to the game configuration.
-     * @param key The key name for the configuration it can contain dots like normal config sections to seperate sections.
-     * @param defaultValue The value to put in the config for default.
-     */
-    protected void addSetting(String key, Object defaultValue) {
-        defaultSettings.put(key, defaultValue);
+    public void registerGameOption(String path, Option option) {
+        if (!path.startsWith("components")) {
+            path = path(path);
+        }
+        game.registerGameOption(path, option);
     }
 
     /**
-     * Get the configuration settings for this component.
-     * <b>This will be {@code null} in the constructor as it gets set later on!</b>
-     * Use the key names that you specified with {@link #addSetting(String, Object)}
-     * @return {@link ConfigurationSection} for the component with all the settings.
+     * Called after all components have been added to the game to register game/arena options.
+     *
+     * Call {@link #registerGameOption(String, Option)} to register a game option.
+     * Call {@link #registerArenaOption(String, Option)} to register an arena option.
+     *
+     * the option name should be all lower cased with a dash '-' as word separator.
      */
-    public ConfigurationSection getSettings() {
-        return config;
+    public abstract void registerOptions();
+
+    /**
+     * Get the full path for the specified option name.
+     * Component options are saved like: 'components.{component-name}.{option-name}'
+     * When registering options you don't have to use this but working with the config you have to use this.
+     * @param path The path/name of the option.
+     * @return The full path for the specified option like 'components.{component-name}.{option-name}'
+     */
+    public String path(String path) {
+        return "components." + configKey + "." + path;
     }
 
     /**
-     * Set the configuration section for the component.
-     * Do not call this manually!
-     * It will be set by the Game/GameSession after everything is loaded.
-     * @param config The ConfigurationSection for this component.
+     * Get the game options config.
+     * @see Game#getConfig()
+     * @return {@link OptionCfg} with all the game options.
      */
-    public void setConfig(ConfigurationSection config) {
-        this.config = config;
-    }
-
-
-    /**
-     * Called after all components have been added to the game to register setup options.
-     * Call {@link Game#registerSetupOption(Option)} here to register setup options.
-     * Avoid registering options in the constructor. When using this method the game won't register when an exception is thrown.
-     */
-    public abstract void registerOptions() throws OptionAlreadyExistsException;
-
-    /**
-     * Get the {@link GameBoxx} instance.
-     * @return GameBoxx instance.
-     */
-    public GameBoxx getAPI() {
-        return gb;
+    public OptionCfg getGameOptions() {
+        return game.getConfig();
     }
 
     /**
-     * Get the {@link Game} this component belongs too.
-     * @return The game the component has been added to.
+     * Get the arena options config.
+     * @see Arena#getConfig()
+     * @return {@link OptionCfg} with all the arena options.
      */
-    public Game getGame() {
-        return game;
+    public OptionCfg getArenaOptions() {
+        return getArena().getConfig();
     }
 
-    /**
-     * Get the {@link GameSession} this component belongs too.
-     * @return The game session. This will be null for components in the {@link Game} but those should be used as templates only anyways.
-     */
-    public GameSession getSession() {
-        return session;
-    }
 
-    /**
-     * Set the {@link GameSession}.
-     * When calling {@link #newInstance(GameSession)} set the session using this method.
-     * @param session The {@link GameSession} to set
-     * @return Returns itself so you can use it easier.
-     */
-    protected GameComponent setSession(GameSession session) {
-        this.session = session;
-        return this;
-    }
+    //endregion
+
+
+    //region Dependencies
 
     /**
      * Adds a hard dependency.
@@ -211,6 +192,18 @@ public abstract class GameComponent {
     }
 
     /**
+     * Get another dependency component.
+     * It can also be a soft dependency but in that case this will return {@code null} if the {@link Game}/{@link GameSession} doesn't have the component.
+     * Regular dependencies will never return {@code null}!
+     * @param component The type of component/dependency to get.
+     * @param <T> The type of component/dependency to get.
+     * @return The component instance of the type specified or {@code null}.
+     */
+    public <T extends GameComponent> T getDependency(Class<T> component) {
+        return Utils.<T>convertInstance(dependencies.get(component), component);
+    }
+
+    /**
      * Validate the component to check for dependencies and conflicts.
      * Soft dependencies won't be validated.
      * There is no need to manually call this!
@@ -232,18 +225,6 @@ public abstract class GameComponent {
     }
 
     /**
-     * Get another dependency component.
-     * It can also be a soft dependency but in that case this will return {@code null} if the {@link Game}/{@link GameSession} doesn't have the component.
-     * Regular dependencies will never return {@code null}!
-     * @param component The type of component/dependency to get.
-     * @param <T> The type of component/dependency to get.
-     * @return The component instance of the type specified or {@code null}.
-     */
-    public <T extends GameComponent> T getDependency(Class<T> component) {
-        return Utils.<T>convertInstance(dependencies.get(component), component);
-    }
-
-    /**
      * Loads all the hard and soft dependencies into the dependencies map.
      * When a new {@link GameSession} is created this method will be called.
      * @throws IllegalStateException when trying to call this method before a session is created.
@@ -261,6 +242,76 @@ public abstract class GameComponent {
             }
         }
     }
+    //endregion
+
+
+    //region General
+
+    /**
+     * Get the display name for the component.
+     * For example for MinPlayersCP the name would be 'Min Players'.
+     * @return Configuration key name.
+     */
+    public String getName() {
+        return name;
+    }
+
+    /**
+     * Get the {@link GameBoxx} instance.
+     * @return GameBoxx instance.
+     */
+    public GameBoxx getAPI() {
+        return game.getAPI();
+    }
+
+    /**
+     * Get the plugin instance that registered the game this component belongs to.
+     * @return owning {@link JavaPlugin} of the game.
+     */
+    public JavaPlugin getPlugin() {
+        return game.getPlugin();
+    }
+
+
+    /**
+     * Get the {@link Game} this component belongs too.
+     * @return The game the component has been added to.
+     */
+    public Game getGame() {
+        return game;
+    }
+
+    /**
+     * Get the {@link Arena} from the {@link GameSession} this component belongs to.
+     * @return The arena from the game session. This will be null for components in the {@link Game} but those should only be used as templates.
+     */
+    public Arena getArena() {
+        if (session == null) {
+            return null;
+        }
+        return session.getArena();
+    }
+
+    /**
+     * Get the {@link GameSession} this component belongs to.
+     * @return The game session. This will be null for components in the {@link Game} but those should only be used as templates.
+     */
+    public GameSession getSession() {
+        return session;
+    }
+
+    /**
+     * Set the {@link GameSession}.
+     * When calling {@link #newInstance(GameSession)} set the session using this method.
+     * @param session The {@link GameSession} to set
+     * @return Returns itself so you can use it easier.
+     */
+    protected GameComponent setSession(GameSession session) {
+        this.session = session;
+        return this;
+    }
+    //endregion
+
 
     /**
      * Return a new instance of the component for the provided {@link GameSession}.

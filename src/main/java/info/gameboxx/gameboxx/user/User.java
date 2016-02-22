@@ -126,9 +126,8 @@ public class User {
     }
 
     private GameSession getOptimalSession(Arena arena) {
-        GameSession[] sessions = arena.getSessions();
         Map<Integer, GameSession> sessionMap = Maps.newHashMap();
-        for (GameSession gameSession : sessions) {
+        for (GameSession gameSession : arena.getSessions().values()) {
             sessionMap.put(gameSession.getComponent(PlayersCP.class).getOnlinePlayers().size(), gameSession);
         }
         int resKey = Numbers.smallest(sessionMap.keySet().toArray(new Integer[sessionMap.keySet().size()]));

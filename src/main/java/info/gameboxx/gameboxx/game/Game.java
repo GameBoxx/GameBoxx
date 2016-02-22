@@ -28,12 +28,11 @@ package info.gameboxx.gameboxx.game;
 import info.gameboxx.gameboxx.GameBoxx;
 import info.gameboxx.gameboxx.components.internal.ComponentHolder;
 import info.gameboxx.gameboxx.components.internal.GameComponent;
+import info.gameboxx.gameboxx.config.internal.OptionCfg;
 import info.gameboxx.gameboxx.exceptions.*;
 import info.gameboxx.gameboxx.options.Option;
+import info.gameboxx.gameboxx.options.single.IntOption;
 import info.gameboxx.gameboxx.util.Utils;
-import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.configuration.InvalidConfigurationException;
-import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
@@ -57,10 +56,8 @@ public abstract class Game extends ComponentHolder {
 
     private File gameFolder;
 
-    private File configFile;
-    private YamlConfiguration config;
-    private Map<String, Object> defaultSettings = new HashMap<>();
-    private Map<String, Option> setupOptions = new HashMap<>();
+    private OptionCfg config;
+    private Map<String, Option> arenaOptions = new HashMap<>();
 
     private File arenaFolder;
     private Map<String, Arena> arenas = new HashMap<>();
@@ -82,9 +79,7 @@ public abstract class Game extends ComponentHolder {
         arenaFolder = new File(gameFolder, "arenas");
         arenaFolder.mkdirs();
 
-        configFile = new File(gameFolder, name + "Settings.yml");
-        config = YamlConfiguration.loadConfiguration(configFile);
-        config.options().copyDefaults(true);
+        config = new OptionCfg(new File(gameFolder, name + "Options.yml"));
     }
 
 
@@ -127,16 +122,13 @@ public abstract class Game extends ComponentHolder {
 
     /**
      * Load all the arenas from their config files.
-     * It loads the config files from the owning plugins data folder then the Arenas folder and then the game name. For example /plugins/Spleef/Arenas/Spleef
-     * If there are multiple games per plugin it shouldn't have any conflicts with data files.
      * The arena will only load when the config has a valid name and there is no arena loaded with that name.
      */
     public void loadArenas() {
         Map<String, File> configFiles = Utils.getFiles(arenaFolder, "yml");
         int count = 0;
         for (Map.Entry<String, File> entry : configFiles.entrySet()) {
-            YamlConfiguration arenaCfg = YamlConfiguration.loadConfiguration(entry.getValue());
-            Arena arena = new Arena(this, entry.getValue(), arenaCfg);
+            Arena arena = new Arena(this, entry.getValue());
             if (arena.getName() == null || arena.getName().trim().isEmpty()) {
                 gb.error("No valid arena name found while trying to load the arena from '" + entry.getKey() + ".yml'\n" +
                         "Please check your configuration for that arena.");
@@ -148,12 +140,12 @@ public abstract class Game extends ComponentHolder {
                         "Make sure you don't have two arenas with the same name!");
                 continue;
             }
-            arena.loadOptions();
             arenas.put(name, arena);
             count++;
         }
 
         //Create a session for each arena.
+        //TODO: Move this
         for (Arena arena : arenas.values()) {
             try {
                 arena.createSession();
@@ -182,12 +174,9 @@ public abstract class Game extends ComponentHolder {
         if (configFile.exists()) {
             throw new ArenaAlreadyExistsException("An arena with the name " + arenaName + " already exists!");
         }
-        YamlConfiguration config = YamlConfiguration.loadConfiguration(configFile);
 
-        Arena arena = new Arena(this, configFile, config, type, arenaName);
-        arena.loadOptions();
-        arena.forceSave();
-        arenas.put(arenaName, arena);
+        Arena arena = new Arena(this, configFile, type, arenaName);
+        arenas.put(arenaName.trim().toLowerCase(), arena);
         return arena;
     }
 
@@ -197,8 +186,7 @@ public abstract class Game extends ComponentHolder {
      * @return True when the arena exists.
      */
     public boolean hasArena(String arenaName) {
-        arenaName.trim().toLowerCase();
-        return arenas.containsKey(arenaName);
+        return arenas.containsKey(arenaName.trim().toLowerCase());
     }
 
     /**
@@ -207,8 +195,7 @@ public abstract class Game extends ComponentHolder {
      * @return The {@link Arena} instance or {@code null} if no arena with the specified id exists.
      */
     public Arena getArena(String arenaName) {
-        arenaName.trim().toLowerCase();
-        return arenas.get(arenaName);
+        return arenas.get(arenaName.trim().toLowerCase());
     }
 
     /**
@@ -229,132 +216,88 @@ public abstract class Game extends ComponentHolder {
     //endregion
 
 
-    //region Setup options
+    //region Options
 
     /**
-     * Register a new setup option. (Make sure you give the option a name!)
-     * This can be used to register custom setup options that your game needs.
-     * It's also used for components to register options.
-     * Arenas will fail to create sessions if not all the options have been set up correctly.
-     * @throws OptionAlreadyExistsException When an option with the specified name is already registered or when there is no option name specified.
+     * Get the game config file.
+     * Used for component options and for your own options.
+     * @see #registerOptions()
+     * @return {@link OptionCfg} with game settings.
      */
-    public void registerSetupOption(Option option) throws OptionAlreadyExistsException {
-        String name = option.getName().trim().toLowerCase();
-        if (name.isEmpty() || setupOptions.containsKey(option.toString())) {
-            throw new OptionAlreadyExistsException(name);
-        }
-        setupOptions.put(name, option);
+    public OptionCfg getConfig() {
+        return config;
     }
 
     /**
-     * Used for games to register custom setup options for the game.
-     * These are component independent options for custom gameplay elements.
-     * Call {@link #registerSetupOption(Option)} for each option you want to register in this method.
-     * @throws OptionAlreadyExistsException When an option with the specified name is already registered or when there is no option name specified.
+     * Register an arena option.
+     * Make sure to call this from the {@link #registerOptions()} method.
+     * These options will be passed on to all arenas.
+     *
+     * <b>The path may not start with 'components' or 'general' as that path is reserved for component/general options!</b>
+     * The path/name should be all lower cased and words should be separated with a dash 'my-awesome-option'.
+     * You can use the dot '.' to create different sections like 'items.example-option'
+     *
+     * @param path The path/name for the option. (lower cased with a dash '-' as word separator)
+     * @param option The option instance.
      */
-    public abstract void registerOptions() throws OptionAlreadyExistsException;
+    public void registerArenaOption(String path, Option option) {
+        arenaOptions.put(path, option);
+    }
 
     /**
-     * Go through all the components and register setup options.
-     * This method is called when registering a game using {@link GameManager#register(Game)}
-     * @throws OptionAlreadyExistsException When a component tries to register an option with a name that is already used by another component.
+     * Register a game option.
+     * Make sure to call this from the {@link #registerOptions()} method.
+     *
+     * <b>The path may not start with 'components' or 'general' as that path is reserved for component/general options!</b>
+     * The path/name should be all lower cased and words should be separated with a dash 'my-awesome-option'.
+     * You can use the dot '.' to create different sections like 'items.example-option'
+     *
+     * @param path The path/name for the option. (lower cased with a dash '-' as word separator)
+     * @param option The option instance.
      */
-    public void registerSetupOptions() throws OptionAlreadyExistsException {
+    public void registerGameOption(String path, Option option) {
+        getConfig().setOption(path, option);
+    }
+
+    /**
+     * Used for games to register custom game/arena options for the game.
+     * These are component independent options for custom gameplay elements.
+     *
+     * <b>Do not register options with a path starting with 'components' or 'general'!</b>
+     * This path is reserved for component options and general game options as they get stored in the same files
+     * The name/path should be all lower cased and words should be separated with a dash 'my-awesome-option'.
+     *
+     * Use {@link #registerGameOption(String, Option)} to register a game option.
+     * Use {@link #registerArenaOption(String, Option)} to register an arena option.
+     */
+    public abstract void registerOptions();
+
+    /**
+     * Register all the general game/arena options and all the component game/arena options.
+     * It will only register component options from components that have been registered for this game.
+     * This method is called when registering a game using {@link GameManager#register(Game)}.
+     * Do not manually call this.
+     */
+    public void registerCoreOptions() {
+        //General game options
+        registerGameOption("general.max-sessions", new IntOption("MaxSessions", -1).min(-1).setDescription("The maximum amount of sessions that can be created for the game."));
+
+        //General arena options
+        registerArenaOption("general.max-sessions", new IntOption("MaxSessions", -1).min(-1).setDescription("The maximum amount of sessions that can be created for the arena"));
+
+        //Component options
         for (GameComponent component : getComponents().values()) {
             component.registerOptions();
         }
     }
 
     /**
-     * Get a map with all the setup options.
-     * @return Map with setup options where the key is the name and the value is the {@link Option}.
+     * Get a map with all the arena options.
+     * These options are used as a template only as each {@link Arena} stores a copy of these options.
+     * @return Map with arena options where the key is the path and the value is the option instance (template).
      */
-    public Map<String, Option> getSetupOptions() {
-        return setupOptions;
-    }
-    //endregion
-
-
-    //region Configuration
-
-    /**
-     * Loads all the default config settings.
-     * Game specific settings that have been added with {@link #addSetting(String, Object)}
-     * And component settings that have been added with {@link GameComponent#addSetting(String, Object)}
-     */
-    public void loadSettings() {
-        try {
-            if (configFile.exists()) {
-                config.load(configFile);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (InvalidConfigurationException e) {
-            e.printStackTrace();
-        }
-        for (Map.Entry<String, Object> entry : defaultSettings.entrySet()) {
-            config.addDefault("settings." + entry.getKey(), entry.getValue());
-        }
-        for (GameComponent component : getComponents().values()) {
-            for (Map.Entry<String, Object> entry : component.getDefaultSettings().entrySet()) {
-                config.addDefault("components." + component.getConfigKey() + "." + entry.getKey(), entry.getValue());
-            }
-            component.setConfig(config.getConfigurationSection("components." + component.getConfigKey()));
-        }
-        saveConfig();
-    }
-
-    /**
-     * Register a setting for your game.
-     * This should be used for game specific config settings.
-     * You can use {@link #getSettings()} to get the {@link ConfigurationSection} with setting values.
-     * @param key The key name for the config setting.
-     *            As with regular {@link ConfigurationSection}s you can use a dot (.) to create different sections.
-     * @param defaultValue The default value to put in the configuration file which the user can edit.
-     */
-    public void addSetting(String key, Object defaultValue) {
-        defaultSettings.put(key, defaultValue);
-    }
-
-    /**
-     * Get the {@link ConfigurationSection} with all the game specific settings.
-     * This contains all the settings you've specified with {@link #addSetting(String, Object)}.
-     * <b>This may contain no values when using it in your constructor because settings get loaded after the game is fully registered and validated.</b>
-     * @return The {@link ConfigurationSection} with game specific settings.
-     */
-    public ConfigurationSection getSettings() {
-        return config.getConfigurationSection("settings");
-    }
-
-    /**
-     * Get the configuration file for this game.
-     * It contains all the settings for components and game specific settings.
-     * Use {@link #getSettings()} to get the settings section for your game instead of using getSettings directly.
-     * @return The {@link YamlConfiguration} with all the game settings.
-     */
-    public YamlConfiguration getConfig() {
-        return config;
-    }
-
-    /**
-     * Get the configuration file with component settings and game specific settings.
-     * @return The {@link File} for the configuration settings file.
-     */
-    public File getConfigFile() {
-        return configFile;
-    }
-
-    /**
-     * Save all the game settings.
-     * This includes component settings and game specific settings.
-     * The only reason you would want to call this if you manually force set a setting.
-     */
-    public void saveConfig() {
-        try {
-            getConfig().save(configFile);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    public Map<String, Option> getArenaOptions() {
+        return arenaOptions;
     }
     //endregion
 
