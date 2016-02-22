@@ -219,7 +219,12 @@ public abstract class ListOption extends Option {
     }
 
     protected Object getValueOrDefault(int index) {
-
+        if (index >= value.size()) {
+            throw new IndexOutOfBoundsException();
+        }
+        if (value.get(index) == null) {
+            return null;
+        }
         return value.get(index).getValueOrDefault();
     }
 
