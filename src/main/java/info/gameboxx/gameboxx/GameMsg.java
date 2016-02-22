@@ -67,6 +67,20 @@ public enum GameMsg {
     POS_2(Cat.SELECTION, "Pos 2"),
 
     COUNTDOWN(Cat.GAME, "&a&l{seconds} &6&lseconds till the game starts!"),
+
+    OPT_ALWAYS_JOIN(Cat.OPTION_DESC, "When set to true players will be able able to join while the game is in progress."),
+    OPT_COUNTDOWN(Cat.OPTION_DESC, "The amount of seconds to set on the countdown. (Can be set to -1 to disable)"),
+    OPT_PERMISSION_BYPASS(Cat.OPTION_DESC, "When a permission node is set players with this permission will be able to bypass the player limit and join full games."),
+    OPT_AUTO_SPECTATE(Cat.OPTION_DESC, "When set to true players will automatically join as spectator when trying to join a full game. (By default a message will be sent that the game is full)"),
+    OPT_MAX_PLAYERS(Cat.OPTION_DESC, "The maximum amount of players allowed in the game."),
+    OPT_MIN_PLAYERS(Cat.OPTION_DESC, "The minimum amount of players required to start the game."),
+    OPT_LOBBY_SPAWN(Cat.OPTION_DESC, "The location where players will be teleported to when they join the lobby."),
+    OPT_QUEUE_TIME(Cat.OPTION_DESC, "When this is not -1 it won't teleport players to the lobby till the countdown time has reached the set value. If it's set to 0 players won't get teleported to the lobby spawn at all."),
+    OPT_LOBBY_FLY(Cat.OPTION_DESC, "Allows players to fly when inside the lobby. For example if the lobby spawn is within the arena players can fly around the arena before it starts."),
+    OPT_COUNTDOWN_TIME(Cat.OPTION_DESC, "Time in seconds to count down from before the game starts."),
+    OPT_COUNT_INTERVAL(Cat.OPTION_DESC, "Time in seconds between each count. (It will still tick down per second)"),
+    OPT_COUNT_SECONDS(Cat.OPTION_DESC, "At which time in seconds change the interval to seconds."),
+    OPT_COUNT_SOUND(Cat.OPTION_DESC, "Sound to play for each count. (Message can be set in message config)"),
     ;
 
 
@@ -137,6 +151,7 @@ public enum GameMsg {
         ITEM_PARSER,
         SELECTION,
         GAME,
+        OPTION_DESC,
         ;
     }
 }

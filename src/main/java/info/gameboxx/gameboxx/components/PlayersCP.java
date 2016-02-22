@@ -25,15 +25,15 @@
 
 package info.gameboxx.gameboxx.components;
 
+import info.gameboxx.gameboxx.GameMsg;
 import info.gameboxx.gameboxx.components.internal.ComponentListener;
 import info.gameboxx.gameboxx.components.internal.GameComponent;
 import info.gameboxx.gameboxx.events.PlayerJoinSessionEvent;
 import info.gameboxx.gameboxx.events.PlayerLeaveSessionEvent;
-import info.gameboxx.gameboxx.exceptions.OptionAlreadyExistsException;
 import info.gameboxx.gameboxx.game.Game;
 import info.gameboxx.gameboxx.game.GameSession;
 import info.gameboxx.gameboxx.game.LeaveReason;
-
+import info.gameboxx.gameboxx.options.single.BoolOption;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -63,7 +63,10 @@ public class PlayersCP extends GameComponent {
     }
 
     @Override
-    public void registerOptions() throws OptionAlreadyExistsException {}
+    public void registerOptions() {
+        registerGameOption("always-join", new BoolOption("AlwaysJoin", false).setDescription(GameMsg.OPT_ALWAYS_JOIN.getMsg()));
+        //TODO: Implement this option
+    }
 
     @Override
     public PlayersCP newInstance(GameSession session) {
@@ -115,7 +118,7 @@ public class PlayersCP extends GameComponent {
         if (reason == LeaveReason.DISCONNECT) {
             removedPlayers.add(player);
         }
-        session.removePlayer(Bukkit.getPlayer(player), reason);
+        getSession().removePlayer(Bukkit.getPlayer(player), reason);
     }
 
     /**

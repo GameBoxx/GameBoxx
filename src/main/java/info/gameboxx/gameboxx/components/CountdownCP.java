@@ -25,13 +25,13 @@
 
 package info.gameboxx.gameboxx.components;
 
-import info.gameboxx.gameboxx.exceptions.OptionAlreadyExistsException;
-import info.gameboxx.gameboxx.game.Game;
+import info.gameboxx.gameboxx.GameMsg;
 import info.gameboxx.gameboxx.components.internal.GameComponent;
+import info.gameboxx.gameboxx.game.Game;
 import info.gameboxx.gameboxx.game.GameSession;
+import info.gameboxx.gameboxx.options.single.IntOption;
 import info.gameboxx.gameboxx.util.SoundEffect;
 import info.gameboxx.gameboxx.util.Str;
-
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -49,23 +49,17 @@ public class CountdownCP extends GameComponent {
 
     public CountdownCP(Game game) {
         super(game);
-
         addDependency(PlayersCP.class);
-
-        addSetting("seconds", 30);
-        addSetting("main-interval", 10);
-        addSetting("start-second-interval", 5);
-        addSetting("sound.name", "NOTE_PLING");
-        addSetting("sound.volume", 0.5f);
-        addSetting("sound.pitch", 1f);
-        addSetting("message", "&6&l{game} will start in &a&l{seconds} &6&lsecond{s}!");
 
         this.runnable = new CountdownRunnable();
     }
 
     @Override
-    public void registerOptions() throws OptionAlreadyExistsException {
-        //No options
+    public void registerOptions() {
+        registerGameOption("countdown-time", new IntOption("CountdownTime", 30).min(0).setDescription(GameMsg.OPT_COUNTDOWN_TIME.getMsg()));
+        registerGameOption("count-interval", new IntOption("CountInterval", 10).min(1).setDescription(GameMsg.OPT_COUNT_INTERVAL.getMsg()));
+        registerGameOption("count-seconds", new IntOption("CountSeconds", 5).min(0).setDescription(GameMsg.OPT_COUNT_SECONDS.getMsg()));
+        //registerGameOption("count-sound", new SoundOption("CountSound", new SoundEffect(Sound.NOTE_PLING)).setDescription(GameMsg.OPT_COUNT_SOUND.getMsg()));;
     }
 
     @Override
@@ -93,35 +87,35 @@ public class CountdownCP extends GameComponent {
 
     /**
      * Get the amount in seconds to start the countdown from.
-     * @return Seconds.
+     * @return countdown-time option value.
      */
-    public int getSeconds() {
-        return getSettings().getInt("seconds");
+    public int getCountdownTime() {
+        return getGameOptions().getInt(path("countdown-time"));
     }
 
     /**
      * Get the main interval between counts.
-     * @return The interval between counts in seconds.
+     * @return count-interval option value.
      */
-    public int getMainInterval() {
-        return getSettings().getInt("main-interval");
+    public int getCountInterval() {
+        return getGameOptions().getInt(path("count-interval"));
     }
 
     /**
      * Get the start time in seconds when to start the second interval.
-     * @return The start time for the second interval.
+     * @return count-seconds option value.
      */
-    public int getStartSecondInterval() {
-        return getSettings().getInt("start-second-interval");
+    public int getCountSeconds() {
+        return getGameOptions().getInt(path("count-seconds"));
     }
 
     /**
      * Get the {@link SoundEffect} to play on each count.
-     * @return The {@link SoundEffect} to play on each count. May be null if there is no sound to play!
+     * @return count-sound option value.
      */
     public SoundEffect getSound() {
-        //TODO: Make SoundEffect serializable
-        return getSettings().getString("sound.name").isEmpty() ? null : new SoundEffect(Sound.valueOf(getSettings().getString("sound.name")), (float) getSettings().getDouble("sound.volume"), (float) getSettings().getDouble("sound.pitch"));
+        //TODO: Implement when SoundOption is added.
+        return new SoundEffect(Sound.NOTE_PLING);
     }
 
     /**
@@ -129,7 +123,8 @@ public class CountdownCP extends GameComponent {
      * @return The message that will be broadcasted.
      */
     public String getMessage() {
-        return getSettings().getString("message").replace("{game}", game.getName()).replace("{seconds}", String.valueOf(getCountdown())).replace("{s}", getCountdown() == 1 ? "" : "s");
+        //TODO: Get configurable message.
+        return "".replace("{game}", getGame().getName()).replace("{seconds}", String.valueOf(getCountdown())).replace("{s}", getCountdown() == 1 ? "" : "s");
     }
 
     
@@ -171,7 +166,7 @@ public class CountdownCP extends GameComponent {
             // TODO: Start the session.
             return;
         }
-        if (countdown % getMainInterval() == 0 || countdown <= getStartSecondInterval()) {
+        if (countdown % getCountInterval() == 0 || countdown <= getCountSeconds()) {
             SoundEffect sound = getSound();
             if (sound != null) {
                 sound.play(getDependency(PlayersCP.class).getOnlinePlayers());

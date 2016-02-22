@@ -25,11 +25,11 @@
 
 package info.gameboxx.gameboxx.components;
 
+import info.gameboxx.gameboxx.GameMsg;
 import info.gameboxx.gameboxx.components.internal.ComponentListener;
 import info.gameboxx.gameboxx.components.internal.GameComponent;
 import info.gameboxx.gameboxx.events.PlayerJoinSessionEvent;
 import info.gameboxx.gameboxx.exceptions.DependencyNotFoundException;
-import info.gameboxx.gameboxx.exceptions.OptionAlreadyExistsException;
 import info.gameboxx.gameboxx.game.Game;
 import info.gameboxx.gameboxx.game.GameSession;
 import info.gameboxx.gameboxx.options.single.IntOption;
@@ -43,33 +43,22 @@ import org.bukkit.event.EventHandler;
 public class MinPlayersCP extends GameComponent {
 
     private static final Events EVENT = new Events();
-    private int min;
 
     public MinPlayersCP(Game game) {
         super(game);
-    }
-
-    /**
-     * @see GameComponent
-     * @param min The default value for the minimum amount of players required to start the game.
-     */
-    public MinPlayersCP(Game game, int min) {
-        super(game);
         addDependency(PlayersCP.class);
-        
-        this.min = min;
         
         EVENT.register(getAPI());
     }
 
     @Override
-    public void registerOptions() throws OptionAlreadyExistsException {
-        new IntOption("MinPlayers", 2).min(1).setDescription("The minimum amount of players required to start a game.");
+    public void registerOptions() {
+        registerArenaOption("min-players", new IntOption("MinPlayers", 2).min(1).setDescription(GameMsg.OPT_MIN_PLAYERS.getMsg()));
     }
 
     @Override
     public MinPlayersCP newInstance(GameSession session) {
-        return (MinPlayersCP) new MinPlayersCP(getGame(), min).setSession(session);
+        return (MinPlayersCP) new MinPlayersCP(getGame()).setSession(session);
     }
 
     /**
@@ -77,7 +66,7 @@ public class MinPlayersCP extends GameComponent {
      * @return The minimum player amount required to start.
      */
     public int getMin() {
-        return session.getInt("minPlayers");
+        return getArenaOptions().getInt(path("min-players"));
     }
     
     /**
@@ -86,7 +75,7 @@ public class MinPlayersCP extends GameComponent {
      * @throws DependencyNotFoundException If the hard dependency was not found.
      */
     public boolean hasMinimumPlayers() {
-        return getDependency(PlayersCP.class).getPlayers().size() >= this.min;
+        return getDependency(PlayersCP.class).getPlayers().size() >= getMin();
     }
     
     /**

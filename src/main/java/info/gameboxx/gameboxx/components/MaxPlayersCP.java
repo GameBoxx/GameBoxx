@@ -25,14 +25,15 @@
 
 package info.gameboxx.gameboxx.components;
 
+import info.gameboxx.gameboxx.GameMsg;
 import info.gameboxx.gameboxx.components.internal.ComponentListener;
 import info.gameboxx.gameboxx.components.internal.GameComponent;
 import info.gameboxx.gameboxx.events.PlayerJoinSessionEvent;
-import info.gameboxx.gameboxx.exceptions.OptionAlreadyExistsException;
 import info.gameboxx.gameboxx.game.Game;
 import info.gameboxx.gameboxx.game.GameSession;
-
+import info.gameboxx.gameboxx.options.single.BoolOption;
 import info.gameboxx.gameboxx.options.single.IntOption;
+import info.gameboxx.gameboxx.options.single.StringOption;
 import org.bukkit.event.EventHandler;
 
 /**
@@ -43,32 +44,27 @@ import org.bukkit.event.EventHandler;
 public class MaxPlayersCP extends GameComponent {
 
     private static final Events EVENT = new Events();
-    private int max;
 
     public MaxPlayersCP(Game game) {
         super(game);
-    }
-    
-    /**
-     * @see GameComponent
-     * @param max The default value for the maximum amount of players allowed.
-     */
-    public MaxPlayersCP(Game game, int max) {
-        super(game);
         addDependency(PlayersCP.class);
 
-        this.max = max;
         EVENT.register(getAPI());
     }
 
     @Override
-    public void registerOptions() throws OptionAlreadyExistsException {
-        game.registerSetupOption(new IntOption("MaxPlayers", max).setDescription("The maximum amount of players allowed in the arena."));
+    public void registerOptions() {
+        //TODO: Implement these settings.
+        registerGameOption("countdown", new IntOption("Countdown", 5).min(-1).setDescription(GameMsg.OPT_COUNTDOWN.getMsg()));
+        registerGameOption("permission-bypass", new StringOption("PermissionBypass", "").setDescription(GameMsg.OPT_PERMISSION_BYPASS.getMsg()));
+        registerGameOption("auto-spectate", new BoolOption("AutoSpectate", false).setDescription(GameMsg.OPT_AUTO_SPECTATE.getMsg()));
+
+        registerArenaOption("max-players", new IntOption("MaxPlayers", 16).min(1).setDescription(GameMsg.OPT_MAX_PLAYERS.getMsg()));
     }
 
     @Override
     public MaxPlayersCP newInstance(GameSession session) {
-        return (MaxPlayersCP) new MaxPlayersCP(getGame(), max).setSession(session);
+        return (MaxPlayersCP) new MaxPlayersCP(getGame()).setSession(session);
     }
 
     /**
@@ -76,7 +72,7 @@ public class MaxPlayersCP extends GameComponent {
      * @return The maximum player amount allowed.
      */
     public int getMax() {
-        return session.getInt("maxPlayers");
+        return getArenaOptions().getInt(path("max-players"));
     }
 
     private static class Events extends ComponentListener {

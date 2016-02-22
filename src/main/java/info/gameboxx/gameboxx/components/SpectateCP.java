@@ -25,9 +25,8 @@
 
 package info.gameboxx.gameboxx.components;
 
-import info.gameboxx.gameboxx.exceptions.OptionAlreadyExistsException;
-import info.gameboxx.gameboxx.game.Game;
 import info.gameboxx.gameboxx.components.internal.GameComponent;
+import info.gameboxx.gameboxx.game.Game;
 import info.gameboxx.gameboxx.game.GameSession;
 
 import java.util.ArrayList;
@@ -46,7 +45,7 @@ public class SpectateCP extends GameComponent {
     }
 
     @Override
-    public void registerOptions() throws OptionAlreadyExistsException {}
+    public void registerOptions() {}
 
     @Override
     public SpectateCP newInstance(GameSession session) {
