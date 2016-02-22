@@ -34,6 +34,8 @@ public abstract class Option {
     protected String name = "";
     protected String description = "";
 
+    protected OptionFlag flag = OptionFlag.NONE;
+
     protected String error = "";
 
     public Option() {}
@@ -87,6 +89,41 @@ public abstract class Option {
      */
     public Option setDescription(String description) {
         this.description = description;
+        return this;
+    }
+
+    /**
+     * Check whether or not this option has a {@link OptionFlag} set.
+     * @return True when the option has a flag.
+     */
+    public boolean hasFlag() {
+        return flag != null;
+    }
+
+    /**
+     * Check if the option has the specified {@link OptionFlag} set.
+     * @param flag The flag to compare.
+     * @return True when the option has the specified flag.
+     */
+    public boolean hasFlag(OptionFlag flag) {
+        return flag == this.flag;
+    }
+
+    /**
+     * Get the {@link OptionFlag} for this option.
+     * @return The flag set for this option with {@link #setFlag(OptionFlag)}
+     */
+    public OptionFlag getFlag() {
+        return flag;
+    }
+
+    /**
+     * Set the {@link OptionFlag} for this option.
+     * @param flag The flag to set. (Set to {@link OptionFlag#NONE} for no flag.
+     * @return The option instance.
+     */
+    public Option setFlag(OptionFlag flag) {
+        this.flag = flag;
         return this;
     }
 
