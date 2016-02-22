@@ -38,7 +38,6 @@ import info.gameboxx.gameboxx.util.cuboid.Cuboid;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.block.Block;
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
@@ -58,7 +57,7 @@ import java.util.Map;
  * Use {@link #save()} and {@link #load()} to save/load the added options.
  * It will not load options that haven't been set.
  */
-public abstract class OptionCfg {
+public class OptionCfg {
 
     private File file = null;
     private YamlConfiguration config = new YamlConfiguration();
@@ -90,70 +89,41 @@ public abstract class OptionCfg {
         setFile(file);
     }
 
-    /**
-     * Load all the options from config and save the defaults.
-     * @see #load(boolean)
-     */
-    public void load() {
-        load(true);
-    }
 
     /**
-     * Load all the option values from config.
-     * <b>This does not load options that haven't been added!</b>
-     * If there are exceptions the stacktrace will be printed.
-     * @param save Whether or not to save the config after loading the values to save the defaults.
+     * Load the {@link YamlConfiguration} file.
+     * This does not set the option values.
+     * It just loads the yaml config from disk.
      */
-    public void load(boolean save) {
+    private void loadConfig() {
+        createFile();
         try {
-            createFile();
-
             config.load(file);
-            loadOptions(config);
-
-            if (save) {
-                config.save(file);
-            }
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
     /**
-     * Save the options to config.
-     * If a delay is set it will check if the saving is still delayed and if so, it will not save.
-     * Use {@link #save(boolean)} with force set to true to ignore the save delay and force save the config.
-     * @return Whether or not the config was saved. When it's on delay it will return false.
+     * Save the {@link YamlConfiguration} file.
+     * This does not set the option values in the config it just saves the config file from memory to disk.
+     * If this config has a delay set and force is false it will first check the delay.
+     * @param force Whether or not to ignore the delay when the config has a delay.
+     * @return Whether or not the config file was saved. (false when delayed or failed)
      */
-    public boolean save() {
-        return save(false);
-    }
-
-    /**
-     * Save the options to config.
-     * If a delay is set it will check if the saving is still delayed and if so, it will not save unless force is set to true.
-     * @param force When set to true it will ignore the save delay if it's set and force save the file.
-     * @return Whether or not the config was saved. When it's on delay it will return false.
-     */
-    public boolean save(boolean force) {
-        createFile();
+    private boolean saveConfig(boolean force) {
         if (!force && saveDelay > 0 && lastSave + saveDelay > System.currentTimeMillis()) {
             return false;
         }
         lastSave = System.currentTimeMillis();
+        createFile();
         try {
-            if (!file.exists()) {
-                if (file.getParentFile() != null) {
-                    file.getParentFile().mkdirs();
-                }
-                file.createNewFile();
-            }
-            saveOptions(config);
             config.save(file);
-        } catch (Exception e) {
+            return true;
+        }  catch (Exception e) {
             e.printStackTrace();
         }
-        return true;
+        return false;
     }
 
     /**
@@ -176,42 +146,73 @@ public abstract class OptionCfg {
         }
     }
 
+
+    /**
+     * Load all the options from config and save the defaults.
+     * @see #load(boolean)
+     */
+    public void load() {
+        load(true);
+    }
+
     /**
      * Load all the option values from config.
-     * See {@link #loadOption(ConfigurationSection, String, Option, boolean)} for more details about loading options.
-     * @param cs The configuration section/file to load the options from.
+     * <b>This does not load options that haven't been added!</b>
+     * If there are exceptions the stacktrace will be printed.
+     * @param save Whether or not to save the config after loading the values to save the defaults.
+     * @return Whether or not the config file was saved. (false when save is false or it failed)
      */
-    public void loadOptions(ConfigurationSection cs) {
-        for (Map.Entry<String, Option> option : options.entrySet()) {
-            loadOption(cs, option.getKey(), option.getValue(), false);
+    public boolean load(boolean save) {
+        loadConfig();
+        for (String path : options.keySet()) {
+            loadOption(path, false);
         }
+        if (save) {
+            return saveConfig(true);
+        }
+        return false;
     }
 
     /**
-     * Save all the option values in the config.
-     * See {@link #saveOption(ConfigurationSection, String, Option, boolean)} for more details about saving options.
-     * @param cs the configuration section/file to save the options in.
+     * Save all the option values to config.
+     * If a delay is set it will check if the saving is still delayed and if so, it will not save.
+     * Use {@link #save(boolean)} with force set to true to ignore the save delay and force save the config.
+     * @return Whether or not the config file was saved. (false when delayed or failed)
      */
-    public void saveOptions(ConfigurationSection cs) {
-        for (Map.Entry<String, Option> option : options.entrySet()) {
-            saveOption(cs, option.getKey(), option.getValue(), false);
-        }
+    public boolean save() {
+        return save(false);
     }
 
     /**
-     * Load the value from the specified config + path in to the specified option.
+     * Save all the option values to config.
+     * If a delay is set it will check if the saving is still delayed and if so, it will not save unless force is set to true.
+     * @param force Whether or not to ignore the delay when the config has a delay.
+     * @return Whether or not the config file was saved. (false when delayed or failed)
+     */
+    public boolean save(boolean force) {
+        for (String path : options.keySet()) {
+            saveOption(path, false);
+        }
+        return saveConfig(force);
+    }
+
+    /**
+     * Load the value from the specified path.
+     * This will only load the option when the option has been added/registered with {@link #setOption(String, Option)}
      * The parse method from the option will be used to load the value.
      *
      * If there are errors when parsing the errors will be printed in the console.
      * It will keep the invalid options in the config but when retrieving the option value it will be the default value if there was an error.
      *
-     * @param cs The configuration section/file to load the option value from.
-     * @param path the path in the config section/file to load the option value from.
-     * @param option The option to load. This option will be used for parsing and the value will be put in this option when parsing was successful.
+     * @param path the path in the config file to load the option value from.
      * @param loadConfig When calling this manually you probably want this to be true to load the config file. {@link YamlConfiguration#load(File)}
      * @return Whether or not the option was loaded successful.
      */
-    private boolean loadOption(ConfigurationSection cs, String path, Option option, boolean loadConfig) {
+    public boolean loadOption(String path, boolean loadConfig) {
+        Option option = getOption(path);
+        if (option == null) {
+            return false;
+        }
         //Load config if specified.
         if (loadConfig) {
             createFile();
@@ -223,19 +224,19 @@ public abstract class OptionCfg {
         }
 
         //If config doesn't have the option save the default.
-        if (!cs.isSet(path)) {
-            saveOption(cs, path, option, loadConfig);
+        if (!config.isSet(path)) {
+            saveOption(path, loadConfig);
         }
 
         //If the option doesn't have a default it may not be in the config still.
-        if (!cs.isSet(path)) {
+        if (!config.isSet(path)) {
             return false;
         }
 
         //Parse options.
         if (option instanceof SingleOption) {
             SingleOption singleOption = (SingleOption)option;
-            String value = cs.getString(path);
+            String value = config.getString(path);
 
             if (!singleOption.parse(value)) {
                 logError(path, option.getName(), option.getClass().getSimpleName(), value, option.getError());
@@ -257,8 +258,30 @@ public abstract class OptionCfg {
         return false;
     }
 
-    private void saveOption(ConfigurationSection cs, String path, Option option, boolean saveConfig) {
-        //TODO: Save option
+    /**
+     * Save the option in the specified path.
+     * If there is no option registered for the specified path nothing will happen.
+     * @param path The full path of the option to save.
+     * @param saveConfig When true it will save the config after setting the value.
+     *                   It will not force save, so if the saving is on delay it won't save.
+     * @return Whether or not the config was saved. (will be false if you specify save as false or if saving is on delay)
+     */
+    public boolean saveOption(String path, boolean saveConfig) {
+        Option option = getOption(path);
+        if (option == null) {
+            return false;
+        }
+        if (option instanceof SingleOption) {
+            config.set(path, ((SingleOption)option).serialize());
+        } else if (option instanceof ListOption) {
+            config.set(path, ((ListOption)option).serialize());
+        }
+        //TODO: Map options.
+
+        if (saveConfig) {
+            return saveConfig(false);
+        }
+        return false;
     }
 
     /**
@@ -353,6 +376,11 @@ public abstract class OptionCfg {
      */
     public Option getOption(String path) {
         if (!hasOption(path)) {
+            for (Option option : options.values()) {
+                if (option.getName() != null && option.getName().equalsIgnoreCase(path)) {
+                    return option;
+                }
+            }
             return null;
         }
         return options.get(path);
@@ -378,6 +406,15 @@ public abstract class OptionCfg {
         return options;
     }
 
+
+    /**
+     * Set a option and don't load the value immediately.
+     * @see #setOption(String, Option, boolean)
+     */
+    public void setOption(String path, Option option) {
+        setOption(path, option, false);
+    }
+
     /**
      * Set/register a option for the config.
      * The path is where the option will be saved in the config.
@@ -391,10 +428,15 @@ public abstract class OptionCfg {
      *
      * @param path The path in the config file for the option.
      * @param option The option instance.
-    */
-    public void setOption(String path, Option option) {
+     * @param load When set to true the option will be loaded from config after being set.
+     *             Only set this true when not mass setting options otherwise it would load the config for each option.
+     *             It's better to set all the options and then call {@link #load()}
+     */
+    public void setOption(String path, Option option, boolean load) {
         options.put(path, option);
-        loadOption(config, path, option, true);
+        if (load) {
+            loadOption(path, true);
+        }
     }
 
     /**
@@ -436,7 +478,6 @@ public abstract class OptionCfg {
             save(true);
         }
     }
-
 
     /**
      * Get a option value for the specified path.
