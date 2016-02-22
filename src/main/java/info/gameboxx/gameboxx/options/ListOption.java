@@ -140,6 +140,12 @@ public abstract class ListOption extends Option {
                 value.get(i).setDefault(obj);
             }
         }
+
+        int index = value.size();
+        while (this.defaultValues.size() > value.size()) {
+            value.add(getSingleOption(index));
+            index++;
+        }
     }
 
 
