@@ -387,6 +387,26 @@ public class OptionCfg {
     }
 
     /**
+     * Get the option at the specified path.
+     * An exception will be thrown when the option is null or when the option is not of the specified type.
+     * @param path The path of the option to return.
+     * @param optionClass The type of option for example LocationOption.class
+     * @return The option at the specified path.
+     */
+    public Option getOption(String path, Class<? extends Option> optionClass) {
+        Option option = getOption(path);
+        if (option == null) {
+            throw new OptionNotRegisteredException(path);
+        }
+
+        if (!option.getClass().equals(optionClass)) {
+            throw new InvalidOptionCastException(path, optionClass, option.getClass());
+        }
+
+        return option;
+    }
+
+    /**
      * Get a collection with all the options in this config.
      * This does not contain all the options in the config file itself.
      * It only contains options that have been set with {@link #setOption(String, Option)}
@@ -478,6 +498,7 @@ public class OptionCfg {
             save(true);
         }
     }
+
 
     /**
      * Get a option value for the specified path.
@@ -657,16 +678,29 @@ public class OptionCfg {
     /**
      * Get a {@link Location} option value for the specified path.
      * @param path The path of the option to get.
+     * @return Location value.
+     */
+    public Location getLocation(String path) {
+        return (Location) getObject(path, LocationOption.class);
+    }
+
+    /**
+     * Get a {@link Location} option value for the specified path.
+     * @param path The path of the option to get.
      * @param world Override the world from the location with the world specified. {@code null} to use the world from the option value.
      * @return Location value.
      */
     public Location getLocation(String path, World world) {
-        if (world == null) {
-            return (Location)getObject(path, LocationOption.class);
-        }
-        Location loc = (Location) getObject(path, LocationOption.class);
-        loc.setWorld(world);
-        return loc;
+        return ((LocationOption)getOption(path, LocationOption.class)).getValue(world);
+    }
+
+    /**
+     * Get a list with {@link Location} option values for the specified path.
+     * @param path The path of the option to get.
+     * @return List with location values.
+     */
+    public List<Location> getLocationList(String path) {
+        return (List<Location>) getObject(path, LocationListOption.class);
     }
 
     /**
@@ -676,14 +710,16 @@ public class OptionCfg {
      * @return List with location values.
      */
     public List<Location> getLocationList(String path, World world) {
-        List<Location> locs = (List<Location>) getObject(path, LocationListOption.class);
-        if (world == null) {
-            return locs;
-        }
-        for (Location loc : locs) {
-            loc.setWorld(world);
-        }
-        return locs;
+        return ((LocationListOption)getOption(path, LocationListOption.class)).getValues(world);
+    }
+
+    /**
+     * Get a {@link Block} option value for the specified path.
+     * @param path The path of the option to get.
+     * @return Block value.
+     */
+    public Block getBlock(String path) {
+        return (Block) getObject(path, BlockOption.class);
     }
 
     /**
@@ -693,63 +729,64 @@ public class OptionCfg {
      * @return Block value.
      */
     public Block getBlock(String path, World world) {
-        if (world == null) {
-            return (Block)getObject(path, BlockOption.class);
-        }
-        Location loc = ((Block) getObject(path, BlockOption.class)).getLocation();
-        loc.setWorld(world);
-        return loc.getBlock();
+        return ((BlockOption)getOption(path, BlockOption.class)).getValue(world);
+    }
+
+    /**
+     * Get a list with {@link Block} option values for the specified path.
+     * @param path The path of the option to get.
+     * @return List with Block values.
+     */
+    public List<Block> getBlockList(String path) {
+        return (List<Block>) getObject(path, BlockListOption.class);
     }
 
     /**
      * Get a list with {@link Block} option values for the specified path.
      * @param path The path of the option to get.
      * @param world Override the world from the blocks with the world specified. {@code null} to use the world from the option values.
-     * @return List with block values.
+     * @return List with Block values.
      */
     public List<Block> getBlockList(String path, World world) {
-        List<Block> blocks = (List<Block>) getObject(path, BlockListOption.class);
-        if (world == null) {
-            return blocks;
-        }
-        for (int i = 0; i < blocks.size(); i++) {
-            Location loc = blocks.get(i).getLocation();
-            loc.setWorld(world);
-            blocks.set(i, loc.getBlock());
-        }
-        return blocks;
+        return ((BlockListOption)getOption(path, BlockListOption.class)).getValues(world);
     }
 
     /**
      * Get a {@link Cuboid} option value for the specified path.
      * @param path The path of the option to get.
-     * @param world Override the world from the Cuboid with the world specified. {@code null} to use the world from the option value.
+     * @return Cuboid value.
+     */
+    public Cuboid getCuboid(String path) {
+        return (Cuboid) getObject(path, CuboidOption.class);
+    }
+
+    /**
+     * Get a {@link Cuboid} option value for the specified path.
+     * @param path The path of the option to get.
+     * @param world Override the world from the cuboid with the world specified. {@code null} to use the world from the option value.
      * @return Cuboid value.
      */
     public Cuboid getCuboid(String path, World world) {
-        if (world == null) {
-            return (Cuboid) getObject(path, CuboidOption.class);
-        }
-        Cuboid cub = (Cuboid) getObject(path, CuboidOption.class);
-        cub.setWorld(world);
-        return cub;
+        return ((CuboidOption)getOption(path, CuboidOption.class)).getValue(world);
+    }
+
+    /**
+     * Get a list with {@link Cuboid} option values for the specified path.
+     * @param path The path of the option to get.
+     * @return List with Cuboid values.
+     */
+    public List<Cuboid> getCuboidList(String path) {
+        return (List<Cuboid>) getObject(path, CuboidListOption.class);
     }
 
     /**
      * Get a list with {@link Cuboid} option values for the specified path.
      * @param path The path of the option to get.
      * @param world Override the world from the cuboids with the world specified. {@code null} to use the world from the option values.
-     * @return List with cuboid values.
+     * @return List with Cuboid values.
      */
     public List<Cuboid> getCuboidList(String path, World world) {
-        List<Cuboid> cubs = (List<Cuboid>) getObject(path, CuboidListOption.class);
-        if (world == null) {
-            return cubs;
-        }
-        for (Cuboid cub : cubs) {
-            cub.setWorld(world);
-        }
-        return cubs;
+        return ((CuboidListOption)getOption(path, CuboidListOption.class)).getValues(world);
     }
 
     //TODO: Add missing options and map options
