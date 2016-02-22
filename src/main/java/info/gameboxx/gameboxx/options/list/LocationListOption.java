@@ -49,8 +49,8 @@ public class LocationListOption extends ListOption {
 
 
     @Override
-    public LocationOption getSingleOption() {
-        return (LocationOption) new LocationOption(name, (Location)defaultValue).setDescription(description).setFlag(flag);
+    public LocationOption getSingleOption(int index) {
+        return (LocationOption) new LocationOption(name, (Location)getDefault(index)).setDescription(description).setFlag(flag);
     }
 
     @Override

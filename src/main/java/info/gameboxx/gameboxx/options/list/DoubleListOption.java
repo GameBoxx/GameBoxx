@@ -61,8 +61,8 @@ public class DoubleListOption extends ListOption {
 
 
     @Override
-    public DoubleOption getSingleOption() {
-        return (DoubleOption) new DoubleOption(name, (Double)defaultValue).min(min).max(max).setDescription(description).setFlag(flag);
+    public DoubleOption getSingleOption(int index) {
+        return (DoubleOption) new DoubleOption(name, (Double)getDefault(index)).min(min).max(max).setDescription(description).setFlag(flag);
     }
 
     @Override

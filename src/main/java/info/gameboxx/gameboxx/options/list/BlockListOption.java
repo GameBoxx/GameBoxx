@@ -49,8 +49,8 @@ public class BlockListOption extends ListOption {
 
 
     @Override
-    public BlockOption getSingleOption() {
-        return (BlockOption) new BlockOption(name, (Block)defaultValue).setDescription(description).setFlag(flag);
+    public BlockOption getSingleOption(int index) {
+        return (BlockOption) new BlockOption(name, (Block) getDefault(index)).setDescription(description).setFlag(flag);
     }
 
     @Override

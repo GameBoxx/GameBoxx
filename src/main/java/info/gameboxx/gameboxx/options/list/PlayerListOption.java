@@ -48,8 +48,8 @@ public class PlayerListOption extends ListOption {
 
 
     @Override
-    public PlayerOption getSingleOption() {
-        return (PlayerOption) new PlayerOption(name, (Player)defaultValue).setDescription(description).setFlag(flag);
+    public PlayerOption getSingleOption(int index) {
+        return (PlayerOption) new PlayerOption(name, (Player)getDefault(index)).setDescription(description).setFlag(flag);
     }
 
     @Override

@@ -128,8 +128,8 @@ public class StringListOption extends ListOption {
 
 
     @Override
-    public StringOption getSingleOption() {
-        return (StringOption) new StringOption(name, (String)defaultValue).minChars(minChars).maxChars(maxChars).matchRegex(regex, regexError).match(matchList).match(matchMap).setDescription(description).setFlag(flag);
+    public StringOption getSingleOption(int index) {
+        return (StringOption) new StringOption(name, (String)getDefault(index)).minChars(minChars).maxChars(maxChars).matchRegex(regex, regexError).match(matchList).match(matchMap).setDescription(description).setFlag(flag);
     }
 
     @Override

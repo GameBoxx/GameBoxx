@@ -61,8 +61,8 @@ public class IntListOption extends ListOption {
 
 
     @Override
-    public IntOption getSingleOption() {
-        return (IntOption) new IntOption(name, (Integer)defaultValue).min(min).max(max).setDescription(description).setFlag(flag);
+    public IntOption getSingleOption(int index) {
+        return (IntOption) new IntOption(name, (Integer)getDefault(index)).min(min).max(max).setDescription(description).setFlag(flag);
     }
 
     @Override

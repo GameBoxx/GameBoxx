@@ -49,8 +49,8 @@ public class CuboidListOption extends ListOption {
 
 
     @Override
-    public CuboidOption getSingleOption() {
-        return (CuboidOption) new CuboidOption(name, (Cuboid)defaultValue).setDescription(description).setFlag(flag);
+    public CuboidOption getSingleOption(int index) {
+        return (CuboidOption) new CuboidOption(name, (Cuboid)getDefault(index)).setDescription(description).setFlag(flag);
     }
 
     @Override

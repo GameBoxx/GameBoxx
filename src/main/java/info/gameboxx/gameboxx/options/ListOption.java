@@ -33,6 +33,7 @@ import java.util.List;
 public abstract class ListOption extends Option {
 
     protected List<SingleOption> value = new ArrayList<>();
+    protected List<Object> defaultValues = new ArrayList<>();
     protected Object defaultValue = null;
 
     public ListOption() {}
@@ -41,9 +42,9 @@ public abstract class ListOption extends Option {
         super(name);
     }
 
-    public ListOption(String name, Object defaultValues) {
+    public ListOption(String name, Object defaultValue) {
         super(name);
-        this.defaultValue = defaultValues;
+        this.defaultValue = defaultValue;
     }
 
 
@@ -71,6 +72,9 @@ public abstract class ListOption extends Option {
     /**
      * Get the default value.
      * This value will be added to the list when parsing of a value failed.
+     *
+     * <b>In most cases you'll want to use {@link #getDefault(int)}</b>
+     *
      * @return The default value. (May be {@code null}!)
      */
     public Object getDefault() {
@@ -80,21 +84,63 @@ public abstract class ListOption extends Option {
     /**
      * Set the default value to use when parsing fails.
      * The value must of the same type as the raw class type of the single option. So a IntList can only have an integer as default option here.
+     *
+     * This does not actually add any values to the list.
+     * Use {@link #setDefaults(Object...)} to set default values for indexes which will be added to the list.
+     *
      * @param defaultValue The default value. (This value will be added to the list when parsing of a value failed.)
      * @return The option instance.
      */
     public ListOption setDefault(Object defaultValue) {
-        if (defaultValue == null || !defaultValue.getClass().equals(getSingleOption().getRawClass())) {
+        if (defaultValue == null || !defaultValue.getClass().equals(getSingleOption(0).getRawClass())) {
             this.defaultValue = null;
         } else {
             this.defaultValue = defaultValue;
             for (SingleOption option : value) {
-                option.setDefault(defaultValue);
+                if (option.getDefault() == null) {
+                    option.setDefault(defaultValue);
+                }
             }
         }
         return this;
     }
 
+    /**
+     * Get the default value for the specified index.
+     * If no index specific default has been set with {@link #setDefaults(Object...)} it will return the default.
+     * @param index The index of the default to get.
+     * @return The default value for the specified index. (May be {@code null}!)
+     */
+    public Object getDefault(int index) {
+        if (index < defaultValues.size()) {
+            return defaultValues.get(index);
+        }
+        return defaultValue;
+    }
+
+    /**
+     * Set the default values.
+     * The order you specify the values will be the indexes of the the values.
+     * The value must of the same type as the raw class type of the single option. So a IntList can only have an integer as default option here.
+     * @param defaultValues Object array with default values for this list.
+     */
+    public void setDefaults(Object... defaultValues) {
+        this.defaultValues.clear();
+        if (defaultValues == null) {
+            return;
+        }
+        for (int i = 0; i < defaultValues.length; i++) {
+            Object obj = defaultValues[i];
+            if (obj == null || !obj.getClass().equals(getSingleOption(0).getRawClass())) {
+                this.defaultValues.add(null);
+            } else {
+                this.defaultValues.add(obj);
+            }
+            if (i < value.size()) {
+                value.get(i).setDefault(obj);
+            }
+        }
+    }
 
 
     public boolean parse(boolean ignoreErrors, Object... input) {
@@ -106,7 +152,7 @@ public abstract class ListOption extends Option {
         for (int i = 0; i < input.length; i++) {
             Object obj = input[i];
 
-            SingleOption option = getSingleOption();
+            SingleOption option = getSingleOption(i);
             option.parse(obj);
             if (option.hasError() && (!ignoreErrors || !option.hasValue())) {
                 error = option.getError() + " [index:" + i + "]";
@@ -136,7 +182,7 @@ public abstract class ListOption extends Option {
         for (int i = 0; i < input.length; i++) {
             String str = input[i];
 
-            SingleOption option = getSingleOption();
+            SingleOption option = getSingleOption(i);
             option.parse(player, str);
             if (option.hasError() && (!ignoreErrors || !option.hasValue())) {
                 error = option.getError() + " [index:" + i + "]";
@@ -154,7 +200,7 @@ public abstract class ListOption extends Option {
 
     public boolean parse(int index, Object input) {
         if (index >= value.size()) {
-            value.add(getSingleOption());
+            value.add(getSingleOption(index));
             index = value.size()-1;
         }
         SingleOption option = value.get(index);
@@ -169,7 +215,7 @@ public abstract class ListOption extends Option {
 
     public boolean parse(Player player, int index, String input) {
         if (index >= value.size()) {
-            value.add(getSingleOption());
+            value.add(getSingleOption(index));
             index = value.size()-1;
         }
         SingleOption option = value.get(index);
@@ -268,6 +314,6 @@ public abstract class ListOption extends Option {
 
     public abstract Object getValue(int index);
 
-    public abstract SingleOption getSingleOption();
+    public abstract SingleOption getSingleOption(int index);
 
 }

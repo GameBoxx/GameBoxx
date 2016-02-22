@@ -48,8 +48,8 @@ public class VectorListOption extends ListOption {
 
 
     @Override
-    public VectorOption getSingleOption() {
-        return (VectorOption) new VectorOption(name, (Vector)defaultValue).setDescription(description).setFlag(flag);
+    public VectorOption getSingleOption(int index) {
+        return (VectorOption) new VectorOption(name, (Vector)getDefault(index)).setDescription(description).setFlag(flag);
     }
 
     @Override
