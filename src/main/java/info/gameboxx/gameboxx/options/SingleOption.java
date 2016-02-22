@@ -138,7 +138,7 @@ public abstract class SingleOption extends Option {
     protected boolean parseObject(Object input) {
         reset();
         if (input == null) {
-            error = "Invalid input, must be a string or a " + getTypeName() + ". [type=null]";
+            error = "Invalid input, must be a string" + (getRawClass().equals(String.class) ? "." : " or a " + getTypeName() + ".") + " [type=null]";
             return false;
         }
         if (!(input instanceof String)) {
@@ -152,7 +152,7 @@ public abstract class SingleOption extends Option {
                 value = input;
                 return true;
             } else {
-                error = "Invalid input, must be a string or a " + getTypeName() + ". [type=" + input.getClass().getSimpleName() + "]";
+                error = "Invalid input, must be a string " + (getRawClass().equals(String.class) ?  "." : " or a " + getTypeName() + ".") + " [type=" + input.getClass().getSimpleName() + "]";
                 return false;
             }
         }

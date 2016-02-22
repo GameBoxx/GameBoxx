@@ -45,8 +45,6 @@ public class StringOption extends SingleOption {
     private List<String> matchList = null;
     private Map<String, List<String>> matchMap = null;
 
-    private String matchResult = "";
-
 
     public StringOption() {
         super();
@@ -128,18 +126,11 @@ public class StringOption extends SingleOption {
         return this;
     }
 
-    public String getMatchResult() {
-        return matchResult;
-    }
-
 
     @Override
     public boolean parse(Object input) {
         if (!parseObject(input)) {
             return false;
-        }
-        if (value != null) {
-            return true;
         }
         return parse((String)input);
     }
@@ -151,20 +142,20 @@ public class StringOption extends SingleOption {
                 error = "String doesn't match with a valid option.";
                 return false;
             }
-            matchResult = input;
+            value = input;
             return true;
         } else if (matchMap != null && !matchMap.isEmpty()) {
             if (!matchMap.containsKey(input.toLowerCase())) {
                 for (Map.Entry<String, List<String>> entry : matchMap.entrySet()) {
                     if (entry.getValue().contains(input)) {
-                        matchResult = entry.getKey();
+                        value = entry.getKey();
                         return true;
                     }
                 }
                 error = "String doesn't match with a valid option.";
                 return false;
             }
-            matchResult = input;
+            value = input;
             return true;
         } else {
             if (regex != null && !input.matches(regex)) {
@@ -181,6 +172,7 @@ public class StringOption extends SingleOption {
                 error = "String is too long, can't be longer than " + maxChars + " chars.";
                 return false;
             }
+            value = input;
         }
         return true;
     }

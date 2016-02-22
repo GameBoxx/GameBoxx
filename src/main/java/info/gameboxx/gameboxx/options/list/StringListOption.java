@@ -146,16 +146,6 @@ public class StringListOption extends ListOption {
         return (String)getValueOrDefault(index);
     }
 
-    public String getMatchResult(int index) {
-        if (index >= value.size()) {
-            throw new IndexOutOfBoundsException();
-        }
-        if (value.get(index) == null) {
-            return "";
-        }
-        return ((StringOption)value.get(index)).getMatchResult();
-    }
-
     @Override
     public StringListOption clone() {
         return (StringListOption) new StringListOption(name, (String)defaultValue).minChars(minChars).maxChars(maxChars).match(matchList).match(matchMap).matchRegex(regex).setDescription(description).setFlag(flag);
