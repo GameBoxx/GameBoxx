@@ -132,6 +132,6 @@ public class VectorOption extends SingleOption {
 
     @Override
     public VectorOption clone() {
-        return new VectorOption(name, (Vector) defaultValue);
+        return (VectorOption) new VectorOption(name, (Vector) defaultValue).setDescription(description).setFlag(flag);
     }
 }

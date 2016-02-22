@@ -125,6 +125,6 @@ public class MaterialOption extends SingleOption {
 
     @Override
     public MaterialOption clone() {
-        return new MaterialOption(name, (MaterialData)defaultValue);
+        return (MaterialOption) new MaterialOption(name, (MaterialData)defaultValue).setDescription(description).setFlag(flag);
     }
 }

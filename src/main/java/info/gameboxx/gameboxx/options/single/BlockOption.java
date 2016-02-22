@@ -201,6 +201,6 @@ public class BlockOption extends SingleOption {
 
     @Override
     public BlockOption clone() {
-        return new BlockOption(name, (Block)defaultValue);
+        return (BlockOption) new BlockOption(name, (Block)defaultValue).setDescription(description).setFlag(flag);
     }
 }

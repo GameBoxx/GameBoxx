@@ -152,6 +152,6 @@ public class PlayerOption extends SingleOption {
 
     @Override
     public PlayerOption clone() {
-        return new PlayerOption(name, (Player)defaultValue);
+        return (PlayerOption) new PlayerOption(name, (Player)defaultValue).setDescription(description).setFlag(flag);
     }
 }

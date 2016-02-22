@@ -108,6 +108,6 @@ public class BoolOption extends SingleOption {
 
     @Override
     public BoolOption clone() {
-        return new BoolOption(name, (Boolean)defaultValue);
+        return (BoolOption) new BoolOption(name, (Boolean)defaultValue).setDescription(description).setFlag(flag);
     }
 }

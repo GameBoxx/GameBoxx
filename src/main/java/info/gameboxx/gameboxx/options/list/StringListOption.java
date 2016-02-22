@@ -129,7 +129,7 @@ public class StringListOption extends ListOption {
 
     @Override
     public StringOption getSingleOption() {
-        return new StringOption(name, (String)defaultValue).minChars(minChars).maxChars(maxChars).matchRegex(regex, regexError).match(matchList).match(matchMap);
+        return (StringOption) new StringOption(name, (String)defaultValue).minChars(minChars).maxChars(maxChars).matchRegex(regex, regexError).match(matchList).match(matchMap).setDescription(description).setFlag(flag);
     }
 
     @Override
@@ -158,6 +158,6 @@ public class StringListOption extends ListOption {
 
     @Override
     public StringListOption clone() {
-        return new StringListOption(name, (String)defaultValue).minChars(minChars).maxChars(maxChars).match(matchList).match(matchMap).matchRegex(regex);
+        return (StringListOption) new StringListOption(name, (String)defaultValue).minChars(minChars).maxChars(maxChars).match(matchList).match(matchMap).matchRegex(regex).setDescription(description).setFlag(flag);
     }
 }

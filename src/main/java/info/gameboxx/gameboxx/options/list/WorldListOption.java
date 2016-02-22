@@ -49,7 +49,7 @@ public class WorldListOption extends ListOption {
 
     @Override
     public WorldOption getSingleOption() {
-        return new WorldOption(name, (World)defaultValue);
+        return (WorldOption) new WorldOption(name, (World)defaultValue).setDescription(description).setFlag(flag);
     }
 
     @Override
@@ -68,6 +68,6 @@ public class WorldListOption extends ListOption {
 
     @Override
     public WorldListOption clone() {
-        return new WorldListOption(name, (World)defaultValue);
+        return (WorldListOption) new WorldListOption(name, (World)defaultValue).setDescription(description).setFlag(flag);
     }
 }

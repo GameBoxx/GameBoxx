@@ -196,6 +196,6 @@ public class LocationOption extends SingleOption {
 
     @Override
     public LocationOption clone() {
-        return new LocationOption(name, (Location) defaultValue);
+        return (LocationOption) new LocationOption(name, (Location) defaultValue).setDescription(description).setFlag(flag);
     }
 }

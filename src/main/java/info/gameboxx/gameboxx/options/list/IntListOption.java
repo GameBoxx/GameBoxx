@@ -62,7 +62,7 @@ public class IntListOption extends ListOption {
 
     @Override
     public IntOption getSingleOption() {
-        return new IntOption(name, (Integer)defaultValue).min(min).max(max);
+        return (IntOption) new IntOption(name, (Integer)defaultValue).min(min).max(max).setDescription(description).setFlag(flag);
     }
 
     @Override
@@ -81,6 +81,6 @@ public class IntListOption extends ListOption {
 
     @Override
     public IntListOption clone() {
-        return new IntListOption(name, (Integer)defaultValue).min(min).max(max);
+        return (IntListOption) new IntListOption(name, (Integer)defaultValue).min(min).max(max).setDescription(description).setFlag(flag);
     }
 }

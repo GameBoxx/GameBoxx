@@ -62,7 +62,7 @@ public class DoubleListOption extends ListOption {
 
     @Override
     public DoubleOption getSingleOption() {
-        return new DoubleOption(name, (Double)defaultValue).min(min).max(max);
+        return (DoubleOption) new DoubleOption(name, (Double)defaultValue).min(min).max(max).setDescription(description).setFlag(flag);
     }
 
     @Override
@@ -81,6 +81,6 @@ public class DoubleListOption extends ListOption {
 
     @Override
     public DoubleListOption clone() {
-        return new DoubleListOption(name, (Double)defaultValue).min(min).max(max);
+        return (DoubleListOption) new DoubleListOption(name, (Double)defaultValue).min(min).max(max).setDescription(description).setFlag(flag);
     }
 }

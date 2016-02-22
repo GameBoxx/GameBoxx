@@ -49,7 +49,7 @@ public class MaterialListOption extends ListOption {
 
     @Override
     public MaterialOption getSingleOption() {
-        return new MaterialOption(name, (MaterialData) defaultValue);
+        return (MaterialOption) new MaterialOption(name, (MaterialData) defaultValue).setDescription(description).setFlag(flag);
     }
 
     @Override
@@ -68,6 +68,6 @@ public class MaterialListOption extends ListOption {
 
     @Override
     public MaterialListOption clone() {
-        return new MaterialListOption(name, (MaterialData)defaultValue);
+        return (MaterialListOption) new MaterialListOption(name, (MaterialData)defaultValue).setDescription(description).setFlag(flag);
     }
 }

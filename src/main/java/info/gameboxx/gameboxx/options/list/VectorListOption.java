@@ -49,7 +49,7 @@ public class VectorListOption extends ListOption {
 
     @Override
     public VectorOption getSingleOption() {
-        return new VectorOption(name, (Vector)defaultValue);
+        return (VectorOption) new VectorOption(name, (Vector)defaultValue).setDescription(description).setFlag(flag);
     }
 
     @Override
@@ -68,6 +68,6 @@ public class VectorListOption extends ListOption {
 
     @Override
     public VectorListOption clone() {
-        return new VectorListOption(name, (Vector) defaultValue);
+        return (VectorListOption) new VectorListOption(name, (Vector) defaultValue).setDescription(description).setFlag(flag);
     }
 }

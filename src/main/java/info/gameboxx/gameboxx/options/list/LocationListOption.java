@@ -49,7 +49,7 @@ public class LocationListOption extends ListOption {
 
     @Override
     public LocationOption getSingleOption() {
-        return new LocationOption(name, (Location)defaultValue);
+        return (LocationOption) new LocationOption(name, (Location)defaultValue).setDescription(description).setFlag(flag);
     }
 
     @Override
@@ -68,6 +68,6 @@ public class LocationListOption extends ListOption {
 
     @Override
     public LocationListOption clone() {
-        return new LocationListOption(name, (Location) defaultValue);
+        return (LocationListOption) new LocationListOption(name, (Location) defaultValue).setDescription(description).setFlag(flag);
     }
 }

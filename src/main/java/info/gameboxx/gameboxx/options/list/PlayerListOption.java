@@ -49,7 +49,7 @@ public class PlayerListOption extends ListOption {
 
     @Override
     public PlayerOption getSingleOption() {
-        return new PlayerOption(name, (Player)defaultValue);
+        return (PlayerOption) new PlayerOption(name, (Player)defaultValue).setDescription(description).setFlag(flag);
     }
 
     @Override
@@ -68,6 +68,6 @@ public class PlayerListOption extends ListOption {
 
     @Override
     public PlayerListOption clone() {
-        return new PlayerListOption(name, (Player) defaultValue);
+        return (PlayerListOption) new PlayerListOption(name, (Player) defaultValue).setDescription(description).setFlag(flag);
     }
 }

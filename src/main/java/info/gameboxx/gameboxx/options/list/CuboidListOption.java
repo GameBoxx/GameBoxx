@@ -49,7 +49,7 @@ public class CuboidListOption extends ListOption {
 
     @Override
     public CuboidOption getSingleOption() {
-        return new CuboidOption(name, (Cuboid)defaultValue);
+        return (CuboidOption) new CuboidOption(name, (Cuboid)defaultValue).setDescription(description).setFlag(flag);
     }
 
     @Override
@@ -68,6 +68,6 @@ public class CuboidListOption extends ListOption {
 
     @Override
     public CuboidListOption clone() {
-        return new CuboidListOption(name, (Cuboid) defaultValue);
+        return (CuboidListOption) new CuboidListOption(name, (Cuboid) defaultValue).setDescription(description).setFlag(flag);
     }
 }

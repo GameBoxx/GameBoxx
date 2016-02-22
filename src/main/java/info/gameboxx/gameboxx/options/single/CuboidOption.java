@@ -216,6 +216,6 @@ public class CuboidOption extends SingleOption {
 
     @Override
     public CuboidOption clone() {
-        return new CuboidOption(name, (Cuboid) defaultValue);
+        return (CuboidOption) new CuboidOption(name, (Cuboid) defaultValue).setDescription(description).setFlag(flag);
     }
 }

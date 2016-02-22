@@ -119,6 +119,6 @@ public class DoubleOption extends SingleOption {
 
     @Override
     public DoubleOption clone() {
-        return new DoubleOption(name, (Double)defaultValue).min(min).max(max);
+        return (DoubleOption) new DoubleOption(name, (Double)defaultValue).min(min).max(max).setDescription(description).setFlag(flag);
     }
 }
