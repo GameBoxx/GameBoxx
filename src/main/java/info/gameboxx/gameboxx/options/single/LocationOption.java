@@ -29,6 +29,7 @@ import info.gameboxx.gameboxx.options.SingleOption;
 import info.gameboxx.gameboxx.util.Parse;
 import info.gameboxx.gameboxx.util.Utils;
 import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.entity.Player;
 
 import java.util.Map;
@@ -173,6 +174,15 @@ public class LocationOption extends SingleOption {
     @Override
     public Location getValue() {
         return (Location)getValueOrDefault();
+    }
+
+    public Location getValue(World world) {
+        Location l = getValue();
+        if (l == null || world == null) {
+            return l;
+        }
+        l.setWorld(world);
+        return l;
     }
 
     @Override

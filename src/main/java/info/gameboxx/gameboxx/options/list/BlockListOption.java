@@ -27,6 +27,7 @@ package info.gameboxx.gameboxx.options.list;
 
 import info.gameboxx.gameboxx.options.ListOption;
 import info.gameboxx.gameboxx.options.single.BlockOption;
+import org.bukkit.World;
 import org.bukkit.block.Block;
 
 import java.util.ArrayList;
@@ -54,9 +55,13 @@ public class BlockListOption extends ListOption {
 
     @Override
     public List<Block> getValues() {
+        return getValues(null);
+    }
+
+    public List<Block> getValues(World world) {
         List<Block> values = new ArrayList<>();
         for (int i = 0; i < value.size(); i++) {
-            values.add(getValue(i));
+            values.add(getValue(i, world));
         }
         return values;
     }
@@ -64,6 +69,14 @@ public class BlockListOption extends ListOption {
     @Override
     public Block getValue(int index) {
         return (Block)getValueOrDefault(index);
+    }
+
+    public Block getValue(int index, World world) {
+        Block b = getValue(index);
+        if (b == null || world == null) {
+            return b;
+        }
+        return world.getBlockAt(b.getLocation());
     }
 
     @Override

@@ -31,6 +31,7 @@ import info.gameboxx.gameboxx.util.Utils;
 import info.gameboxx.gameboxx.util.cuboid.Cuboid;
 import info.gameboxx.gameboxx.util.cuboid.SelectionManager;
 import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.entity.Player;
 
 import java.util.Map;
@@ -193,6 +194,15 @@ public class CuboidOption extends SingleOption {
     @Override
     public Cuboid getValue() {
         return (Cuboid)getValueOrDefault();
+    }
+
+    public Cuboid getValue(World world) {
+        Cuboid c = getValue();
+        if (c == null || world == null) {
+            return c;
+        }
+        c.setWorld(world);
+        return c;
     }
 
     @Override

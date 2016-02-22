@@ -28,6 +28,7 @@ package info.gameboxx.gameboxx.options.list;
 import info.gameboxx.gameboxx.options.ListOption;
 import info.gameboxx.gameboxx.options.single.LocationOption;
 import org.bukkit.Location;
+import org.bukkit.World;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -54,9 +55,13 @@ public class LocationListOption extends ListOption {
 
     @Override
     public List<Location> getValues() {
+        return getValues(null);
+    }
+
+    public List<Location> getValues(World world) {
         List<Location> values = new ArrayList<>();
         for (int i = 0; i < value.size(); i++) {
-            values.add(getValue(i));
+            values.add(getValue(i, world));
         }
         return values;
     }
@@ -64,6 +69,15 @@ public class LocationListOption extends ListOption {
     @Override
     public Location getValue(int index) {
         return (Location)getValueOrDefault(index);
+    }
+
+    public Location getValue(int index, World world) {
+        Location l = getValue(index);
+        if (l == null || world == null) {
+            return l;
+        }
+        l.setWorld(world);
+        return l;
     }
 
     @Override

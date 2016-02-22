@@ -28,6 +28,7 @@ package info.gameboxx.gameboxx.options.list;
 import info.gameboxx.gameboxx.options.ListOption;
 import info.gameboxx.gameboxx.options.single.CuboidOption;
 import info.gameboxx.gameboxx.util.cuboid.Cuboid;
+import org.bukkit.World;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -54,9 +55,13 @@ public class CuboidListOption extends ListOption {
 
     @Override
     public List<Cuboid> getValues() {
+        return getValues(null);
+    }
+
+    public List<Cuboid> getValues(World world) {
         List<Cuboid> values = new ArrayList<>();
         for (int i = 0; i < value.size(); i++) {
-            values.add(getValue(i));
+            values.add(getValue(i, world));
         }
         return values;
     }
@@ -64,6 +69,15 @@ public class CuboidListOption extends ListOption {
     @Override
     public Cuboid getValue(int index) {
         return (Cuboid)getValueOrDefault(index);
+    }
+
+    public Cuboid getValue(int index, World world) {
+        Cuboid c = getValue(index);
+        if (c == null || world == null) {
+            return c;
+        }
+        c.setWorld(world);
+        return c;
     }
 
     @Override

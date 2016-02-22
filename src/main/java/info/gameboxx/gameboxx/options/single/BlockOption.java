@@ -29,6 +29,7 @@ import info.gameboxx.gameboxx.options.SingleOption;
 import info.gameboxx.gameboxx.util.Parse;
 import info.gameboxx.gameboxx.util.Utils;
 import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 
@@ -178,6 +179,14 @@ public class BlockOption extends SingleOption {
     @Override
     public Block getValue() {
         return (Block)getValueOrDefault();
+    }
+
+    public Block getValue(World world) {
+        Block b = getValue();
+        if (b == null || world == null) {
+            return b;
+        }
+        return world.getBlockAt(b.getLocation());
     }
 
     @Override
