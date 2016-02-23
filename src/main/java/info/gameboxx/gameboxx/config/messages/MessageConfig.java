@@ -173,6 +173,8 @@ public class MessageConfig {
             }
         }
 
+        cacheMessages();
+
         //Save the file
         try {
             config.save(file);
@@ -212,6 +214,7 @@ public class MessageConfig {
         if (loadFallback && fallback != null) {
             fallback.loadSimple(false);
         }
+        cacheMessages();
         return success;
     }
 
@@ -236,6 +239,44 @@ public class MessageConfig {
         return false;
     }
 
+    /**
+     * Get a list with all the registered {@link MessageConfig} instances.
+     * @return list with registered message configurations.
+     */
+    public static List<MessageConfig> getConfigs() {
+        return configs;
+    }
+
+    /**
+     * Cache all the messages from this config in {@link Msg}
+     * The {@link Msg#setMessages(Map)} will be called with all the messages from this config.
+     * It will first set the fallback messages and then overwrite them with the messages from this config.
+     */
+    public void cacheMessages() {
+        if (fallback != null && fallback.getConfig() != null) {
+            cacheMessages(true);
+        }
+        cacheMessages(false);
+    }
+
+    /**
+     * @see #cacheMessages()
+     */
+    private void cacheMessages(boolean fallback) {
+        YamlConfiguration config = getConfig();
+        if (fallback) {
+            config = this.fallback.getConfig();
+        }
+        if (config == null) {
+            return;
+        }
+        Set<String> keys = config.getKeys(true);
+        for (String key : keys) {
+            if (config.isString(key)) {
+                Msg.setMessage(key, config.getString(key));
+            }
+        }
+    }
 
     /**
      * Get the plugin that this message config belongs to.
@@ -432,6 +473,7 @@ public class MessageConfig {
 
         config.set(VERSION_KEY, version);
         save();
+        cacheMessages(false);
     }
 
 
