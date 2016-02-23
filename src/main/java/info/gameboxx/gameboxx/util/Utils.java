@@ -25,12 +25,15 @@
 
 package info.gameboxx.gameboxx.util;
 
-import org.bukkit.Material;
-import org.bukkit.World;
-import org.bukkit.WorldCreator;
-import org.bukkit.WorldType;
+import info.gameboxx.gameboxx.util.alias.Items;
+import info.gameboxx.gameboxx.util.item.EItem;
+import info.gameboxx.gameboxx.util.item.ItemParser;
+import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
+import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.material.MaterialData;
 
 import java.io.File;
 import java.io.FilenameFilter;
@@ -240,5 +243,42 @@ public class Utils {
         syntax = syntax.replace("%%%", "" + fs);
         syntax = syntax.replace("%%", "" + ds);
         return syntax;
+    }
+
+    /**
+     * Convert an object to string.
+     * It will try to format the object nicely in a user friendly way for common objects.
+     * If no custom formatting it will fall back to {@link Object#toString()}
+     * If the object is null it will return 'null'.
+     * @param obj The object to convert to string.
+     * @return String from object.
+     */
+    public static String getString(Object obj) {
+        if (obj == null) {
+            return "null";
+        }
+
+        switch (obj.getClass().getName().toLowerCase()) {
+            case "location":
+                return Parse.Location(((Location) obj));
+            case "block":
+                return Parse.Block(((Block) obj));
+            case "player":
+                return ((Player)obj).getName();
+            case "world":
+                return ((World)obj).getName();
+            case "color":
+                return Parse.Color(((Color) obj));
+            case "itemstack":
+                return new ItemParser(((ItemStack)obj)).getString();
+            case "eitem":
+                return new ItemParser(((EItem)obj)).getString();
+            case "material":
+                return Items.getName(((Material)obj), (short)0);
+            case "materialdata":
+                return Items.getName(((MaterialData)obj));
+        }
+
+        return obj.toString();
     }
 }

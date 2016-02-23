@@ -775,7 +775,7 @@ public class Cuboid implements Iterable<Block>, Cloneable, ConfigurationSerializ
      */
     @Override
     public String toString() {
-        return worldName + "," + minX + "," + minY + "," + minZ + "," + maxX + "," + maxY + "," + maxZ;
+        return  minX + "," + minY + "," + minZ + ":" + maxX + "," + maxY + "," + maxZ + ":" + worldName;
     }
 
     @Utility
