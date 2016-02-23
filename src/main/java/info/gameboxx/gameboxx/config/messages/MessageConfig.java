@@ -409,7 +409,7 @@ public class MessageConfig {
                 }
             }
             //Change options
-            if (changedKeys.containsKey(v) && (mode == UpdateMode.CHANGES_ONLY || mode == UpdateMode.ALL) {
+            if (changedKeys.containsKey(v) && (mode == UpdateMode.CHANGES_ONLY || mode == UpdateMode.ALL)) {
                 for (String key : changedKeys.get(v)) {
                     if (config.contains(key)) {
                         if (keepOld) {
