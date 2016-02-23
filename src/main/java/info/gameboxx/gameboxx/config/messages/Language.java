@@ -23,18 +23,34 @@
  THE SOFTWARE.
  */
 
-package info.gameboxx.gameboxx.config;
+package info.gameboxx.gameboxx.config.messages;
 
-import info.gameboxx.gameboxx.config.internal.EasyConfig;
+public enum Language {
+    ENGLISH("English", "en")
+    ;
 
-public class PluginCfg extends EasyConfig {
+    private String name;
+    private String id;
 
-    public String language = "en";
-    public String defaultWorld = "world";
-    public int saveDelay__arena = 5000;
+    Language(String name, String id) {
+        this.name = name;
+        this.id = id;
+    }
 
-    public PluginCfg(String fileName) {
-        this.setFile(fileName);
-        load();
+    public String getName() {
+        return name;
+    }
+
+    public String getID() {
+        return id;
+    }
+
+    public static Language find(String name) {
+        for (Language lang : values()) {
+            if (lang.getID().equalsIgnoreCase(name) || lang.getName().equalsIgnoreCase(name)) {
+                return lang;
+            }
+        }
+        return null;
     }
 }

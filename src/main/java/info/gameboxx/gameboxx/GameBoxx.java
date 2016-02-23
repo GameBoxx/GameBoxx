@@ -27,6 +27,7 @@ package info.gameboxx.gameboxx;
 
 import info.gameboxx.gameboxx.commands.*;
 import info.gameboxx.gameboxx.config.PluginCfg;
+import info.gameboxx.gameboxx.config.messages.Language;
 import info.gameboxx.gameboxx.config.messages.MessageCfg;
 import info.gameboxx.gameboxx.game.GameManager;
 import info.gameboxx.gameboxx.listeners.MainListener;
@@ -49,6 +50,8 @@ public class GameBoxx extends JavaPlugin {
     private static GameBoxx instance;
     private Vault vault;
     private Economy economy;
+
+    private Language language = null;
 
     private IWorldLoader worldLoader;
 
@@ -155,6 +158,18 @@ public class GameBoxx extends JavaPlugin {
 
     public Economy getEco() {
         return economy;
+    }
+
+    /**
+     * Get the language used for messages.
+     * If there was an error loading language files it will use the fall back english.
+     * @return active language used for messages.
+     */
+    public Language getLanguage() {
+        if (language == null) {
+            return Language.ENGLISH;
+        }
+        return language;
     }
 
 
