@@ -29,6 +29,7 @@ import info.gameboxx.gameboxx.commands.*;
 import info.gameboxx.gameboxx.config.PluginCfg;
 import info.gameboxx.gameboxx.config.messages.Language;
 import info.gameboxx.gameboxx.config.messages.MessageCfg;
+import info.gameboxx.gameboxx.config.messages.MessageConfig;
 import info.gameboxx.gameboxx.game.GameManager;
 import info.gameboxx.gameboxx.listeners.MainListener;
 import info.gameboxx.gameboxx.menu.Menu;
@@ -98,6 +99,8 @@ public class GameBoxx extends JavaPlugin {
         cfg = new PluginCfg("plugins/GameBoxx/GameBoxx.yml");
         msgCfg = new MessageCfg("plugins/GameBoxx/Messages.yml");
 
+        loadMessages();
+
         um = new UserManager();
         sm = new SelectionManager();
         gm = new GameManager();
@@ -136,16 +139,31 @@ public class GameBoxx extends JavaPlugin {
         return false;
     }
 
+    private void loadMessages() {
+        language = Language.find(getCfg().language);
+        if (language == null) {
+            language = Language.ENGLISH;
+            warn("Invalid language specified in the config. Falling back to " + language.getName() + " [" + language.getID() + "]!");
+        } else {
+            log("Using " + language.getName() + " [" + language.getID() + "] as language!");
+        }
+
+        new MessageConfig(this, "messages");
+        new MessageConfig(this, "commands");
+        new MessageConfig(this, "options");
+        new MessageConfig(this, "parser");
+    }
+
     public void log(Object msg) {
-        log.info("[GameBoxx " + getDescription().getVersion() + "] " + msg.toString());
+        log.info("[GameBoxx] " + msg.toString());
     }
 
     public void warn(Object msg) {
-        log.warning("[GameBoxx " + getDescription().getVersion() + "] " + msg.toString());
+        log.warning("[GameBoxx] " + msg.toString());
     }
 
     public void error(Object msg) {
-        log.warning("[GameBoxx " + getDescription().getVersion() + "] " + msg.toString());
+        log.severe("[GameBoxx] " + msg.toString());
     }
 
     public static GameBoxx get() {
