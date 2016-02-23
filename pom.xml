@@ -87,6 +87,11 @@
                     <include>plugin.yml</include>
                 </includes>
             </resource>
+            <resource>
+                <targetPath>./messages</targetPath>
+                <filtering>false</filtering>
+                <directory>${basedir}/src/main/resources/messages</directory>
+            </resource>
         </resources>
 
         <plugins>

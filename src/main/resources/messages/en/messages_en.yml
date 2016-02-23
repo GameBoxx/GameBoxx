@@ -1,0 +1,13 @@
+# English [en]
+# Licenced under MIT (see project licence)
+# Translators: Rojoss
+# Info at: http://gameboxx.info/config/messages
+
+prefix: "&8[&9GameBoxx&8]"
+no-permission: "{p} &cInsufficient permissions."
+wand:
+    selected: "&a{type} &6selected! &8(&c{x}&8,&a{y}&8,&9{z} &8- &7{material}&8:&e{data}&8)"
+    pos-1: "Pos 1"
+    pos-2: "Pos 2"
+game:
+    countdown: "&a&l{seconds} &6&lseconds till the game starts!"
