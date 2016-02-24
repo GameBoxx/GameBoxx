@@ -29,6 +29,7 @@ import info.gameboxx.gameboxx.components.internal.GameComponent;
 import info.gameboxx.gameboxx.config.internal.OptionCfg;
 import info.gameboxx.gameboxx.exceptions.MissingArenaWorldException;
 import info.gameboxx.gameboxx.exceptions.SessionLimitException;
+import info.gameboxx.gameboxx.nms.NMS;
 import info.gameboxx.gameboxx.options.ListOption;
 import info.gameboxx.gameboxx.options.Option;
 import info.gameboxx.gameboxx.options.SingleOption;
@@ -200,7 +201,7 @@ public class Arena {
             new BukkitRunnable() {
                 @Override
                 public void run() {
-                    newSession.setWorld(getGame().getAPI().getWorldLoader().createAsyncWorld(wc));
+                    newSession.setWorld(NMS.get().getWorldLoader().createAsyncWorld(wc));
                     newSession.setReady(true);
                 }
             }.runTaskAsynchronously(getGame().getAPI());
@@ -211,7 +212,7 @@ public class Arena {
                 @Override
                 public void run() {
                     //TODO: Check for WorldBorderCP and load all the chunks to the border.
-                    newSession.setWorld(getGame().getAPI().getWorldLoader().createAsyncWorld(wc));
+                    newSession.setWorld(NMS.get().getWorldLoader().createAsyncWorld(wc));
                     newSession.setReady(true);
                 }
             }.runTaskAsynchronously(getGame().getAPI());

@@ -32,6 +32,7 @@ import info.gameboxx.gameboxx.exceptions.ArenaAlreadyExistsException;
 import info.gameboxx.gameboxx.game.Arena;
 import info.gameboxx.gameboxx.game.ArenaType;
 import info.gameboxx.gameboxx.game.Game;
+import info.gameboxx.gameboxx.nms.NMS;
 import info.gameboxx.gameboxx.util.Str;
 import info.gameboxx.gameboxx.util.Utils;
 import org.apache.commons.io.FileUtils;
@@ -114,7 +115,7 @@ public class ArenaCmd implements CommandExecutor {
             new BukkitRunnable() {
                 @Override
                 public void run() {
-                    final World world = gb.getWorldLoader().createAsyncWorld(worldCreator);
+                    final World world = NMS.get().getWorldLoader().createAsyncWorld(worldCreator);
                     new BukkitRunnable() {
                         @Override
                         public void run() {
