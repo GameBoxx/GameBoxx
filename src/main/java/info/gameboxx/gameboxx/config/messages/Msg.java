@@ -41,8 +41,9 @@ import java.util.Map;
  * See {@link #replaceParams(String, Param...)} for details.
  *
  * <b>JSON</b>
- * Messages can be converted to JSON format.
- * See {@link #toJSON(String, Param...)} for details.
+ * Messages can be converted to JSON format with custom syntax parsing.
+ * The formatted JSON will be cached so using this often shouldn't affect performance.
+ * See {@link #toJSON(String)} for details.
  *
  * <b>Placeholders</b>
  * Placeholders can be replaced in the message.
@@ -57,6 +58,7 @@ import java.util.Map;
 public class Msg {
 
     private static Map<String, String> messages = new HashMap<>();
+    private static Map<String, String> jsonMessages = new HashMap<>();
 
     /** The message returned when there is no message found for the specified key. */
     public static final String UNDEFINED = "&c&nundefined";
@@ -120,12 +122,23 @@ public class Msg {
      * Get the JSON formatted message for the specified key.
      * The syntax for all {@link TextAction}s will be parsed using the {@link TextParser}.
      *
+     * The parsed JSON message will be cached for further usage.
+     * If the cache has the specified message key already parsed that message will be returned.
+     * Parms will be replaced either way.
+     *
      * @param key The key of the message to retrieve.
      * @param params optional list of parameters to replace in the message.
+     *               See {@link #replaceParams(String, Param...)} for details.
      * @return The JSON formatted message or {@link #UNDEFINED} as JSON when there is no message with the specified key.
      */
     public static String getJSON(String key, Param... params) {
-        return toJSON(getRaw(key, params));
+        String msg = "";
+        if (params.length == 0 && jsonMessages.containsKey(key)) {
+            msg = jsonMessages.get(key);
+        } else {
+            msg = toJSON(getRaw(key));
+        }
+        return replaceParams(msg, params);
     }
 
 
@@ -195,5 +208,13 @@ public class Msg {
      */
     public static void setMessage(String key, String message) {
         messages.put(key, message);
+    }
+
+    /**
+     * Clear/flush the cache with JSON messages.
+     * This should be used when messages are changed for example when changing languages.
+     */
+    public static void clearCache() {
+        jsonMessages.clear();
     }
 }

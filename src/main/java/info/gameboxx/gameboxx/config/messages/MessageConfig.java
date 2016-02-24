@@ -251,12 +251,14 @@ public class MessageConfig {
      * Cache all the messages from this config in {@link Msg}
      * The {@link Msg#setMessages(Map)} will be called with all the messages from this config.
      * It will first set the fallback messages and then overwrite them with the messages from this config.
+     * It will also clear the cache of JSON messages using {@link Msg#clearCache()}
      */
     public void cacheMessages() {
         if (fallback != null && fallback.getConfig() != null) {
             cacheMessages(true);
         }
         cacheMessages(false);
+        Msg.clearCache();
     }
 
     /**
