@@ -27,7 +27,7 @@ package info.gameboxx.gameboxx.config.messages;
 
 import info.gameboxx.gameboxx.util.Str;
 import info.gameboxx.gameboxx.util.text.TextAction;
-import info.gameboxx.gameboxx.util.text.TextPlacement;
+import info.gameboxx.gameboxx.util.text.TextParser;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -42,7 +42,7 @@ import java.util.Map;
  *
  * <b>JSON</b>
  * Messages can be converted to JSON format.
- * See {@link #toJSON(String, TextPlacement)} for details.
+ * See {@link #toJSON(String, Param...)} for details.
  *
  * <b>Placeholders</b>
  * Placeholders can be replaced in the message.
@@ -59,7 +59,7 @@ public class Msg {
     private static Map<String, String> messages = new HashMap<>();
 
     /** The message returned when there is no message found for the specified key. */
-    public static final String UNDEFINED = Str.color("&c&nundefined");
+    public static final String UNDEFINED = "&c&nundefined";
 
     //TODO: Placeholder/variable replacement
 
@@ -117,15 +117,15 @@ public class Msg {
     }
 
     /**
-     * Get the fully formatted message for the specified key.
+     * Get the JSON formatted message for the specified key.
+     * The syntax for all {@link TextAction}s will be parsed using the {@link TextParser}.
+     *
      * @param key The key of the message to retrieve.
      * @param params optional list of parameters to replace in the message.
-     * @return The fully formatted message or {@link #UNDEFINED} when there is no message with the specified key.
+     * @return The JSON formatted message or {@link #UNDEFINED} as JSON when there is no message with the specified key.
      */
     public static String getJSON(String key, Param... params) {
-        String msg = getRaw(key, params);
-        //TODO: Parse JSON
-        return msg;
+        return toJSON(getRaw(key, params));
     }
 
 
@@ -157,51 +157,14 @@ public class Msg {
 
     /**
      * Format the specified msg to a JSON message.
-     * It uses the JSON Parser for parsing the input. TODO: Link to parser.
+     * It uses the {@link TextParser} for parsing the input.
      * Syntax for all the actions can be used. See {@link TextAction} for the syntax for each action.
-     *
-     * It will try to parse all the actions for all placements.
-     * It's advised to use {@link #toJSON(String, TextPlacement)} when you know where you're going to display the text.
      *
      * @param msg The message that needs to be parsed.
      * @return The parsed JSON message.
      */
     public static String toJSON(String msg) {
-        //TODO: Implement parser and parse input.
-        return msg;
-    }
-
-    /**
-     * Format the specified msg to a JSON message.
-     * It uses the JSON Parser for parsing the input. TODO: Link to parser.
-     * Syntax for all the actions can be used. See {@link TextAction} for the syntax for each action.
-     *
-     * Syntax for actions that aren't allowed for the specified {@link TextPlacement} will be ignored.
-     * It will just be displayed as regular text.
-     *
-     * @param msg The message that needs to be parsed.
-     * @return The parsed JSON message.
-     */
-    public static String toJSON(String msg, TextPlacement placement) {
-        //TODO: Implement parser and parse input.
-        return msg;
-    }
-
-    /**
-     * Format the specified msg to a JSON message.
-     * It uses the JSON Parser for parsing the input. TODO: Link to parser.
-     * Syntax for all the actions can be used. See {@link TextAction} for the syntax for each action.
-     *
-     * Syntax for actions that aren't specified will be ignored.
-     * It will just be displayed as regular text.
-     * It's advised to use {@link #toJSON(String, TextPlacement)} when you know where you're going to display the text.
-     *
-     * @param msg The message that needs to be parsed.
-     * @return The parsed JSON message.
-     */
-    public static String toJSON(String msg, TextAction... actions) {
-        //TODO: Implement parser and parse input.
-        return msg;
+        return new TextParser(msg).getJSON();
     }
 
 
