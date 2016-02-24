@@ -97,6 +97,23 @@ public class Parse {
     }
 
     /**
+     * Parse an array in to a comma separated string.
+     * It used {@link Object#toString()}
+     * @param objects The objects to parse.
+     * @return String with list values comma separated.
+     */
+    public static String Array(Object... objects) {
+        if (objects == null || objects.length == 0) {
+            return "";
+        }
+        List<String> values = new ArrayList<String>();
+        for (Object obj : objects) {
+            values.add(obj.toString());
+        }
+        return Str.implode(values, ",");
+    }
+
+    /**
      * Convert a string like 'true' to a Boolean. Returns null if it's invalid.
      * @param str
      * @return Boolean

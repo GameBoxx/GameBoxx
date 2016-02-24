@@ -33,8 +33,10 @@ import info.gameboxx.gameboxx.config.messages.MessageConfig;
 import info.gameboxx.gameboxx.game.GameManager;
 import info.gameboxx.gameboxx.listeners.MainListener;
 import info.gameboxx.gameboxx.menu.Menu;
-import info.gameboxx.gameboxx.nms.IWorldLoader;
+import info.gameboxx.gameboxx.nms.NMS;
+import info.gameboxx.gameboxx.nms.NMSVersion;
 import info.gameboxx.gameboxx.user.UserManager;
+import info.gameboxx.gameboxx.util.Parse;
 import info.gameboxx.gameboxx.util.cuboid.Cuboid;
 import info.gameboxx.gameboxx.util.cuboid.SelectionManager;
 import net.milkbowl.vault.Vault;
@@ -52,8 +54,6 @@ public class GameBoxx extends JavaPlugin {
     private Economy economy;
 
     private Language language = null;
-
-    private IWorldLoader worldLoader;
 
     private UserManager um;
     private SelectionManager sm;
@@ -75,6 +75,70 @@ public class GameBoxx extends JavaPlugin {
         instance = this;
         log.setParent(this.getLogger());
 
+        if (!NMS.get().isCompatible()) {
+            error("Failed to load GameBoxx because your server version isn't supported!");
+            error("This version of GameBoxx supports the following server versions: " + Parse.Array(NMSVersion.values()));
+            getPluginLoader().disablePlugin(this);
+            return;
+        }
+
+        if (!loadEconomy()) {
+            warn("Failed to load Economy from Vault!");
+            warn("Everything will work just fine except features that use economy like shops.");
+        }
+
+        cfg = new PluginCfg("plugins/GameBoxx/GameBoxx.yml");
+        msgCfg = new MessageCfg("plugins/GameBoxx/Messages.yml");
+
+        if (!setupLanguage()) {
+            warn("Invalid language specified in the config. Falling back to " + language.getName() + " [" + language.getID() + "]!");
+        } else {
+            log("Using " + language.getName() + " [" + language.getID() + "] as language!");
+        }
+        loadMessages();
+
+        um = new UserManager();
+        sm = new SelectionManager();
+        gm = new GameManager();
+
+        registerCommands();
+        registerListeners();
+
+        log("loaded successfully");
+    }
+
+    private void registerCommands() {
+        getCommand("gameboxx").setExecutor(new GameBoxxCmd(this));
+        getCommand("play").setExecutor(new PlayCmd(this));
+        getCommand("select").setExecutor(new SelectCmd(this));
+        getCommand("arena").setExecutor(new ArenaCmd(this));
+        getCommand("setup").setExecutor(new SetupCmd(this));
+        getCommand("option").setExecutor(new OptionCmd(this));
+    }
+
+    private void registerListeners() {
+        getServer().getPluginManager().registerEvents(new Menu.Events(), this);
+        getServer().getPluginManager().registerEvents(sm.getListener(), this);
+        getServer().getPluginManager().registerEvents(new MainListener(this), this);
+    }
+
+    private boolean setupLanguage() {
+        language = Language.find(getCfg().language);
+        if (language == null) {
+            language = Language.ENGLISH;
+            return false;
+        }
+        return true;
+    }
+
+    private void loadMessages() {
+        new MessageConfig(this, "messages");
+        new MessageConfig(this, "commands");
+        new MessageConfig(this, "options");
+        new MessageConfig(this, "parser");
+    }
+
+    private boolean loadEconomy() {
         Plugin vaultPlugin = getServer().getPluginManager().getPlugin("Vault");
         if (vaultPlugin != null) {
             vault = (Vault)vaultPlugin;
@@ -84,73 +148,9 @@ public class GameBoxx extends JavaPlugin {
             }
         }
         if (economy == null) {
-            log("Failed to load Economy from Vault. The plugin will still work fine but some features might not work!");
-        }
-
-        if (!setupNMS()) {
-            log("Failed to load GameBoxx because your server version isn't supported! This version of GameBoxx supports the following server versions: v1_8_R3");
-            getPluginLoader().disablePlugin(this);
-            return;
-        }
-
-        ConfigurationSerialization.registerClass(Cuboid.class);
-
-        cfg = new PluginCfg("plugins/GameBoxx/GameBoxx.yml");
-        msgCfg = new MessageCfg("plugins/GameBoxx/Messages.yml");
-
-        loadMessages();
-
-        um = new UserManager();
-        sm = new SelectionManager();
-        gm = new GameManager();
-
-        getCommand("gameboxx").setExecutor(new GameBoxxCmd(this));
-        getCommand("play").setExecutor(new PlayCmd(this));
-        getCommand("select").setExecutor(new SelectCmd(this));
-        getCommand("arena").setExecutor(new ArenaCmd(this));
-        getCommand("setup").setExecutor(new SetupCmd(this));
-        getCommand("option").setExecutor(new OptionCmd(this));
-
-        registerListeners();
-
-        log("loaded successfully");
-    }
-
-    private void registerListeners() {
-        getServer().getPluginManager().registerEvents(new Menu.Events(), this);
-        getServer().getPluginManager().registerEvents(sm.getListener(), this);
-        getServer().getPluginManager().registerEvents(new MainListener(this), this);
-    }
-
-    private boolean setupNMS() {
-        String version;
-        try {
-            version = getServer().getClass().getPackage().getName().replace(".",  ",").split(",")[3];
-        } catch (ArrayIndexOutOfBoundsException whatVersionAreYouUsingException) {
             return false;
         }
-
-        if (version.equals("v1_8_R3")) {
-            worldLoader = new info.gameboxx.gameboxx.nms.v1_8_R3.WorldLoader(this);
-            return true;
-        }
-
-        return false;
-    }
-
-    private void loadMessages() {
-        language = Language.find(getCfg().language);
-        if (language == null) {
-            language = Language.ENGLISH;
-            warn("Invalid language specified in the config. Falling back to " + language.getName() + " [" + language.getID() + "]!");
-        } else {
-            log("Using " + language.getName() + " [" + language.getID() + "] as language!");
-        }
-
-        new MessageConfig(this, "messages");
-        new MessageConfig(this, "commands");
-        new MessageConfig(this, "options");
-        new MessageConfig(this, "parser");
+        return true;
     }
 
     public void log(Object msg) {
@@ -189,14 +189,6 @@ public class GameBoxx extends JavaPlugin {
         return language;
     }
 
-
-    /**
-     * Get the {@link IWorldLoader} that can load worlds async using {@link net.minecraft.server} (NMS) code.
-     * @return The world loader.
-     */
-    public IWorldLoader getWorldLoader() {
-        return worldLoader;
-    }
 
     /**
      * Get the {@link SelectionManager} for getting {@link Cuboid} selections and such.
