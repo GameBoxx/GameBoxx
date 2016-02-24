@@ -40,11 +40,12 @@ import java.util.Collection;
 public class SoundEffect {
 
     private Sound sound;
+    private String customSound;
     private float volume = 1;
     private float pitch = 1;
 
     /**
-     * Creates a new SoundData instance with the specified volume and pitch.
+     * Creates a new SoundEffect instance with the specified volume and pitch.
      * @param sound The {@link Sound} effect.
      * @param volume The volume (This should be a float between 0,2)
      * @param pitch The pitch (This should be a float between 0,2)
@@ -56,7 +57,7 @@ public class SoundEffect {
     }
 
     /**
-     * Creates a new SoundData instance with default volume and pitch.
+     * Creates a new SoundEffect instance with default volume and pitch.
      * @param sound The {@link Sound} effect.
      */
     public SoundEffect(Sound sound) {
@@ -64,11 +65,43 @@ public class SoundEffect {
     }
 
     /**
+     * Creates a new SoundEffect instance with the specified volume and pitch.
+     * @param customSound The name of the custom sound effect.
+     *                    This name must be the name of a sound defined in a server resource pack.
+     *                    If no sound is found with this name and you play the sound nothing will happen.
+     * @param volume The volume (This should be a float between 0,2)
+     * @param pitch The pitch (This should be a float between 0,2)
+     */
+    public SoundEffect(String customSound, float volume, float pitch) {
+        this.customSound = customSound;
+        this.volume = volume;
+        this.pitch = pitch;
+    }
+
+    /**
+     * Creates a new SoundEffect instance with default volume and pitch.
+     * @param customSound The name of the custom sound effect.
+     *                    This name must be the name of a sound defined in a server resource pack.
+     *                    If no sound is found with this name and you play the sound nothing will happen.
+     */
+    public SoundEffect(String customSound) {
+        this.customSound = customSound;
+    }
+
+    /**
      * Get the {@link Sound} effect.
-     * @return The {@link Sound} effect.
+     * @return The {@link Sound} effect. (May be {@code null} when constructed with a custom sound!)
      */
     public Sound getSound() {
         return sound;
+    }
+
+    /**
+     * Get the name of the custom sound effect.
+     * @return The name of the custom sound effect. (May be {@code null} when constructed with a regular sound!)
+     */
+    public String getCustomSound() {
+        return customSound;
     }
 
     /**
@@ -77,6 +110,16 @@ public class SoundEffect {
      */
     public void setSound(Sound sound) {
         this.sound = sound;
+    }
+
+    /**
+     * Set the custom sound effect.
+     * This name must be the name of a sound defined in a server resource pack.
+     * If no sound is found with this name and you play the sound nothing will happen.
+     * @param customSound Name of the custom sound effect.
+     */
+    public void setCustomSound(String customSound) {
+        this.customSound = customSound;
     }
 
     /**
@@ -116,7 +159,7 @@ public class SoundEffect {
      * @see Player#playSound(Location, Sound, float, float)
      */
     public void play(Player player) {
-        player.playSound(player.getLocation(), sound, volume, pitch);
+        play(player, player.getLocation());
     }
 
     /**
@@ -124,7 +167,11 @@ public class SoundEffect {
      * @see Player#playSound(Location, Sound, float, float)
      */
     public void play(Player player, Location location) {
-        player.playSound(location, sound, volume, pitch);
+        if (customSound != null) {
+            player.playSound(location, customSound, volume, pitch);
+        } else {
+            player.playSound(location, sound, volume, pitch);
+        }
     }
 
     /**
@@ -132,7 +179,7 @@ public class SoundEffect {
      * @see Player#playSound(Location, Sound, float, float)
      */
     public void play(Player player, double offsetX, double offsetY, double offsetZ) {
-        player.playSound(player.getLocation().add(offsetX, offsetY, offsetZ), sound, volume, pitch);
+        play(player, player.getLocation().add(offsetX, offsetY, offsetZ));
     }
 
     /**
@@ -176,9 +223,12 @@ public class SoundEffect {
 
     /**
      * Play the sound for all players nearby the specified location.
+     * <b>This does not support custom sounds!</b>
      * @see World#playSound(Location, Sound, float, float)
      */
     public void play(World world, Location location) {
-        world.playSound(location, sound, volume, pitch);
+        if (sound != null) {
+            world.playSound(location, sound, volume, pitch);
+        }
     }
 }
