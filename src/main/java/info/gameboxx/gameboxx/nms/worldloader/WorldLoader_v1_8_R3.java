@@ -23,10 +23,9 @@
  THE SOFTWARE.
  */
 
-package info.gameboxx.gameboxx.nms.v1_8_R3;
+package info.gameboxx.gameboxx.nms.worldloader;
 
 import info.gameboxx.gameboxx.GameBoxx;
-import info.gameboxx.gameboxx.nms.IWorldLoader;
 import net.minecraft.server.v1_8_R3.*;
 import org.bukkit.Bukkit;
 import org.bukkit.Server;
@@ -52,7 +51,7 @@ import java.util.logging.Level;
 /**
  * @author Friwi (https://www.spigotmc.org/resources/lib-asyncworldloader.7370/)
  */
-public class WorldLoader implements IWorldLoader {
+public class WorldLoader_v1_8_R3 implements info.gameboxx.gameboxx.nms.worldloader.WorldLoader {
 
     private GameBoxx gb;
     private boolean alreadyLoading = false;
@@ -62,7 +61,7 @@ public class WorldLoader implements IWorldLoader {
     private Chunk wait = null;
     private ChunkGenerator generator = null;
 
-    public WorldLoader(GameBoxx gb) {
+    public WorldLoader_v1_8_R3(GameBoxx gb) {
         this.gb = gb;
     }
 

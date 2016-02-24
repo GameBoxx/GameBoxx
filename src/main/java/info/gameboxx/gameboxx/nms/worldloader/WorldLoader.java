@@ -23,7 +23,7 @@
  THE SOFTWARE.
  */
 
-package info.gameboxx.gameboxx.nms;
+package info.gameboxx.gameboxx.nms.worldloader;
 
 import org.bukkit.World;
 import org.bukkit.WorldCreator;
@@ -34,7 +34,7 @@ import org.bukkit.WorldCreator;
  *
  * @author Friwi (https://www.spigotmc.org/resources/lib-asyncworldloader.7370/)
  */
-public interface IWorldLoader {
+public interface WorldLoader {
 
     /**
      * Creates a new world.

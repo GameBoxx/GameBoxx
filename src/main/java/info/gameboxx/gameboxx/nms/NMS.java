@@ -26,7 +26,8 @@
 package info.gameboxx.gameboxx.nms;
 
 import info.gameboxx.gameboxx.GameBoxx;
-import info.gameboxx.gameboxx.nms.v1_8_R3.WorldLoader;
+import info.gameboxx.gameboxx.nms.worldloader.WorldLoader_v1_8_R3;
+import info.gameboxx.gameboxx.nms.worldloader.WorldLoader;
 import org.bukkit.Bukkit;
 
 public class NMS {
@@ -35,7 +36,7 @@ public class NMS {
     private String versionString = "unknown";
     private NMSVersion version;
 
-    private IWorldLoader worldLoader;
+    private WorldLoader worldLoader;
 
     private NMS() {
         try {
@@ -45,11 +46,11 @@ public class NMS {
 
         GameBoxx gb = GameBoxx.get();
         if (version == NMSVersion.V1_8_R3) {
-            worldLoader = new WorldLoader(gb);
+            worldLoader = new WorldLoader_v1_8_R3(gb);
         }
     }
 
-    public IWorldLoader getWorldLoader() {
+    public WorldLoader getWorldLoader() {
         return worldLoader;
     }
 
