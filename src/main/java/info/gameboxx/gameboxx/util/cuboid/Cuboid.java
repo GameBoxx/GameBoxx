@@ -28,6 +28,7 @@ package info.gameboxx.gameboxx.util.cuboid;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
+import org.bukkit.configuration.serialization.ConfigurationSerialization;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.util.NumberConversions;
@@ -40,6 +41,10 @@ import java.util.*;
  * Has a min/max position and a world.
  */
 public class Cuboid implements Iterable<Block>, Cloneable, ConfigurationSerializable {
+
+    static {
+        ConfigurationSerialization.registerClass(Cuboid.class);
+    }
 
     private String worldName;
 

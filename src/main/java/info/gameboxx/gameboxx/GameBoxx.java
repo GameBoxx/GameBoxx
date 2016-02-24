@@ -39,7 +39,6 @@ import info.gameboxx.gameboxx.util.cuboid.Cuboid;
 import info.gameboxx.gameboxx.util.cuboid.SelectionManager;
 import net.milkbowl.vault.Vault;
 import net.milkbowl.vault.economy.Economy;
-import org.bukkit.configuration.serialization.ConfigurationSerialization;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
