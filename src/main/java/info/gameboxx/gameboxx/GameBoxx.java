@@ -78,6 +78,7 @@ public class GameBoxx extends JavaPlugin {
         if (!NMS.get().isCompatible()) {
             error("Failed to load GameBoxx because your server version isn't supported!");
             error("This version of GameBoxx supports the following server versions: " + Parse.Array(NMSVersion.values()));
+            error("Your server version: " + NMS.get().getVersionString());
             getPluginLoader().disablePlugin(this);
             return;
         }

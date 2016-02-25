@@ -39,11 +39,10 @@ public enum NMSVersion {
     static {
         for (NMSVersion version : values()) {
             FROM_STRING.put(version.toString(), version);
-            FROM_STRING.put(version.toString().toLowerCase(), version);
         }
     }
 
     public static NMSVersion fromString(String version) {
-        return FROM_STRING.get(version);
+        return FROM_STRING.get(version.toUpperCase());
     }
 }
