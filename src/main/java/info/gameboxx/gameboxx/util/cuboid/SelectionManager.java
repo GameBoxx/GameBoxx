@@ -262,7 +262,7 @@ public class SelectionManager {
 
             //Select!
 
-            Msg.get("wand.selected", Param.P("type", type == SelectionType.PRIMARY ? Msg.getRaw("wand.pos-1").getRaw() : Msg.getRaw("wand.pos-2").getRaw()),
+            Msg.get("wand.selected", Param.P("type", type == SelectionType.PRIMARY ? Msg.getString("wand.pos-1") : Msg.getString("wand.pos-2")),
                     Param.P("x", loc.getBlockX()), Param.P("y", loc.getBlockY()), Param.P("z", loc.getBlockZ()),
                     Param.P("material", event.getClickedBlock().getType().toString()), Param.P("data", event.getClickedBlock().getData())).send(player);
             setPos(player, type, loc);

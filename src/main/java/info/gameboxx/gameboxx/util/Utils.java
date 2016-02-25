@@ -285,7 +285,7 @@ public class Utils {
     }
 
     public static String getAliasesString(String key, Map<String, List<String>> values) {
-        Msg format = Msg.getRaw(key);
+        Msg format = Msg.get(key);
         if (format.isUndefined()) {
             format = new Msg("[[<aliases>||<name>]]");
         }

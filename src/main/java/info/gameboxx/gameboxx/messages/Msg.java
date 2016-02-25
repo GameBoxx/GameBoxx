@@ -292,7 +292,7 @@ public class Msg {
      * If not, it will send the raw message. (also if there is no valid JSON)
      * If the JSON is invalid it will also send an error message to the console.
      *
-     * <p><b>Raw messages will still have params replaced, colors and other formatting but no JSON.
+     * <p><b>Raw messages will still have params replaced, colors and other formatting but no JSON.</b>
      *
      * @param sender The {@link CommandSender} to send the message to.
      */
@@ -310,7 +310,7 @@ public class Msg {
      * <p>Unlike {@link #send(CommandSender)} this does not send the JSON message to players.
      * It will always send the raw formatted message.
      *
-     * <p><b>Raw messages will still have params replaced, colors and other formatting but no JSON.
+     * <p><b>Raw messages will still have params replaced, colors and other formatting but no JSON.</b>
      *
      * @param sender The {@link CommandSender} to send the message to.
      */
@@ -324,7 +324,7 @@ public class Msg {
      * <p>Unlike {@link #send(CommandSender)} this does not send the JSON message to players.
      * It will always send the raw formatted message.
      *
-     * <p><b>Raw messages will still have params replaced, colors and other formatting but no JSON.
+     * <p><b>Raw messages will still have params replaced, colors and other formatting but no JSON.</b>
      * By default this will convert color codes automatically.
      *
      * @param senders Array with {@link CommandSender}s to send the message to.
@@ -341,7 +341,7 @@ public class Msg {
      * <p>Unlike {@link #send(CommandSender)} this does not send the JSON message to players.
      * It will always send the raw formatted message.
      *
-     * <p><b>Raw messages will still have params replaced, colors and other formatting but no JSON.
+     * <p><b>Raw messages will still have params replaced, colors and other formatting but no JSON.</b>
      * By default this will convert color codes automatically.
      *
      * @param senders Collection with {@link CommandSender}s to send the message to.
