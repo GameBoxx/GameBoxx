@@ -126,8 +126,8 @@ public class TextParser {
      * Used to get JSON formatted text.
      * <b>This does not parse syntax of {@link TextAction}!</b>
      *
-     * All this does is convert chat colors like &a and &l etc to JSON syntax.
-     * For example a string like '&atest &b&lexample' would output in the following JSON:
+     * All this does is convert chat colors like §a and §l etc to JSON syntax.
+     * For example a string like '§atest §b§lexample' would output in the following JSON:
      * "text":"","extra":[{"text":"test", "color":"green"},{"text":"example","color":"aqua","bold":true}]
      *
      * <b>Important: </b> As you can see in the example it does not add '{' and '}' before and after the JSON.
@@ -138,13 +138,13 @@ public class TextParser {
      */
     public static String getJsonText(String text) {
         //When the text doesn't have color codes we just return the text as JSON but without any formatting.
-        if (!text.contains("&")) {
+        if (!text.contains("§")) {
             return "\"text\":\"" + JSONValue.escape(text) + "\"";
         }
 
         //Find all color codes within the string.
-        //For example '&a' or '&a&l' '&c&l&n' will mitch.
-        Pattern p = Pattern.compile("(&[\\da-fA-Fk-oK-OrR])+");
+        //For example '§a' or '§a§l' '§c§l§n' will mitch.
+        Pattern p = Pattern.compile("(§[\\da-fA-Fk-oK-OrR])+");
         Matcher m = p.matcher(text);
 
         StringBuilder JSON = new StringBuilder("\"text\":\"\",\"extra\":[");
@@ -181,17 +181,17 @@ public class TextParser {
      * Used for {@link #getJsonText(String)} to get JSON values for color codes.
      * It supports all {@link Format} colors and other formatting codes.
      *
-     * For example: if you provide '&a&l' this would return '"color":"green","bold":true'
+     * For example: if you provide '§a§l' this would return '"color":"green","bold":true'
      *
-     * @param color String with color codes only. Like '&c&l&n' (red bold strikethrough)
+     * @param color String with color codes only. Like '§c§l§n' (red bold strikethrough)
      * @return String with format for the specified color codes or an empty string if there are no color codes. (see example)
      */
     private static String getJsonFormat(String color) {
         if (color.trim().isEmpty()) {
             return "";
         }
-        //Get string with color characters only like '&a&l' becomes 'al'
-        String colorChars = color.replace("&", "").toLowerCase();
+        //Get string with color characters only like '§a§l' becomes 'al'
+        String colorChars = color.replace("§", "").toLowerCase();
 
         //Go through all the color codes in the color string and get the format/color string.
         StringBuilder JSON = new StringBuilder(",");
@@ -209,7 +209,7 @@ public class TextParser {
         }
         //Set the color if there was a color code.
         //We manually set this as last because there can only be one color and the last color in the color string should be used.
-        //Like '&a&l&c' would be red and not green.
+        //Like '§a§l§c' would be red and not green.
         if (!clrString.isEmpty()) {
             JSON.append("\"color\":\"" + clrString + "\"");
         }
@@ -362,7 +362,7 @@ public class TextParser {
         }
 
         /**
-         * Get the character for the format which is used together with '&' like 'a'.
+         * Get the character for the format which is used together with '§' like 'a'.
          * @return The character for the format.
          */
         public char getChar() {
