@@ -25,6 +25,8 @@
 
 package info.gameboxx.gameboxx.util;
 
+import info.gameboxx.gameboxx.messages.Msg;
+import info.gameboxx.gameboxx.messages.Param;
 import info.gameboxx.gameboxx.util.alias.Items;
 import info.gameboxx.gameboxx.util.item.EItem;
 import info.gameboxx.gameboxx.util.item.ItemParser;
@@ -280,5 +282,21 @@ public class Utils {
         }
 
         return obj.toString();
+    }
+
+    public static String getAliasesString(String key, Map<String, List<String>> values) {
+        Msg format = Msg.getRaw(key);
+        if (format.isUndefined()) {
+            format = new Msg("[[<aliases>||<name>]]");
+        }
+        List<String> formats = new ArrayList<>();
+        for (Map.Entry<String, List<String>> entry : values.entrySet()) {
+            String name = entry.getKey();
+            String aliases = Str.wrapString(Str.implode(entry.getValue(), ", ", " & "), 50);
+
+            formats.add(format.clone().params(Param.P("name", name), Param.P("key", name), Param.P("display", name),
+                    Param.P("aliases", aliases), Param.P("alias", aliases), Param.P("values", aliases), Param.P("value", aliases)).get());
+        }
+        return Str.implode(formats, ", " + " & ");
     }
 }
