@@ -169,6 +169,17 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
                 <version>2.10.3</version>
+                <configuration>
+                    <quiet>true</quiet>
+                    <additionalparam>-quiet</additionalparam>
+                    <author>false</author>
+                    <doctitle>GameBoxx API Javadocs</doctitle>
+                    <links>
+                        <link>https://hub.spigotmc.org/javadocs/spigot/</link>
+                    </links>
+                    <linksource>true</linksource>
+                    <excludePackageNames>info.gameboxx.gameboxx.listeners*:info.gameboxx.gameboxx.commands*</excludePackageNames>
+                </configuration>
             </plugin>
         </plugins>
     </reporting>
