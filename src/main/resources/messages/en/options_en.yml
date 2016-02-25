@@ -3,16 +3,17 @@
 # Translators: Rojoss
 # Info at: http://gameboxx.info/config/messages
 
-always-join: When set to true players will be able able to join while the game is in progress.
-countdown: The amount of seconds to set on the countdown. (Can be set to -1 to disable)
-permission-bypass: When a permission node is set players with this permission will be able to bypass the player limit and join full games.
-auto-spectate: When set to true players will automatically join as spectator when trying to join a full game. (By default a message will be sent that the game is full)
-max-players: The maximum amount of players allowed in the game.
-min-players: The minimum amount of players required to start the game.
-lobby-spawn: The location where players will be teleported to when they join the lobby.
-queue-time: When this is not -1 it won''t teleport players to the lobby till the countdown time has reached the set value. If it''s set to 0 players won''t get teleported to the lobby spawn at all.
-lobby-fly: Allows players to fly when inside the lobby. For example if the lobby spawn is within the arena players can fly around the arena before it starts.
-countdown-time: Time in seconds to count down from before the game starts.
-count-interval: Time in seconds between each count. (It will still tick down per second)
-count-seconds: At which time in seconds change the interval to seconds.
-count-sound: Sound to play for each count.
+opt:
+    always-join: When set to true players will be able able to join while the game is in progress.
+    countdown: The amount of seconds to set on the countdown. (Can be set to -1 to disable)
+    permission-bypass: When a permission node is set players with this permission will be able to bypass the player limit and join full games.
+    auto-spectate: When set to true players will automatically join as spectator when trying to join a full game. (By default a message will be sent that the game is full)
+    max-players: The maximum amount of players allowed in the game.
+    min-players: The minimum amount of players required to start the game.
+    lobby-spawn: The location where players will be teleported to when they join the lobby.
+    queue-time: When this is not -1 it won''t teleport players to the lobby till the countdown time has reached the set value. If it''s set to 0 players won''t get teleported to the lobby spawn at all.
+    lobby-fly: Allows players to fly when inside the lobby. For example if the lobby spawn is within the arena players can fly around the arena before it starts.
+    countdown-time: Time in seconds to count down from before the game starts.
+    count-interval: Time in seconds between each count. (It will still tick down per second)
+    count-seconds: At which time in seconds change the interval to seconds.
+    count-sound: Sound to play for each count.

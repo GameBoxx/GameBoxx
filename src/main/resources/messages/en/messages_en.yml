@@ -4,10 +4,13 @@
 # Info at: http://gameboxx.info/config/messages
 
 prefix: "&8[&9GameBoxx&8]"
-no-permission: "<p> &cInsufficient permissions."
+no-permission: "<p> [[&8Permission node: &7<node>||&cInsufficient permissions.]] ((<node>||[[&7Shift click to copy the permission!||&4&l+]]))"
 wand:
-    selected: "&a<type> &6selected! &8(&c<x>&8,&a<y>&8,&9<z> &8- &7<material>&8:&e<data>&8)"
-    pos-1: "Pos 1"
-    pos-2: "Pos 2"
+    selected: "<p> [[&6&lLocation&8: &c<x>&8,&a<y>&8,&9<z>\n&6&lBlock&8: &e<material>&8:&2<data>||&a<type> &6selected!]]"
+    pos-1: "Position one"
+    pos-2: "Posistion two"
 game:
+    invalid: "<p> &cThere is no game registered with the name &4<input>&c! &8(&8Games: &7<games>&8)"
     countdown: "&a&l<seconds> &6&lseconds till the game starts!"
+arena:
+    invalid: "<p> &cThere is no arena registered with the name &4<input>&c! &8(&8Arenas: &7<arenas>&8)"
