@@ -23,7 +23,7 @@
  THE SOFTWARE.
  */
 
-package info.gameboxx.gameboxx.config.messages;
+package info.gameboxx.gameboxx.messages;
 
 import info.gameboxx.gameboxx.GameBoxx;
 import org.bukkit.configuration.InvalidConfigurationException;
@@ -258,7 +258,6 @@ public class MessageConfig {
             cacheMessages(true);
         }
         cacheMessages(false);
-        Msg.clearCache();
     }
 
     /**

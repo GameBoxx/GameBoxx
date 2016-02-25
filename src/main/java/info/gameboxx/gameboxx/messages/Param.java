@@ -23,7 +23,7 @@
  THE SOFTWARE.
  */
 
-package info.gameboxx.gameboxx.config.messages;
+package info.gameboxx.gameboxx.messages;
 
 import info.gameboxx.gameboxx.util.Utils;
 
