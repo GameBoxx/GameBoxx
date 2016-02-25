@@ -26,12 +26,12 @@
 package info.gameboxx.gameboxx.commands;
 
 import info.gameboxx.gameboxx.GameBoxx;
-import info.gameboxx.gameboxx.GameMsg;
-import info.gameboxx.gameboxx.config.messages.Param;
 import info.gameboxx.gameboxx.exceptions.ArenaAlreadyExistsException;
 import info.gameboxx.gameboxx.game.Arena;
 import info.gameboxx.gameboxx.game.ArenaType;
 import info.gameboxx.gameboxx.game.Game;
+import info.gameboxx.gameboxx.messages.Msg;
+import info.gameboxx.gameboxx.messages.Param;
 import info.gameboxx.gameboxx.nms.NMS;
 import info.gameboxx.gameboxx.util.Str;
 import info.gameboxx.gameboxx.util.Utils;
@@ -59,7 +59,7 @@ public class ArenaCmd implements CommandExecutor {
     @Override
     public boolean onCommand(final CommandSender sender, Command command, String label, String[] args) {
         if (args.length < 1 || args[0].equalsIgnoreCase("help")) {
-            //GameMsg.ARENA_HELP.send(sender, false, true);
+            Msg.get("arena.help", Param.P("cmd", label)).send(sender);
             return true;
         }
         args = Utils.fixCommandArgs(args);
@@ -67,50 +67,49 @@ public class ArenaCmd implements CommandExecutor {
         //arena create {game} {name} {type} [world gen data]
         if (args[0].equalsIgnoreCase("create") || args[0].equalsIgnoreCase("generate") || args[0].equalsIgnoreCase("new")) {
             if (args.length < 4) {
-                GameMsg.INVALID_USAGE.send(sender, Param.P("{usage}", "/" + label + " " + args[0] + " {game} {name} {type} [world data]"));
+                Msg.get("invalid-usage", Param.P("usage", "/" + label + " " + args[0] + " {game} {name} {type} [world data]")).send(sender);
                 return true;
             }
 
             Game game = gb.getGM().getGame(args[1]);
             if (game == null) {
-                GameMsg.INVALID_GAME.send(sender, Param.P("{name}", args[1]), Param.P("{games}", Str.implode(gb.getGM().getGameNames(), ", ", " & ")));
+                Msg.get("game.invalid", Param.P("input", args[1]), Param.P("games", Str.implode(gb.getGM().getGameNames(), ", ", " & "))).send(sender);
                 return true;
             }
 
             ArenaType type = ArenaType.fromName(args[3]);
             if (type == null) {
-                GameMsg.INVALID_ARENA_TYPE.send(sender, Param.P("{type}", args[3]));
+                Msg.get("arena.type.invalid", Param.P("input", args[3]), Param.P("types", Utils.getAliasesString("arena.type.entry", ArenaType.getAliasesMap()))).send(sender);
                 return true;
             }
 
+            final String name = args[2];
             try {
-                Arena arena = game.createArena(type, args[2]);
+                Arena arena = game.createArena(type, name);
             } catch (ArenaAlreadyExistsException e) {
-                GameMsg.ARENA_NAME_ALREADY_EXISTS.send(sender, Param.P("{name}", args[2]), Param.P("{arenas}", Str.implode(game.getArenaNames(), ", ", " & ")));
+                Msg.get("arena.create.exists", Param.P("name", name), Param.P("arenas", Str.implode(game.getArenaNames(), ", ", " & "))).send(sender);
                 return true;
             } catch (IOException e) {
-                //TODO: Send message that it failed to create arena config file.
+                Msg.get("arena.create.error", Param.P("name", name), Param.P("error", e.getMessage())).send(sender);
                 return true;
             }
 
             if (type == ArenaType.DEFAULT) {
-                //TODO: Arena created..
-                sender.sendMessage("Default arena created...");
+                Msg.get("arena.create.default", Param.P("name", name)).send(sender);
                 return true;
             }
 
             //Get the world creator based on remaining arguments.
             //TODO: Add support for copying other worlds like copy:{game}:{arena} for WORLD type only.
-            final WorldCreator worldCreator = Utils.getWorldCreator(args[2] + "_TEMPLATE", args, 4);
+            final WorldCreator worldCreator = Utils.getWorldCreator(name + "_TEMPLATE", args, 4);
             //TODO: Save world creator data to arena.
 
             if (type == ArenaType.GENERATE_WORLD) {
-                //TODO: Arena created..
-                sender.sendMessage("Generate world arena created...");
+                Msg.get("arena.create.generate", Param.P("name", name)).send(sender);
                 return true;
             }
 
-            sender.sendMessage("Creating the world for world arena.");
+            Msg.get("arena.create.creating", Param.P("name", name)).send(sender);
             //Create the template world and set spawn location at the center
             new BukkitRunnable() {
                 @Override
@@ -125,24 +124,21 @@ public class ArenaCmd implements CommandExecutor {
 
                             //Teleport the player to the new world.
                             if (sender instanceof Player) {
-                                sender.sendMessage("Teleporting the player to the new spawn!");
                                 ((Player)sender).teleport(block.getLocation());
                             }
 
-                            sender.sendMessage("World arena created...");
+                            Msg.get("arena.create.world", Param.P("name", name)).send(sender);
                         }
                     }.runTaskLater(gb, 1);
                 }
             }.runTaskAsynchronously(gb);
-
-            //TODO: Arena created..
             return true;
         }
 
         //Get/validate the arena selection.
         Arena arena = ArenaSelection.getSel(sender, args);
         if (arena == null) {
-            GameMsg.NO_ARENA_SELECTION.send(sender);
+            Msg.get("no-selection").send(sender);
             return true;
         }
 

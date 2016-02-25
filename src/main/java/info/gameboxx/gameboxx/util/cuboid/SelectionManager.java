@@ -25,8 +25,8 @@
 
 package info.gameboxx.gameboxx.util.cuboid;
 
-import info.gameboxx.gameboxx.GameMsg;
-import info.gameboxx.gameboxx.config.messages.Param;
+import info.gameboxx.gameboxx.messages.Msg;
+import info.gameboxx.gameboxx.messages.Param;
 import info.gameboxx.gameboxx.util.ItemUtil;
 import info.gameboxx.gameboxx.util.item.EItem;
 import info.gameboxx.gameboxx.util.particles.ParticleEffect;
@@ -46,7 +46,7 @@ public class SelectionManager {
 
     private static SelectionManager instance;
     private SelectionListener listener;
-    private EItem basicWand = new EItem(Material.STONE_AXE, 1, (short)0).makeGlowing(true).addAllFlags(true).setName(GameMsg.WAND_NAME.getMsg()).setLore(GameMsg.WAND_LORE.getMsg());
+    private EItem basicWand = new EItem(Material.STONE_AXE, 1, (short)0).makeGlowing(true).addAllFlags(true).setName("&6&lSelection Wand");
 
     Map<UUID, SelectionData> selections = new HashMap<UUID, SelectionData>();
     SelectionData globalSelection = new SelectionData();
@@ -261,9 +261,10 @@ public class SelectionManager {
             }
 
             //Select!
-            GameMsg.SELECTED.send(player, Param.P("{type}", type == SelectionType.PRIMARY ? GameMsg.POS_1.getMsg() : GameMsg.POS_2.getMsg()),
-                    Param.P("{x}", loc.getBlockX()), Param.P("{y}", loc.getBlockY()), Param.P("{z}", loc.getBlockZ()),
-                    Param.P("{material}", event.getClickedBlock().getType().toString()), Param.P("{data}", event.getClickedBlock().getData()));
+
+            Msg.get("wand.selected", Param.P("type", type == SelectionType.PRIMARY ? Msg.getRaw("wand.pos-1").getRaw() : Msg.getRaw("wand.pos-2").getRaw()),
+                    Param.P("x", loc.getBlockX()), Param.P("y", loc.getBlockY()), Param.P("z", loc.getBlockZ()),
+                    Param.P("material", event.getClickedBlock().getType().toString()), Param.P("data", event.getClickedBlock().getData())).send(player);
             setPos(player, type, loc);
 
             //Display particles for selection.

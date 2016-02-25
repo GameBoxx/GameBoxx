@@ -25,13 +25,13 @@
 
 package info.gameboxx.gameboxx.components;
 
-import info.gameboxx.gameboxx.GameMsg;
 import info.gameboxx.gameboxx.components.internal.ComponentListener;
 import info.gameboxx.gameboxx.components.internal.GameComponent;
 import info.gameboxx.gameboxx.events.PlayerJoinSessionEvent;
 import info.gameboxx.gameboxx.exceptions.DependencyNotFoundException;
 import info.gameboxx.gameboxx.game.Game;
 import info.gameboxx.gameboxx.game.GameSession;
+import info.gameboxx.gameboxx.messages.Msg;
 import info.gameboxx.gameboxx.options.single.IntOption;
 import org.bukkit.event.EventHandler;
 
@@ -53,7 +53,7 @@ public class MinPlayersCP extends GameComponent {
 
     @Override
     public void registerOptions() {
-        registerArenaOption("min-players", new IntOption("MinPlayers", 2).min(1).setDescription(GameMsg.OPT_MIN_PLAYERS.getMsg()));
+        registerArenaOption("min-players", new IntOption("MinPlayers", 2).min(1).setDescription(Msg.getRaw("opt.min-players").getRaw()));
     }
 
     @Override

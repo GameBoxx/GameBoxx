@@ -25,7 +25,6 @@
 
 package info.gameboxx.gameboxx.components;
 
-import info.gameboxx.gameboxx.GameMsg;
 import info.gameboxx.gameboxx.components.internal.ComponentListener;
 import info.gameboxx.gameboxx.components.internal.GameComponent;
 import info.gameboxx.gameboxx.events.PlayerJoinSessionEvent;
@@ -33,6 +32,7 @@ import info.gameboxx.gameboxx.events.PlayerLeaveSessionEvent;
 import info.gameboxx.gameboxx.game.Game;
 import info.gameboxx.gameboxx.game.GameSession;
 import info.gameboxx.gameboxx.game.LeaveReason;
+import info.gameboxx.gameboxx.messages.Msg;
 import info.gameboxx.gameboxx.options.single.BoolOption;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -64,7 +64,7 @@ public class PlayersCP extends GameComponent {
 
     @Override
     public void registerOptions() {
-        registerGameOption("always-join", new BoolOption("AlwaysJoin", false).setDescription(GameMsg.OPT_ALWAYS_JOIN.getMsg()));
+        registerGameOption("always-join", new BoolOption("AlwaysJoin", false).setDescription(Msg.getRaw("opt.always-join").getRaw()));
         //TODO: Implement this option
     }
 

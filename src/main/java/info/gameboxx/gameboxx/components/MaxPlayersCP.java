@@ -25,12 +25,12 @@
 
 package info.gameboxx.gameboxx.components;
 
-import info.gameboxx.gameboxx.GameMsg;
 import info.gameboxx.gameboxx.components.internal.ComponentListener;
 import info.gameboxx.gameboxx.components.internal.GameComponent;
 import info.gameboxx.gameboxx.events.PlayerJoinSessionEvent;
 import info.gameboxx.gameboxx.game.Game;
 import info.gameboxx.gameboxx.game.GameSession;
+import info.gameboxx.gameboxx.messages.Msg;
 import info.gameboxx.gameboxx.options.single.BoolOption;
 import info.gameboxx.gameboxx.options.single.IntOption;
 import info.gameboxx.gameboxx.options.single.StringOption;
@@ -55,11 +55,11 @@ public class MaxPlayersCP extends GameComponent {
     @Override
     public void registerOptions() {
         //TODO: Implement these settings.
-        registerGameOption("countdown", new IntOption("Countdown", 5).min(-1).setDescription(GameMsg.OPT_COUNTDOWN.getMsg()));
-        registerGameOption("permission-bypass", new StringOption("PermissionBypass", "").setDescription(GameMsg.OPT_PERMISSION_BYPASS.getMsg()));
-        registerGameOption("auto-spectate", new BoolOption("AutoSpectate", false).setDescription(GameMsg.OPT_AUTO_SPECTATE.getMsg()));
+        registerGameOption("countdown", new IntOption("Countdown", 5).min(-1).setDescription(Msg.getRaw("opt.countdown").getRaw()));
+        registerGameOption("permission-bypass", new StringOption("PermissionBypass", "").setDescription(Msg.getRaw("opt.permission-bypass").getRaw()));
+        registerGameOption("auto-spectate", new BoolOption("AutoSpectate", false).setDescription(Msg.getRaw("opt.auto-spectate").getRaw()));
 
-        registerArenaOption("max-players", new IntOption("MaxPlayers", 16).min(1).setDescription(GameMsg.OPT_MAX_PLAYERS.getMsg()));
+        registerArenaOption("max-players", new IntOption("MaxPlayers", 16).min(1).setDescription(Msg.getRaw("opt.max-players").getRaw()));
     }
 
     @Override

@@ -26,7 +26,8 @@
 package info.gameboxx.gameboxx.commands;
 
 import info.gameboxx.gameboxx.GameBoxx;
-import info.gameboxx.gameboxx.GameMsg;
+import info.gameboxx.gameboxx.messages.Msg;
+import info.gameboxx.gameboxx.messages.Param;
 import info.gameboxx.gameboxx.util.ItemUtil;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -47,15 +48,16 @@ public class SetupCmd implements CommandExecutor {
         //Wand
         if (args[0].equalsIgnoreCase("wand") || args[0].equalsIgnoreCase("w")) {
             if (!(sender instanceof Player)) {
-                GameMsg.PLAYER_COMMAND.send(sender);
+                Msg.get("player-only").send(sender);
                 return true;
             }
             if (!sender.hasPermission("gameboxx.cmd.wand")) {
-                GameMsg.NO_PERMISSION.send(sender);
+                Msg.get("no-permission", Param.P("node", "gameboxx.cmd.wand")).send(sender);
                 return true;
             }
 
             ItemUtil.add(((Player)sender).getInventory(), gb.getSM().getWand(), true, true);
+            Msg.get("wand.given").send(sender);
             return true;
         }
 

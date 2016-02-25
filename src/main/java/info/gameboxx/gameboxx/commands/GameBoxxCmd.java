@@ -26,7 +26,9 @@
 package info.gameboxx.gameboxx.commands;
 
 import info.gameboxx.gameboxx.GameBoxx;
-import info.gameboxx.gameboxx.GameMsg;
+import info.gameboxx.gameboxx.messages.MessageConfig;
+import info.gameboxx.gameboxx.messages.Msg;
+import info.gameboxx.gameboxx.messages.Param;
 import info.gameboxx.gameboxx.util.Str;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -43,21 +45,23 @@ public class GameBoxxCmd implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (args.length < 1 || args[0].equalsIgnoreCase("help")) {
-            GameMsg.HELP.send(sender, false, true);
+            Msg.get("gameboxx.help", Param.P("cmd", label)).send(sender);
             return true;
         }
 
         //Reload
         if (args[0].equalsIgnoreCase("reload")) {
             if (!sender.hasPermission("gameboxx.cmd.reload")) {
-                GameMsg.NO_PERMISSION.send(sender);
+                Msg.get("no-permission", Param.P("node", "gameboxx.cmd.reload")).send(sender);
                 return true;
             }
 
             gb.getCfg().load();
-            gb.getMsgCfg().load();
+            for (MessageConfig cfg : MessageConfig.getConfigs()) {
+                cfg.loadSimple(true);
+            }
 
-            GameMsg.RELOADED.send(sender);
+            Msg.get("gameboxx.reloaded", Param.P("type", "all")).send(sender);
             return true;
         }
 
@@ -71,7 +75,7 @@ public class GameBoxxCmd implements CommandExecutor {
             return true;
         }
 
-        GameMsg.HELP.send(sender, false, true);
+        Msg.get("gameboxx.help", Param.P("cmd", label)).send(sender);
         return true;
     }
 }

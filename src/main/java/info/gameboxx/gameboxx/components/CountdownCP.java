@@ -25,10 +25,10 @@
 
 package info.gameboxx.gameboxx.components;
 
-import info.gameboxx.gameboxx.GameMsg;
 import info.gameboxx.gameboxx.components.internal.GameComponent;
 import info.gameboxx.gameboxx.game.Game;
 import info.gameboxx.gameboxx.game.GameSession;
+import info.gameboxx.gameboxx.messages.Msg;
 import info.gameboxx.gameboxx.options.single.IntOption;
 import info.gameboxx.gameboxx.util.SoundEffect;
 import info.gameboxx.gameboxx.util.Str;
@@ -56,10 +56,10 @@ public class CountdownCP extends GameComponent {
 
     @Override
     public void registerOptions() {
-        registerGameOption("countdown-time", new IntOption("CountdownTime", 30).min(0).setDescription(GameMsg.OPT_COUNTDOWN_TIME.getMsg()));
-        registerGameOption("count-interval", new IntOption("CountInterval", 10).min(1).setDescription(GameMsg.OPT_COUNT_INTERVAL.getMsg()));
-        registerGameOption("count-seconds", new IntOption("CountSeconds", 5).min(0).setDescription(GameMsg.OPT_COUNT_SECONDS.getMsg()));
-        //registerGameOption("count-sound", new SoundOption("CountSound", new SoundEffect(Sound.NOTE_PLING)).setDescription(GameMsg.OPT_COUNT_SOUND.getMsg()));;
+        registerGameOption("countdown-time", new IntOption("CountdownTime", 30).min(0).setDescription(Msg.getRaw("opt.countdown-time").getRaw()));
+        registerGameOption("count-interval", new IntOption("CountInterval", 10).min(1).setDescription(Msg.getRaw("opt.count-interval").getRaw()));
+        registerGameOption("count-seconds", new IntOption("CountSeconds", 5).min(0).setDescription(Msg.getRaw("opt.count-seconds").getRaw()));
+        //registerGameOption("count-sound", new SoundOption("CountSound", new SoundEffect(Sound.NOTE_PLING)).setDescription(Msg.getRaw("opt.count-sound").getRaw()));;
     }
 
     @Override

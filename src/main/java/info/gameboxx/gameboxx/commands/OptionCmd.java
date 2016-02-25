@@ -26,9 +26,9 @@
 package info.gameboxx.gameboxx.commands;
 
 import info.gameboxx.gameboxx.GameBoxx;
-import info.gameboxx.gameboxx.GameMsg;
-import info.gameboxx.gameboxx.config.messages.Param;
 import info.gameboxx.gameboxx.game.Arena;
+import info.gameboxx.gameboxx.messages.Msg;
+import info.gameboxx.gameboxx.messages.Param;
 import info.gameboxx.gameboxx.options.ListOption;
 import info.gameboxx.gameboxx.options.Option;
 import info.gameboxx.gameboxx.options.SingleOption;
@@ -51,12 +51,12 @@ public class OptionCmd implements CommandExecutor {
         //Get/validate the arena selection.
         Arena arena = ArenaSelection.getSel(sender, args);
         if (arena == null) {
-            GameMsg.NO_ARENA_SELECTION.send(sender);
+            Msg.get("no-selection").send(sender);
             return true;
         }
 
         if (args.length < 1) {
-            GameMsg.INVALID_USAGE.send(sender, Param.P("{usage}", "/" + label + " {name}"));
+            Msg.get("invalid-usage", Param.P("usage", "/" + label + " {name}")).send(sender);
             return true;
         }
 
@@ -101,7 +101,8 @@ public class OptionCmd implements CommandExecutor {
 
             Integer index = Parse.Int(args[1]);
             if (index == null) {
-                GameMsg.NOT_A_NUMBER.send(sender, Param.P("{input}", args[1]));
+                //GameMsg.NOT_A_NUMBER.send(sender, Param.P("{input}", args[1]));
+                sender.sendMessage("List index is not a number");
                 return true;
             }
 

@@ -26,10 +26,10 @@
 package info.gameboxx.gameboxx.commands;
 
 import info.gameboxx.gameboxx.GameBoxx;
-import info.gameboxx.gameboxx.GameMsg;
-import info.gameboxx.gameboxx.config.messages.Param;
 import info.gameboxx.gameboxx.game.Arena;
 import info.gameboxx.gameboxx.game.Game;
+import info.gameboxx.gameboxx.messages.Msg;
+import info.gameboxx.gameboxx.messages.Param;
 import info.gameboxx.gameboxx.util.Str;
 import info.gameboxx.gameboxx.util.Utils;
 import org.bukkit.command.Command;
@@ -49,24 +49,24 @@ public class SelectCmd implements CommandExecutor {
         args = Utils.fixCommandArgs(args);
 
         if (args.length < 2) {
-            GameMsg.INVALID_USAGE.send(sender, Param.P("{usage}", "/" + label + " {game} {arena}"));
+            Msg.get("invalid-usage", Param.P("usage", "/" + label + " {game} {arena}")).send(sender);
             return true;
         }
 
         Game game = gb.getGM().getGame(args[0]);
         if (game == null) {
-            GameMsg.INVALID_GAME.send(sender, Param.P("{name}", args[0]), Param.P("{games}", Str.implode(gb.getGM().getGameNames(), ", ", " & ")));
+            Msg.get("game.invalid", Param.P("name", args[0]), Param.P("games", Str.implode(gb.getGM().getGameNames(), ", ", " & "))).send(sender);
             return true;
         }
 
         Arena arena = game.getArena(args[1]);
         if (arena == null) {
-            GameMsg.INVALID_ARENA.send(sender, Param.P("{name}", args[0]), Param.P("{arenas}", Str.implode(game.getArenaNames(), ", ", " & ")));
+            Msg.get("arena.invalid", Param.P("name", args[0]), Param.P("arenas", Str.implode(game.getArenaNames(), ", ", " & "))).send(sender);
             return true;
         }
 
         ArenaSelection.setSel(sender, arena);
-        GameMsg.ARENA_SELECTED.send(sender, Param.P("{game}", game.getName()), Param.P("{arena}", arena.getName()));
+        Msg.get("select.selected", Param.P("arena", arena.getName()), Param.P("game", game.getName())).send(sender);
         return true;
     }
 }
