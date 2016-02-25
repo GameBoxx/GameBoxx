@@ -43,9 +43,11 @@ public class Str {
     private static final Pattern COLOR_REPLACE = Pattern.compile("§([" + CLR_CHARS + "])");
     private static final Pattern COLOR_STRIP = Pattern.compile("§[" + CLR_CHARS + "]|&[" + CLR_CHARS + "]");
 
+
     /**
      * Integrate ChatColor in a string based on color codes.
      * This replaces codes like &amp;a&amp;l with §a§l
+     *
      * @param str The string to apply color to.
      * @return formatted string
      */
@@ -55,6 +57,7 @@ public class Str {
 
     /**
      * Remove all color and put regular colors as the formatting codes like &amp;1.
+     *
      * @param str The string to remove color from.
      * @return formatted string
      */
@@ -65,6 +68,7 @@ public class Str {
     /**
      * Strips all coloring from the specified string.
      * For example a string like: '&amp;a&amp;ltest' becomes 'test' and '§a&ltest' becomes 'test'.
+     *
      * @param str The string to remove color from.
      * @return String without any colors and without any color codes.
      */
@@ -73,8 +77,10 @@ public class Str {
     }
 
 
+
     /**
      * Capitalize the first character of a string.
+     *
      * @param str The string that needs to be capitalized.
      * @return Capitalized string
      */
@@ -88,12 +94,15 @@ public class Str {
     /**
      * Formats a string with underscores to CamelCase.
      * This can be used for displaying enum keys and such.
+     *
      * @param str The string to format to camel case.
      * @return CamelCased string
      */
     public static String camelCase(String str) {
         return WordUtils.capitalizeFully(str, new char[]{'_'}).replaceAll("_", "");
     }
+
+
 
     /**
      * Get the best matching value for the specified input out of the array of values.
@@ -132,7 +141,7 @@ public class Str {
     /**
      * Wrap the specified string to multiple lines by adding a newline symbol '\n'
      *
-     * This does not break up words.
+     * <p>This does not break up words.
      * Which means, if there is a word that is longer than the wrap limit it will exceed the limit.
      *
      * @param string The string that needs to be wrapped.
@@ -151,7 +160,7 @@ public class Str {
     /**
      * Wrap the specified string to multiple lines by adding a newline symbol '\n'
      *
-     * The lines will always be exactly the length specified.
+     * <p>The lines will always be exactly the length specified.
      * Words will be cut in half and a new line will be forced.
      * Use {@link #wrapString(String, int)} to not have this behaviour.
      *
@@ -164,51 +173,89 @@ public class Str {
     }
 
 
-    public static String implode(Object[] arr, String glue, String lastGlue, int start, int end) {
-        String ret = "";
 
-        if (arr == null || arr.length <= 0)
-            return ret;
+    /** @see Str#implode(Object[], String, String, int, int) */
+    public static String implode(Collection<?> args) {
+        return implode(args, ", ", " & ");
+    }
+
+    /** @see Str#implode(Object[], String, String, int, int) */
+    public static String implode(Collection<?> args, String glue) {
+        return implode(args, glue, glue);
+    }
+
+    /** @see Str#implode(Object[], String, String, int, int) */
+    public static String implode(Collection<?> args, String glue, String lastGlue) {
+        return implode(args, glue, lastGlue, 0, args == null ? 0 : args.size());
+    }
+
+    /** @see Str#implode(Object[], String, String, int, int) */
+    public static String implode(Collection<?> args, String glue, String lastGlue, int start, int end) {
+        if (args == null || args.isEmpty()) {
+            return "";
+        }
+        return implode(args.toArray(new Object[args.size()]), glue, lastGlue, start, end);
+    }
+
+    /** @see Str#implode(Object[], String, String, int, int) */
+    public static String implode(String[] args) {
+        return implode(args, ", ", " & ");
+    }
+
+    /** @see Str#implode(Object[], String, String, int, int) */
+    public static String implode(String[] args, String glue) {
+        return implode(args, glue, glue);
+    }
+
+    /**
+     * @see Str#implode(Object[], String, String, int, int)
+     */
+    public static String implode(String[] args, String glue, String lastGlue) {
+        return implode(args, glue, lastGlue, 0, args == null ? 0 : args.length);
+    }
+
+    /**
+     * Combine the given list of objects in to a string by adding glue between the values.
+     * It will use {@link Object#toString()} for the object values. (if the value is null it will be the string 'null')
+     *
+     * <p>The glue will be added between the values.
+     * Between the last two values it will put the lastGlue.
+     * By default it uses ', ' as glue and ' & ' as last glue to get something like [value1, value2, value3] 'value1, value2 & value3'
+     * When only a glue is specified it will use the same character as the glue for the last glue.
+     *
+     * <p>A start and end can be specified to select which elements of the array should be converted to a String.
+     * By default it starts and 0 and ends at the array length - 1 to do all values.
+     *
+     * @param arr The array with values to implode to a string.
+     * @param glue The glue string which will be placed between values.
+     * @param lastGlue The glue string which will be placed between the last two values.
+     * @param start The index to start at. (0 based)
+     * @param end The index to end at. (0 based (size-1))
+     * @return String with imploded array values. (Empty string when objects array is empty or null)
+     */
+    public static String implode(Object[] arr, String glue, String lastGlue, int start, int end) {
+        String result = "";
+        if (arr == null || arr.length <= 0) {
+            return result;
+        }
 
         for (int i = start; i <= end && i < arr.length; i++) {
+            result += arr[i] == null ? "null" : arr[i].toString();
             if (i >= end-1 || i >= arr.length-2) {
-                ret += arr[i].toString() + lastGlue;
+                result += lastGlue;
             } else {
-                ret += arr[i].toString() + glue;
+                result += glue;
             }
         }
 
-        if (ret.trim().isEmpty()) {
-            return ret;
+        if (result.trim().isEmpty()) {
+            return result;
         }
-        return ret.substring(0, ret.length() - lastGlue.length());
-    }
-
-    public static String implode(Object[] arr, String glue, int start) {
-        return implode(arr, glue, glue, start, arr.length - 1);
-    }
-
-    public static String implode(Object[] arr, String glue, String lastGlue) {
-        return implode(arr, glue, lastGlue, 0, arr.length - 1);
-    }
-
-    public static String implode(Object[] arr, String glue) {
-        return implode(arr, glue, 0);
-    }
-
-    public static String implode(Collection<?> args, String glue) {
-        if (args.isEmpty())
-            return "";
-        return implode(args.toArray(new Object[args.size()]), glue);
-    }
-
-    public static String implode(Collection<?> args, String glue, String lastGlue) {
-        if (args.isEmpty())
-            return "";
-        return implode(args.toArray(new Object[args.size()]), glue, lastGlue);
+        return result.substring(0, result.length() - lastGlue.length());
     }
 
 
+    
     /**
      * Split a string by using a space as split character.
      * @see Str#splitQuotes(String, char)
@@ -221,12 +268,12 @@ public class Str {
      * Splits the specified string based on the specified character.
      * The default is a space as split character and the examples below use that too.
      *
-     * Strings inside quotes will be placed together in sections.
+     * <p>Strings inside quotes will be placed together in sections.
      * For example 'This plugin is "super awesome"' will return [this, plugin, is, super awesome]
      * Works for both double and single quotes. When using double quotes you can use single quotes within and the other way around.
      * like <pre>test "You're awesome"</pre> Would turn in to: [test, You're awesome]
      *
-     * Text in front of the starting quote will be added to the section too.
+     * <p>Text in front of the starting quote will be added to the section too.
      * <pre>test name:"That's awesome!" Yup!</pre> would be [test, name:That's awesome!, Yup!]
      *
      * @param string The string that needs to be split.

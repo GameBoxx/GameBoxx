@@ -52,4 +52,16 @@ public class UtilsTest {
         System.out.println(Str.splitQuotes("item name:'\"NOTE\"' lore:\"You're awesome!\"").toString());
     }
 
+    @Test
+    @Ignore("Debug")
+    public void testImplode() {
+        String[] values = new String[] {"apple", "banana", "pear", "lime", "orange", "melon"};
+        System.out.println(Str.implode(values));
+        System.out.println(Str.implode(values, ", "));
+        System.out.println(Str.implode(values, ", ", " & "));
+        System.out.println(Str.implode(values, ", ", " & ", 1, 1));
+        System.out.println(Str.implode(values, ", ", " & ", 0, 1));
+        System.out.println(Str.implode(values, ", ", " & ", 2, 4));
+    }
+
 }
