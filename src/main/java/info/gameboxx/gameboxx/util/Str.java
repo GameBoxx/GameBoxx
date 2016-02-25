@@ -31,7 +31,6 @@ import org.apache.commons.lang.WordUtils;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
@@ -209,28 +208,73 @@ public class Str {
         return implode(args.toArray(new Object[args.size()]), glue, lastGlue);
     }
 
+
     /**
-     * Splits the specified string in sections.
-     * Strings inside quotes will be placed together in sections.
-     * For example 'This plugin is "super awesome"' will return {"this", "plugin", "is", "super awesome"}
-     * @param string The string that needs to be split.
-     * @return List of strings split from the input string.
+     * Split a string by using a space as split character.
+     * @see Str#splitQuotes(String, char)
      */
     public static List<String> splitQuotes(String string) {
+        return splitQuotes(string, ' ');
+    }
+
+    /**
+     * Splits the specified string based on the specified character.
+     * The default is a space as split character and the examples below use that too.
+     *
+     * Strings inside quotes will be placed together in sections.
+     * For example 'This plugin is "super awesome"' will return [this, plugin, is, super awesome]
+     * Works for both double and single quotes. When using double quotes you can use single quotes within and the other way around.
+     * like <pre>test "You're awesome"</pre> Would turn in to: [test, You're awesome]
+     *
+     * Text in front of the starting quote will be added to the section too.
+     * <pre>test name:"That's awesome!" Yup!</pre> would be [test, name:That's awesome!, Yup!]
+     *
+     * @param string The string that needs to be split.
+     * @param split The character to use for splitting the string.
+     *              This should not be a quote or double quote!
+     * @return List of strings split from the input string.
+     */
+    public static List<String> splitQuotes(String string, char split) {
         List<String> sections = new ArrayList<String>();
+        char[] chars = string.toCharArray();
 
-        Pattern regex = Pattern.compile("[^\\s\"']+|\"([^\"]*)\"|'([^']*)'");
-        Matcher regexMatcher = regex.matcher(string);
-
-        while (regexMatcher.find()) {
-            if (regexMatcher.group(1) != null) {
-                sections.add(regexMatcher.group(1));
-            } else if (regexMatcher.group(2) != null) {
-                sections.add(regexMatcher.group(2));
-            } else {
-                sections.add(regexMatcher.group());
+        StringBuilder section = new StringBuilder();
+        char quote = 0;
+        for (char ch : chars) {
+            if (ch == split && quote == 0) {
+                //Start new section for split char when not quoted.
+                String ss = section.toString();
+                if (ss != null && !ss.trim().isEmpty()) {
+                    sections.add(section.toString());
+                }
+                section.setLength(0);
+                continue;
             }
+            if (ch == 34 || ch == 39) {
+                if (ch == quote) {
+                    //End of quote
+                    sections.add(section.toString());
+                    section.setLength(0);
+                    quote = 0;
+                    continue;
+                } else if (quote == 0) {
+                    //Start of quote
+                    quote = ch;
+                } else {
+                    //Quote within quote
+                    section.append(ch);
+                }
+                continue;
+            }
+            //Regular character
+            section.append(ch);
         }
+        //Add last section
+        String ss = section.toString();
+        if (ss != null && !ss.trim().isEmpty()) {
+            sections.add(section.toString());
+        }
+
         return sections;
     }
 

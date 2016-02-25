@@ -26,11 +26,13 @@
 package info.gameboxx.gameboxx;
 
 import info.gameboxx.gameboxx.util.Str;
-import junit.framework.TestCase;
 import org.junit.Assert;
+import org.junit.Ignore;
+import org.junit.Test;
 
-public class UtilsTest extends TestCase {
+public class UtilsTest {
 
+    @Test
     public void testClr() {
         Assert.assertTrue(Str.color("&aexample &b&lcolor &Kmsg").equals("§aexample §b§lcolor §Kmsg"));
         Assert.assertTrue(Str.color("&aThis & &eThat").equals("§aThis & §eThat"));
@@ -39,11 +41,15 @@ public class UtilsTest extends TestCase {
         Assert.assertTrue(Str.stripColor("§aexample §b§lcolor §Kmsg").equals("example color msg"));
     }
 
-    public void testMatch() {
-        String[] fruits = new String[] {"apple","pear","banana","melon","mandarin","lime","kiwi","strawberry"};
-        System.out.println("Best matches:");
-        System.out.println(Str.bestMatch("ban", fruits));
-        System.out.println(Str.bestMatch("kiw", fruits));
+
+    @Test
+    @Ignore("Debug")
+    public void testQuotes() {
+        System.out.println(Str.splitQuotes("This is a test message.").toString());
+        System.out.println(Str.splitQuotes("This is 'a test' message.").toString());
+        System.out.println(Str.splitQuotes("This \"is a test\" message.").toString());
+        System.out.println(Str.splitQuotes("item name:'example name' lore:\"example lore\" glow").toString());
+        System.out.println(Str.splitQuotes("item name:'\"NOTE\"' lore:\"You're awesome!\"").toString());
     }
 
 }
