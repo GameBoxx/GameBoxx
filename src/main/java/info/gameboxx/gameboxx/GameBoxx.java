@@ -27,9 +27,8 @@ package info.gameboxx.gameboxx;
 
 import info.gameboxx.gameboxx.commands.*;
 import info.gameboxx.gameboxx.config.PluginCfg;
-import info.gameboxx.gameboxx.config.messages.Language;
-import info.gameboxx.gameboxx.config.messages.MessageCfg;
-import info.gameboxx.gameboxx.config.messages.MessageConfig;
+import info.gameboxx.gameboxx.messages.Language;
+import info.gameboxx.gameboxx.messages.MessageConfig;
 import info.gameboxx.gameboxx.game.GameManager;
 import info.gameboxx.gameboxx.listeners.MainListener;
 import info.gameboxx.gameboxx.menu.Menu;
@@ -60,7 +59,6 @@ public class GameBoxx extends JavaPlugin {
     private GameManager gm;
 
     private PluginCfg cfg;
-    private MessageCfg msgCfg;
 
     private final Logger log = Logger.getLogger("GameBoxx");
 
@@ -89,7 +87,6 @@ public class GameBoxx extends JavaPlugin {
         }
 
         cfg = new PluginCfg("plugins/GameBoxx/GameBoxx.yml");
-        msgCfg = new MessageCfg("plugins/GameBoxx/Messages.yml");
 
         if (!setupLanguage()) {
             warn("Invalid language specified in the config. Falling back to " + language.getName() + " [" + language.getID() + "]!");
@@ -218,10 +215,6 @@ public class GameBoxx extends JavaPlugin {
 
     public PluginCfg getCfg() {
         return cfg;
-    }
-
-    public MessageCfg getMsgCfg() {
-        return msgCfg;
     }
 
 }

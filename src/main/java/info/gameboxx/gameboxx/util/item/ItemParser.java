@@ -25,8 +25,6 @@
 
 package info.gameboxx.gameboxx.util.item;
 
-import info.gameboxx.gameboxx.GameMsg;
-import info.gameboxx.gameboxx.config.messages.Param;
 import info.gameboxx.gameboxx.util.Parse;
 import info.gameboxx.gameboxx.util.Str;
 import info.gameboxx.gameboxx.util.alias.ItemData;
@@ -62,7 +60,7 @@ public class ItemParser {
 
         String[] words = string.split(" ");
         if (string == null || string.trim().length() < 1) {
-            error = GameMsg.NO_ITEM_SPECIFIED.getMsg();
+            //error = GameMsg.NO_ITEM_SPECIFIED.getMsg();
             return;
         }
 
@@ -71,7 +69,7 @@ public class ItemParser {
 
         ItemData itemData = Items.getItem(sections.get(0));
         if (itemData == null) {
-            error = GameMsg.UNKNOWN_ITEM_NAME.getMsg(Param.P("{input}", sections.get(0)));
+            //error = GameMsg.UNKNOWN_ITEM_NAME.getMsg(Param.P("{input}", sections.get(0)));
             return;
         }
         item.setType(itemData.getType());
@@ -99,7 +97,7 @@ public class ItemParser {
             String[] split = section.split(":");
             //No data after semicolon
             if (split.length < 2) {
-                error = GameMsg.MISSING_META_VALUE.getMsg(Param.P("{meta}", split[0]));
+                //error = GameMsg.MISSING_META_VALUE.getMsg(Param.P("{meta}", split[0]));
                 if (ignoreErrors) {
                     continue;
                 } else {
@@ -126,7 +124,7 @@ public class ItemParser {
         if (metaMap.containsKey("leather")) {
             Color color = Parse.Color(metaMap.get("leather"));
             if (color == null) {
-                error = GameMsg.INVALID_COLOR.getMsg(Param.P("{input}", metaMap.get("leather")));
+                //error = GameMsg.INVALID_COLOR.getMsg(Param.P("{input}", metaMap.get("leather")));
                 if (!ignoreErrors) {
                     return;
                 }
@@ -151,7 +149,7 @@ public class ItemParser {
                 color = DyeColor.valueOf(metaMap.get("basecolor"));
             }
             if (color == null) {
-                error = GameMsg.INVALID_DYE_COLOR.getMsg(Param.P("{input}", metaMap.get("basecolor")));
+                //error = GameMsg.INVALID_DYE_COLOR.getMsg(Param.P("{input}", metaMap.get("basecolor")));
                 if (!ignoreErrors) {
                     return;
                 }
@@ -168,7 +166,7 @@ public class ItemParser {
         boolean hasColor = false;
         if (metaMap.containsKey("power")) {
             if (Parse.Int(metaMap.get("power")) == null) {
-                error = GameMsg.NOT_A_NUMBER.getMsg(Param.P("{input}", metaMap.get("power")));
+                //error = GameMsg.NOT_A_NUMBER.getMsg(Param.P("{input}", metaMap.get("power")));
                 if (!ignoreErrors) {
                     return;
                 }
@@ -180,7 +178,7 @@ public class ItemParser {
         if (metaMap.containsKey("shape")) {
             FireworkEffect.Type shape = FireworkEffect.Type.valueOf(metaMap.get("shape"));
             if (shape == null) {
-                error = GameMsg.INVALID_FIREWORK_SHAPE.getMsg(Param.P("{input}", metaMap.get("shape")));
+                //error = GameMsg.INVALID_FIREWORK_SHAPE.getMsg(Param.P("{input}", metaMap.get("shape")));
                 if (!ignoreErrors) {
                     return;
                 }
@@ -197,7 +195,7 @@ public class ItemParser {
             for (String color : colorSplit) {
                 Color clr = Parse.Color(color);
                 if (clr == null) {
-                    error = GameMsg.INVALID_COLOR.getMsg(Param.P("{input}", metaMap.get("color")));
+                    //error = GameMsg.INVALID_COLOR.getMsg(Param.P("{input}", metaMap.get("color")));
                     if (!ignoreErrors) {
                         return;
                     }
@@ -218,7 +216,7 @@ public class ItemParser {
             for (String color : colorSplit) {
                 Color clr = Parse.Color(color);
                 if (clr == null) {
-                    error = GameMsg.INVALID_COLOR.getMsg(Param.P("{input}", metaMap.get("fade")));
+                    //error = GameMsg.INVALID_COLOR.getMsg(Param.P("{input}", metaMap.get("fade")));
                     if (!ignoreErrors) {
                         return;
                     }
@@ -251,13 +249,13 @@ public class ItemParser {
         } catch (Exception e) {
             if (hasFireworkMeta) {
                 if (!hasShape) {
-                    error = GameMsg.MISSING_FIREWORK_SHAPE.getMsg();
+                    //error = GameMsg.MISSING_FIREWORK_SHAPE.getMsg();
                     if (!ignoreErrors) {
                         return;
                     }
                 }
                 if (!hasColor) {
-                    error = GameMsg.MISSING_FIREWORK_COLOR.getMsg();
+                    //error = GameMsg.MISSING_FIREWORK_COLOR.getMsg();
                     if (!ignoreErrors) {
                         return;
                     }
@@ -273,7 +271,7 @@ public class ItemParser {
                 Enchantment enchant = Enchantment.getByName(entry.getKey());
                 if (enchant != null) {
                     if (Parse.Int(entry.getValue()) == null) {
-                        error = GameMsg.INVALID_ENCHANT_VALUE.getMsg(Param.P("{input}", entry.getValue()));
+                        //error = GameMsg.INVALID_ENCHANT_VALUE.getMsg(Param.P("{input}", entry.getValue()));
                         return;
                     }
                     item.addEnchant(enchant, Parse.Int(entry.getValue()));
@@ -285,11 +283,11 @@ public class ItemParser {
                 if (effect != null) {
                     String[] split = entry.getValue().split("\\.");
                     if (split.length < 2) {
-                        error = GameMsg.INVALID_POTION_VALUE.getMsg(Param.P("{input}", entry.getValue()));
+                        //error = GameMsg.INVALID_POTION_VALUE.getMsg(Param.P("{input}", entry.getValue()));
                         return;
                     }
                     if (Parse.Int(split[0]) == null || Parse.Int(split[1]) == null) {
-                        error = GameMsg.INVALID_POTION_VALUE.getMsg(Param.P("{input}", entry.getValue()));
+                        //error = GameMsg.INVALID_POTION_VALUE.getMsg(Param.P("{input}", entry.getValue()));
                         return;
                     }
                     item.addEffect(new PotionEffect(effect, Parse.Int(split[0]), Parse.Int(split[1])), true);
@@ -309,7 +307,7 @@ public class ItemParser {
                         color = DyeColor.valueOf(entry.getValue());
                     }
                     if (color == null) {
-                        error = GameMsg.INVALID_DYE_COLOR.getMsg(Param.P("{input}", entry.getValue()));
+                        //error = GameMsg.INVALID_DYE_COLOR.getMsg(Param.P("{input}", entry.getValue()));
                         return;
                     }
                     item.addPattern(pattern, color);
