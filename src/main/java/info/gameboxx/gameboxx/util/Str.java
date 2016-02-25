@@ -25,60 +25,143 @@
 
 package info.gameboxx.gameboxx.util;
 
-import org.bukkit.ChatColor;
+import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.WordUtils;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ * Common {@link String} utilities.
+ */
 public class Str {
+
+    private static final String CLR_CHARS = "0123456789AaBbCcDdEeFfKkLlMmNnOoRr";
+    private static final Pattern COLOR = Pattern.compile("&([" + CLR_CHARS + "])");
+    private static final Pattern COLOR_REPLACE = Pattern.compile("§([" + CLR_CHARS + "])");
+    private static final Pattern COLOR_STRIP = Pattern.compile("§[" + CLR_CHARS + "]|&[" + CLR_CHARS + "]");
 
     /**
      * Integrate ChatColor in a string based on color codes.
+     * This replaces codes like &amp;a&amp;l with §a§l
      * @param str The string to apply color to.
      * @return formatted string
      */
     public static String color(String str) {
-        for (ChatColor c : ChatColor.values()) {
-            str = str.replaceAll("&" + c.getChar() + "|&" + Character.toUpperCase(c.getChar()), "§" + c.getChar());
-        }
-        return str;
+        return COLOR.matcher(str).replaceAll("§$1");
     }
 
     /**
-     * Integrate ChatColor in a string based on color codes.
-     * @param str The string to apply color to.
-     * @return formatted string
-     */
-    public static String colorChatColors(String str) {
-        for (ChatColor c : ChatColor.values()) {
-            str = str.replaceAll("&" + c.getChar() + "|&" + Character.toUpperCase(c.getChar()), c.toString());
-        }
-        return str;
-    }
-
-    /**
-     * Remove all color and put colors as the formatting codes like &amp;1.
+     * Remove all color and put regular colors as the formatting codes like &amp;1.
      * @param str The string to remove color from.
      * @return formatted string
      */
     public static String replaceColor(String str) {
-        for (ChatColor c : ChatColor.values()) {
-            str = str.replace(c.toString(), "&" + c.getChar());
-        }
-        return str;
+        return COLOR_REPLACE.matcher(str).replaceAll("&$1");
     }
 
     /**
      * Strips all coloring from the specified string.
+     * For example a string like: '&amp;a&amp;ltest' becomes 'test' and '§a&ltest' becomes 'test'.
      * @param str The string to remove color from.
-     * @return String without any colors and without any color symbols.
+     * @return String without any colors and without any color codes.
      */
     public static String stripColor(String str) {
-        return ChatColor.stripColor(colorChatColors(str));
+        return COLOR_STRIP.matcher(str).replaceAll("");
+    }
+
+
+    /**
+     * Capitalize the first character of a string.
+     * @param str The string that needs to be capitalized.
+     * @return Capitalized string
+     */
+    public static String capitalize(String str) {
+        if (str.length() == 0) {
+            return str;
+        }
+        return str.substring(0, 1).toUpperCase() + str.substring(1).toLowerCase();
+    }
+
+    /**
+     * Formats a string with underscores to CamelCase.
+     * This can be used for displaying enum keys and such.
+     * @param str The string to format to camel case.
+     * @return CamelCased string
+     */
+    public static String camelCase(String str) {
+        return WordUtils.capitalizeFully(str, new char[]{'_'}).replaceAll("_", "");
+    }
+
+    /**
+     * Get the best matching value for the specified input out of the array of values.
+     * This uses the levenshtein distance from {@link StringUtils}
+     * If an exact match is found that match will be returned.
+     *
+     * @param input The input string to find a match for.
+     * @param values Array of values to match with input string.
+     * @return The best match from the specified values. (May be empty when there are no values or no match)
+     */
+    public static String bestMatch(String input, String... values) {
+        String bestMatch = "";
+        int lowestDiff = input.length()-1;
+        for (String value : values) {
+            int diff = StringUtils.getLevenshteinDistance(input, value);
+            if (diff == 0) {
+                return value;
+            }
+            if (diff < lowestDiff) {
+                bestMatch = value;
+                lowestDiff = diff;
+            }
+        }
+        return bestMatch;
+    }
+
+    /**
+     * @see Str#bestMatch(String, String...)
+     */
+    public static String bestMatch(String input, Collection<? extends String> values) {
+        return bestMatch(input, values.toArray(new String[values.size()]));
+    }
+
+
+
+    /**
+     * Wrap the specified string to multiple lines by adding a newline symbol '\n'
+     *
+     * This does not break up words.
+     * Which means, if there is a word that is longer than the wrap limit it will exceed the limit.
+     *
+     * @param string The string that needs to be wrapped.
+     * @param length The maximum length for each line.
+     * @return String with linebreaks.
+     */
+    public static String wrapString(String string, int length) {
+        StringBuilder sb = new StringBuilder(string);
+        int i = 0;
+        while ((i = sb.indexOf(" ", i + length)) != -1) {
+            sb.replace(i, i + 1, "\n");
+        }
+        return sb.toString();
+    }
+
+    /**
+     * Wrap the specified string to multiple lines by adding a newline symbol '\n'
+     *
+     * The lines will always be exactly the length specified.
+     * Words will be cut in half and a new line will be forced.
+     * Use {@link #wrapString(String, int)} to not have this behaviour.
+     *
+     * @param string The string that needs to be wrapped.
+     * @param length The maxmimum length for each line.
+     * @return String with linebreaks.
+     */
+    public static String wrapStringExact(String string, int length) {
+        return string.replaceAll("(.{" + length + "})", "$1\n");
     }
 
 
@@ -126,19 +209,6 @@ public class Str {
         return implode(args.toArray(new Object[args.size()]), glue, lastGlue);
     }
 
-
-    public static List<String> splitNewLines(List<String> list) {
-        if (list != null && list.size() > 0) {
-            List<String> loreList = new ArrayList<String>();
-            List<String> listClone = list;
-            for (String string : listClone) {
-                loreList.addAll(Arrays.asList(string.split("\n")));
-            }
-            return loreList;
-        }
-        return list;
-    }
-
     /**
      * Splits the specified string in sections.
      * Strings inside quotes will be placed together in sections.
@@ -164,28 +234,4 @@ public class Str {
         return sections;
     }
 
-    /**
-     * Capitalize the first character of a string.
-     * @param str
-     * @return Capitalized string
-     */
-    public static String capitalize(String str) {
-        if (str.length() == 0) {
-            return str;
-        }
-        return str.substring(0, 1).toUpperCase() + str.substring(1).toLowerCase();
-    }
-
-    public static String wrapStringExact(String string, int length) {
-        return string.replaceAll("(.{" + length + "})", "$1\n");
-    }
-
-    public static String wrapString(String string, int length) {
-        StringBuilder sb = new StringBuilder(string);
-        int i = 0;
-        while ((i = sb.indexOf(" ", i + length)) != -1) {
-            sb.replace(i, i + 1, "\n");
-        }
-        return sb.toString();
-    }
 }
