@@ -30,8 +30,11 @@ import info.gameboxx.gameboxx.util.Utils;
 /**
  * Parameter used for messages.
  * The parameter key will be replaced with the value in the message.
- * For example for the string 'Teleported to <x> <y> <z>'
+ *
+ * <p>For example for the string 'Teleported to &lt;x&gt; &lt;y&gt; &lt;z&gt;'
  * You would set three parameters like {@code Param.P("x", loc.getX())} etc.
+ *
+ * <b>Notice how there are no angle brackets around the name for params!</b>
  */
 public class Param {
 
@@ -41,7 +44,7 @@ public class Param {
     /**
      * Construct a new parameter.
      * @param param The name of the parameter.
-     *              The name should not contain the brackets.
+     *              The name should not contain the angle brackets (&lt;&gt;).
      * @param value The value of the paramter.
      *              This will be put instead of the param name.
      */
@@ -68,7 +71,7 @@ public class Param {
 
     /**
      * Get the string value of the parameter.
-     * This used {@link Utils#getString(Object)}
+     * This uses {@link Utils#getString(Object)}
      * @return The string value of the parameter.
      */
     @Override
@@ -80,7 +83,7 @@ public class Param {
      * Shortcut for creating a parameter.
      * @see {@link #Param(String, Object)}
      * @param param The name of the parameter.
-     *              The name should not contain the brackets.
+     *              The name should not contain the angle brackets (&lt;&gt;).
      * @param value The value of the paramter.
      *              This will be put instead of the param name.
      * @return new {@link Param} instance with the specified param name and value.
