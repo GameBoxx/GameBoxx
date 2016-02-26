@@ -292,11 +292,11 @@ public class Utils {
         List<String> formats = new ArrayList<>();
         for (Map.Entry<String, List<String>> entry : values.entrySet()) {
             String name = entry.getKey();
-            String aliases = Str.wrapString(Str.implode(entry.getValue(), ", ", " & "), 50);
+            String aliases = Str.wrapString(Str.implode(entry.getValue()), 50);
 
             formats.add(format.clone().params(Param.P("name", name), Param.P("key", name), Param.P("display", name),
-                    Param.P("aliases", aliases), Param.P("alias", aliases), Param.P("values", aliases), Param.P("value", aliases)).get());
+                    Param.P("aliases", aliases), Param.P("alias", aliases), Param.P("values", aliases), Param.P("value", aliases)).getRaw());
         }
-        return Str.implode(formats, ", " + " & ");
+        return Str.implode(formats);
     }
 }

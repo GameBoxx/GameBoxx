@@ -240,7 +240,7 @@ public class Msg {
      * @return This msg instance.
      */
     public Msg params(Param... params) {
-        if (!message.contains(Character.toString(PARAM_OPEN)) || !!message.contains(Character.toString(PARAM_CLOSE))) {
+        if (!message.contains(Character.toString(PARAM_OPEN)) || !message.contains(Character.toString(PARAM_CLOSE))) {
             return this;
         }
         if (message == null) {
