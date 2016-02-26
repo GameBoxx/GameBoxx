@@ -26,13 +26,12 @@
 package info.gameboxx.gameboxx.messages;
 
 import info.gameboxx.gameboxx.GameBoxx;
-import org.bukkit.configuration.InvalidConfigurationException;
+import info.gameboxx.gameboxx.util.EProperties;
+import info.gameboxx.gameboxx.util.Parse;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.Plugin;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.util.*;
 
 /**
@@ -60,20 +59,20 @@ import java.util.*;
 public class MessageConfig {
 
     private static List<MessageConfig> configs = new ArrayList<>();
-    private static final String VERSION_KEY = "VERSION-NUMBER_DO-NOT-EDIT";
+    private static final String VERSION_KEY = "_VERSION_NO_EDIT";
 
     private GameBoxx gb;
     private Plugin plugin;
     private MessageConfig fallback = null;
 
     private String name;
-    private int version = 0;
-    private int targetVersion = 0;
+    private int version = 1;
+    private int targetVersion = 1;
 
     private Language loadedLanguage;
 
     private File file = null;
-    private YamlConfiguration config;
+    private EProperties config;
     private YamlConfiguration changelog;
 
     /**
@@ -138,31 +137,40 @@ public class MessageConfig {
     public boolean load(String lang) {
         File dir = new File(new File(plugin.getDataFolder(), "messages"), lang);
         dir.mkdirs();
-        file = new File(dir, name + "_" + lang + ".yml");
+        file = new File(dir, name + "_" + lang + ".properties");
 
-        //Get the default file from the jar.
-        String source = "messages/" + lang + "/" + name + "_" + lang + ".yml";
-        InputStream in = plugin.getResource(source);
-        if (in == null) {
-            gb.warn("Language file '" + source + "' not found! Either a corrupt jar or " + plugin.getName() + " doesn't support the language '" + lang + "'!");
-            return false;
+        boolean save = false;
+        if (file.exists()) {
+            //Load config file from disk
+            config = new EProperties();
+            try {
+                config.load(new FileInputStream(file));
+            } catch (Exception e) {
+                gb.error("An error occurred trying to load the language file '" + file.getAbsolutePath() + "'!");
+                gb.error(e.getMessage());
+                config = null;
+                return false;
+            }
+        } else {
+            //Load config file from jar
+            config = getConfigFromJar(lang);
+            if (config == null) {
+                return false;
+            }
+            save = true;
         }
 
-        //Load the config
-        config = YamlConfiguration.loadConfiguration(file);
-        config.options().copyDefaults(true);
-        config.setDefaults(YamlConfiguration.loadConfiguration(in));
-
         //Get/set the version
-        if (config.contains(VERSION_KEY)) {
-            version = config.getInt(VERSION_KEY);
+        if (config.getProperty(name.toUpperCase() + VERSION_KEY) != null) {
+            version = Parse.Int(config.getProperty(name.toUpperCase() + VERSION_KEY).trim());
         } else {
-            config.set(VERSION_KEY, version);
+            config.setProperty(name.toUpperCase() + VERSION_KEY, Integer.toString(version));
+            save = true;
         }
 
         //Load changes if there is a changes file.
-        source = "messages/" + lang + "/" + name + "_" + lang + "_changes.yml";
-        in = plugin.getResource(source);
+        String source = "changelogs/" + lang + "/" + name + "_" + lang + ".yml";
+        InputStream in = plugin.getResource(source);
         if (in != null) {
             changelog = YamlConfiguration.loadConfiguration(in);
             targetVersion = changelog.getInt("version");
@@ -173,16 +181,35 @@ public class MessageConfig {
             }
         }
 
+        //Cache loaded messages.
         cacheMessages();
 
-        //Save the file
+        //Save file when loading config from jar or when setting version.
+        if (save) {
+            return save();
+        }
+        return true;
+    }
+
+    private EProperties getConfigFromJar(String lang) {
+        //Get the default file from the jar.
+        String source = "messages/" + name + "_" + lang + ".properties";
+        InputStream in = plugin.getResource(source);
+        if (in == null) {
+            gb.warn("Language file '" + source + "' not found! Either a corrupt jar or " + plugin.getName() + " doesn't support the language '" + lang + "'!");
+            return null;
+        }
+
+        //Load the config
+        EProperties config = new EProperties();
         try {
-            config.save(file);
-            return true;
+            config.load(in);
+            in.close();
+            return config;
         } catch (IOException e) {
-            gb.error("Failed to save the default language file '" + file.getAbsolutePath() + "'");
+            gb.error("An error occurred trying to load the language file '" + source + "'!");
             gb.error(e.getMessage());
-            return false;
+            return null;
         }
     }
 
@@ -197,17 +224,13 @@ public class MessageConfig {
     public boolean loadSimple(boolean loadFallback) {
         boolean success = false;
         if (config == null) {
-            config = YamlConfiguration.loadConfiguration(file);
-            success = true;
+            success = load();
         } else {
             try {
-                config.load(file);
+                config.load(new FileInputStream(file));
                 success = true;
-            } catch (IOException e) {
-                gb.error("Failed to load the messages file '" + file.getAbsolutePath() + "'");
-                gb.error(e.getMessage());
-            } catch (InvalidConfigurationException e) {
-                gb.error("Failed to load the messages file '" + file.getAbsolutePath() + "'");
+            } catch (Exception e) {
+                gb.error("An error occurred trying to load the language file '" + file.getAbsolutePath() + "'!");
                 gb.error(e.getMessage());
             }
         }
@@ -228,9 +251,9 @@ public class MessageConfig {
     public boolean save() {
         if (config != null) {
             try {
-                config.save(file);
+                config.store(new FileOutputStream(file), "");
                 return true;
-            } catch (IOException e) {
+            } catch (Exception e) {
                 gb.error("Failed to save the messages file '" + file.getAbsolutePath() + "'");
                 gb.error(e.getMessage());
                 return false;
@@ -251,7 +274,6 @@ public class MessageConfig {
      * Cache all the messages from this config in {@link Msg}
      * The {@link Msg#setMessages(Map)} will be called with all the messages from this config.
      * It will first set the fallback messages and then overwrite them with the messages from this config.
-     * It will also clear the cache of JSON messages using {@link Msg#clearCache()}
      */
     public void cacheMessages() {
         if (fallback != null && fallback.getConfig() != null) {
@@ -264,17 +286,17 @@ public class MessageConfig {
      * @see #cacheMessages()
      */
     private void cacheMessages(boolean fallback) {
-        YamlConfiguration config = getConfig();
+        Properties config = getConfig();
         if (fallback) {
             config = this.fallback.getConfig();
         }
         if (config == null) {
             return;
         }
-        Set<String> keys = config.getKeys(true);
-        for (String key : keys) {
-            if (config.isString(key)) {
-                Msg.setMessage(key, config.getString(key));
+
+        for (Map.Entry<Object, Object> entry : config.entrySet()) {
+            if (entry.getKey() instanceof String && entry.getValue() instanceof String) {
+                Msg.setMessage((String)entry.getKey(), (String)entry.getValue());
             }
         }
     }
@@ -302,7 +324,7 @@ public class MessageConfig {
      * If the config file is null it will try to get the fallback config.
      * @return config file with messages. (May be {@code null}!)
      */
-    public YamlConfiguration getConfig() {
+    public EProperties getConfig() {
         if (config == null && fallback != null) {
             return fallback.getConfig();
         }
@@ -433,7 +455,7 @@ public class MessageConfig {
 
         //Skip everything only bump version
         if (mode == UpdateMode.SKIP_ALL) {
-            config.set(VERSION_KEY, version);
+            config.setProperty(name.toUpperCase() + VERSION_KEY, Integer.toString(version));
             save();
             return;
         }
@@ -441,12 +463,14 @@ public class MessageConfig {
         Map<Integer, List<String>> removedKeys = getRemovedKeys();
         Map<Integer, List<String>> changedKeys = getChangedKeys();
 
+        EProperties latest = getConfigFromJar(getLanguage().getID());
+
         for (int v = version+1; v <= targetVersion; v++) {
             //Remove options
             if (removedKeys.containsKey(v) && (mode == UpdateMode.REMOVAL_ONLY || mode == UpdateMode.ALL)) {
                 for (String key : removedKeys.get(v)) {
                     if (config.contains(key)) {
-                        config.set(key, null);
+                        config.remove(key);
                     }
                 }
             }
@@ -455,24 +479,16 @@ public class MessageConfig {
                 for (String key : changedKeys.get(v)) {
                     if (config.contains(key)) {
                         if (keepOld) {
-                            //When keeping old value rename the key.
-                            // 'gameboxx.help' would become 'gameboxx.OLD-help' and 'example' would become 'OLD-example'
-                            String renamedKey;
-                            if (!key.contains(".")) {
-                                renamedKey = "OLD-" + key;
-                            } else {
-                                int index = key.lastIndexOf(".");
-                                renamedKey = key.substring(0, index+1) + "OLD-" + key.substring(index+1, key.length());
-                            }
-                            config.set(renamedKey, config.get(key));
+                            //When keeping old value rename the key by prefixing it with OLD-
+                            config.setProperty("OLD-" + key, config.getProperty(key));
                         }
-                        config.set(key, config.getDefaults().getString(key));
+                        config.setProperty(key, latest.getProperty(key));
                     }
                 }
             }
         }
 
-        config.set(VERSION_KEY, version);
+        config.setProperty(name.toUpperCase() + VERSION_KEY, Integer.toString(version));
         save();
         cacheMessages(false);
     }
