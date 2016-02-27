@@ -30,10 +30,10 @@ import info.gameboxx.gameboxx.util.Utils;
 /**
  * Parameter used for messages.
  * The parameter key will be replaced with the value in the message.
- *
+ * <p/>
  * <p>For example for the string 'Teleported to &lt;x&gt; &lt;y&gt; &lt;z&gt;'
  * You would set three parameters like {@code Param.P("x", loc.getX())} etc.
- *
+ * <p/>
  * <b>Notice how there are no angle brackets around the name for params!</b>
  */
 public class Param {
@@ -43,10 +43,11 @@ public class Param {
 
     /**
      * Construct a new parameter.
+     *
      * @param param The name of the parameter.
-     *              The name should not contain the angle brackets (&lt;&gt;).
+     * The name should not contain the angle brackets (&lt;&gt;).
      * @param value The value of the paramter.
-     *              This will be put instead of the param name.
+     * This will be put instead of the param name.
      */
     public Param(String param, Object value) {
         this.param = param;
@@ -55,6 +56,7 @@ public class Param {
 
     /**
      * Get the parameter name.
+     *
      * @return The name of the parameter.
      */
     public String getParam() {
@@ -63,6 +65,7 @@ public class Param {
 
     /**
      * Get the parameter value.
+     *
      * @return The value of the parameter.
      */
     public Object getValue() {
@@ -72,6 +75,7 @@ public class Param {
     /**
      * Get the string value of the parameter.
      * This uses {@link Utils#getString(Object)}
+     *
      * @return The string value of the parameter.
      */
     @Override
@@ -81,12 +85,13 @@ public class Param {
 
     /**
      * Shortcut for creating a parameter.
-     * @see {@link #Param(String, Object)}
+     *
      * @param param The name of the parameter.
-     *              The name should not contain the angle brackets (&lt;&gt;).
+     * The name should not contain the angle brackets (&lt;&gt;).
      * @param value The value of the paramter.
-     *              This will be put instead of the param name.
+     * This will be put instead of the param name.
      * @return new {@link Param} instance with the specified param name and value.
+     * @see {@link #Param(String, Object)}
      */
     public static Param P(String param, Object value) {
         return new Param(param, value);

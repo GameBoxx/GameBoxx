@@ -29,10 +29,11 @@ import info.gameboxx.gameboxx.components.internal.GameComponent;
 
 /**
  * Thrown when validating components and the game is missing a hard dependency.
+ *
  * @see GameComponent#validate()
  */
 public class DependencyNotFoundException extends Exception {
-	public DependencyNotFoundException(GameComponent component, Class<? extends GameComponent> dependency) {
-		super("Could not find dependency " + dependency.getName() + " for component " + component.getClass().getName() + "!");
-	}
+    public DependencyNotFoundException(GameComponent component, Class<? extends GameComponent> dependency) {
+        super("Could not find dependency " + dependency.getName() + " for component " + component.getClass().getName() + "!");
+    }
 }

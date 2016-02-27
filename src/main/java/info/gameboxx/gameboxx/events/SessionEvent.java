@@ -30,17 +30,17 @@ import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
 /**
- * 
+ *
  */
 public class SessionEvent extends Event {
 
     private static final HandlerList HANDLERS = new HandlerList();
     protected GameSession session;
-    
+
     public SessionEvent(GameSession session) {
         this.session = session;
     }
-    
+
     public GameSession getSession() {
         return this.session;
     }

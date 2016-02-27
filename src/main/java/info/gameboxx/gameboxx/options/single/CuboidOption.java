@@ -86,8 +86,8 @@ public class CuboidOption extends SingleOption {
             return true;
         }
 
-        Location pos1 = new Location(null, 0,0,0, 0f,0f);
-        Location pos2 = new Location(null, 0,0,0, 0f,0f);
+        Location pos1 = new Location(null, 0, 0, 0, 0f, 0f);
+        Location pos2 = new Location(null, 0, 0, 0, 0f, 0f);
 
 
         //Split string by semicolon like x,y,z:x,y,z:world or x,y,z:x,y,z:@player
@@ -130,7 +130,7 @@ public class CuboidOption extends SingleOption {
         }
 
         //Get the coords x,y,z:x,y,z
-        for (int i = 0; i < split.length-1; i++) {
+        for (int i = 0; i < split.length - 1; i++) {
             String[] coords = split[i].split(",");
 
             if (coords.length < 3) {
@@ -226,6 +226,6 @@ public class CuboidOption extends SingleOption {
 
     @Override
     public CuboidOption clone() {
-        return (CuboidOption) new CuboidOption(name, (Cuboid) defaultValue).setDescription(description).setFlag(flag);
+        return (CuboidOption)new CuboidOption(name, (Cuboid)defaultValue).setDescription(description).setFlag(flag);
     }
 }

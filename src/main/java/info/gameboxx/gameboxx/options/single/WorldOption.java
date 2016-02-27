@@ -130,6 +130,6 @@ public class WorldOption extends SingleOption {
 
     @Override
     public WorldOption clone() {
-        return (WorldOption) new WorldOption(name, (World)defaultValue).setDescription(description).setFlag(flag);
+        return (WorldOption)new WorldOption(name, (World)defaultValue).setDescription(description).setFlag(flag);
     }
 }

@@ -42,6 +42,7 @@ public class ArenaSelection {
 
     /**
      * Get the {@link Arena} selection for the specified {@link CommandSender}.
+     *
      * @param sender The sender of the command.
      * @return The {@link Arena} selection for the specified sender.
      */
@@ -57,6 +58,7 @@ public class ArenaSelection {
      * Get the {@link Arena} selection for the specified {@link CommandSender}.
      * It will then check the specified command arguments for a arena:{game}:{arena} argument.
      * If it has that argument it will try to parse it and override the selection.
+     *
      * @param sender The sender of the command.
      * @param commandArgs The command arguments used to scan for a arena:{game}:{arena} arg.
      * @return The {@link Arena} selection for the specified sender or the specified arena in the command args.
@@ -82,6 +84,7 @@ public class ArenaSelection {
 
     /**
      * Set the {@link Arena} selection for the specified {@link CommandSender}.
+     *
      * @param sender The sender of the command.
      * @param arena The {@link Arena} to set.
      */

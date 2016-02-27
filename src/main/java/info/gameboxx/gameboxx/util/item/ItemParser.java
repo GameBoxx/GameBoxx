@@ -49,6 +49,7 @@ public class ItemParser {
 
     /**
      * Parse the given string in to a item.
+     *
      * @param string String with item format.
      * @param ignoreErrors If this is true it will continue parsing even if there are non breaking errors.
      */
@@ -112,7 +113,7 @@ public class ItemParser {
 
         //Lore
         if (metaMap.containsKey("lore")) {
-            String[] lore =  metaMap.get("lore").split("\\|");
+            String[] lore = metaMap.get("lore").split("\\|");
             item.setLore(lore);
             metaMap.remove("lore");
         }
@@ -319,6 +320,7 @@ public class ItemParser {
 
     /**
      * Parse the given item in to a string.
+     *
      * @param itemStack item which needs to be parsed.
      */
     public ItemParser(ItemStack itemStack) {
@@ -447,6 +449,7 @@ public class ItemParser {
     /**
      * Get the parsed string.
      * Will return null if the parser failed.
+     *
      * @return Parsed string with all meta and such.
      */
     public String getString() {
@@ -456,6 +459,7 @@ public class ItemParser {
     /**
      * Get the parsed item.
      * Will return null if the parser failed.
+     *
      * @return Parsed EItem with all meta and such.
      */
     public EItem getItem() {
@@ -465,6 +469,7 @@ public class ItemParser {
     /**
      * Check if the parsing was successful or not.
      * If not you can call getError to get the error message.
+     *
      * @return Whether or not the parsing was successful.
      */
     public boolean isSuccess() {
@@ -473,6 +478,7 @@ public class ItemParser {
 
     /**
      * If the parsing wasn't successful this will return the error message.
+     *
      * @return Error message if there is one otherwise an empty string.
      */
     public String getError() {

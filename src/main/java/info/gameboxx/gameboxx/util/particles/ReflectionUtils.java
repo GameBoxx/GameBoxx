@@ -33,15 +33,15 @@ import java.util.Map;
 
 /**
  * <b>ReflectionUtils</b>
- * <p>
+ * <p/>
  * This class provides useful methods which makes dealing with reflection much easier, especially when working with Bukkit
- * <p>
+ * <p/>
  * You are welcome to use it, modify it and redistribute it under the following conditions:
  * <ul>
  * <li>Don't claim this class as your own
  * <li>Don't remove this disclaimer
  * </ul>
- * <p>
+ * <p/>
  * <i>It would be nice if you provide credit to me if you use this class in a published project</i>
  *
  * @author DarkBlade12
@@ -96,11 +96,13 @@ public final class ReflectionUtils {
      * @return The instance of the target class with the specified arguments
      * @throws InstantiationException If you cannot create an instance of the target class due to certain circumstances
      * @throws IllegalAccessException If the desired constructor cannot be accessed due to certain circumstances
-     * @throws IllegalArgumentException If the modifier of the arguments do not match the parameter modifier of the constructor (this should not occur since it searches for a constructor with the modifier of the arguments)
+     * @throws IllegalArgumentException If the modifier of the arguments do not match the parameter modifier of the constructor (this should not occur since it searches for a constructor with the
+     * modifier of the arguments)
      * @throws InvocationTargetException If the desired constructor cannot be invoked
      * @throws NoSuchMethodException If the desired constructor with the specified arguments cannot be found
      */
-    public static Object instantiateObject(Class<?> clazz, Object... arguments) throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException {
+    public static Object instantiateObject(Class<?> clazz, Object... arguments)
+            throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException {
         return getConstructor(clazz, DataType.getPrimitive(arguments)).newInstance(arguments);
     }
 
@@ -113,13 +115,15 @@ public final class ReflectionUtils {
      * @return The instance of the desired target class with the specified arguments
      * @throws InstantiationException If you cannot create an instance of the desired target class due to certain circumstances
      * @throws IllegalAccessException If the desired constructor cannot be accessed due to certain circumstances
-     * @throws IllegalArgumentException If the modifier of the arguments do not match the parameter modifier of the constructor (this should not occur since it searches for a constructor with the modifier of the arguments)
+     * @throws IllegalArgumentException If the modifier of the arguments do not match the parameter modifier of the constructor (this should not occur since it searches for a constructor with the
+     * modifier of the arguments)
      * @throws InvocationTargetException If the desired constructor cannot be invoked
      * @throws NoSuchMethodException If the desired constructor with the specified arguments cannot be found
      * @throws ClassNotFoundException If the desired target class with the specified name and package cannot be found
      * @see #instantiateObject(Class, Object...)
      */
-    public static Object instantiateObject(String className, PackageType packageType, Object... arguments) throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, ClassNotFoundException {
+    public static Object instantiateObject(String className, PackageType packageType, Object... arguments)
+            throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, ClassNotFoundException {
         return instantiateObject(packageType.getClass(className), arguments);
     }
 
@@ -169,13 +173,15 @@ public final class ReflectionUtils {
      * @param arguments Arguments which are used to invoke the desired method
      * @return The result of invoking the desired method on the target object
      * @throws IllegalAccessException If the desired method cannot be accessed due to certain circumstances
-     * @throws IllegalArgumentException If the modifier of the arguments do not match the parameter modifier of the method (this should not occur since it searches for a method with the modifier of the arguments)
+     * @throws IllegalArgumentException If the modifier of the arguments do not match the parameter modifier of the method (this should not occur since it searches for a method with the modifier of
+     * the arguments)
      * @throws InvocationTargetException If the desired method cannot be invoked on the target object
      * @throws NoSuchMethodException If the desired method of the class of the target object with the specified name and arguments cannot be found
      * @see #getMethod(Class, String, Class...)
      * @see DataType#getPrimitive(Object[])
      */
-    public static Object invokeMethod(Object instance, String methodName, Object... arguments) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException {
+    public static Object invokeMethod(Object instance, String methodName, Object... arguments)
+            throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException {
         return getMethod(instance.getClass(), methodName, DataType.getPrimitive(arguments)).invoke(instance, arguments);
     }
 
@@ -188,13 +194,15 @@ public final class ReflectionUtils {
      * @param arguments Arguments which are used to invoke the desired method
      * @return The result of invoking the desired method on the target object
      * @throws IllegalAccessException If the desired method cannot be accessed due to certain circumstances
-     * @throws IllegalArgumentException If the modifier of the arguments do not match the parameter modifier of the method (this should not occur since it searches for a method with the modifier of the arguments)
+     * @throws IllegalArgumentException If the modifier of the arguments do not match the parameter modifier of the method (this should not occur since it searches for a method with the modifier of
+     * the arguments)
      * @throws InvocationTargetException If the desired method cannot be invoked on the target object
      * @throws NoSuchMethodException If the desired method of the target class with the specified name and arguments cannot be found
      * @see #getMethod(Class, String, Class...)
      * @see DataType#getPrimitive(Object[])
      */
-    public static Object invokeMethod(Object instance, Class<?> clazz, String methodName, Object... arguments) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException {
+    public static Object invokeMethod(Object instance, Class<?> clazz, String methodName, Object... arguments)
+            throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException {
         return getMethod(clazz, methodName, DataType.getPrimitive(arguments)).invoke(instance, arguments);
     }
 
@@ -208,13 +216,15 @@ public final class ReflectionUtils {
      * @param arguments Arguments which are used to invoke the desired method
      * @return The result of invoking the desired method on the target object
      * @throws IllegalAccessException If the desired method cannot be accessed due to certain circumstances
-     * @throws IllegalArgumentException If the modifier of the arguments do not match the parameter modifier of the method (this should not occur since it searches for a method with the modifier of the arguments)
+     * @throws IllegalArgumentException If the modifier of the arguments do not match the parameter modifier of the method (this should not occur since it searches for a method with the modifier of
+     * the arguments)
      * @throws InvocationTargetException If the desired method cannot be invoked on the target object
      * @throws NoSuchMethodException If the desired method of the desired target class with the specified name and arguments cannot be found
      * @throws ClassNotFoundException If the desired target class with the specified name and package cannot be found
      * @see #invokeMethod(Object, Class, String, Object...)
      */
-    public static Object invokeMethod(Object instance, String className, PackageType packageType, String methodName, Object... arguments) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, ClassNotFoundException {
+    public static Object invokeMethod(Object instance, String className, PackageType packageType, String methodName, Object... arguments)
+            throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, ClassNotFoundException {
         return invokeMethod(instance, packageType.getClass(className), methodName, arguments);
     }
 
@@ -265,7 +275,8 @@ public final class ReflectionUtils {
      * @throws SecurityException If the desired field cannot be made accessible
      * @see #getField(Class, boolean, String)
      */
-    public static Object getValue(Object instance, Class<?> clazz, boolean declared, String fieldName) throws IllegalArgumentException, IllegalAccessException, NoSuchFieldException, SecurityException {
+    public static Object getValue(Object instance, Class<?> clazz, boolean declared, String fieldName)
+            throws IllegalArgumentException, IllegalAccessException, NoSuchFieldException, SecurityException {
         return getField(clazz, declared, fieldName).get(instance);
     }
 
@@ -285,7 +296,8 @@ public final class ReflectionUtils {
      * @throws ClassNotFoundException If the desired target class with the specified name and package cannot be found
      * @see #getValue(Object, Class, boolean, String)
      */
-    public static Object getValue(Object instance, String className, PackageType packageType, boolean declared, String fieldName) throws IllegalArgumentException, IllegalAccessException, NoSuchFieldException, SecurityException, ClassNotFoundException {
+    public static Object getValue(Object instance, String className, PackageType packageType, boolean declared, String fieldName)
+            throws IllegalArgumentException, IllegalAccessException, NoSuchFieldException, SecurityException, ClassNotFoundException {
         return getValue(instance, packageType.getClass(className), declared, fieldName);
     }
 
@@ -320,7 +332,8 @@ public final class ReflectionUtils {
      * @throws SecurityException If the desired field cannot be made accessible
      * @see #getField(Class, boolean, String)
      */
-    public static void setValue(Object instance, Class<?> clazz, boolean declared, String fieldName, Object value) throws IllegalArgumentException, IllegalAccessException, NoSuchFieldException, SecurityException {
+    public static void setValue(Object instance, Class<?> clazz, boolean declared, String fieldName, Object value)
+            throws IllegalArgumentException, IllegalAccessException, NoSuchFieldException, SecurityException {
         getField(clazz, declared, fieldName).set(instance, value);
     }
 
@@ -340,7 +353,8 @@ public final class ReflectionUtils {
      * @throws ClassNotFoundException If the desired target class with the specified name and package cannot be found
      * @see #setValue(Object, Class, boolean, String, Object)
      */
-    public static void setValue(Object instance, String className, PackageType packageType, boolean declared, String fieldName, Object value) throws IllegalArgumentException, IllegalAccessException, NoSuchFieldException, SecurityException, ClassNotFoundException {
+    public static void setValue(Object instance, String className, PackageType packageType, boolean declared, String fieldName, Object value)
+            throws IllegalArgumentException, IllegalAccessException, NoSuchFieldException, SecurityException, ClassNotFoundException {
         setValue(instance, packageType.getClass(className), declared, fieldName, value);
     }
 
@@ -363,7 +377,7 @@ public final class ReflectionUtils {
 
     /**
      * Represents an enumeration of dynamic packages of NMS and CraftBukkit
-     * <p>
+     * <p/>
      * This class is part of the <b>ReflectionUtils</b> and follows the same usage conditions
      *
      * @author DarkBlade12
@@ -450,7 +464,7 @@ public final class ReflectionUtils {
 
     /**
      * Represents an enumeration of Java data modifier with corresponding classes
-     * <p>
+     * <p/>
      * This class is part of the <b>ReflectionUtils</b> and follows the same usage conditions
      *
      * @author DarkBlade12

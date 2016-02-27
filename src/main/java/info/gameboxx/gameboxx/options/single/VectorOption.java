@@ -75,13 +75,13 @@ public class VectorOption extends SingleOption {
             }
             if (input.startsWith("#")) {
                 value = playerOption.getValue().getTargetBlock(Utils.TRANSPARENT_MATERIALS, 64).getLocation().toVector();
-            } else  {
+            } else {
                 value = playerOption.getValue().getLocation().toVector();
             }
             return true;
         }
 
-        Vector v = new Vector(0,0,0);
+        Vector v = new Vector(0, 0, 0);
 
         //Get the components x,y,z
         String[] components = input.split(",");
@@ -93,7 +93,7 @@ public class VectorOption extends SingleOption {
 
         for (int i = 0; i < 3; i++) {
             if (Parse.Double(components[0]) == null) {
-                error = "Value " + (i+1) + " for the vector isn't a decimal number.";
+                error = "Value " + (i + 1) + " for the vector isn't a decimal number.";
                 return false;
             }
         }
@@ -132,6 +132,6 @@ public class VectorOption extends SingleOption {
 
     @Override
     public VectorOption clone() {
-        return (VectorOption) new VectorOption(name, (Vector) defaultValue).setDescription(description).setFlag(flag);
+        return (VectorOption)new VectorOption(name, (Vector)defaultValue).setDescription(description).setFlag(flag);
     }
 }

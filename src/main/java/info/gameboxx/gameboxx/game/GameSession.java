@@ -53,6 +53,7 @@ public abstract class GameSession extends ComponentHolder {
 
     /**
      * Get the session ID.
+     *
      * @return The session ID.
      */
     public int getID() {
@@ -61,6 +62,7 @@ public abstract class GameSession extends ComponentHolder {
 
     /**
      * Get the {@link Game} of the session.
+     *
      * @return The game of the session.
      */
     public Game getGame() {
@@ -69,8 +71,9 @@ public abstract class GameSession extends ComponentHolder {
 
     /**
      * Get the game options config.
-     * @see Game#getConfig()
+     *
      * @return {@link OptionCfg} with all the game options.
+     * @see Game#getConfig()
      */
     public OptionCfg getGameOptions() {
         return game.getConfig();
@@ -78,6 +81,7 @@ public abstract class GameSession extends ComponentHolder {
 
     /**
      * Get the {@link Arena} of the session.
+     *
      * @return The arena of the session.
      */
     public Arena getArena() {
@@ -86,8 +90,9 @@ public abstract class GameSession extends ComponentHolder {
 
     /**
      * Get the arena options config.
-     * @see Arena#getConfig()
+     *
      * @return {@link OptionCfg} with all the arena options.
+     * @see Arena#getConfig()
      */
     public OptionCfg getArenaOptions() {
         return arena.getConfig();
@@ -95,6 +100,7 @@ public abstract class GameSession extends ComponentHolder {
 
     /**
      * Get the {@link World} the session is hosted in.
+     *
      * @return The world of the session.
      */
     public World getWorld() {
@@ -104,6 +110,7 @@ public abstract class GameSession extends ComponentHolder {
     /**
      * Set the {@link World} the session is hosted in.
      * There is no need to call this as this will be set when new sessions get created.
+     *
      * @param world The world of the session.
      */
     public void setWorld(World world) {
@@ -114,6 +121,7 @@ public abstract class GameSession extends ComponentHolder {
      * Get whether or not the session is ready to be joined and played.
      * After the world is generated this will be set to true.
      * While this is false players shouldn't be able to join etc.
+     *
      * @return True when the session is ready and false if not.
      */
     public boolean isReady() {
@@ -124,6 +132,7 @@ public abstract class GameSession extends ComponentHolder {
      * Set whether or not the session is ready to be joined and played etc.
      * This method is used when creating sessions when worlds are generated/loaded.
      * There is no need to manually call this.
+     *
      * @param ready The ready state to set.
      */
     public void setReady(boolean ready) {
@@ -135,29 +144,31 @@ public abstract class GameSession extends ComponentHolder {
 
     /**
      * Adds a player to a session.
+     *
      * @param player The player to add.
      */
     public void addPlayer(Player player) {
-    	PLUGIN_MANAGER.callEvent(new PlayerJoinSessionEvent(player, this));
+        PLUGIN_MANAGER.callEvent(new PlayerJoinSessionEvent(player, this));
     }
-    
+
     /**
      * Removes a player from the active players list.
+     *
      * @param player The player who is leaving the session.
      * @param reason The reason for which the player is leaving the session.
      */
     public void removePlayer(Player player, LeaveReason reason) {
-    	PLUGIN_MANAGER.callEvent(new PlayerLeaveSessionEvent(player, this, reason));
+        PLUGIN_MANAGER.callEvent(new PlayerLeaveSessionEvent(player, this, reason));
     }
-    
+
     /**
      * Stops the session.
      */
     public void stop() {
-    	PLUGIN_MANAGER.callEvent(new SessionStopEvent(this));
-    	// TODO: Handle implementation later
+        PLUGIN_MANAGER.callEvent(new SessionStopEvent(this));
+        // TODO: Handle implementation later
     }
-    
+
     /**
      * Restarts the session.
      */

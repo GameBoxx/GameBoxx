@@ -48,7 +48,7 @@ public class BoolListOption extends ListOption {
 
     @Override
     public BoolOption getSingleOption(int index) {
-        return (BoolOption) new BoolOption(name, (Boolean)getDefault(index)).setDescription(description).setFlag(flag);
+        return (BoolOption)new BoolOption(name, (Boolean)getDefault(index)).setDescription(description).setFlag(flag);
     }
 
     @Override
@@ -67,6 +67,6 @@ public class BoolListOption extends ListOption {
 
     @Override
     public BoolListOption clone() {
-        return (BoolListOption) new BoolListOption(name, (Boolean)defaultValue).setDescription(description).setFlag(flag);
+        return (BoolListOption)new BoolListOption(name, (Boolean)defaultValue).setDescription(description).setFlag(flag);
     }
 }

@@ -61,6 +61,7 @@ public abstract class GameComponent {
      * Instantiate a new game component for the specified game.
      * It will <b>not</b> automatically add the component to the game.
      * Use {@link Game#addComponent(GameComponent)} to add a component to the game.
+     *
      * @param game The game this component belongs to.
      * @throws OptionAlreadyExistsException When the component tries to register a setup option and a setup option with the specified name is already registered.
      */
@@ -68,7 +69,7 @@ public abstract class GameComponent {
         this.game = game;
 
         name = getClass().getSimpleName();
-        name = name.substring(0, name.length()-2);
+        name = name.substring(0, name.length() - 2);
         name = Utils.splitCamelCase(name, " ");
 
         configKey = name.replace(" ", "-").toLowerCase();
@@ -81,7 +82,7 @@ public abstract class GameComponent {
      * Register an arena option.
      * Make sure to call this from the {@link #registerOptions()} method.
      * These options will be passed on to all arenas.
-     *
+     * <p/>
      * The path/name should be all lower cased and words should be separated with a dash 'my-awesome-option'.
      * You can use the dot '.' to create different sections like 'items.example-option'
      *
@@ -98,7 +99,7 @@ public abstract class GameComponent {
     /**
      * Register a game option.
      * Make sure to call this from the {@link #registerOptions()} method.
-     *
+     * <p/>
      * The path/name should be all lower cased and words should be separated with a dash 'my-awesome-option'.
      * You can use the dot '.' to create different sections like 'items.example-option'
      *
@@ -114,10 +115,10 @@ public abstract class GameComponent {
 
     /**
      * Called after all components have been added to the game to register game/arena options.
-     *
+     * <p/>
      * Call {@link #registerGameOption(String, Option)} to register a game option.
      * Call {@link #registerArenaOption(String, Option)} to register an arena option.
-     *
+     * <p/>
      * the option name should be all lower cased with a dash '-' as word separator.
      */
     public abstract void registerOptions();
@@ -126,6 +127,7 @@ public abstract class GameComponent {
      * Get the full path for the specified option name.
      * Component options are saved like: 'components.{component-name}.{option-name}'
      * When registering options you don't have to use this but working with the config you have to use this.
+     *
      * @param path The path/name of the option.
      * @return The full path for the specified option like 'components.{component-name}.{option-name}'
      */
@@ -135,8 +137,9 @@ public abstract class GameComponent {
 
     /**
      * Get the game options config.
-     * @see Game#getConfig()
+     *
      * @return {@link OptionCfg} with all the game options.
+     * @see Game#getConfig()
      */
     public OptionCfg getGameOptions() {
         return game.getConfig();
@@ -144,8 +147,9 @@ public abstract class GameComponent {
 
     /**
      * Get the arena options config.
-     * @see Arena#getConfig()
+     *
      * @return {@link OptionCfg} with all the arena options.
+     * @see Arena#getConfig()
      */
     public OptionCfg getArenaOptions() {
         return getArena().getConfig();
@@ -160,6 +164,7 @@ public abstract class GameComponent {
     /**
      * Adds a hard dependency.
      * When validating all components it won't validate if the dependency is missing.
+     *
      * @param component The component to depend on.
      */
     protected void addDependency(Class<? extends GameComponent> component) {
@@ -170,6 +175,7 @@ public abstract class GameComponent {
      * Adds a soft dependency.
      * Adding soft dependencies makes it so you can use {@link #getDependency(Class)}.
      * Be warned though that the getDependency method can return {@code null} for soft dependencies.
+     *
      * @param component The component to depend on.
      */
     protected void addSoftDependency(Class<? extends GameComponent> component) {
@@ -179,6 +185,7 @@ public abstract class GameComponent {
     /**
      * Adds a conflict with another component.
      * When validating all components it won't validate if there is a conflict.
+     *
      * @param component The component it will conflict with.
      */
     protected void addConflict(Class<? extends GameComponent> component) {
@@ -189,6 +196,7 @@ public abstract class GameComponent {
      * Get another dependency component.
      * It can also be a soft dependency but in that case this will return {@code null} if the {@link Game}/{@link GameSession} doesn't have the component.
      * Regular dependencies will never return {@code null}!
+     *
      * @param component The type of component/dependency to get.
      * @param <T> The type of component/dependency to get.
      * @return The component instance of the type specified or {@code null}.
@@ -202,6 +210,7 @@ public abstract class GameComponent {
      * Soft dependencies won't be validated.
      * There is no need to manually call this!
      * It gets called when you register the game using {@link GameManager#register(Game)}
+     *
      * @throws DependencyNotFoundException When a dependency hasn't been added to the game.
      * @throws ComponentConflictException When the game has two components that conflict with eachother.
      */
@@ -221,6 +230,7 @@ public abstract class GameComponent {
     /**
      * Loads all the hard and soft dependencies into the dependencies map.
      * When a new {@link GameSession} is created this method will be called.
+     *
      * @throws IllegalStateException when trying to call this method before a session is created.
      */
     public void loadDependencies() {
@@ -228,7 +238,7 @@ public abstract class GameComponent {
             throw new IllegalStateException("Dependencies can only be loaded for game sessions. This method should only be called by the API.");
         }
         for (Class<? extends GameComponent> dependency : depends) {
-           dependencies.put(dependency, session.getComponent(dependency));
+            dependencies.put(dependency, session.getComponent(dependency));
         }
         for (Class<? extends GameComponent> dependency : softDepends) {
             if (session.hasComponent(dependency)) {
@@ -244,6 +254,7 @@ public abstract class GameComponent {
     /**
      * Get the display name for the component.
      * For example for MinPlayersCP the name would be 'Min Players'.
+     *
      * @return Configuration key name.
      */
     public String getName() {
@@ -252,6 +263,7 @@ public abstract class GameComponent {
 
     /**
      * Get the {@link GameBoxx} instance.
+     *
      * @return GameBoxx instance.
      */
     public GameBoxx getAPI() {
@@ -260,6 +272,7 @@ public abstract class GameComponent {
 
     /**
      * Get the plugin instance that registered the game this component belongs to.
+     *
      * @return owning {@link JavaPlugin} of the game.
      */
     public JavaPlugin getPlugin() {
@@ -269,6 +282,7 @@ public abstract class GameComponent {
 
     /**
      * Get the {@link Game} this component belongs too.
+     *
      * @return The game the component has been added to.
      */
     public Game getGame() {
@@ -277,6 +291,7 @@ public abstract class GameComponent {
 
     /**
      * Get the {@link Arena} from the {@link GameSession} this component belongs to.
+     *
      * @return The arena from the game session. This will be null for components in the {@link Game} but those should only be used as templates.
      */
     public Arena getArena() {
@@ -288,6 +303,7 @@ public abstract class GameComponent {
 
     /**
      * Get the {@link GameSession} this component belongs to.
+     *
      * @return The game session. This will be null for components in the {@link Game} but those should only be used as templates.
      */
     public GameSession getSession() {
@@ -297,6 +313,7 @@ public abstract class GameComponent {
     /**
      * Set the {@link GameSession}.
      * When calling {@link #newInstance(GameSession)} set the session using this method.
+     *
      * @param session The {@link GameSession} to set
      * @return Returns itself so you can use it easier.
      */
@@ -309,6 +326,7 @@ public abstract class GameComponent {
 
     /**
      * Return a new instance of the component for the provided {@link GameSession}.
+     *
      * @param <T>
      * @return A new instance of the component with the session set to the provided session.
      */

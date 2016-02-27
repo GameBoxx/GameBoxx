@@ -28,10 +28,10 @@ package info.gameboxx.gameboxx.events;
 import info.gameboxx.gameboxx.game.GameSession;
 
 /**
- * 
+ *
  */
 public class SessionResetEvent extends SessionEvent {
-    
+
     public SessionResetEvent(GameSession session) {
         super(session);
     }

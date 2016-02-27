@@ -33,12 +33,13 @@ import org.bukkit.event.Cancellable;
  * The event that is called whenever a player joins a {@link GameSession}.
  */
 public class PlayerJoinSessionEvent extends SessionEvent implements Cancellable {
-    
+
     private Player player;
     private boolean isCancelled;
-    
+
     /**
      * The constructor to call the PlayerJoinSessionEvent.
+     *
      * @param player The {@link Player} that joins a session.
      * @param session The {@link GameSession} that the player has joined.
      */
@@ -47,23 +48,25 @@ public class PlayerJoinSessionEvent extends SessionEvent implements Cancellable 
         this.player = player;
         this.isCancelled = false;
     }
-    
+
     /**
      * Get the {@link Player} player joined a session.
+     *
      * @return The Player.
      */
     public Player getPlayer() {
         return this.player;
     }
-    
+
     /**
      * Get the {@link GameSession} that a player joined.
+     *
      * @return The GameSession.
      */
     public GameSession getJoinedSession() {
         return this.session;
     }
-    
+
     /**
      * @see Cancellable
      */
@@ -71,7 +74,7 @@ public class PlayerJoinSessionEvent extends SessionEvent implements Cancellable 
     public boolean isCancelled() {
         return this.isCancelled;
     }
-    
+
     /**
      * @see Cancellable
      */

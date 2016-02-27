@@ -99,7 +99,7 @@ public class Str {
      * @return CamelCased string
      */
     public static String camelCase(String str) {
-        return WordUtils.capitalizeFully(str, new char[]{'_'}).replaceAll("_", "");
+        return WordUtils.capitalizeFully(str, new char[] {'_'}).replaceAll("_", "");
     }
 
 
@@ -115,7 +115,7 @@ public class Str {
      */
     public static String bestMatch(String input, String... values) {
         String bestMatch = "";
-        int lowestDiff = input.length()-1;
+        int lowestDiff = input.length() - 1;
         for (String value : values) {
             int diff = StringUtils.getLevenshteinDistance(input, value);
             if (diff == 0) {
@@ -140,7 +140,7 @@ public class Str {
 
     /**
      * Wrap the specified string to multiple lines by adding a newline symbol '\n'
-     *
+     * <p/>
      * <p>This does not break up words.
      * Which means, if there is a word that is longer than the wrap limit it will exceed the limit.
      *
@@ -159,7 +159,7 @@ public class Str {
 
     /**
      * Wrap the specified string to multiple lines by adding a newline symbol '\n'
-     *
+     * <p/>
      * <p>The lines will always be exactly the length specified.
      * Words will be cut in half and a new line will be forced.
      * Use {@link #wrapString(String, int)} to not have this behaviour.
@@ -217,12 +217,12 @@ public class Str {
     /**
      * Combine the given list of objects in to a string by adding glue between the values.
      * It will use {@link Object#toString()} for the object values. (if the value is null it will be the string 'null')
-     *
+     * <p/>
      * <p>The glue will be added between the values.
      * Between the last two values it will put the lastGlue.
      * By default it uses ', ' as glue and ' & ' as last glue to get something like [value1, value2, value3] 'value1, value2 & value3'
      * When only a glue is specified it will use the same character as the glue for the last glue.
-     *
+     * <p/>
      * <p>A start and end can be specified to select which elements of the array should be converted to a String.
      * By default it starts and 0 and ends at the array length - 1 to do all values.
      *
@@ -241,7 +241,7 @@ public class Str {
 
         for (int i = start; i <= end && i < arr.length; i++) {
             result += arr[i] == null ? "null" : arr[i].toString();
-            if (i >= end-1 || i >= arr.length-2) {
+            if (i >= end - 1 || i >= arr.length - 2) {
                 result += lastGlue;
             } else {
                 result += glue;
@@ -255,9 +255,10 @@ public class Str {
     }
 
 
-    
+
     /**
      * Split a string by using a space as split character.
+     *
      * @see Str#splitQuotes(String, char)
      */
     public static List<String> splitQuotes(String string) {
@@ -267,18 +268,18 @@ public class Str {
     /**
      * Splits the specified string based on the specified character.
      * The default is a space as split character and the examples below use that too.
-     *
+     * <p/>
      * <p>Strings inside quotes will be placed together in sections.
      * For example 'This plugin is "super awesome"' will return [this, plugin, is, super awesome]
      * Works for both double and single quotes. When using double quotes you can use single quotes within and the other way around.
      * like <pre>test "You're awesome"</pre> Would turn in to: [test, You're awesome]
-     *
+     * <p/>
      * <p>Text in front of the starting quote will be added to the section too.
      * <pre>test name:"That's awesome!" Yup!</pre> would be [test, name:That's awesome!, Yup!]
      *
      * @param string The string that needs to be split.
      * @param split The character to use for splitting the string.
-     *              This should not be a quote or double quote!
+     * This should not be a quote or double quote!
      * @return List of strings split from the input string.
      */
     public static List<String> splitQuotes(String string, char split) {

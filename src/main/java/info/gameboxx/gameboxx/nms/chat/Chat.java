@@ -36,8 +36,9 @@ public interface Chat {
 
     /**
      * Send raw chat message to the player
+     *
      * @param message The message to be sent to the player.
-     *                If this message doesn't have JSON formatting it will be sent as a regular text message.
+     * If this message doesn't have JSON formatting it will be sent as a regular text message.
      * @param player The player the message has to be sent to.
      * @return Chat instance
      */
@@ -45,8 +46,9 @@ public interface Chat {
 
     /**
      * Send raw chat message to the players
+     *
      * @param message The message to be sent to the player.
-     *                If this message doesn't have JSON formatting it will be sent as a regular text message.
+     * If this message doesn't have JSON formatting it will be sent as a regular text message.
      * @param players The players the message has to be sent to.
      * @return Chat instance
      */
@@ -54,8 +56,9 @@ public interface Chat {
 
     /**
      * Send raw chat message to the players
+     *
      * @param message The message to be sent to the player.
-     *                If this message doesn't have JSON formatting it will be sent as a regular text message.
+     * If this message doesn't have JSON formatting it will be sent as a regular text message.
      * @param players The players the message has to be sent to.
      * @return Chat instance
      */
@@ -63,6 +66,7 @@ public interface Chat {
 
     /**
      * Send actionbar to the player.
+     *
      * @param message The message to be sent to the player.
      * @param player The player the message has to be sent to.
      * @return Chat instance
@@ -71,6 +75,7 @@ public interface Chat {
 
     /**
      * Send actionbar to the players
+     *
      * @param message The message to be sent to the player.
      * @param players The players the message has to be sent to.
      * @return Chat instance
@@ -79,6 +84,7 @@ public interface Chat {
 
     /**
      * Send actionbar to the players
+     *
      * @param message The message to be sent to the player.
      * @return Chat instance
      */

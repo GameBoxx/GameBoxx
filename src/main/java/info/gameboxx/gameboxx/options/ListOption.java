@@ -65,6 +65,7 @@ public abstract class ListOption extends Option {
     /**
      * Get the cached list with values.
      * The list may contain default values if the parsing failed.
+     *
      * @return The cached list with values. (May be empty)
      */
     public List<SingleOption> getOptions() {
@@ -75,7 +76,7 @@ public abstract class ListOption extends Option {
     /**
      * Get the default value.
      * This value will be added to the list when parsing of a value failed.
-     *
+     * <p/>
      * <b>In most cases you'll want to use {@link #getDefault(int)}</b>
      *
      * @return The default value. (May be {@code null}!)
@@ -87,7 +88,7 @@ public abstract class ListOption extends Option {
     /**
      * Set the default value to use when parsing fails.
      * The value must of the same type as the raw class type of the single option. So a IntList can only have an integer as default option here.
-     *
+     * <p/>
      * This does not actually add any values to the list.
      * Use {@link #setDefaults(Object...)} to set default values for indexes which will be added to the list.
      *
@@ -107,6 +108,7 @@ public abstract class ListOption extends Option {
     /**
      * Get the default value for the specified index.
      * If no index specific default has been set with {@link #setDefaults(Object...)} it will return the default.
+     *
      * @param index The index of the default to get.
      * @return The default value for the specified index. (May be {@code null}!)
      */
@@ -121,6 +123,7 @@ public abstract class ListOption extends Option {
      * Set the default values.
      * The order you specify the values will be the indexes of the the values.
      * The value must of the same type as the raw class type of the single option. So a IntList can only have an integer as default option here.
+     *
      * @param defaultValues Object array with default values for this list.
      * @return The option instance.
      */
@@ -143,6 +146,7 @@ public abstract class ListOption extends Option {
 
     /**
      * Get the minimum amount of required values this list must have.
+     *
      * @return The minimum amount of values the list must have.
      */
     public int getMinValues() {
@@ -152,6 +156,7 @@ public abstract class ListOption extends Option {
     /**
      * Set the minimum amount of required values in this list.
      * Set to -1 or 0 to not have a minimum requirement.
+     *
      * @param minValues The amount of values this list must have.
      * @return The option instance.
      */
@@ -163,6 +168,7 @@ public abstract class ListOption extends Option {
 
     /**
      * Get the maximum amount of allowed values this list can have.
+     *
      * @return The maximum amount of values this list can have.
      */
     public int getMaxValues() {
@@ -172,6 +178,7 @@ public abstract class ListOption extends Option {
     /**
      * Set the maximum amount of allowed values in this list.
      * Set to -1 to not have a maximum limit.
+     *
      * @param maxValues The amount of values allowed in this list.
      * @return The option instance.
      */
@@ -201,7 +208,7 @@ public abstract class ListOption extends Option {
 
         //Remove values that exceed limit
         while (maxValues > 0 && value.size() > maxValues) {
-            value.remove(value.size()-1);
+            value.remove(value.size() - 1);
         }
     }
 
@@ -281,7 +288,7 @@ public abstract class ListOption extends Option {
         }
         if (index >= value.size()) {
             value.add(getSingleOption(index));
-            index = value.size()-1;
+            index = value.size() - 1;
         }
         SingleOption option = value.get(index);
         boolean result = option.parse(input);
@@ -300,7 +307,7 @@ public abstract class ListOption extends Option {
         }
         if (index >= value.size()) {
             value.add(getSingleOption(index));
-            index = value.size()-1;
+            index = value.size() - 1;
         }
         SingleOption option = value.get(index);
         boolean result = option.parse(player, input);

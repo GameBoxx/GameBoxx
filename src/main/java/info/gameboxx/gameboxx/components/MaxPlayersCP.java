@@ -64,11 +64,12 @@ public class MaxPlayersCP extends GameComponent {
 
     @Override
     public MaxPlayersCP newInstance(GameSession session) {
-        return (MaxPlayersCP) new MaxPlayersCP(getGame()).setSession(session);
+        return (MaxPlayersCP)new MaxPlayersCP(getGame()).setSession(session);
     }
 
     /**
      * Get the max player count allowed in the arena.
+     *
      * @return The maximum player amount allowed.
      */
     public int getMax() {
@@ -76,7 +77,7 @@ public class MaxPlayersCP extends GameComponent {
     }
 
     private static class Events extends ComponentListener {
-        
+
         @EventHandler
         private void onJoin(PlayerJoinSessionEvent event) {
             GameSession session = event.getJoinedSession();
@@ -89,7 +90,7 @@ public class MaxPlayersCP extends GameComponent {
 
             if (playerCount >= maxPlayers) {
                 event.setCancelled(true);
-                
+
             } else if (playerCount + 1 >= maxPlayers) {
                 //Reduce countdown when max players have joined.
                 if (session.hasComponent(CountdownCP.class)) {
@@ -101,6 +102,6 @@ public class MaxPlayersCP extends GameComponent {
                 }
             }
         }
-        
+
     }
 }

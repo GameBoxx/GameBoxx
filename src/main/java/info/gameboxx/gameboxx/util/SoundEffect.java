@@ -43,6 +43,7 @@ public class SoundEffect {
 
     /**
      * Creates a new SoundEffect instance with the specified volume and pitch.
+     *
      * @param sound The {@link Sound} effect.
      * @param volume The volume (This should be a float between 0,2)
      * @param pitch The pitch (This should be a float between 0,2)
@@ -55,6 +56,7 @@ public class SoundEffect {
 
     /**
      * Creates a new SoundEffect instance with default volume and pitch.
+     *
      * @param sound The {@link Sound} effect.
      */
     public SoundEffect(Sound sound) {
@@ -63,9 +65,10 @@ public class SoundEffect {
 
     /**
      * Creates a new SoundEffect instance with the specified volume and pitch.
+     *
      * @param customSound The name of the custom sound effect.
-     *                    This name must be the name of a sound defined in a server resource pack.
-     *                    If no sound is found with this name and you play the sound nothing will happen.
+     * This name must be the name of a sound defined in a server resource pack.
+     * If no sound is found with this name and you play the sound nothing will happen.
      * @param volume The volume (This should be a float between 0,2)
      * @param pitch The pitch (This should be a float between 0,2)
      */
@@ -77,9 +80,10 @@ public class SoundEffect {
 
     /**
      * Creates a new SoundEffect instance with default volume and pitch.
+     *
      * @param customSound The name of the custom sound effect.
-     *                    This name must be the name of a sound defined in a server resource pack.
-     *                    If no sound is found with this name and you play the sound nothing will happen.
+     * This name must be the name of a sound defined in a server resource pack.
+     * If no sound is found with this name and you play the sound nothing will happen.
      */
     public SoundEffect(String customSound) {
         this.customSound = customSound;
@@ -87,6 +91,7 @@ public class SoundEffect {
 
     /**
      * Get the {@link Sound} effect.
+     *
      * @return The {@link Sound} effect. (May be {@code null} when constructed with a custom sound!)
      */
     public Sound getSound() {
@@ -95,6 +100,7 @@ public class SoundEffect {
 
     /**
      * Get the name of the custom sound effect.
+     *
      * @return The name of the custom sound effect. (May be {@code null} when constructed with a regular sound!)
      */
     public String getCustomSound() {
@@ -103,6 +109,7 @@ public class SoundEffect {
 
     /**
      * Set the {@link Sound} effect.
+     *
      * @param sound The {@link Sound} effect.
      */
     public void setSound(Sound sound) {
@@ -113,6 +120,7 @@ public class SoundEffect {
      * Set the custom sound effect.
      * This name must be the name of a sound defined in a server resource pack.
      * If no sound is found with this name and you play the sound nothing will happen.
+     *
      * @param customSound Name of the custom sound effect.
      */
     public void setCustomSound(String customSound) {
@@ -121,6 +129,7 @@ public class SoundEffect {
 
     /**
      * Get the volume for the sound.
+     *
      * @return The volume.
      */
     public float getVolume() {
@@ -129,6 +138,7 @@ public class SoundEffect {
 
     /**
      * Set the volume for the sound.
+     *
      * @param volume The volume. (This should be a float between 0,2)
      */
     public void setVolume(float volume) {
@@ -137,6 +147,7 @@ public class SoundEffect {
 
     /**
      * Get the pitch for the sound.
+     *
      * @return The pitch.
      */
     public float getPitch() {
@@ -145,6 +156,7 @@ public class SoundEffect {
 
     /**
      * SEt the pitch for the sound.
+     *
      * @param pitch The pitch. (This should be a float between 0,2)
      */
     public void setPitch(float pitch) {
@@ -153,6 +165,7 @@ public class SoundEffect {
 
     /**
      * Play the sound for the player only at the player location.
+     *
      * @see Player#playSound(Location, Sound, float, float)
      */
     public void play(Player player) {
@@ -161,6 +174,7 @@ public class SoundEffect {
 
     /**
      * Play the sound for the player only at the specified location.
+     *
      * @see Player#playSound(Location, Sound, float, float)
      */
     public void play(Player player, Location location) {
@@ -173,6 +187,7 @@ public class SoundEffect {
 
     /**
      * Play the sound for the player only at the player location with a certain offset.
+     *
      * @see Player#playSound(Location, Sound, float, float)
      */
     public void play(Player player, double offsetX, double offsetY, double offsetZ) {
@@ -181,6 +196,7 @@ public class SoundEffect {
 
     /**
      * Play the sound for all players in the specified world.
+     *
      * @see Player#playSound(Location, Sound, float, float)
      */
     public void play(World world) {
@@ -190,6 +206,7 @@ public class SoundEffect {
     /**
      * Play the sound for all players in the specified world.
      * The sound will be played at each players location with the specified offset.
+     *
      * @see Player#playSound(Location, Sound, float, float)
      */
     public void play(World world, double offsetX, double offsetY, double offsetZ) {
@@ -199,6 +216,7 @@ public class SoundEffect {
     /**
      * Play the sound for all the listed players specified.
      * The sound will be played at each players location.
+     *
      * @see Player#playSound(Location, Sound, float, float)
      */
     public void play(Collection<? extends Player> players) {
@@ -210,6 +228,7 @@ public class SoundEffect {
     /**
      * Play the sound for all the listed players specified.
      * The sound will be played at each players location with the specified offset.
+     *
      * @see Player#playSound(Location, Sound, float, float)
      */
     public void play(Collection<? extends Player> players, double offsetX, double offsetY, double offsetZ) {
@@ -221,6 +240,7 @@ public class SoundEffect {
     /**
      * Play the sound for all players nearby the specified location.
      * <b>This does not support custom sounds!</b>
+     *
      * @see World#playSound(Location, Sound, float, float)
      */
     public void play(World world, Location location) {

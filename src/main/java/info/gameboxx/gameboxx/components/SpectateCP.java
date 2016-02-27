@@ -49,11 +49,12 @@ public class SpectateCP extends GameComponent {
 
     @Override
     public SpectateCP newInstance(GameSession session) {
-        return (SpectateCP) new SpectateCP(getGame()).setSession(session);
+        return (SpectateCP)new SpectateCP(getGame()).setSession(session);
     }
 
     /**
      * Get the list with spectating players.
+     *
      * @return List of spectating players their {@link UUID}s
      */
     public List<UUID> getSpectators() {
@@ -62,6 +63,7 @@ public class SpectateCP extends GameComponent {
 
     /**
      * Checks whether or not the specified players {@link UUID} is in the spectator list.
+     *
      * @param player The players {@link UUID} to check.
      * @return True when the spectator list contains the players {@link UUID}.
      */
@@ -71,6 +73,7 @@ public class SpectateCP extends GameComponent {
 
     /**
      * Add the given players {@link UUID} to the spectator list.
+     *
      * @param player The players {@link UUID} to add.
      */
     public void addSpectator(UUID player) {
@@ -79,6 +82,7 @@ public class SpectateCP extends GameComponent {
 
     /**
      * Remove the given players {@link UUID} from the spectator list.
+     *
      * @param player The players {@link UUID} to remove.
      */
     public void removeSpectator(UUID player) {

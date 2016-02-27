@@ -42,35 +42,35 @@ import java.util.Map;
 /**
  * Mainly used for getting translatable messages, formatting and displaying messages.
  * This class stores cached messages from {@link MessageConfig} files. ({@link Msg#setMessages(Map)})
- *
+ * <p/>
  * <p>The proper usage of this is to use the static {@link Msg#get(String, Param...)}.
  * Which will give you the {@link Msg} instance.
  * You can then apply more formatting or display it using the display methods.
  * <b>By default it already colors messages!</b>
- *
+ * <p/>
  * <p><b>After displaying the message, changes in formatting and params etc won't affect the JSON message!</b>
  * The JSON message will only be parsed once for displaying and it's then cached for when you want to display it multiple times using the same {@link Msg} instance.
  * If you really have to you can call {@link #toJSON()} after reformatting and before displaying again.
- *
+ * <p/>
  * <p>You can also use this for regular text messages that aren't configured.
  * Just pass the string in the constructor for example: {@code new Msg("[[hover||text]]").send(player)}
  * See {@link #Msg(String)} or use the static method {@link Msg#fromString(String, Param...)}
- *
+ * <p/>
  * <p><b>Parameters</b>
  * Parameters can be set in messages and those will be replaced.
  * See {@link #params(Param...)} for details and {@link Param}.
- *
+ * <p/>
  * <p><b>JSON</b>
  * Messages can have the custom JSON Syntax like [[this shows on hover||Hover over me!]] for example.
  * There are several JSON actions see this list for more details and the syntax. {{@link TextAction}}
  * It uses the {@link TextParser} for parsing the custom syntax.
- *
+ * <p/>
  * <p>JSON Messages are cached within the {@link Msg} instance.
  * This means you can not format a JSON message after displaying it unless you manually call {@link #toJSON()}.
- *
+ * <p/>
  * <p><b>Placeholders</b>
  * TODO: IMPLEMENT
- *
+ * <p/>
  * <p><b>Displaying</b>
  * Messages can be sent to a player or multiple players with {@link #send(Player...)}
  * Messages can be sent to the action bar too with {@link #sendBar(Player...)}
@@ -92,14 +92,14 @@ public class Msg {
     /**
      * Construct a new message with the specified string message.
      * <p><b>This is not a message key!</b>
-     *
+     * <p/>
      * <p>By default it will color messages.
      * You can always use {@link #removeClr()} or {@link #stripClr()} to remove/strip the color.
-     *
+     * <p/>
      * <p>See {@link Msg#fromString(String, Param...)} for more details.
      *
      * @param message A regular string with a custom message.
-     *                Just like configurable message this may contain custom JSON syntax and such.
+     * Just like configurable message this may contain custom JSON syntax and such.
      */
     public Msg(String message) {
         this.original = message;
@@ -120,7 +120,7 @@ public class Msg {
     /**
      * Color the message by converting color codes like '&a' ot chat colors.
      * <p>Uses {@link Str#color(String)}
-     *
+     * <p/>
      * <p><b>By default messages get colored already.</b>
      * We've made it that way because in 99% of the cases you would want colored messages.
      * You can use {@link #removeClr()} to change the color back to color codes or {@link #stripClr()} to completely get rid of colors.
@@ -159,7 +159,7 @@ public class Msg {
     /**
      * Wrap the message to a specific length by splitting the message over multiple lines.
      * <p>Uses {@link Str#wrapString(String, int)}
-     *
+     * <p/>
      * <p>A new line symbol '\n' will be added at the end of words that are too long.
      * Words will never be cut in half using this wrapping method even if they exceed the length.
      *
@@ -174,7 +174,7 @@ public class Msg {
     /**
      * Wrap the message to a specific length by splitting the message over multiple lines.
      * <p>Uses {@link Str#wrapStringExact(String, int)}
-     *
+     * <p/>
      * <p>A new line symbol '\n' will be added at the specified length
      * Words will be cut in half using this wrapping method.
      *
@@ -221,23 +221,23 @@ public class Msg {
 
     /**
      * Replaces parameters in the string with values specified.
-     *
+     * <p/>
      * <p>For example a string like 'My name is &lt;name&gt;' and you provide {@code Param.P("name", "rojoss")} it would return 'My name is rojoss'
      * <b>Notice how there is no &lt; and &gt; sign around the parameter name for {@link Param}!</b>
      * If the message doesn't have parameters specified nothing will happen.
-     *
+     * <p/>
      * <p><b>No need to call this for messages from {@link Msg#get(String, Param...)} as that already replaces the specified params using this method</b>
      * <p>It does not affect JSON messages unless used before parsing to JSON.
-     *
+     * <p/>
      * <p>It supports capitalization for parameters too.
      * For example if you put &lt;Name&gt; it would be replaced with Rojoss and if you put &lt;NAME&gt; it would be ROJOSS.
      * Lowercase parameter names will use the value provided in the parameter.
      * The parameter can be prefixed with a underscore to force the value lowercase like &lt;_name&gt;
      *
-     * @see Param
      * @param params The list of parameters to replace.
-     *               The &lt;p&gt; parameter is reserved and this gets replaced with global prefix.
+     * The &lt;p&gt; parameter is reserved and this gets replaced with global prefix.
      * @return This msg instance.
+     * @see Param
      */
     public Msg params(Param... params) {
         if (!message.contains(Character.toString(PARAM_OPEN)) || !message.contains(Character.toString(PARAM_CLOSE))) {
@@ -260,17 +260,17 @@ public class Msg {
 
     /**
      * Formats the message to JSON format.
-     *
+     * <p/>
      * <p><b>Important: Only use this when you want to force the JSON parsing.</b>
-     *
+     * <p/>
      * <p>By default it will automatically parse once to JSON before displaying the message.
      * The JSON string will be cached and you can manually call this to reparse the JSON.
      * The reason you'd wanna do that is because after the JSON message is cached any formatting will not update the JSON message.
      * For example when you display the message, wrap it and display it again the second display will be the same message.
-     *
+     * <p/>
      * <p>When using {@link #get()} it will also format the message to JSON if it's not yet cached.
      * So really, the only reason to call this is to force parse the json again.
-     *
+     * <p/>
      * <p>It uses the {@link TextParser} for parsing the input.
      * Syntax for all the actions can be used. See {@link TextAction} for the syntax for each action.
      *
@@ -287,18 +287,18 @@ public class Msg {
 
     /**
      * Send the message to the specified {@link CommandSender}.
-     *
+     * <p/>
      * <p>If the sender is a {@link Player} it will try to send the JSON formatted message.
      * If not, it will send the raw message. (also if there is no valid JSON)
      * If the JSON is invalid it will also send an error message to the console.
-     *
+     * <p/>
      * <p><b>Raw messages will still have params replaced, colors and other formatting but no JSON.</b>
      *
      * @param sender The {@link CommandSender} to send the message to.
      */
     public void send(CommandSender sender) {
         if (sender instanceof Player && isValidJSON()) {
-            NMS.get().getChat().send(json, (Player) sender);
+            NMS.get().getChat().send(json, (Player)sender);
         } else {
             sendRaw(sender);
         }
@@ -306,10 +306,10 @@ public class Msg {
 
     /**
      * Send the raw message to the specified {@link CommandSender}.
-     *
+     * <p/>
      * <p>Unlike {@link #send(CommandSender)} this does not send the JSON message to players.
      * It will always send the raw formatted message.
-     *
+     * <p/>
      * <p><b>Raw messages will still have params replaced, colors and other formatting but no JSON.</b>
      *
      * @param sender The {@link CommandSender} to send the message to.
@@ -320,10 +320,10 @@ public class Msg {
 
     /**
      * Send the raw message to the specified array of {@link CommandSender}s.
-     *
+     * <p/>
      * <p>Unlike {@link #send(CommandSender)} this does not send the JSON message to players.
      * It will always send the raw formatted message.
-     *
+     * <p/>
      * <p><b>Raw messages will still have params replaced, colors and other formatting but no JSON.</b>
      * By default this will convert color codes automatically.
      *
@@ -337,10 +337,10 @@ public class Msg {
 
     /**
      * Send the raw message to the specified collection of {@link CommandSender}s.
-     *
+     * <p/>
      * <p>Unlike {@link #send(CommandSender)} this does not send the JSON message to players.
      * It will always send the raw formatted message.
-     *
+     * <p/>
      * <p><b>Raw messages will still have params replaced, colors and other formatting but no JSON.</b>
      * By default this will convert color codes automatically.
      *
@@ -354,7 +354,7 @@ public class Msg {
 
     /**
      * Try to send a JSON formatted message to the specified array of {@link Player}s.
-     *
+     * <p/>
      * <p>If the JSON is invalid it will send the raw message {@link #sendRaw(CommandSender)}
      * It will also send an error message to the console.
      *
@@ -370,7 +370,7 @@ public class Msg {
 
     /**
      * Try to send a JSON formatted message to the specified collection of {@link Player}s.
-     *
+     * <p/>
      * <p>If the JSON is invalid it will send the raw message {@link #sendRaw(CommandSender)}
      * It will also send an error message to the console.
      *
@@ -387,10 +387,10 @@ public class Msg {
 
     /**
      * Try to send a JSON formatted message to the specified {@link Player} their action bar. (above hotbar)
-     *
+     * <p/>
      * <p>If the JSON is invalid it will send the raw message {@link #sendRaw(CommandSender)} as a regular message.
      * It will also send an error message to the console.
-     *
+     * <p/>
      * <p>Note that JSON actions won't really do anything on the actionbar except for colors and such.
      * It's still required to parse the message to JSON for coloring and such.
      *
@@ -406,10 +406,10 @@ public class Msg {
 
     /**
      * Try to send a JSON formatted message to the specified array of {@link Player}s their action bar. (above hotbar)
-     *
+     * <p/>
      * <p>If the JSON is invalid it will send the raw message {@link #sendRaw(CommandSender...)} as a regular message.
      * It will also send an error message to the console.
-     *
+     * <p/>
      * <p>Note that JSON actions won't really do anything on the actionbar except for colors and such.
      *
      * @param players Array with players to send the action bar message to.
@@ -424,10 +424,10 @@ public class Msg {
 
     /**
      * Try to send a JSON formatted message to the specified collection of {@link Player}s their action bar. (above hotbar)
-     *
+     * <p/>
      * <p>If the JSON is invalid it will send the raw message {@link #sendRaw(CommandSender...)} as a regular message.
      * It will also send an error message to the console.
-     *
+     * <p/>
      * <p>Note that JSON actions won't really do anything on the actionbar except for colors and such.
      *
      * @param players Collection with players to send the action bar message to.
@@ -442,9 +442,9 @@ public class Msg {
 
     /**
      * Checks whether or not the message has been parsed to JSON and if the JSON is invalid.
-     *
+     * <p/>
      * <p>This is mainly used for the send methods to check whether to send a JSON message or regular message.
-     *
+     * <p/>
      * <p>If there is a JSON message but it's invalid an error will be sent to the console!
      * It will fallback to regular messages when the JSON fails for display methods.
      *
@@ -460,7 +460,8 @@ public class Msg {
             return true;
         } catch (ParseException e) {
             GameBoxx.get().error("Invalid JSON found for the message '" + original + "'! Error: " + e.getMessage());
-        } catch (Exception e) {}
+        } catch (Exception e) {
+        }
         return false;
     }
 
@@ -472,7 +473,7 @@ public class Msg {
 
     /**
      * Get the JSON formatted message.
-     *
+     * <p/>
      * <p><b>The JSON message returned may have malformed JSON!</b>
      * The {@link TextParser} is pretty robust but in some rare cases with weird user input it might produce malformed JSON.
      * You can use {@link #isValidJSON()} to validate that it's valid.
@@ -488,12 +489,12 @@ public class Msg {
 
     /**
      * Get the raw formatted message.
-     *
+     * <p/>
      * <p>In this case raw does not mean the original raw message from the config or the one specified in the constructor.
      * The raw message can have params replaces, colors and other formatting.
      *
-     * @see #getOriginal()
      * @return The raw formatted message.
+     * @see #getOriginal()
      */
     public String getRaw() {
         return message;
@@ -501,7 +502,7 @@ public class Msg {
 
     /**
      * Get the original message that was retrieved from the {@link MessageConfig} or that was specified in the constructor.
-     *
+     * <p/>
      * <p>This message does not contain any formatting and it will have all raw params and such.
      *
      * @return The original message without any changes.
@@ -512,7 +513,7 @@ public class Msg {
 
     /**
      * Checks whether or not this message was undefined.
-     *
+     * <p/>
      * <p>This can be used for messages retrieved by key.
      * It will compare the original message with the {@link #UNDEFINED} value.
      *
@@ -542,14 +543,14 @@ public class Msg {
 
     /**
      * Get the message for the specified key from a {@link MessageConfig}.
-     *
+     * <p/>
      * <p>Any parameters in the message will be replaced with the ones you specified (OPTIONAL!)
      *
      * @param key The key of the message to retrieve.
-     *            This message key must be the path to the message in a config file.
-     *            Use a dot '.' for different sections for example 'player.invalid' to get the invalid message within the player section.
+     * This message key must be the path to the message in a config file.
+     * Use a dot '.' for different sections for example 'player.invalid' to get the invalid message within the player section.
      * @param params optional list of parameters to replace in the message.
-     *               See {@link #params(Param...)} for details.
+     * See {@link #params(Param...)} for details.
      * @return {@link Msg} instance with the message at the specified key or {@link #UNDEFINED} when there is no message with the specified key.
      */
     public static Msg get(String key, Param... params) {
@@ -558,18 +559,18 @@ public class Msg {
 
     /**
      * Get the message for the specified key from a {@link MessageConfig} as a {@link String}.
-     *
+     * <p/>
      * <p>Normally with {@link Msg#get(String, Param...)} you get a {@link Msg} instance.
      * If you KNOW that there won't be any other formatting and that the message CAN'T be JSON formatted you can use this.
      * It will just get the message at the specified key from a {@link MessageConfig} and return it as a string.
-     *
+     * <p/>
      * <p><b>Only use this if you KNOW that you don't have to do any formatting and have to display it somewhere custom.</b>
      *
      * @param key The key of the message to retrieve.
-     *            This message key must be the path to the message in a config file.
-     *            Use a dot '.' for different sections for example 'player.invalid' to get the invalid message within the player section.
+     * This message key must be the path to the message in a config file.
+     * Use a dot '.' for different sections for example 'player.invalid' to get the invalid message within the player section.
      * @param params optional list of parameters to replace in the message.
-     *               See {@link #params(Param...)} for details.
+     * See {@link #params(Param...)} for details.
      * @return {@link String} with the message at the specified key or {@link #UNDEFINED} when there is no message with the specified key.
      */
     public static String getString(String key, Param... params) {
@@ -586,17 +587,17 @@ public class Msg {
 
     /**
      * Get a new {@link Msg} with the specified text.
-     *
+     * <p/>
      * <p>This is the same as creating a new instance with {@link #Msg(String)}.{@link #params(Param...)};
-     *
+     * <p/>
      * <p>Any parameters in the message will be replaced with the ones you specified (OPTIONAL!)
-     *
+     * <p/>
      * <p><b>Note: It's recommended to create translatable/configurable strings using a {@link MessageConfig}</b>
      *
      * @param message A regular string with a custom message.
-     *                Just like configurable message this may contain custom JSON syntax and such.
+     * Just like configurable message this may contain custom JSON syntax and such.
      * @param params optional list of parameters to replace in the message.
-     *               See {@link #params(Param...)} for details.
+     * See {@link #params(Param...)} for details.
      * @return {@link Msg} instance with the message at the specified key or {@link #UNDEFINED} when there is no message with the specified key.
      */
     public static Msg fromString(String message, Param... params) {
@@ -610,7 +611,7 @@ public class Msg {
     /**
      * Set/update all the specified messages.
      * When a message with the same key is already registered it will be overwritten!
-     *
+     * <p/>
      * There should be no need to call this as the API already does this internally.
      * It gets called when registering a {@link MessageConfig}, when loading/reloading a message config and when updating a message config.
      * Also, when the language gets changed all messages from all configs will be updated.
@@ -624,7 +625,7 @@ public class Msg {
     /**
      * Set/update the specified message.
      * When a message with the same key is already registered it will be overwritten!
-     *
+     * <p/>
      * There should be no need to call this as the API already does this internally.
      * It gets called when registering a {@link MessageConfig}, when loading/reloading a message config and when updating a message config.
      * Also, when the language gets changed all messages from all configs will be updated.
@@ -639,6 +640,7 @@ public class Msg {
 
     /**
      * Clone the message by creating a copy of the original message, raw message and JSON message.
+     *
      * @return A new {@link Msg} with a copy of the message values.
      */
     @Override

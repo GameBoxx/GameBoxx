@@ -78,13 +78,13 @@ public class LocationOption extends SingleOption {
             }
             if (input.startsWith("#")) {
                 value = playerOption.getValue().getTargetBlock(Utils.TRANSPARENT_MATERIALS, 64).getLocation();
-            } else  {
+            } else {
                 value = playerOption.getValue().getLocation();
             }
             return true;
         }
 
-        Location location = new Location(null, 0,0,0, 0f,0f);
+        Location location = new Location(null, 0, 0, 0, 0f, 0f);
 
 
         //Split string by semicolon like x,y,z:world or x,y,z:player
@@ -206,6 +206,6 @@ public class LocationOption extends SingleOption {
 
     @Override
     public LocationOption clone() {
-        return (LocationOption) new LocationOption(name, (Location) defaultValue).setDescription(description).setFlag(flag);
+        return (LocationOption)new LocationOption(name, (Location)defaultValue).setDescription(description).setFlag(flag);
     }
 }

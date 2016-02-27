@@ -41,6 +41,7 @@ public class ComponentHolder {
      * Adds a new component to the game.
      * If the game already had a component of the provided type it will return the previous component.
      * It won't overwrite the component.
+     *
      * @param component The component instance to add.
      * @return The added component or the previous component if it already had a component of that type.
      */
@@ -51,6 +52,7 @@ public class ComponentHolder {
     /**
      * Gets a component instance that has been added to the game.
      * Will return null if the game doesn't have the provided component type.
+     *
      * @param <T> The type of component to get.
      * @return A GameComponent or {@code null} if the game has no component of the specified type.
      */
@@ -60,6 +62,7 @@ public class ComponentHolder {
 
     /**
      * Check if the game has a component of the specified type.
+     *
      * @param component The component type to check for.
      * @return True when the game has a component of the specified type.
      */
@@ -69,6 +72,7 @@ public class ComponentHolder {
 
     /**
      * Get a map with all the components added to the game.
+     *
      * @return Map with all components where the key is the Class type and the value is the added instance.
      */
     public Map<Class<? extends GameComponent>, GameComponent> getComponents() {

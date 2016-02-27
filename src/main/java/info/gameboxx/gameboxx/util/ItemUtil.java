@@ -67,6 +67,7 @@ public class ItemUtil {
 
     /**
      * Compare the given item with the match item.
+     *
      * @param item The item to compare.
      * @param match The match item to compare with.
      * @param exact Does the amount, durability, meta and name need to match?
@@ -78,6 +79,7 @@ public class ItemUtil {
 
     /**
      * Compare the given item with the match item.
+     *
      * @param item The item to compare.
      * @param match The match item to compare with.
      * @param amount Does the amount need to match?
@@ -90,6 +92,7 @@ public class ItemUtil {
 
     /**
      * Compare the given item with the match item.
+     *
      * @param item The item to compare.
      * @param match The match item to compare with.
      * @param amount Does the amount need to match?
@@ -140,6 +143,7 @@ public class ItemUtil {
 
     /**
      * Get the amount of items in the specified inventory.
+     *
      * @param inv The inventory to look in for items.
      * @param match The item to look for.
      * @param exact Does the durability, meta and name need to match?
@@ -151,6 +155,7 @@ public class ItemUtil {
 
     /**
      * Get the amount of items in the specified inventory.
+     *
      * @param inv The inventory to look in for items.
      * @param match The item to look for.
      * @param durability Does the durability need to match?
@@ -171,6 +176,7 @@ public class ItemUtil {
 
     /**
      * Check if the specified inventory contains enough of the specified item.
+     *
      * @param inv The inventory to look in for items.
      * @param match The item to look for.
      * @param amount The amount of items to check for.
@@ -183,6 +189,7 @@ public class ItemUtil {
 
     /**
      * Check if the specified inventory contains enough of the specified item.
+     *
      * @param inv The inventory to look in for items.
      * @param match The item to look for.
      * @param amount The amount of items to check for.
@@ -192,12 +199,13 @@ public class ItemUtil {
      * @return Whether or not the inventory contains enough items.
      */
     public static boolean contains(Inventory inv, ItemStack match, int amount, boolean durability, boolean meta, boolean name) {
-        return count(inv,match,durability,meta,name) >= amount;
+        return count(inv, match, durability, meta, name) >= amount;
     }
 
 
     /**
      * Remove items from a Inventory.
+     *
      * @param inv The inventory to remove the items from.
      * @param match The item to remove (used to check type, durability, name etc)
      * @param amount The amount of items to try and remove.
@@ -210,6 +218,7 @@ public class ItemUtil {
 
     /**
      * Remove items from a Inventory.
+     *
      * @param inv The inventory to remove the items from.
      * @param match The item to remove (used to check type, durability, name etc)
      * @param amount The amount of items to try and remove.
@@ -242,6 +251,7 @@ public class ItemUtil {
      * Adds an item stack to the specified inventory.
      * Items will be dropped if the inventory is full.
      * Items that exceed the max stack size will be unstacked.
+     *
      * @param inventory The inventory to add the item in.
      * @param item The item to add.
      * @return Map with excess items that didn't fit in the inventory. (This includes dropped items)
@@ -254,10 +264,11 @@ public class ItemUtil {
      * Adds an item stack to the specified inventory.
      * Items will be dropped if the inventory is full.
      * Items that exceed the max stack size will be unstacked.
+     *
      * @param inventory The inventory to add the item in.
      * @param item The item to add.
      * @param slot Try to add the item stack to this slot.
-     *             If the slot isn't empty and it can't be added to it the item will be added to the inventory normally.
+     * If the slot isn't empty and it can't be added to it the item will be added to the inventory normally.
      * @return Map with excess items that didn't fit in the inventory. (This includes dropped items)
      */
     public static HashMap<Integer, ItemStack> add(Inventory inventory, ItemStack item, int slot) {
@@ -267,6 +278,7 @@ public class ItemUtil {
     /**
      * Adds an item stack to the specified inventory.
      * Items that exceed the max stack size will be unstacked.
+     *
      * @param inventory The inventory to add the item in.
      * @param item The item to add.
      * @param dropifFull If the inventory is full should the items be dropped?
@@ -278,6 +290,7 @@ public class ItemUtil {
 
     /**
      * Adds an item stack to the specified inventory.
+     *
      * @param inventory The inventory to add the item in.
      * @param item The item to add.
      * @param dropifFull If the inventory is full should the items be dropped?
@@ -290,10 +303,11 @@ public class ItemUtil {
 
     /**
      * Adds all the items in the list of items to the specified inventory.
+     *
      * @param inventory The inventory to add the item in.
      * @param items The array of items to add.
      * @param slot Try to add the item stack to this slot.
-     *             If the slot isn't empty and it can't be added to it the item will be added to the inventory normally.
+     * If the slot isn't empty and it can't be added to it the item will be added to the inventory normally.
      * @param dropIfFull If the inventory is full should the items be dropped?
      * @param unstack Ensure the max stack size and unstack items that exceed this?
      * @return Map with excess items that didn't fit in the inventory. (This includes dropped items)
@@ -308,10 +322,11 @@ public class ItemUtil {
 
     /**
      * Adds all the items in the list of items to the specified inventory.
+     *
      * @param inventory The inventory to add the item in.
      * @param items The list of items to add.
      * @param slot Try to add the item stack to this slot.
-     *             If the slot isn't empty and it can't be added to it the item will be added to the inventory normally.
+     * If the slot isn't empty and it can't be added to it the item will be added to the inventory normally.
      * @param dropIfFull If the inventory is full should the items be dropped?
      * @param unstack Ensure the max stack size and unstack items that exceed this?
      * @return Map with excess items that didn't fit in the inventory. (This includes dropped items)
@@ -326,10 +341,11 @@ public class ItemUtil {
 
     /**
      * Adds an item stack to the specified inventory.
+     *
      * @param inventory The inventory to add the item in.
      * @param item The item to add.
      * @param slot Try to add the item stack to this slot.
-     *             If the slot isn't empty and it can't be added to it the item will be added to the inventory normally.
+     * If the slot isn't empty and it can't be added to it the item will be added to the inventory normally.
      * @param dropIfFull If the inventory is full should the items be dropped?
      * @param unstack Ensure the max stack size and unstack items that exceed this?
      * @return Map with excess items that didn't fit in the inventory. (This includes dropped items)
@@ -379,6 +395,7 @@ public class ItemUtil {
     /**
      * Clear an inventory completely.
      * This also clears armor slots for player inventories.
+     *
      * @param inventory The inventory to clear
      */
     public static void clear(Inventory inventory) {
@@ -390,6 +407,7 @@ public class ItemUtil {
 
     /**
      * Gets the location of the inventory if the inventory holder has a location.
+     *
      * @param inventory The inventory to get the location from.
      * @return The location of the inventory or null if the inventory doesn't have an location.
      */
@@ -429,7 +447,6 @@ public class ItemUtil {
         }
         return location;
     }
-
 
 
 }

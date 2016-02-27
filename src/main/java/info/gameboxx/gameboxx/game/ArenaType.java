@@ -76,6 +76,7 @@ public enum ArenaType {
 
     /**
      * Get a list with aliases for the arena type.
+     *
      * @return List with aliases.
      */
     public List<String> getAliases() {
@@ -85,6 +86,7 @@ public enum ArenaType {
     /**
      * Get an {@link ArenaType} from the specified name.
      * The name can be like GENERATE_WORLD or generateworld but it can also be an alias.
+     *
      * @param name The name/alias to get the type for.
      * @return The {@link ArenaType} from the specified name/alias or {@code null} when there is no type by the specified name.
      */
@@ -96,6 +98,7 @@ public enum ArenaType {
      * Get a map with aliases.
      * The key is the {@link ArenaType} as string and the value is a list of aliases.
      * Can be used for {@link info.gameboxx.gameboxx.util.Utils#getAliasesString(String, Map)}
+     *
      * @return Map with names and aliases.
      */
     public static Map<String, List<String>> getAliasesMap() {

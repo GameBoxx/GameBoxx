@@ -61,6 +61,7 @@ public abstract class Game extends ComponentHolder {
 
     /**
      * <b>Make sure you register your game class using the {@link GameManager#register(Game)} method!</b>
+     *
      * @param plugin The plugin instance the game belongs to.
      * @param name The name of the game like for example Spleef.
      */
@@ -81,11 +82,13 @@ public abstract class Game extends ComponentHolder {
 
 
     //region Sessions
+
     /**
      * Override this method and return your own version of the {@link GameSession}
      * Each time a new session will be created it will call this method to create the new session.
      * Create a class like SpleefSession and extend from GameSession and then do {@code return new SpleefSession(this, sessionUID);}
      * If you don't have to override anything for sessions which would be unlikely you could just use {@code return new GameSession(this, sessionUID);}
+     *
      * @param arena The arena which the session will belong to.
      * @param sessionID The unique session ID used to reference the session.
      * @return GameSession
@@ -98,6 +101,7 @@ public abstract class Game extends ComponentHolder {
 
     /**
      * Override this method and inside the method body you will add all your components.
+     *
      * @see ComponentHolder#addComponent(GameComponent)
      */
     public abstract void addComponents();
@@ -159,6 +163,7 @@ public abstract class Game extends ComponentHolder {
     /**
      * Create/Register a new {@link Arena} with the specified name.
      * This is used in the {@link info.gameboxx.gameboxx.commands.ArenaCmd} so it shouldn't be needed to manually create arenas.
+     *
      * @return The created {@link Arena} instance.
      * @throws ArenaAlreadyExistsException If an arena with the specified name already exists.
      * @throws IOException When failing to create a new config file for the arena.
@@ -179,6 +184,7 @@ public abstract class Game extends ComponentHolder {
 
     /**
      * Check if an {@link Arena} with the specified name exists or not.
+     *
      * @param arenaName The arena name to check for.
      * @return True when the arena exists.
      */
@@ -188,6 +194,7 @@ public abstract class Game extends ComponentHolder {
 
     /**
      * Get an {@link Arena} instance by it's unique ID.
+     *
      * @param arenaName The arena name to check for.
      * @return The {@link Arena} instance or {@code null} if no arena with the specified id exists.
      */
@@ -197,6 +204,7 @@ public abstract class Game extends ComponentHolder {
 
     /**
      * Get all the registered arenas for this game.
+     *
      * @return Map with arenas where the key is the lowercase arena name and the value is the arena instance.
      */
     public Map<String, Arena> getArenas() {
@@ -205,6 +213,7 @@ public abstract class Game extends ComponentHolder {
 
     /**
      * Get a list with all the registered arena names.
+     *
      * @return List of arena names.
      */
     public List<String> getArenaNames() {
@@ -218,8 +227,9 @@ public abstract class Game extends ComponentHolder {
     /**
      * Get the game config file.
      * Used for component options and for your own options.
-     * @see #registerOptions()
+     *
      * @return {@link OptionCfg} with game settings.
+     * @see #registerOptions()
      */
     public OptionCfg getConfig() {
         return config;
@@ -229,7 +239,7 @@ public abstract class Game extends ComponentHolder {
      * Register an arena option.
      * Make sure to call this from the {@link #registerOptions()} method.
      * These options will be passed on to all arenas.
-     *
+     * <p/>
      * <b>The path may not start with 'components' or 'general' as that path is reserved for component/general options!</b>
      * The path/name should be all lower cased and words should be separated with a dash 'my-awesome-option'.
      * You can use the dot '.' to create different sections like 'items.example-option'
@@ -244,7 +254,7 @@ public abstract class Game extends ComponentHolder {
     /**
      * Register a game option.
      * Make sure to call this from the {@link #registerOptions()} method.
-     *
+     * <p/>
      * <b>The path may not start with 'components' or 'general' as that path is reserved for component/general options!</b>
      * The path/name should be all lower cased and words should be separated with a dash 'my-awesome-option'.
      * You can use the dot '.' to create different sections like 'items.example-option'
@@ -259,11 +269,11 @@ public abstract class Game extends ComponentHolder {
     /**
      * Used for games to register custom game/arena options for the game.
      * These are component independent options for custom gameplay elements.
-     *
+     * <p/>
      * <b>Do not register options with a path starting with 'components' or 'general'!</b>
      * This path is reserved for component options and general game options as they get stored in the same files
      * The name/path should be all lower cased and words should be separated with a dash 'my-awesome-option'.
-     *
+     * <p/>
      * Use {@link #registerGameOption(String, Option)} to register a game option.
      * Use {@link #registerArenaOption(String, Option)} to register an arena option.
      */
@@ -291,6 +301,7 @@ public abstract class Game extends ComponentHolder {
     /**
      * Get a map with all the arena options.
      * These options are used as a template only as each {@link Arena} stores a copy of these options.
+     *
      * @return Map with arena options where the key is the path and the value is the option instance (template).
      */
     public Map<String, Option> getArenaOptions() {
@@ -308,6 +319,7 @@ public abstract class Game extends ComponentHolder {
      * So if you have like a spleef and race game in one plugin in your SpleefGame class you would override this method and return:
      * {@code return new File(plugin.getDataFolder(), "spleef");}
      * There is no need to call mkdirs();
+     *
      * @return Game folder where configuration files and game data will be stored like arenas etc.
      */
     public File getGameFolder() {
@@ -316,6 +328,7 @@ public abstract class Game extends ComponentHolder {
 
     /**
      * Get the name/type for this game. For example Spleef.
+     *
      * @return The name of the game.
      */
     public String getName() {
@@ -324,6 +337,7 @@ public abstract class Game extends ComponentHolder {
 
     /**
      * Get the plugin that owns this game. (The plugin that registered it)
+     *
      * @return {@link JavaPlugin} plugin instance.
      */
     public JavaPlugin getPlugin() {
@@ -332,6 +346,7 @@ public abstract class Game extends ComponentHolder {
 
     /**
      * Get the {@link GameBoxx} API.
+     *
      * @return The {@link GameBoxx} plugin instance.
      */
     public GameBoxx getAPI() {

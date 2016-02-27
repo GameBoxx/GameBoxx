@@ -37,6 +37,7 @@ public class Parse {
 
     /**
      * Parse a comma separated string by splitting it in to a list.
+     *
      * @param str The string to parse.
      * @return List with strings.
      */
@@ -46,6 +47,7 @@ public class Parse {
 
     /**
      * Parse a string by splitting it in to a list.
+     *
      * @param str The string to parse.
      * @param separator The regex to split with.
      * @return List with strings.
@@ -59,6 +61,7 @@ public class Parse {
 
     /**
      * Parse a comma separated string by splitting it in to a UUID list.
+     *
      * @param str The string to parse.
      * @return List with UUID's.
      */
@@ -79,6 +82,7 @@ public class Parse {
 
     /**
      * Parse a list in to a comma separated string.
+     *
      * @param list The list to parse.
      * @return String with list values comma separated.
      */
@@ -96,6 +100,7 @@ public class Parse {
     /**
      * Parse an array in to a comma separated string.
      * It used {@link Object#toString()}
+     *
      * @param objects The objects to parse.
      * @return String with list values comma separated.
      */
@@ -112,6 +117,7 @@ public class Parse {
 
     /**
      * Convert a string like 'true' to a Boolean. Returns null if it's invalid.
+     *
      * @param str
      * @return Boolean
      */
@@ -131,6 +137,7 @@ public class Parse {
 
     /**
      * Convert a string like '1' to a int. Returns null if it's invalid.
+     *
      * @param str
      * @return int
      */
@@ -144,6 +151,7 @@ public class Parse {
 
     /**
      * Convert a string like '1' to a short. Returns null if it's invalid.
+     *
      * @param str
      * @return short
      */
@@ -157,6 +165,7 @@ public class Parse {
 
     /**
      * Convert a string like '1' to a byte. Returns null if it's invalid.
+     *
      * @param str
      * @return byte
      */
@@ -170,6 +179,7 @@ public class Parse {
 
     /**
      * Convert a string like '1' to a long. Returns null if it's invalid.
+     *
      * @param str
      * @return int
      */
@@ -183,6 +193,7 @@ public class Parse {
 
     /**
      * Convert a string like '1.5' to a double. Returns null if it's invalid.
+     *
      * @param str
      * @return double
      */
@@ -196,6 +207,7 @@ public class Parse {
 
     /**
      * Convert a string like '1.12' to a float. Returns null if it's invalid.
+     *
      * @param str
      * @return float
      */
@@ -211,6 +223,7 @@ public class Parse {
 
     /**
      * Convert a uuid string to a UUID. Returns null if it's invalid.
+     *
      * @param str
      * @return uuid
      */
@@ -227,6 +240,7 @@ public class Parse {
     /**
      * Parse a block in to a string.
      * The string will be formated like x,y,z:world
+     *
      * @param input Block that needs to be parsed.
      * @return Location string with proper formatting. Will return null if the input block is null.
      */
@@ -240,6 +254,7 @@ public class Parse {
     /**
      * Parse a string to a block.
      * The string needs to have a format like: x,y,z:world
+     *
      * @param input String with location data.
      * @return The parsed Block or null if the parsing failed.
      */
@@ -258,6 +273,7 @@ public class Parse {
     /**
      * Parse a location in to a string.
      * The string will be formated like x,y,z,yaw,pitch:world (yaw and pitch can be left out of the location is a block location)
+     *
      * @param input Location that needs to be parsed.
      * @return Location string with proper formatting. Will return null if the input location is null.
      */
@@ -268,29 +284,31 @@ public class Parse {
     /**
      * Parse a location in to a string.
      * The string will be formated like x,y,z,yaw,pitch:world (yaw and pitch can be left out of the location is a block location)
+     *
      * @param input Location that needs to be parsed.
      * @param blockLocation If set to true it wont put the exact coordinates but instead it will put the block coordinates.
-     *                      By default it will check if it's a block location or a normal location and put the proper values in the string.
-     *                      So it's recommended to keep this false unless it's for display purposes.
+     * By default it will check if it's a block location or a normal location and put the proper values in the string.
+     * So it's recommended to keep this false unless it's for display purposes.
      * @return Location string with proper formatting. Will return null if the input location is null.
      */
     public static String Location(Location input, boolean blockLocation) {
         if (input == null) {
             return null;
         }
-        String x = (blockLocation || input.getX()%1 == 0) ? Integer.toString(input.getBlockX()) : Double.toString(input.getX());
-        String y = (blockLocation || input.getY()%1 == 0) ? Integer.toString(input.getBlockY()) : Double.toString(input.getY());
-        String z = (blockLocation || input.getZ()%1 == 0) ? Integer.toString(input.getBlockZ()) : Double.toString(input.getZ());
+        String x = (blockLocation || input.getX() % 1 == 0) ? Integer.toString(input.getBlockX()) : Double.toString(input.getX());
+        String y = (blockLocation || input.getY() % 1 == 0) ? Integer.toString(input.getBlockY()) : Double.toString(input.getY());
+        String z = (blockLocation || input.getZ() % 1 == 0) ? Integer.toString(input.getBlockZ()) : Double.toString(input.getZ());
 
         if (input.getYaw() == 0 && input.getPitch() == 0) {
-            return  x + "," + y + "," + z + ":" + input.getWorld().getName();
+            return x + "," + y + "," + z + ":" + input.getWorld().getName();
         }
-        return  x + "," + y + "," + z + "," + input.getYaw() + "," + input.getPitch() + ":" + input.getWorld().getName();
+        return x + "," + y + "," + z + "," + input.getYaw() + "," + input.getPitch() + ":" + input.getWorld().getName();
     }
 
     /**
      * Parse a string to a location.
      * The string needs to have a format like: x,y,z:world or x,y,z,yaw,pitch:world
+     *
      * @param input String with location data.
      * @return The parsed Location or null if the parsing failed.
      */
@@ -336,6 +354,7 @@ public class Parse {
 
     /**
      * Get a string (r,g,b) from a color.
+     *
      * @param color The color to parse
      * @return String with r,g,b color format.
      */
@@ -349,6 +368,7 @@ public class Parse {
     /**
      * Get a Color from a string.
      * The string can be either rrr,ggg,bbb or #hexhex or without the hashtag.
+     *
      * @param string The string to parse.
      * @return The Color that has been parsed.
      */

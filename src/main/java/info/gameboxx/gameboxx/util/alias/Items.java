@@ -48,9 +48,10 @@ public class Items {
      * Get the {@link ItemData} for the specified MaterialData.
      * If there is no item registered with the provided materialdata it will return the item with data value 0.
      * If the material is not registered at all it will return a new blank item data without aliases and just the material as name.
-     * @see #getItem(Material, short)
+     *
      * @param materialData The material and data to look up.
      * @return The {@link ItemData} for the given material and data containing display name, aliases etc.
+     * @see #getItem(Material, short)
      */
     public static ItemData getItem(MaterialData materialData) {
         return getItem(materialData.getItemType(), materialData.getData());
@@ -60,6 +61,7 @@ public class Items {
      * Get the {@link ItemData} for the specified material and data.
      * If there is no item registered with the provided material and data it will return the item with data value 0.
      * If the material is not registered at all it will return a new blank item data without aliases and just the material as name.
+     *
      * @param material The material to look up.
      * @param data The material data to look up. (damage/durability/data value)
      * @return The {@link ItemData} for the given material and data containing display name, aliases etc.
@@ -80,17 +82,18 @@ public class Items {
      * Get the {@link ItemData} for the specified string.
      * The string can be any of the following. (Casing doesn't matter)
      * <ul>
-     *     <li>Material name with underscores (DIAMOND_SWORD)</li>
-     *     <li>Material name without underscores (DIAMONDSWORD)</li>
-     *     <li>Display name with underscores (Diamond_Sword)</li>
-     *     <li>Display name without underscores (DiamondSword)</li>
-     *     <li>Any of the aliases (diasword, dsword, etc)</li>
-     *     <li>The item ID</li>
+     * <li>Material name with underscores (DIAMOND_SWORD)</li>
+     * <li>Material name without underscores (DIAMONDSWORD)</li>
+     * <li>Display name with underscores (Diamond_Sword)</li>
+     * <li>Display name without underscores (DiamondSword)</li>
+     * <li>Any of the aliases (diasword, dsword, etc)</li>
+     * <li>The item ID</li>
      * </ul>
      * You can follow up the string with a semicolon(:), hashtag(#), dot(.) or a dash(-) and the data.
      * For example wool:9, cloth#9, whitewool.9 or 35-9 would return Cyan Wool.
      * When you specify a specific item with data like cyanwool and specify data the data will be used.
      * So if you do cyanwool:10 you would get Purple Wool and not Cyan Wool.
+     *
      * @param string The string to find matching {@link ItemData} for. (See description for values)
      * @return The {@link ItemData} that matches the string. (Will be {@code null} when there is no match found!)
      */
@@ -124,7 +127,8 @@ public class Items {
             if (mat != null) {
                 return getItem(mat, data);
             }
-        } catch (Exception e) {}
+        } catch (Exception e) {
+        }
 
         //Get item from string
         if (matchLookup.containsKey(search)) {
@@ -139,6 +143,7 @@ public class Items {
     /**
      * Find matching {@link MaterialData} for the specified string.
      * See {@link #getItem(String)} to know what strings will match.
+     *
      * @param match The string to find a match with. {@link #getItem(String)}
      * @return The {@link MaterialData} that matches the string. (Will be {@code null} when there is no match found!)
      */
@@ -153,9 +158,10 @@ public class Items {
     /**
      * Get the display name for the specified item match string.
      * See {@link #getItem(String)} to know what strings will match.
-     * @see ItemData#getName()
+     *
      * @param match The string to find a match with. {@link #getItem(String)}
      * @return The display name for the matched item. (Will return match string when there is no match found!)
+     * @see ItemData#getName()
      */
     public static String getName(String match) {
         ItemData alias = getItem(match);
@@ -169,10 +175,11 @@ public class Items {
      * Get the display name for the specified materialdata item.
      * For example if you put WOOL with data 9 it would return 'Cyan Wool'.
      * If no name is found with the data the data value will be appended like 'Wool:9'
-     * @see #getItem(MaterialData)
-     * @see ItemData#getName()
+     *
      * @param materialData The materialdata to get the name from.
      * @return The display name for the specified materialdata item.
+     * @see #getItem(MaterialData)
+     * @see ItemData#getName()
      */
     public static String getName(MaterialData materialData) {
         return getName(materialData.getItemType(), materialData.getData());
@@ -182,11 +189,12 @@ public class Items {
      * Get the display name for the specified material and data item.
      * For example if you put WOOL with data 9 it would return 'Cyan Wool'.
      * If no name is found with the data the data value will be appended like 'Wool:9'
-     * @see #getItem(Material, short)
-     * @see ItemData#getName()
+     *
      * @param material The material to get the name from.
      * @param data The data to get the name from. (0 for the default name for most items)
      * @return The display name for the specified material and data item.
+     * @see #getItem(Material, short)
+     * @see ItemData#getName()
      */
     public static String getName(Material material, short data) {
         ItemData item = getItem(material, data);
@@ -201,15 +209,16 @@ public class Items {
      * If there is already an item registered with the material and data it will update it.
      * When updating the name will be set to the specified displayName and it will try to add the specified aliases.
      * If the aliases are already registered for the same item it will just ignore it.
-     * @see ItemData
+     *
      * @param displayName The display name for the item.
-     *                    Should have spaces between words and camel cased.
-     *                    For example: Diamond Sword
+     * Should have spaces between words and camel cased.
+     * For example: Diamond Sword
      * @param material The material type of the item to register.
      * @param data The material data of the item to register.
      * @param aliases Array with aliases for the item.
-     *                Aliases should be all lowercased and not contain any spaces or underscores etc.
-     *                May be null or empty.
+     * Aliases should be all lowercased and not contain any spaces or underscores etc.
+     * May be null or empty.
+     * @see ItemData
      */
     public static void register(String displayName, Material material, short data, String... aliases) {
         String key = material.toString().toLowerCase() + "-" + data;
@@ -229,7 +238,7 @@ public class Items {
 
         //Register match strings
         for (String match : item.getMatchStrings()) {
-            matchLookup.put(match,key);
+            matchLookup.put(match, key);
         }
     }
 
@@ -256,7 +265,8 @@ public class Items {
         register("Nether Brick Item", Material.NETHER_BRICK_ITEM, (short)0, "netherbi", "netherbricki", "nbrickitem", "nbricki");
         register("Soul Sand", Material.SOUL_SAND, (short)0, "nethersand", "ssand", "souls", "brownsand", "bsand", "slowsand");
         register("Glowstone", Material.GLOWSTONE, (short)0, "glowingstone", "glowstoneblock", "glowblock", "glowstoneb", "gstone");
-        register("Glowstone Dust", Material.GLOWSTONE_DUST, (short)0, "glowingstonedust", "gstonedust", "glowdust", "gdust", "gsdust", "glowingdust", "glowstoned", "glowstoneitem", "glowi", "glowstonei");
+        register("Glowstone Dust", Material.GLOWSTONE_DUST, (short)0, "glowingstonedust", "gstonedust", "glowdust", "gdust", "gsdust", "glowingdust", "glowstoned", "glowstoneitem", "glowi",
+                "glowstonei");
         register("Nether Quartz", Material.QUARTZ, (short)0, "quartzitem", "quartzi", "nquartz", "netherq", "netherqi", "nquartzi", "qua");
         register("Quartz Block", Material.QUARTZ_BLOCK, (short)0, "quartzb", "nquartzb", "quablock");
         register("Chiseled Quartz", Material.QUARTZ_BLOCK, (short)1, "chisquartz", "chizeledquartz", "chizquartz", "chiseledq", "quartzc", "quartzchis", "quartzchiz");
@@ -285,13 +295,15 @@ public class Items {
         register("Stone Brick", Material.SMOOTH_BRICK, (short)0, "smoothstone", "smoothbrick", "smoothstonebrick", "sbrick", "sstone");
         register("Mossy Stone Brick", Material.SMOOTH_BRICK, (short)1, "mossbrick", "mossybrick", "msbrick", "mosss", "mossb", "mossys", "mossyb");
         register("Cracked Stone Brick", Material.SMOOTH_BRICK, (short)2, "crackbrick", "crackedbrick", "crackstone", "crackedstone", "csbrick", "cracks", "crackb");
-        register("Chiseled Stone Brick", Material.SMOOTH_BRICK, (short)3, "chisbrick", "chizbrick", "chiseledbrick", "chiseledstone", "chizeledbrick", "chizeledstone", "chbrick", "chstone", "chiss", "chizs", "chisb", "chizb");
+        register("Chiseled Stone Brick", Material.SMOOTH_BRICK, (short)3, "chisbrick", "chizbrick", "chiseledbrick", "chiseledstone", "chizeledbrick", "chizeledstone", "chbrick", "chstone", "chiss",
+                "chizs", "chisb", "chizb");
         register("Stone Monster Egg", Material.MONSTER_EGGS, (short)0, "stoneegg", "monsteregg");
         register("Cobblestone Monster Egg", Material.MONSTER_EGGS, (short)1, "cobblestoneegg", "cobbleegg", "cobegg");
         register("Stone Brick Monster Egg", Material.MONSTER_EGGS, (short)2, "stonebrickegg", "brickegg", "smoothstoneegg", "ssegg");
         register("Mossy Stone Brick Monster Egg", Material.MONSTER_EGGS, (short)3, "mossystonebrickegg", "mossybrickegg", "mossstoneegg", "mossegg", "mossyegg", "msegg");
         register("Cracked Stone Brick Monster Egg", Material.MONSTER_EGGS, (short)4, "crackedstonebrickegg", "crackedstoneegg", "crackedbrickegg", "crackegg", "crackedegg", "csegg");
-        register("Chiseled Stone Brick Monster Egg", Material.MONSTER_EGGS, (short)5, "chiseledstonebrickegg", "chiseledstoneegg", "chizeledstoneegg", "chiseledbrickegg", "chizeledbrickegg", "chisegg", "chizegg", "chsegg");
+        register("Chiseled Stone Brick Monster Egg", Material.MONSTER_EGGS, (short)5, "chiseledstonebrickegg", "chiseledstoneegg", "chizeledstoneegg", "chiseledbrickegg", "chizeledbrickegg",
+                "chisegg", "chizegg", "chsegg");
         register("Obsidian", Material.OBSIDIAN, (short)0, "obsid", "oby", "obby");
         register("Bedrock", Material.BEDROCK, (short)0, "adminblock", "oprock", "adminrock", "adminium", "brock");
 
@@ -350,7 +362,8 @@ public class Items {
         register("Birch Sapling", Material.SAPLING, (short)2, "birchsap", "bsapling", "bsappling", "bsap");
         register("Jungle Sapling", Material.SAPLING, (short)3, "junglesap", "jsapling", "jsappling", "jsap");
         register("Acacia Sapling", Material.SAPLING, (short)4, "acaciasap", "asapling", "asappling", "asap");
-        register("Dark Oak Sapling", Material.SAPLING, (short)5, "darkoaksap", "dosapling", "dosappling", "darkosapling", "darkosappling", "darkosap", "doaksapling", "doaksappling", "doaksap", "dosap");
+        register("Dark Oak Sapling", Material.SAPLING, (short)5, "darkoaksap", "dosapling", "dosappling", "darkosapling", "darkosappling", "darkosap", "doaksapling", "doaksappling", "doaksap",
+                "dosap");
 
         //Wood
         register("Oak Plank", Material.WOOD, (short)0, "oplank", "oakwood", "oakp", "oakw", "owood", "woodenplank", "woodplank", "plankwooden", "plankwood", "plankw", "wplank");
@@ -854,7 +867,8 @@ public class Items {
         register("Water Bottle", Material.POTION, (short)0, "wbottle", "potion", "pot", "filledbottle");
         register("Awkward Potion", Material.POTION, (short)16, "awkwardpot", "awkwardp", "apotion", "apot", "awkpotion", "awkpot", "awkp");
         register("Thick Potion", Material.POTION, (short)32, "thickpot", "thickp", "tpotion", "tpot");
-        register("Mundane Potion (Extended);", Material.POTION, (short)64, "extendedmundanepotion", "emundanepot", "emundanep", "empotion", "empot", "emundpotion", "emundpot", "emundp", "mundanepote", "mundanepe", "mpotione", "mpote", "mundpotione", "mundpote", "mundpe");
+        register("Mundane Potion (Extended);", Material.POTION, (short)64, "extendedmundanepotion", "emundanepot", "emundanep", "empotion", "empot", "emundpotion", "emundpot", "emundp", "mundanepote",
+                "mundanepe", "mpotione", "mpote", "mundpotione", "mundpote", "mundpe");
         register("Mundane Potion", Material.POTION, (short)8192, "mundanepot", "mundanep", "mpotion", "mpot", "mundpotion", "mundpot", "mundp");
         register("Potion of Regeneration", Material.POTION, (short)8193);
         register("Potion of Regeneration (Extended);", Material.POTION, (short)8257);
@@ -989,7 +1003,8 @@ public class Items {
         register("Chicken Spawn Egg", Material.MONSTER_EGG, (short)93, "spawnchicken", "chickenegg", "spawnchick", "chickegg");
         register("Squid Spawn Egg", Material.MONSTER_EGG, (short)94, "spawnsquid", "squidegg");
         register("Wolf Spawn Egg", Material.MONSTER_EGG, (short)95, "spawnwolf", "wolfegg");
-        register("Mooshroom Spawn Egg", Material.MONSTER_EGG, (short)96, "spawnmooshroom", "mooshroomegg", "mushroomcowspawnegg", "mushroomcowegg", "spawnmushroomcow", "shroomcowegg", "spawnshroomcow", "shroomcowspawnegg");
+        register("Mooshroom Spawn Egg", Material.MONSTER_EGG, (short)96, "spawnmooshroom", "mooshroomegg", "mushroomcowspawnegg", "mushroomcowegg", "spawnmushroomcow", "shroomcowegg",
+                "spawnshroomcow", "shroomcowspawnegg");
         register("Ocelot Spawn Egg", Material.MONSTER_EGG, (short)98, "spawnocelot", "spawncat", "ocelotegg", "categg");
         register("Villager Spawn Egg", Material.MONSTER_EGG, (short)120, "spawnvillager", "villageregg");
         register("Bat Spawn Egg", Material.MONSTER_EGG, (short)65);

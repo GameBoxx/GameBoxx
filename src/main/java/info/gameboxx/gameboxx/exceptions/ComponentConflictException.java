@@ -29,10 +29,11 @@ import info.gameboxx.gameboxx.components.internal.GameComponent;
 
 /**
  * Thrown when validating components and the game has two conflicting components.
+ *
  * @see GameComponent#validate()
  */
 public class ComponentConflictException extends Exception {
-	public ComponentConflictException(GameComponent component, Class<? extends GameComponent> conflict) {
-		super("The component " + component.getClass().getName() + " can not be used together with " + conflict.getName() + "!");
-	}
+    public ComponentConflictException(GameComponent component, Class<? extends GameComponent> conflict) {
+        super("The component " + component.getClass().getName() + " can not be used together with " + conflict.getName() + "!");
+    }
 }

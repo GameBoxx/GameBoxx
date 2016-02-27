@@ -26,8 +26,7 @@
 package info.gameboxx.gameboxx.messages;
 
 public enum Language {
-    ENGLISH("English", "en")
-    ;
+    ENGLISH("English", "en");
 
     private String name;
     private String id;

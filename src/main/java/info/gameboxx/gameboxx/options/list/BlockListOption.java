@@ -50,7 +50,7 @@ public class BlockListOption extends ListOption {
 
     @Override
     public BlockOption getSingleOption(int index) {
-        return (BlockOption) new BlockOption(name, (Block) getDefault(index)).setDescription(description).setFlag(flag);
+        return (BlockOption)new BlockOption(name, (Block)getDefault(index)).setDescription(description).setFlag(flag);
     }
 
     @Override
@@ -81,6 +81,6 @@ public class BlockListOption extends ListOption {
 
     @Override
     public BlockListOption clone() {
-        return (BlockListOption) new BlockListOption(name, (Block)defaultValue).setDescription(description).setFlag(flag);
+        return (BlockListOption)new BlockListOption(name, (Block)defaultValue).setDescription(description).setFlag(flag);
     }
 }

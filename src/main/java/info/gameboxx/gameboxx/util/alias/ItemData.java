@@ -46,14 +46,15 @@ public class ItemData {
     /**
      * Create new ItemData.
      * There is no point creating this manually as it's used in {@link Items}
+     *
      * @param name The display name of the item.
-     *             Should have spaces between words and camel cased.
-     *             For example: Diamond Sword
+     * Should have spaces between words and camel cased.
+     * For example: Diamond Sword
      * @param type The material type
      * @param data The material data
      * @param aliases Array with aliases
-     *                Aliases should be all lowercased and not contain any spaces!
-     *                May be null or empty.
+     * Aliases should be all lowercased and not contain any spaces!
+     * May be null or empty.
      */
     public ItemData(String name, Material type, short data, String... aliases) {
         this.name = name;
@@ -64,17 +65,18 @@ public class ItemData {
         }
         this.id = type.getId();
 
-        matchStrings.add(name.toLowerCase().replace(" ",""));
-        matchStrings.add(name.toLowerCase().replace(" ","_"));
+        matchStrings.add(name.toLowerCase().replace(" ", ""));
+        matchStrings.add(name.toLowerCase().replace(" ", "_"));
         matchStrings.addAll(Arrays.asList(aliases));
         matchStrings.add(type.toString().toLowerCase());
-        matchStrings.add(type.toString().toLowerCase().replace("_",""));
+        matchStrings.add(type.toString().toLowerCase().replace("_", ""));
     }
 
     /**
      * Get the display name for the item.
      * Each word is capitalized and each word is seperated with a space.
      * For example: 'Diamond Sword'
+     *
      * @return The display name for the item.
      */
     public String getName() {
@@ -94,6 +96,7 @@ public class ItemData {
      * Get the key for the item which is used for looking up items.
      * The key has the material followed by a dash and then the data.
      * For example: 'DIAMOND_SWORD-0' or 'WOOL-9'
+     *
      * @return The key used to identify the item with {material}-{data}
      */
     public String getKey() {
@@ -102,6 +105,7 @@ public class ItemData {
 
     /**
      * Get the {@link Material} type for this item.
+     *
      * @return The {@link Material}
      */
     public Material getType() {
@@ -112,8 +116,9 @@ public class ItemData {
      * Get the material ID for this item.
      * For example for STONE this would be 1 and AIR 0.
      * <b>Note that material ID's are deprecated in the API so you should avoid using ID's!</b>
-     * @see Material#getId()
+     *
      * @return The material ID.
+     * @see Material#getId()
      */
     public int getId() {
         return id;
@@ -123,6 +128,7 @@ public class ItemData {
      * Get the data for this item.
      * Also known as durability or damage values.
      * For example to get cyan wool the data value would be 9.
+     *
      * @return The data value
      */
     public short getData() {
@@ -133,6 +139,7 @@ public class ItemData {
      * Get the set with aliases.
      * This set does not contain the material name, display name etc.
      * It only contains the custom aliases.
+     *
      * @return Set with strings for item aliases. (May be empty for some items)
      */
     public Set<String> getAliases() {
@@ -144,9 +151,10 @@ public class ItemData {
      * These aliases don't get registered in the {@link Items} class for alias matching!
      * Use {@link Items#register(String, Material, short, String...)}
      * This just add the specified aliases if the item is already registered.
+     *
      * @param aliases Array with aliases
-     *                Aliases should be all lowercased and not contain any spaces!
-     *                May be null or empty.
+     * Aliases should be all lowercased and not contain any spaces!
+     * May be null or empty.
      */
     public void addAliases(String... aliases) {
         if (aliases != null) {
@@ -160,6 +168,7 @@ public class ItemData {
      * This contains all the aliases, the display name and the material string.
      * For the display name and material string it contains a string without underscores and a string with underscores.
      * There are no spaces in match strings and they are all lowercase.
+     *
      * @return Set with all the strings that match this item.
      */
     public Set<String> getMatchStrings() {
@@ -168,9 +177,10 @@ public class ItemData {
 
     /**
      * Check whether or not this item matched with the specified match string.
-     * @see #getMatchStrings()
+     *
      * @param matchString The string to search for to check for a match.
      * @return True when there is a match and false if not.
+     * @see #getMatchStrings()
      */
     public boolean matches(String matchString) {
         return matchStrings.contains(matchString.toLowerCase());

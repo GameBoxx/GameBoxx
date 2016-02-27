@@ -39,6 +39,7 @@ public class UserManager {
 
     /**
      * Register a new {@link User}
+     *
      * @param user {@link User} instance.
      */
     public void register(User user) {
@@ -51,6 +52,7 @@ public class UserManager {
 
     /**
      * Unregister a {@link User} by name.
+     *
      * @param name {@link User} name
      */
     public void unregister(String name) {
@@ -62,6 +64,7 @@ public class UserManager {
 
     /**
      * Unregister a {@link User} by uuid.
+     *
      * @param uuid {@link User} id
      */
     public void unregister(UUID uuid) {
@@ -72,6 +75,7 @@ public class UserManager {
 
     /**
      * Get the {@link User} instance for the specified {@link OfflinePlayer}.
+     *
      * @param player The player to get the {@link User} from.
      * @return The {@link User} instance that belongs to the player.
      */
@@ -81,6 +85,7 @@ public class UserManager {
 
     /**
      * Get the {@link User} instance for the specified player {@link UUID}.
+     *
      * @param uuid The players UUID to get the {@link User} from.
      * @return The {@link User} instance that belongs to the player.
      */
@@ -94,6 +99,7 @@ public class UserManager {
     /**
      * Get the {@link User} instance for the specified player name.
      * Only use this for user input and such.
+     *
      * @param name The players name to get the {@link User} from.
      * @return The {@link User} instance that belongs to the player.
      */

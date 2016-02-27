@@ -119,6 +119,6 @@ public class IntOption extends SingleOption {
 
     @Override
     public IntOption clone() {
-        return (IntOption) new IntOption(name, (Integer)defaultValue).min(min).max(max).setDescription(description).setFlag(flag);
+        return (IntOption)new IntOption(name, (Integer)defaultValue).min(min).max(max).setDescription(description).setFlag(flag);
     }
 }

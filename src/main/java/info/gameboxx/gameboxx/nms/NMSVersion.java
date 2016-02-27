@@ -31,8 +31,7 @@ import java.util.HashMap;
  * Version numbers supported by GameBoxx for {@link NMS} classes.
  */
 public enum NMSVersion {
-    V1_8_R3,
-    ;
+    V1_8_R3,;
 
     private static final HashMap<String, NMSVersion> FROM_STRING = new HashMap<>();
 

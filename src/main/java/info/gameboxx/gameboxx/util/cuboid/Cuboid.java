@@ -60,6 +60,7 @@ public class Cuboid implements Iterable<Block>, Cloneable, ConfigurationSerializ
     /**
      * Create a cuboid based on another cuboid.
      * This wont return a new cuboid so make sure you do Cuboid cuboid = new Cuboid(prevCuboid); Or just use prevCuboid.clone();
+     *
      * @param cuboid A cuboid to clone the properties from.
      */
     public Cuboid(Cuboid cuboid) {
@@ -68,6 +69,7 @@ public class Cuboid implements Iterable<Block>, Cloneable, ConfigurationSerializ
 
     /**
      * Create a cuboid based on 2 locations.
+     *
      * @param loc1 A Location
      * @param loc2 A Location
      */
@@ -77,6 +79,7 @@ public class Cuboid implements Iterable<Block>, Cloneable, ConfigurationSerializ
 
     /**
      * Create a cuboid based on a world and 6 integers. [x1,y2,z3 - x2,y2,z2]
+     *
      * @param world The World
      * @param x1 X pos of Location 1
      * @param y1 Y pos of Location 1
@@ -91,6 +94,7 @@ public class Cuboid implements Iterable<Block>, Cloneable, ConfigurationSerializ
 
     /**
      * Create a cuboid based on a world and 2 vectors.
+     *
      * @param world The World
      * @param loc1 A Vector
      * @param loc2 A Vector
@@ -102,6 +106,7 @@ public class Cuboid implements Iterable<Block>, Cloneable, ConfigurationSerializ
     /**
      * Create a cuboid based on a world, min vector and width/height/length.
      * The width/height/length will be added to the loc vector.
+     *
      * @param world The World
      * @param loc The location to add the width/height/length to. (MIN loc)
      * @param width The width to add. (X)
@@ -114,6 +119,7 @@ public class Cuboid implements Iterable<Block>, Cloneable, ConfigurationSerializ
 
     /**
      * Create a cuboid based on a min Location and width/height/length.
+     *
      * @param loc The location to add the width/height/length to. (MIN loc)
      * @param width The width to add. (X)
      * @param height The height to add. (Y)
@@ -125,6 +131,7 @@ public class Cuboid implements Iterable<Block>, Cloneable, ConfigurationSerializ
 
     /**
      * Create a cuboid based on a worldname and 6 integers. [x1,y2,z3 - x2,y2,z2]
+     *
      * @param worldName The name of the World
      * @param x1 X pos of Location 1
      * @param y1 Y pos of Location 1
@@ -146,6 +153,7 @@ public class Cuboid implements Iterable<Block>, Cloneable, ConfigurationSerializ
     /**
      * Create a cuboid from a map like:
      * [world:{worldname}, minX:{int}, minY:{int}, minZ:{int}, maxX:{int}, maxY:{int}, maxZ:{int}]
+     *
      * @param map The map with all data
      */
     public Cuboid(Map<String, Object> map) {
@@ -161,6 +169,7 @@ public class Cuboid implements Iterable<Block>, Cloneable, ConfigurationSerializ
 
     /**
      * Check if the cuboid contains the given block.
+     *
      * @param block This block that needs to be checked.
      * @return true if it does and false if not.
      */
@@ -170,6 +179,7 @@ public class Cuboid implements Iterable<Block>, Cloneable, ConfigurationSerializ
 
     /**
      * Check if the given player is within the cuboid.
+     *
      * @param player The player that needs to be checked.
      * @return true if he is and false if not.
      */
@@ -179,6 +189,7 @@ public class Cuboid implements Iterable<Block>, Cloneable, ConfigurationSerializ
 
     /**
      * Check if the given entity is within the cuboid.
+     *
      * @param entity The Entity that needs to be checked.
      * @return true if it is and false if not.
      */
@@ -188,6 +199,7 @@ public class Cuboid implements Iterable<Block>, Cloneable, ConfigurationSerializ
 
     /**
      * Check if the cuboid contains the given location.
+     *
      * @param location The location that needs to be checked.
      * @return true if it does and false if not.
      */
@@ -197,6 +209,7 @@ public class Cuboid implements Iterable<Block>, Cloneable, ConfigurationSerializ
 
     /**
      * Check if the cuboid contains the given coordinates. x/y/z int.
+     *
      * @param locX The X position to check
      * @param locY The Y position to check
      * @param locZ The Z position to check
@@ -209,6 +222,7 @@ public class Cuboid implements Iterable<Block>, Cloneable, ConfigurationSerializ
 
     /**
      * Get the X coordinate of the minimum location
+     *
      * @return minX
      */
     public int getMinX() {
@@ -225,6 +239,7 @@ public class Cuboid implements Iterable<Block>, Cloneable, ConfigurationSerializ
 
     /**
      * Get the Y coordinate of the minimum location
+     *
      * @return minY
      */
     public int getMinY() {
@@ -241,6 +256,7 @@ public class Cuboid implements Iterable<Block>, Cloneable, ConfigurationSerializ
 
     /**
      * Get the Z coordinate of the minimum location
+     *
      * @return minZ
      */
     public int getMinZ() {
@@ -257,6 +273,7 @@ public class Cuboid implements Iterable<Block>, Cloneable, ConfigurationSerializ
 
     /**
      * Get the X coordinate of the maximum location
+     *
      * @return maxX
      */
     public int getMaxX() {
@@ -273,6 +290,7 @@ public class Cuboid implements Iterable<Block>, Cloneable, ConfigurationSerializ
 
     /**
      * Get the Y coordinate of the maximum location
+     *
      * @return maxY
      */
     public int getMaxY() {
@@ -289,6 +307,7 @@ public class Cuboid implements Iterable<Block>, Cloneable, ConfigurationSerializ
 
     /**
      * Get the Z coordinate of the maximum location
+     *
      * @return maxZ
      */
     public int getMaxZ() {
@@ -309,6 +328,7 @@ public class Cuboid implements Iterable<Block>, Cloneable, ConfigurationSerializ
      * Set the minimum location based on a bukkit Location.
      * The min and max location will be recalculated.
      * So the current min location will be set to this but it might not be the same as the new min location.
+     *
      * @param min A location used as min.
      */
     public void setPos1(Location min) {
@@ -319,6 +339,7 @@ public class Cuboid implements Iterable<Block>, Cloneable, ConfigurationSerializ
      * Set the minimum location based on a vector.
      * The min and max location will be recalculated.
      * So the current min location will be set to this but it might not be the same as the new min location.
+     *
      * @param min A vector used as min.
      */
     public void setPos1(Vector min) {
@@ -329,6 +350,7 @@ public class Cuboid implements Iterable<Block>, Cloneable, ConfigurationSerializ
      * Set the minimum location based on x/y/z coordinates.
      * The min and max location will be recalculated.
      * So the current min location will be set to this but it might not be the same as the new min location.
+     *
      * @param minX The X coordinate used as min.
      * @param minY The Y coordinate used as min.
      * @param minZ The Z coordinate used as min.
@@ -346,6 +368,7 @@ public class Cuboid implements Iterable<Block>, Cloneable, ConfigurationSerializ
      * Set the maximum location based on a bukkit Location.
      * The min and max location will be recalculated.
      * So the current max location will be set to this but it might not be the same as the new max location.
+     *
      * @param max A location used as max.
      */
     public void setPos2(Location max) {
@@ -356,6 +379,7 @@ public class Cuboid implements Iterable<Block>, Cloneable, ConfigurationSerializ
      * Set the maximum location based on a vector.
      * The min and max location will be recalculated.
      * So the current max location will be set to this but it might not be the same as the new max location.
+     *
      * @param max A vector used as max.
      */
     public void setPos2(Vector max) {
@@ -366,6 +390,7 @@ public class Cuboid implements Iterable<Block>, Cloneable, ConfigurationSerializ
      * Set the maximum location based on x/y/z coordinates.
      * The min and max location will be recalculated.
      * So the current max location will be set to this but it might not be the same as the new max location.
+     *
      * @param maxX The X coordinate used as max.
      * @param maxY The Y coordinate used as max.
      * @param maxZ The Z coordinate used as max.
@@ -379,6 +404,7 @@ public class Cuboid implements Iterable<Block>, Cloneable, ConfigurationSerializ
 
     /**
      * Calculate the volume of the cuboid. (width*length*height)
+     *
      * @return The volume in blocks. (int)
      */
     public int getVolume() {
@@ -387,6 +413,7 @@ public class Cuboid implements Iterable<Block>, Cloneable, ConfigurationSerializ
 
     /**
      * Calculate the width (X) of the cuboid. (max - min + 1)
+     *
      * @return The width in blocks. (int)
      */
     public int getWidth() {
@@ -395,6 +422,7 @@ public class Cuboid implements Iterable<Block>, Cloneable, ConfigurationSerializ
 
     /**
      * Calculate the height (Y) of the cuboid. (max - min + 1)
+     *
      * @return The height in blocks. (int)
      */
     public int getHeight() {
@@ -403,6 +431,7 @@ public class Cuboid implements Iterable<Block>, Cloneable, ConfigurationSerializ
 
     /**
      * Calculate the length (Z) of the cuboid. (max - min + 1)
+     *
      * @return The length in blocks. (int)
      */
     public int getLength() {
@@ -413,6 +442,7 @@ public class Cuboid implements Iterable<Block>, Cloneable, ConfigurationSerializ
 
     /**
      * Get the minimum location as a bukkit Location.
+     *
      * @return The min Location
      */
     public Location getMinLoc() {
@@ -421,6 +451,7 @@ public class Cuboid implements Iterable<Block>, Cloneable, ConfigurationSerializ
 
     /**
      * Get the maximum location as a bukkit Location.
+     *
      * @return The max Location
      */
     public Location getMaxLoc() {
@@ -429,6 +460,7 @@ public class Cuboid implements Iterable<Block>, Cloneable, ConfigurationSerializ
 
     /**
      * Get the center location as a bukkit Location.
+     *
      * @return The center Location
      */
     public Location getCenterLoc() {
@@ -439,6 +471,7 @@ public class Cuboid implements Iterable<Block>, Cloneable, ConfigurationSerializ
 
     /**
      * Get the minimum location as a Vector.
+     *
      * @return The min Vector
      */
     public Vector getMinVector() {
@@ -447,6 +480,7 @@ public class Cuboid implements Iterable<Block>, Cloneable, ConfigurationSerializ
 
     /**
      * Get the maximum location as a Vector.
+     *
      * @return The max Vector
      */
     public Vector getMaxVector() {
@@ -455,16 +489,18 @@ public class Cuboid implements Iterable<Block>, Cloneable, ConfigurationSerializ
 
     /**
      * Get the center location as a Vector.
+     *
      * @return The center Vector
      */
     public Vector getCenterVector() {
-        return new Vector(minX + (getWidth() / 2), minY + (getHeight() /2), minZ + (getLength() / 2));
+        return new Vector(minX + (getWidth() / 2), minY + (getHeight() / 2), minZ + (getLength() / 2));
     }
 
 
     /**
      * Add a offset of the specified vector to the cuboid.
      * This offset will be added to ALL sides so with a offset of Y 1 the height increases with 2 blocks.
+     *
      * @param offset Vector with x,y,z offset.
      */
     public void offset(Vector offset) {
@@ -474,6 +510,7 @@ public class Cuboid implements Iterable<Block>, Cloneable, ConfigurationSerializ
     /**
      * Add a offset of the specified amounts to the cuboid.
      * This offset will be added to ALL sides so with a offset of height 1 the height increases with 2 blocks.
+     *
      * @param width The X offset
      * @param height The Y offset
      * @param length The Z offset
@@ -490,6 +527,7 @@ public class Cuboid implements Iterable<Block>, Cloneable, ConfigurationSerializ
     /**
      * Add a inset of the specified vector to the cuboid.
      * This inset will be added to ALL sides so with a inset of Y 1 the height decreases with 2 blocks.
+     *
      * @param inset Vector with x,y,z inset.
      */
     public void inset(Vector inset) {
@@ -499,6 +537,7 @@ public class Cuboid implements Iterable<Block>, Cloneable, ConfigurationSerializ
     /**
      * Add a inset of the specified amounts to the cuboid.
      * This inset will be added to ALL sides so with a inset of height 1 the height decreases with 2 blocks.
+     *
      * @param width The X inset
      * @param height The Y inset
      * @param length The Z inset
@@ -512,6 +551,7 @@ public class Cuboid implements Iterable<Block>, Cloneable, ConfigurationSerializ
      * Expand the region by the specified amount of blocks in the specified direction.
      * If you specify for example Dir.X it will expand in both directions.
      * To only expand in 1 direction use for example Dir.NORTH
+     *
      * @param dir The direction {@link Cuboid.Dir}
      * @param amt The amount of blocks to expand.
      */
@@ -554,6 +594,7 @@ public class Cuboid implements Iterable<Block>, Cloneable, ConfigurationSerializ
      * Contract the region by the specified amount of blocks in the specified direction.
      * If you specify for example Dir.X it will contract in both directions.
      * To only contract in 1 direction use for example Dir.NORTH
+     *
      * @param dir The direction {@link Cuboid.Dir}
      * @param amt The amount of blocks to contract.
      */
@@ -565,6 +606,7 @@ public class Cuboid implements Iterable<Block>, Cloneable, ConfigurationSerializ
     /**
      * Get a Block relative from the minimum location.
      * It does not check if the block is within the region so you can specify relative coords further then the width/height/length.
+     *
      * @param x The amount of blocks to add on the X axis.
      * @param y The amount of blocks to add on the Y axis.
      * @param z The amount of blocks to add on the Z axis.
@@ -577,6 +619,7 @@ public class Cuboid implements Iterable<Block>, Cloneable, ConfigurationSerializ
     /**
      * Get a Block relative from the minimum location.
      * It does not check if the block is within the region so you can specify relative coords further then the width/height/length.
+     *
      * @param offset A vector with the amount of blocks to add on the X,Y,Z axis.
      * @return The block at the relative location.
      */
@@ -588,6 +631,7 @@ public class Cuboid implements Iterable<Block>, Cloneable, ConfigurationSerializ
 
     /**
      * Get a List<Block> of all blocks within this cuboid.
+     *
      * @return List with all blocks or empty list if none found.
      */
     public List<Block> getBlocks() {
@@ -598,6 +642,7 @@ public class Cuboid implements Iterable<Block>, Cloneable, ConfigurationSerializ
      * Get a List<Block> of all blocks within this cuboid that match any of the filter materials.
      * For example if you specify {Material.CHEST} it will return all chests inside the cuboid.
      * If you want to get a lot blocks separate don't just call this many times but call getBlocks() and then do the loop your self.
+     *
      * @return List with all blocks or empty list if none found.
      */
     public List<Block> getBlocks(Material[] filter) {
@@ -622,6 +667,7 @@ public class Cuboid implements Iterable<Block>, Cloneable, ConfigurationSerializ
 
     /**
      * Get a List<Vector> of all block vectors at the edges.
+     *
      * @return List with all edge vectors.
      */
     public List<Block> getEdgeBlocks() {
@@ -652,6 +698,7 @@ public class Cuboid implements Iterable<Block>, Cloneable, ConfigurationSerializ
 
     /**
      * Get a List<Vector> of all block vectors at the edges.
+     *
      * @return List with all edge vectors.
      */
     public List<Vector> getEdgeVectors() {
@@ -681,16 +728,18 @@ public class Cuboid implements Iterable<Block>, Cloneable, ConfigurationSerializ
 
     /**
      * Get a List<Vector> of all block vectors within this cuboid.
+     *
      * @return List with all vectors or empty list if none found.
      */
     public List<Vector> getVectors() {
-        return getVectors(new Material[]{});
+        return getVectors(new Material[] {});
     }
 
     /**
      * Get a List<Vector> of all block vectors within this cuboid that match any of the filter materials.
      * For example if you specify {Material.CHEST} it will return all locations of chests inside the cuboid.
      * If you want to get a lot blocks separate don't just call this many times but call getVectors() and then do the loop your self.
+     *
      * @return List with all vectors or empty list if none found.
      */
     public List<Vector> getVectors(Material[] filter) {
@@ -715,6 +764,7 @@ public class Cuboid implements Iterable<Block>, Cloneable, ConfigurationSerializ
 
     /**
      * Get a List<Player> of all players found within this cuboid.
+     *
      * @return List of players within this cuboid.
      */
     public List<Player> getPlayers() {
@@ -733,8 +783,9 @@ public class Cuboid implements Iterable<Block>, Cloneable, ConfigurationSerializ
 
     /**
      * Try and get the world of this cuboid.
-     * @throws IllegalStateException if the world is null.
+     *
      * @return World of this cuboid if it's not null.
+     * @throws IllegalStateException if the world is null.
      */
     public World getWorld() {
         World world = Bukkit.getWorld(worldName);
@@ -746,6 +797,7 @@ public class Cuboid implements Iterable<Block>, Cloneable, ConfigurationSerializ
 
     /**
      * Set the world of this cuboid.
+     *
      * @param world The world to set it at.
      */
     public void setWorld(World world) {
@@ -757,6 +809,7 @@ public class Cuboid implements Iterable<Block>, Cloneable, ConfigurationSerializ
 
     /**
      * Clone this cuboid by returning a NEW copy of this cuboid.
+     *
      * @return a new Cuboid with the same properties.
      */
     @Override
@@ -766,6 +819,7 @@ public class Cuboid implements Iterable<Block>, Cloneable, ConfigurationSerializ
 
     /**
      * Get a block iterator to iterate through all blocks in this region.
+     *
      * @return block iterator.
      */
     @Override
@@ -776,11 +830,12 @@ public class Cuboid implements Iterable<Block>, Cloneable, ConfigurationSerializ
     /**
      * Convert the region to a string.
      * String syntax: 'worldName,minX,minY,minZ,maxZ,maxY,maxZ'
+     *
      * @return String with all region data.
      */
     @Override
     public String toString() {
-        return  minX + "," + minY + "," + minZ + ":" + maxX + "," + maxY + "," + maxZ + ":" + worldName;
+        return minX + "," + minY + "," + minZ + ":" + maxX + "," + maxY + "," + maxZ + ":" + worldName;
     }
 
     @Utility
@@ -797,11 +852,12 @@ public class Cuboid implements Iterable<Block>, Cloneable, ConfigurationSerializ
     }
 
     public static Cuboid deserialize(Map<String, Object> args) {
-        World world = Bukkit.getWorld((String) args.get("world"));
+        World world = Bukkit.getWorld((String)args.get("world"));
         if (world == null) {
             throw new IllegalArgumentException("unknown world");
         }
-        return new Cuboid(world, NumberConversions.toInt(args.get("minX")), NumberConversions.toInt(args.get("minY")), NumberConversions.toInt(args.get("minZ")), NumberConversions.toInt(args.get("minX")), NumberConversions.toInt(args.get("minY")), NumberConversions.toInt(args.get("minZ")));
+        return new Cuboid(world, NumberConversions.toInt(args.get("minX")), NumberConversions.toInt(args.get("minY")), NumberConversions.toInt(args.get("minZ")),
+                NumberConversions.toInt(args.get("minX")), NumberConversions.toInt(args.get("minY")), NumberConversions.toInt(args.get("minZ")));
     }
 
 

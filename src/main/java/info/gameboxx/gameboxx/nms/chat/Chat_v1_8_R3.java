@@ -40,7 +40,7 @@ public class Chat_v1_8_R3 implements Chat {
             player.sendMessage(message);
             return this;
         }
-        PacketPlayOutChat chatPacket = new PacketPlayOutChat(NMSUtil_v1_8_R3.serializeChat(message), (byte) 0);
+        PacketPlayOutChat chatPacket = new PacketPlayOutChat(NMSUtil_v1_8_R3.serializeChat(message), (byte)0);
         NMSUtil_v1_8_R3.sendPacket(player, chatPacket);
         return this;
     }
@@ -49,7 +49,7 @@ public class Chat_v1_8_R3 implements Chat {
     public Chat send(String message, Player... players) {
         PacketPlayOutChat packet = null;
         if (message.startsWith("{") || message.startsWith("[")) {
-            packet = new PacketPlayOutChat(NMSUtil_v1_8_R3.serializeChat(message), (byte) 0);
+            packet = new PacketPlayOutChat(NMSUtil_v1_8_R3.serializeChat(message), (byte)0);
         }
 
         for (Player player : players) {
@@ -66,7 +66,7 @@ public class Chat_v1_8_R3 implements Chat {
     public Chat send(String message, Collection<? extends Player> players) {
         PacketPlayOutChat packet = null;
         if (message.startsWith("{") || message.startsWith("[")) {
-            packet = new PacketPlayOutChat(NMSUtil_v1_8_R3.serializeChat(message), (byte) 0);
+            packet = new PacketPlayOutChat(NMSUtil_v1_8_R3.serializeChat(message), (byte)0);
         }
 
         for (Player player : players) {
@@ -84,7 +84,7 @@ public class Chat_v1_8_R3 implements Chat {
         if (!message.startsWith("{") && !message.startsWith("[")) {
             message = "{\"text\":\"" + JSONValue.escape(message) + "\"}";
         }
-        PacketPlayOutChat packet = new PacketPlayOutChat(NMSUtil_v1_8_R3.serializeChat(message), (byte) 2);
+        PacketPlayOutChat packet = new PacketPlayOutChat(NMSUtil_v1_8_R3.serializeChat(message), (byte)2);
         NMSUtil_v1_8_R3.sendPacket(player, packet);
         return this;
     }
@@ -94,7 +94,7 @@ public class Chat_v1_8_R3 implements Chat {
         if (!message.startsWith("{") && !message.startsWith("[")) {
             message = "{\"text\":\"" + JSONValue.escape(message) + "\"}";
         }
-        PacketPlayOutChat packet = new PacketPlayOutChat(NMSUtil_v1_8_R3.serializeChat(message), (byte) 2);
+        PacketPlayOutChat packet = new PacketPlayOutChat(NMSUtil_v1_8_R3.serializeChat(message), (byte)2);
 
         for (Player player : players) {
             NMSUtil_v1_8_R3.sendPacket(player, packet);
@@ -107,7 +107,7 @@ public class Chat_v1_8_R3 implements Chat {
         if (!message.startsWith("{") && !message.startsWith("[")) {
             message = "{\"text\":\"" + JSONValue.escape(message) + "\"}";
         }
-        PacketPlayOutChat packet = new PacketPlayOutChat(NMSUtil_v1_8_R3.serializeChat(message), (byte) 2);
+        PacketPlayOutChat packet = new PacketPlayOutChat(NMSUtil_v1_8_R3.serializeChat(message), (byte)2);
 
         for (Player player : players) {
             NMSUtil_v1_8_R3.sendPacket(player, packet);

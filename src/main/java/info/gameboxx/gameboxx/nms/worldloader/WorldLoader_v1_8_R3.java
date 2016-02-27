@@ -64,7 +64,7 @@ public class WorldLoader_v1_8_R3 implements info.gameboxx.gameboxx.nms.worldload
         this.gb = gb;
     }
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings ("unchecked")
     public World createAsyncWorld(final WorldCreator creator) {
         //Only allow loading 1 world at a time.
         while (alreadyLoading) {
@@ -138,21 +138,24 @@ public class WorldLoader_v1_8_R3 implements info.gameboxx.gameboxx.nms.worldload
                 new Thread() {
                     public void run() {
                         Object sdm = new ServerNBTManager(getWorldContainer(), name, true);
-                        WorldData worlddata = ((IDataManager) sdm).getWorldData();
+                        WorldData worlddata = ((IDataManager)sdm).getWorldData();
                         if (worlddata == null) {
-                            WorldSettings worldSettings = new WorldSettings(creator.seed(), WorldSettings.EnumGamemode.getById(getCraftServer().getDefaultGameMode().getValue()), creator.generateStructures(), hardcore, type);
+                            WorldSettings worldSettings =
+                                    new WorldSettings(creator.seed(), WorldSettings.EnumGamemode.getById(getCraftServer().getDefaultGameMode().getValue()), creator.generateStructures(), hardcore,
+                                            type);
                             worldSettings.setGeneratorSettings(creator
                                     .generatorSettings());
                             worlddata = new WorldData(worldSettings, name);
                         }
                         worlddata.checkName(name);
-                        final WorldServer internal = (WorldServer) new WorldServer(getServer(), (IDataManager) sdm, worlddata, dimension, getServer().methodProfiler, creator.environment(), generator).b();
+                        final WorldServer internal =
+                                (WorldServer)new WorldServer(getServer(), (IDataManager)sdm, worlddata, dimension, getServer().methodProfiler, creator.environment(), generator).b();
                         new BukkitRunnable() {
                             public void run() {
                                 try {
                                     Field w = CraftServer.class.getDeclaredField("worlds");
                                     w.setAccessible(true);
-                                    if (!((Map<String, World>) w.get(getCraftServer())).containsKey(name.toLowerCase())) {
+                                    if (!((Map<String, World>)w.get(getCraftServer())).containsKey(name.toLowerCase())) {
                                         aborted = true;
                                         return;
                                     }
@@ -223,7 +226,7 @@ public class WorldLoader_v1_8_R3 implements info.gameboxx.gameboxx.nms.worldload
                                             Field f = ChunkProviderServer.class.getDeclaredField("chunkLoader");
                                             f.setAccessible(true);
                                             if ((f.get(cps) instanceof ChunkRegionLoader)) {
-                                                loader = (ChunkRegionLoader) f.get(cps);
+                                                loader = (ChunkRegionLoader)f.get(cps);
                                             }
                                         } catch (Exception e) {
                                             e.printStackTrace();
@@ -262,16 +265,16 @@ public class WorldLoader_v1_8_R3 implements info.gameboxx.gameboxx.nms.worldload
                                             //cps.world.timings.syncChunkLoadTimer.startTiming();
                                             chunk = cps.loadChunk(i, j);
                                             if (chunk == null) {
-                                                if (cps.chunkProvider == null)
+                                                if (cps.chunkProvider == null) {
                                                     chunk = cps.emptyChunk;
-                                                else {
+                                                } else {
                                                     try {
                                                         chunk = cps.chunkProvider.getOrCreateChunk(i, j);
                                                     } catch (Throwable throwable) {
                                                         CrashReport crashreport = CrashReport.a(throwable, "Exception generating new chunk");
                                                         CrashReportSystemDetails crashreportsystemdetails = crashreport.a("Chunk to be generated");
 
-                                                        crashreportsystemdetails.a("Location", String.format("%d,%d", new Object[]{Integer.valueOf(i), Integer.valueOf(j)}));
+                                                        crashreportsystemdetails.a("Location", String.format("%d,%d", new Object[] {Integer.valueOf(i), Integer.valueOf(j)}));
                                                         crashreportsystemdetails.a("Position hash", LongHash.toLong(i, j));
                                                         crashreportsystemdetails.a("Generator", cps.chunkProvider.getName());
                                                         throw new ReportedException(crashreport);
@@ -327,7 +330,7 @@ public class WorldLoader_v1_8_R3 implements info.gameboxx.gameboxx.nms.worldload
 
                                         if ((flag1) && (flag2) && (flag5)) {
                                             if (!c.isDone()) {
-                                                getChunkAt((ChunkProviderServer) ichunkprovider1, i, j);
+                                                getChunkAt((ChunkProviderServer)ichunkprovider1, i, j);
                                             } else {
                                                 ichunkprovider.a(ichunkprovider1, c, i, j);
                                             }
@@ -335,27 +338,27 @@ public class WorldLoader_v1_8_R3 implements info.gameboxx.gameboxx.nms.worldload
                                         }
 
                                         if ((flag3) && (flag2) && (flag6)) {
-                                            Chunk chunk = getOrCreateChunk((ChunkProviderServer) ichunkprovider, i - 1, j);
+                                            Chunk chunk = getOrCreateChunk((ChunkProviderServer)ichunkprovider, i - 1, j);
                                             if (!chunk.isDone()) {
-                                                getChunkAt((ChunkProviderServer) ichunkprovider1, i - 1, j);
+                                                getChunkAt((ChunkProviderServer)ichunkprovider1, i - 1, j);
                                             } else {
                                                 ichunkprovider.a(ichunkprovider1, chunk, i - 1, j);
                                             }
                                         }
 
                                         if ((flag) && (flag1) && (flag7)) {
-                                            Chunk chunk = getOrCreateChunk((ChunkProviderServer) ichunkprovider, i, j - 1);
+                                            Chunk chunk = getOrCreateChunk((ChunkProviderServer)ichunkprovider, i, j - 1);
                                             if (!chunk.isDone()) {
-                                                getChunkAt((ChunkProviderServer) ichunkprovider1, i, j - 1);
+                                                getChunkAt((ChunkProviderServer)ichunkprovider1, i, j - 1);
                                             } else {
                                                 ichunkprovider.a(ichunkprovider1, chunk, i, j - 1);
                                             }
                                         }
 
                                         if ((flag4) && (flag) && (flag3)) {
-                                            Chunk chunk = getOrCreateChunk((ChunkProviderServer) ichunkprovider, i - 1, j - 1);
+                                            Chunk chunk = getOrCreateChunk((ChunkProviderServer)ichunkprovider, i - 1, j - 1);
                                             if (!chunk.isDone()) {
-                                                getChunkAt((ChunkProviderServer) ichunkprovider1, i - 1, j - 1);
+                                                getChunkAt((ChunkProviderServer)ichunkprovider1, i - 1, j - 1);
                                             } else {
                                                 ichunkprovider.a(ichunkprovider1, chunk, i - 1, j - 1);
                                             }
@@ -366,7 +369,7 @@ public class WorldLoader_v1_8_R3 implements info.gameboxx.gameboxx.nms.worldload
 
                                     public boolean a(IChunkProvider ichunkprovider, Chunk chunk, int i, int j) {
                                         if ((ichunkprovider != null) && (ichunkprovider.a(ichunkprovider, chunk, i, j))) {
-                                            Chunk chunk1 = getOrCreateChunk((ChunkProviderServer) ichunkprovider, i, j);
+                                            Chunk chunk1 = getOrCreateChunk((ChunkProviderServer)ichunkprovider, i, j);
 
                                             chunk1.e();
                                             return true;
@@ -378,7 +381,9 @@ public class WorldLoader_v1_8_R3 implements info.gameboxx.gameboxx.nms.worldload
                                         Chunk chunk = ip.chunks.get(LongHash.toLong(i, j));
                                         chunk = chunk == null ? getChunkAt(ip, i, j) : (!ip.world.ad()) && (!ip.forceChunkLoad) ? ip.emptyChunk : chunk;
 
-                                        if (chunk == ip.emptyChunk) return chunk;
+                                        if (chunk == ip.emptyChunk) {
+                                            return chunk;
+                                        }
                                         if ((i != chunk.locX) || (j != chunk.locZ)) {
                                             System.err.println("Chunk (" + chunk.locX + ", " + chunk.locZ + ") stored at  (" + i + ", " + j + ") in world '" + ip.world.getWorld().getName() + "'");
                                             System.err.println(chunk.getClass().getName());
@@ -429,12 +434,12 @@ public class WorldLoader_v1_8_R3 implements info.gameboxx.gameboxx.nms.worldload
             container.setAccessible(true);
             Field settings = CraftServer.class.getDeclaredField("configuration");
             settings.setAccessible(true);
-            File co = (File) container.get(getCraftServer());
+            File co = (File)container.get(getCraftServer());
             if (co == null) {
-                container.set(getCraftServer(), new File(((YamlConfiguration) settings.get(getCraftServer())).getString("settings.world-container", ".")));
+                container.set(getCraftServer(), new File(((YamlConfiguration)settings.get(getCraftServer())).getString("settings.world-container", ".")));
             }
 
-            return (File) container.get(getCraftServer());
+            return (File)container.get(getCraftServer());
         } catch (Exception e) {
             e.printStackTrace();
             return null;
@@ -446,14 +451,14 @@ public class WorldLoader_v1_8_R3 implements info.gameboxx.gameboxx.nms.worldload
     }
 
     private static CraftServer getCraftServer() {
-        return ((CraftServer) Bukkit.getServer());
+        return ((CraftServer)Bukkit.getServer());
     }
 
     private static ChunkGenerator getGenerator(String world) {
         try {
             Field settings = CraftServer.class.getDeclaredField("configuration");
             settings.setAccessible(true);
-            ConfigurationSection section = ((YamlConfiguration) settings.get(getCraftServer())).getConfigurationSection("worlds");
+            ConfigurationSection section = ((YamlConfiguration)settings.get(getCraftServer())).getConfigurationSection("worlds");
             ChunkGenerator result = null;
 
             if (section == null) {

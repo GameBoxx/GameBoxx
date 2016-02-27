@@ -42,10 +42,11 @@ public class GameManager {
 
     /**
      * Register a new {@link Game}.
+     *
      * @param gameClass The custom game class instance.
      * @throws GameAlreadyExistsException When a game with the same name is already registered.
-     *         You can either register it under a different name
-     *         Or you can call {@link #unregister(String)} and register it again.
+     * You can either register it under a different name
+     * Or you can call {@link #unregister(String)} and register it again.
      */
     public void register(Game gameClass) throws GameAlreadyExistsException, ComponentConflictException, DependencyNotFoundException, OptionAlreadyExistsException {
         String name = gameClass.getName().trim().toLowerCase();
@@ -70,6 +71,7 @@ public class GameManager {
     /**
      * Unregister a {@link Game}.
      * This should be called {@link JavaPlugin#onDisable()} for cleanup.
+     *
      * @param name The name of the game to unregister.
      */
     public void unregister(String name) {
@@ -83,6 +85,7 @@ public class GameManager {
     /**
      * Get a registered game by it's name.
      * This can be used to easily hook into other games instead of using the Bukkit plugin dependency system.
+     *
      * @param name The name of the game to get.
      * @return The game for the specified name or {@code null} if there is no game with the specified name.
      */
@@ -93,6 +96,7 @@ public class GameManager {
 
     /**
      * Get the map with all the registered games.
+     *
      * @return Map with all the registered games.
      */
     public Map<String, Game> getGames() {
@@ -101,6 +105,7 @@ public class GameManager {
 
     /**
      * Get a list with all the registered game names.
+     *
      * @return List of game names.
      */
     public List<String> getGameNames() {

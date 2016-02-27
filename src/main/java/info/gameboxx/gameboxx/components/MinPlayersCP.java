@@ -47,7 +47,7 @@ public class MinPlayersCP extends GameComponent {
     public MinPlayersCP(Game game) {
         super(game);
         addDependency(PlayersCP.class);
-        
+
         EVENT.register(getAPI());
     }
 
@@ -58,41 +58,43 @@ public class MinPlayersCP extends GameComponent {
 
     @Override
     public MinPlayersCP newInstance(GameSession session) {
-        return (MinPlayersCP) new MinPlayersCP(getGame()).setSession(session);
+        return (MinPlayersCP)new MinPlayersCP(getGame()).setSession(session);
     }
 
     /**
      * Get the min player count required to start the game.
+     *
      * @return The minimum player amount required to start.
      */
     public int getMin() {
         return getArenaOptions().getInt(path("min-players"));
     }
-    
+
     /**
      * Gets the boolean value by checking if the players are more than the set minimum player value.
+     *
      * @return The boolean value.
      * @throws DependencyNotFoundException If the hard dependency was not found.
      */
     public boolean hasMinimumPlayers() {
         return getDependency(PlayersCP.class).getPlayers().size() >= getMin();
     }
-    
+
     /**
      * Listens for events relating to this component.
      */
     private static class Events extends ComponentListener {
-        
+
         @EventHandler
         public void onPlayerJoinSessionEvent(PlayerJoinSessionEvent event) {
-                if (event.getJoinedSession().hasComponent(MinPlayersCP.class)) {
-                    MinPlayersCP players = (MinPlayersCP) event.getJoinedSession().getComponent(MinPlayersCP.class);
-                    if (event.getJoinedSession().hasComponent(CountdownCP.class) && players.hasMinimumPlayers()) {
-                        event.getJoinedSession().getComponent(CountdownCP.class).startCountdown();
-                    }
+            if (event.getJoinedSession().hasComponent(MinPlayersCP.class)) {
+                MinPlayersCP players = (MinPlayersCP)event.getJoinedSession().getComponent(MinPlayersCP.class);
+                if (event.getJoinedSession().hasComponent(CountdownCP.class) && players.hasMinimumPlayers()) {
+                    event.getJoinedSession().getComponent(CountdownCP.class).startCountdown();
                 }
+            }
         }
-        
+
     }
 
 }

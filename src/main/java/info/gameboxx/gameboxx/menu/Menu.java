@@ -58,6 +58,7 @@ public abstract class Menu {
 
     /**
      * Creates a new menu instance with the default "&amp;8&amp;lMenu" title.
+     *
      * @param plugin The plugin that owns this menu which is used for event listeners.
      * @param name The menu name which is the identifier key.
      * @param rows The amount of rows for the menu. (Not recommended to set above 6)
@@ -68,6 +69,7 @@ public abstract class Menu {
 
     /**
      * Creates a new menu instance.
+     *
      * @param plugin The plugin that owns this menu which is used for event listeners.
      * @param name The menu name which is the identifier key.
      * @param rows The amount of rows for the menu. (Not recommended to set above 6)
@@ -86,6 +88,7 @@ public abstract class Menu {
 
     /**
      * Get the name for the menu used as an identifier.
+     *
      * @return The menu name
      */
     protected String getName() {
@@ -94,6 +97,7 @@ public abstract class Menu {
 
     /**
      * Get the random generated ID for this menu as an identifier.
+     *
      * @return random generated ID unique to this menu.
      */
     protected int getID() {
@@ -103,6 +107,7 @@ public abstract class Menu {
 
     /**
      * Get the display title for the inventory.
+     *
      * @return The title for the inventory.
      */
     protected String getTitle() {
@@ -112,6 +117,7 @@ public abstract class Menu {
     /**
      * Set the title of the inventory.
      * This will also update the title for all open inventories.
+     *
      * @param title The title string to set.
      */
     protected void setTitle(String title, boolean recreateMenus) {
@@ -126,6 +132,7 @@ public abstract class Menu {
 
     /**
      * Get the row count for the inventory menu.
+     *
      * @return The amount of rows for the inventory.
      */
     protected int getRows() {
@@ -134,15 +141,17 @@ public abstract class Menu {
 
     /**
      * Get the amount of slots for the inventory menu. (rows*9)
+     *
      * @return The amount of slots in the inventory.
      */
     protected int getSlots() {
-        return rows*9;
+        return rows * 9;
     }
 
     /**
      * Resizes the menu to the given row count.
      * Please note that when you reduce the menu size that the items on the last rows will be deleted.
+     *
      * @param rows The new row count for the menu. (Not recommended to set above 6)
      * @param recreateMenus When set to true it will recreate all open menus to update with the new size. When set to false open menus will remain their previous size.
      */
@@ -205,6 +214,7 @@ public abstract class Menu {
     /**
      * Set extra meta data for the the menu.
      * Please note that this will overwrite any existing data if there is data for the given key already.
+     *
      * @param key The identifying key for the data object.
      * @param data The data object to store at the given key identifier.
      */
@@ -214,6 +224,7 @@ public abstract class Menu {
 
     /**
      * Remove extra data from the menu at the given key.
+     *
      * @param key The key for the data that needs to be removed.
      * @return Will return true if it removed data and false if the menu has no data of the given key.
      */
@@ -227,6 +238,7 @@ public abstract class Menu {
 
     /**
      * Checks if the menu has extra data for the given key.
+     *
      * @param key The key for the data that needs to be checked.
      * @return Wether the menu has data for the given key or not.
      */
@@ -238,6 +250,7 @@ public abstract class Menu {
      * Get data from the menu for the given key.
      * If the menu doesn't have any data for the key it will return null.
      * The value returned is an Object so you'll have to cast it to whatever data you pass in.
+     *
      * @param key The key for the data that needs to be returned.
      * @return The data object at the given key or null if the menu doesn't have data with the given key.
      */
@@ -256,6 +269,7 @@ public abstract class Menu {
      * These are the global items that will be added to the menu when opening it.
      * Empty slots are filled with EItem.AIR items.
      * Use {@link #setSlot(int, EItem, Player)} to set items for the inventory.
+     *
      * @return Array with all EItems for this menu.
      */
     protected EItem[] getItems() {
@@ -264,6 +278,7 @@ public abstract class Menu {
 
     /**
      * Fill up a slot with a specified item.
+     *
      * @param slot The slot to fill.
      * @param item The item to fill the slot with. (Will override any existing items)
      */
@@ -275,9 +290,10 @@ public abstract class Menu {
      * Fill up a slot with a specified item.
      * If a player is specified it will only display for that player.
      * It will update all open menus that are shown to players.
-     *
+     * <p/>
      * When setting an item for a player the item isn't registered in this menu.
      * This also means it's only possible to set items for players when the inventory is open and shown to the player.
+     *
      * @param slot The slot to fill.
      * @param item The item to fill the slot with. (Will override any existing items)
      * @param player When not null it will only update the inventory for this player.
@@ -310,11 +326,12 @@ public abstract class Menu {
     /**
      * Clear all items out of the menu.
      * It will update all open menus that are shown to players.
-     *
+     * <p/>
      * If a player is specified it will only clear items for that player.
      * This means the items are not cleared inside this menu class instance only inside the inventory displayed to the player.
      * This also means it's only possible to clear a menu for a player that has the menu opened.
-     * @param player  When not null it will only clear the inventory of this player.
+     *
+     * @param player When not null it will only clear the inventory of this player.
      */
     protected void clearMenu(Player player) {
         for (int i = 0; i < getSlots(); i++) {
@@ -326,6 +343,7 @@ public abstract class Menu {
 
     /**
      * Get a list of menu inventories that are shown to players.
+     *
      * @return List with inventories.
      */
     protected List<Inventory> getOpenInventories() {
@@ -335,6 +353,7 @@ public abstract class Menu {
     /**
      * Shows this menu to the specified player.
      * To close the inventory just call player.closeInventory() and the menu will detect that.
+     *
      * @param player The player to show this menu to.
      */
     public void show(Player player) {
@@ -360,6 +379,7 @@ public abstract class Menu {
      * When resizing or setting the title of menus without recreating menus you would have to set exact to false.
      * Because when you don't recreate the menus on resize etc the inventory title and slots wont match.
      * This might give inaccurate results though.
+     *
      * @param inv The inventory to compare this menu with.
      * @param exact When true it will be more precise for checking for a match. (See description)
      * @return True if the inventory belongs to this menu and false if not.
@@ -393,7 +413,7 @@ public abstract class Menu {
             Inventory prev = openInvs.get(i);
             List<HumanEntity> viewers = new ArrayList<HumanEntity>(prev.getViewers());
             for (HumanEntity he : viewers) {
-                Player player = (Player) he;
+                Player player = (Player)he;
                 player.closeInventory();
             }
         }
@@ -408,18 +428,21 @@ public abstract class Menu {
 
     /**
      * Called when a menu is shown.
+     *
      * @param event The InventoryOpenEvent that triggered this menu open.
      */
     abstract protected void onShow(InventoryOpenEvent event);
 
     /**
      * Called when a menu is closed. Can be through code or when the player closes the inventory etc.
+     *
      * @param event The InventoryCloseEvent that triggered this menu close.
      */
     abstract protected void onClose(InventoryCloseEvent event);
 
     /**
      * Called when a player clicks on a menu slot.
+     *
      * @param event The InventoryClickEvent that triggered this menu click. Use this to get the slot, player, item etc.
      */
     abstract protected void onClick(InventoryClickEvent event);

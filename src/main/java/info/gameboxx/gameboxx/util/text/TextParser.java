@@ -38,13 +38,13 @@ import java.util.regex.Pattern;
  * Parser to format {@link TextAction} syntax to JSON text.
  * Supports hover text, insertion, commands, command suggestions, opening urls and changing book pages.
  * The output JSON can be used for sending messages, titles, action bars, signs, book and more.
- *
+ * <p/>
  * It even supports inheritance for hover messages.
  * For example you could do <<heal||[[Click to heal yourself!|heal]]>>
- *
+ * <p/>
  * New lines with \n in messages are preserved and work as expected.
  * All coloring is supported including formatting. {@link Format}
- *
+ * <p/>
  * See {@link TextAction} for the format for each action.
  */
 public class TextParser {
@@ -55,7 +55,7 @@ public class TextParser {
     /**
      * Parse a text message to JSON.
      * After parsing you can use {@link #getJSON()} to get the formatted JSON message.
-     *
+     * <p/>
      * This will also parse regular text to JSON like {\"text\": \"{text}\"}
      * If you don't want that you should use {@link TextParser#hasSyntax(String)} before constructing this parser.
      *
@@ -113,7 +113,7 @@ public class TextParser {
         }
 
         //Remove trailing comma if it's there
-        if (JSON.lastIndexOf(",") == JSON.length()-1) {
+        if (JSON.lastIndexOf(",") == JSON.length() - 1) {
             JSON.setLength(JSON.length() - 1);
         }
 
@@ -125,11 +125,11 @@ public class TextParser {
     /**
      * Used to get JSON formatted text.
      * <b>This does not parse syntax of {@link TextAction}!</b>
-     *
+     * <p/>
      * All this does is convert chat colors like §a and §l etc to JSON syntax.
      * For example a string like '§atest §b§lexample' would output in the following JSON:
      * "text":"","extra":[{"text":"test", "color":"green"},{"text":"example","color":"aqua","bold":true}]
-     *
+     * <p/>
      * <b>Important: </b> As you can see in the example it does not add '{' and '}' before and after the JSON.
      * Manually add this to get valid JSON!
      *
@@ -168,7 +168,7 @@ public class TextParser {
         }
 
         //Remove trailing comma if it's there
-        if (JSON.lastIndexOf(",") == JSON.length()-1) {
+        if (JSON.lastIndexOf(",") == JSON.length() - 1) {
             JSON.setLength(JSON.length() - 1);
         }
 
@@ -180,7 +180,7 @@ public class TextParser {
     /**
      * Used for {@link #getJsonText(String)} to get JSON values for color codes.
      * It supports all {@link Format} colors and other formatting codes.
-     *
+     * <p/>
      * For example: if you provide '§a§l' this would return '"color":"green","bold":true'
      *
      * @param color String with color codes only. Like '§c§l§n' (red bold strikethrough)
@@ -215,7 +215,7 @@ public class TextParser {
         }
 
         //Remove trailing comma if it's there
-        if (JSON.lastIndexOf(",") == JSON.length()-1) {
+        if (JSON.lastIndexOf(",") == JSON.length() - 1) {
             JSON.setLength(JSON.length() - 1);
         }
 
@@ -261,6 +261,7 @@ public class TextParser {
      * Use this if you don't want to parse to JSON if there is no custom syntax.
      * By default it will still parse regular text to JSON.
      * It will create JSON like {\"text\": \"Your input text\"}
+     *
      * @param text The text to check for syntax.
      * @return Whether or not the specified text contains custom JSON syntax.
      */
@@ -278,6 +279,7 @@ public class TextParser {
 
     /**
      * Get the regular text message that was given to the parser.
+     *
      * @return Regular text message which is the same as the input of {@link #TextParser(String)}
      */
     public String getText() {
@@ -286,6 +288,7 @@ public class TextParser {
 
     /**
      * Get the JSON string that has been generated from the parsed input text.
+     *
      * @return JSON string with /tellraw format.
      */
     public String getJSON() {
@@ -294,19 +297,22 @@ public class TextParser {
 
     /**
      * Get the JSON that has been generated from the parsed input text as a {@link JSONArray}.
+     *
      * @return {@link JSONArray} with /tellraw format. (May return {@code null} when the JSON is invalid!)
      */
     public JSONArray getJSONArray() {
         JSONParser jp = new JSONParser();
         try {
-            return (JSONArray) jp.parse(getJSON());
-        } catch (Exception e) {}
+            return (JSONArray)jp.parse(getJSON());
+        } catch (Exception e) {
+        }
         return null;
     }
 
     /**
      * Check if the JSON is valid.
      * It uses the {@link JSONParser} and checks if it's a {@link JSONArray}
+     *
      * @return True when the JSON is valid and false if not.
      */
     public boolean isValid() {
@@ -363,6 +369,7 @@ public class TextParser {
 
         /**
          * Get the character for the format which is used together with '§' like 'a'.
+         *
          * @return The character for the format.
          */
         public char getChar() {
@@ -372,6 +379,7 @@ public class TextParser {
         /**
          * Checks whether or not the format is a formatting format or not.
          * If not it's a coloring format. 0-9 and a-f are color formats and k-o are formatting formats.
+         *
          * @return True when it's a formatting format and false if it's a coloring format.
          */
         public boolean isFormat() {
@@ -381,6 +389,7 @@ public class TextParser {
         /**
          * Get a {@link Format} by character.
          * Whe no format is found for the character this will be null.
+         *
          * @param c The character to get the format from.
          * @return The {@link Format} for the specified character or {@code null} when there is no format for the specified character.
          */

@@ -50,15 +50,15 @@ import java.util.UUID;
 public class PlayersCP extends GameComponent {
 
     private static final Events EVENT = new Events();
-    
+
     private Set<UUID> players = new HashSet<>();
     private Set<UUID> removedPlayers = new HashSet<>();
-    
+
     private Set<Player> cachedPlayers = new HashSet<>();
 
     public PlayersCP(Game game) {
         super(game);
-        
+
         EVENT.register(getAPI());
     }
 
@@ -70,11 +70,12 @@ public class PlayersCP extends GameComponent {
 
     @Override
     public PlayersCP newInstance(GameSession session) {
-        return (PlayersCP) new PlayersCP(getGame()).setSession(session);
+        return (PlayersCP)new PlayersCP(getGame()).setSession(session);
     }
 
     /**
      * Get the list with players.
+     *
      * @return List of players their {@link UUID}s
      */
     public Set<Player> getPlayers() {
@@ -83,6 +84,7 @@ public class PlayersCP extends GameComponent {
 
     /**
      * Get the list with online players.
+     *
      * @return List of players that are online.
      */
     public Set<Player> getOnlinePlayers() {
@@ -91,6 +93,7 @@ public class PlayersCP extends GameComponent {
 
     /**
      * Checks whether or not the specified players {@link UUID} is in the players list.
+     *
      * @param player The players {@link UUID} to check.
      * @return True when the player list contains the players {@link UUID}.
      */
@@ -100,6 +103,7 @@ public class PlayersCP extends GameComponent {
 
     /**
      * Add the given players {@link UUID} to the player list.
+     *
      * @param player The players {@link UUID} to add.
      * @return Returns whether or not the player left by disconnection earlier in the session.
      */
@@ -110,6 +114,7 @@ public class PlayersCP extends GameComponent {
 
     /**
      * Remove the given players {@link UUID} from the player list.
+     *
      * @param player The players {@link UUID} to remove.
      * @param reason The reason why the player is to be removed, will add to removedPlayers if == DISCONNECT.
      */
@@ -128,24 +133,28 @@ public class PlayersCP extends GameComponent {
         players.clear();
         removedPlayers.clear();
     }
+
     /**
      * Add a cached player to a set of cached players.
+     *
      * @param player The player to add.
      */
     public void addCachedPlayer(Player player) {
         cachedPlayers.add(player);
     }
-    
+
     /**
      * Remove a cached player from the set of cached players.
+     *
      * @param player The player to remove.
      */
     public void removeCachedPlayer(Player player) {
         cachedPlayers.remove(player);
     }
-    
+
     /**
      * Gets the set of original players in this component.
+     *
      * @return The set of original players.
      */
     public Set<UUID> getOriginalPlayers() {
@@ -157,7 +166,7 @@ public class PlayersCP extends GameComponent {
 
     private static class Events extends ComponentListener {
 
-        @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+        @EventHandler (priority = EventPriority.MONITOR, ignoreCancelled = true)
         public void onPlayerJoinSessionEvent(PlayerJoinSessionEvent event) {
             GameSession session = event.getJoinedSession();
             if (session.hasComponent(PlayersCP.class)) {
@@ -167,12 +176,12 @@ public class PlayersCP extends GameComponent {
                 players.addCachedPlayer(player);
             }
         }
-        
+
         @EventHandler
         public void onPlayerLeaveSessionEvent(PlayerLeaveSessionEvent event) {
             GameSession session = event.getSession();
             if (session.hasComponent(PlayersCP.class)) {
-                PlayersCP players = (PlayersCP) session.getComponent(PlayersCP.class);
+                PlayersCP players = (PlayersCP)session.getComponent(PlayersCP.class);
                 Player player = event.getPlayer();
                 players.removeCachedPlayer(player);
                 players.removePlayer(player.getUniqueId(), event.getLeaveReason());

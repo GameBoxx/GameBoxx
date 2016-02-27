@@ -85,7 +85,7 @@ public class User {
     public void join(String game) {
         Game gameObj = GameBoxx.get().getGM().getGame(game);
         int rand = Random.Int(gameObj.getArenas().size());
-        Arena arenaObj = (Arena) Collections.singletonList(gameObj.getArenas().values()).get(rand);
+        Arena arenaObj = (Arena)Collections.singletonList(gameObj.getArenas().values()).get(rand);
         GameSession sessionObj = getOptimalSession(arenaObj);
         sessionObj.addPlayer(getPlayer());
     }

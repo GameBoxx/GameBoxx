@@ -63,6 +63,7 @@ public abstract class SingleOption extends Option {
      * Get the cached value after parsing it.
      * If the value is null and there is a default value it will return the default.
      * <b>Please note that the default value can be null too!</b>
+     *
      * @return The parse result value or the default value.
      */
     public abstract Object getValue();
@@ -70,6 +71,7 @@ public abstract class SingleOption extends Option {
     /**
      * Get the value with user friendly format for displaying purposes.
      * If a option doesn't override this value it will return the same as the {@link #serialize()} output.
+     *
      * @return String with user friendly formatting.
      */
     public String getDisplayValue() {
@@ -79,6 +81,7 @@ public abstract class SingleOption extends Option {
     /**
      * Serialize the value to a string so it can be saved.
      * The serialized string has the same format as the parse method accepts.
+     *
      * @return Serialized value as string.
      */
     public abstract String serialize();
@@ -86,6 +89,7 @@ public abstract class SingleOption extends Option {
     /**
      * Used by {@link #getValue()} to return the value and if it's null the default value.
      * <b>Please note that the default value can be null too!</b>
+     *
      * @return The value or the default value if it's null.
      */
     public Object getValueOrDefault() {
@@ -98,6 +102,7 @@ public abstract class SingleOption extends Option {
 
     /**
      * Get the default value if it's set.
+     *
      * @return The default value or {@code null} if it's not set.
      */
     public Object getDefault() {
@@ -106,6 +111,7 @@ public abstract class SingleOption extends Option {
 
     /**
      * Change/set the default value.
+     *
      * @param defaultValue The default value to set. (set to null for no default)
      * @return The option instance.
      */
@@ -118,6 +124,7 @@ public abstract class SingleOption extends Option {
      * Check whether or not the option has a value.
      * It will check both the parsed value and the default value.
      * So, even if the parsing failed it will still be true when there is a default value.
+     *
      * @return True when there is a value or default value and false if not.
      */
     public boolean hasValue() {
@@ -128,6 +135,7 @@ public abstract class SingleOption extends Option {
      * Check whether or not the parsing was successful.
      * If not, there might still be a default value see {@link #hasValue()}
      * In many cases there will be an error when this is false.
+     *
      * @return True when there is a value and false if not.
      */
     public boolean success() {
@@ -152,7 +160,7 @@ public abstract class SingleOption extends Option {
                 value = input;
                 return true;
             } else {
-                error = "Invalid input, must be a string " + (getRawClass().equals(String.class) ?  "." : " or a " + getTypeName() + ".") + " [type=" + input.getClass().getSimpleName() + "]";
+                error = "Invalid input, must be a string " + (getRawClass().equals(String.class) ? "." : " or a " + getTypeName() + ".") + " [type=" + input.getClass().getSimpleName() + "]";
                 return false;
             }
         }

@@ -178,6 +178,7 @@ public class GameBoxx extends JavaPlugin {
     /**
      * Get the language used for messages.
      * If there was an error loading language files it will use the fall back english.
+     *
      * @return active language used for messages.
      */
     public Language getLanguage() {
@@ -190,6 +191,7 @@ public class GameBoxx extends JavaPlugin {
 
     /**
      * Get the {@link SelectionManager} for getting {@link Cuboid} selections and such.
+     *
      * @return The {@link SelectionManager}
      */
     public SelectionManager getSM() {
@@ -198,6 +200,7 @@ public class GameBoxx extends JavaPlugin {
 
     /**
      * Get the {@link GameManager} for registering {@link info.gameboxx.gameboxx.game.Game}s and such.
+     *
      * @return The {@link GameManager}
      */
     public GameManager getGM() {
@@ -206,6 +209,7 @@ public class GameBoxx extends JavaPlugin {
 
     /**
      * Get the {@link UserManager} for manager {@link info.gameboxx.gameboxx.user.User}s
+     *
      * @return The {@link UserManager}
      */
     public UserManager getUM() {

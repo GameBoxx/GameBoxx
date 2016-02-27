@@ -138,7 +138,6 @@ public class EItem extends ItemStack {
     }
 
 
-
     // ##################################################
     // ###################### NAME ######################
     // ##################################################
@@ -166,24 +165,24 @@ public class EItem extends ItemStack {
     }
 
 
-
     // ##################################################
     // ###################### LORE ######################
     // ##################################################
 
     //Set
+
     /**
      * Set the lore lines. It will automatically format colors.
      * New lines are split by the | symbol.
      */
     public EItem setLore(String lore) {
         String[] split = lore.split("\\|");
-        return setLore(true , split);
+        return setLore(true, split);
     }
 
     /** Set the lore lines. It will automatically format colors. */
     public EItem setLore(String... lore) {
-        return setLore(true , Arrays.asList(lore));
+        return setLore(true, Arrays.asList(lore));
     }
 
     /** Set the lore lines. If color is set to true it will automatically format colors. */
@@ -205,7 +204,7 @@ public class EItem extends ItemStack {
             if (color) {
                 loreStr = Str.color(loreStr);
             }
-            lore.set(i,  loreStr);
+            lore.set(i, loreStr);
         }
         ItemMeta meta = getItemMeta();
         meta.setLore(lore);
@@ -215,6 +214,7 @@ public class EItem extends ItemStack {
 
 
     //Add
+
     /** Add the given lore lines to the current lore. It will automatically format colors. */
     public EItem addLore(String... lore) {
         return addLore(true, lore);
@@ -239,7 +239,7 @@ public class EItem extends ItemStack {
             if (color) {
                 loreStr = Str.color(loreStr);
             }
-            lore.set(i,  loreStr);
+            lore.set(i, loreStr);
         }
         ItemMeta meta = getItemMeta();
         if (meta.hasLore()) {
@@ -255,6 +255,7 @@ public class EItem extends ItemStack {
 
 
     //Set line
+
     /**
      * Set the specified line for the lore.
      * It will add empty lines if the line number is above the amount of lore lines.
@@ -315,6 +316,7 @@ public class EItem extends ItemStack {
 
 
     //Get lore
+
     /** Get a list of all the lore lines. */
     public List<String> getLore() {
         if (!getItemMeta().hasLore()) {
@@ -351,7 +353,6 @@ public class EItem extends ItemStack {
     }
 
 
-
     // ##################################################
     // ################## ENCHANTMENTS ##################
     // ##################################################
@@ -361,7 +362,8 @@ public class EItem extends ItemStack {
         return addEnchant(enchantment, level, true);
     }
 
-    /** Add the given enchantment and level to the item.
+    /**
+     * Add the given enchantment and level to the item.
      * If allowUnsafe is set to false it will throw an error if the level is too high or if the enchantment can't be applied on this item.
      */
     public EItem addEnchant(Enchantment enchantment, Integer level, Boolean allowUnsafe) {
@@ -392,7 +394,6 @@ public class EItem extends ItemStack {
     }
 
 
-
     // ##################################################
     // #################### POTIONS #####################
     // ##################################################
@@ -414,7 +415,6 @@ public class EItem extends ItemStack {
         }
         return this;
     }
-
 
 
     // ##################################################
@@ -441,7 +441,6 @@ public class EItem extends ItemStack {
         }
         return null;
     }
-
 
 
     // ##################################################
@@ -515,7 +514,7 @@ public class EItem extends ItemStack {
     /**
      * Sets a page of the book.
      * The content can have up to 256 characters. (any more will be truncated)
-     *  for several book formatting options. //TODO: Put link for book formatting class.
+     * for several book formatting options. //TODO: Put link for book formatting class.
      */
     public EItem setPage(Integer page, String content) {
         ItemMeta meta = getItemMeta();
@@ -540,7 +539,7 @@ public class EItem extends ItemStack {
      * Clears the book and sets the page(s) specified.
      * Each page can have up to 256 characters.
      * And there can only be 50 pages in each book.
-     *  for several book formatting options. //TODO: Put link for book formatting class.
+     * for several book formatting options. //TODO: Put link for book formatting class.
      */
     public EItem setPages(List<String> pages) {
         ItemMeta meta = getItemMeta();
@@ -568,7 +567,6 @@ public class EItem extends ItemStack {
         }
         return null;
     }
-
 
 
     // ##################################################
@@ -662,7 +660,6 @@ public class EItem extends ItemStack {
     }
 
 
-
     // ##################################################
     // ##################### SKULLS #####################
     // ##################################################
@@ -717,7 +714,7 @@ public class EItem extends ItemStack {
         if (meta instanceof FireworkMeta) {
             FireworkEffect.Builder builder = FireworkEffect.builder();
             builder.with(FireworkEffect.Type.BALL).withColor(Color.WHITE);
-            ((FireworkMeta) meta).addEffect(builder.build());
+            ((FireworkMeta)meta).addEffect(builder.build());
             setItemMeta(meta);
         }
         return this;
@@ -727,7 +724,7 @@ public class EItem extends ItemStack {
     public EItem addEffect(FireworkEffect effect) {
         ItemMeta meta = getItemMeta();
         if (meta instanceof FireworkMeta) {
-            ((FireworkMeta) meta).addEffect(effect);
+            ((FireworkMeta)meta).addEffect(effect);
             setItemMeta(meta);
         }
         return this;
@@ -745,7 +742,7 @@ public class EItem extends ItemStack {
             if (trail) {
                 builder.withTrail();
             }
-            ((FireworkMeta) meta).addEffect(builder.build());
+            ((FireworkMeta)meta).addEffect(builder.build());
             setItemMeta(meta);
         }
         return this;

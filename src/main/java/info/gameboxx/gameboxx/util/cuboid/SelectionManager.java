@@ -67,6 +67,7 @@ public class SelectionManager {
     /**
      * Get a Cuboid from the selection.
      * If only one of the locations is set a 1*1*1 cuboid will be returned at that location.
+     *
      * @param player Get selection from the specified player or get global selection if it's null.
      * @return Cuboid or null if both locations aren't set.
      */
@@ -111,6 +112,7 @@ public class SelectionManager {
     /**
      * Get the first selected position.
      * If the position isn't set it'll return null.
+     *
      * @param player Get pos1 from the specified player or get global pos1 if it's null.
      * @return Location of pos1 or null
      */
@@ -128,6 +130,7 @@ public class SelectionManager {
 
     /**
      * Set the first position to the specified location.
+     *
      * @param player Set pos1 from the specified player or set global pos1 if it's null.
      * @param location The location used to be set as pos1.
      */
@@ -147,6 +150,7 @@ public class SelectionManager {
     /**
      * Get the second selected position.
      * If the position isn't set it'll return null.
+     *
      * @param player Get pos2 from the specified player or get global pos2 if it's null.
      * @return Location of pos2 or null
      */
@@ -164,6 +168,7 @@ public class SelectionManager {
 
     /**
      * Set the second position to the specified location.
+     *
      * @param player Set pos2 from the specified player or set global pos2 if it's null.
      * @param location The location used to be set as pos2.
      */
@@ -183,6 +188,7 @@ public class SelectionManager {
     /**
      * Get a enum value that shows which points have been set.
      * It'll return BOTH, NONE, POS1 or POS2.
+     *
      * @param player Get points from the specified player or from global if it's null.
      * @return SelectionStatus enum value based on points set.
      */
@@ -210,6 +216,7 @@ public class SelectionManager {
 
     /**
      * Get the wand item
+     *
      * @return EItem
      */
     public EItem getWand() {

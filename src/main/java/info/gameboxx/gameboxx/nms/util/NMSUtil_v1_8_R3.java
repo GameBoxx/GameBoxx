@@ -37,6 +37,7 @@ public class NMSUtil_v1_8_R3 {
 
     /**
      * Send a packet to the specified player.
+     *
      * @param player The player to send the packet to.
      * @param packet The {@link Packet} to send.
      */
@@ -46,17 +47,19 @@ public class NMSUtil_v1_8_R3 {
 
     /**
      * Send multiple packets to the specified player.
+     *
      * @param player The player to send the packets to.
      * @param packets One or more {@link Packet}s to send.
      */
     public static void sendPackets(Player player, Packet... packets) {
         for (Packet packet : packets) {
-            ((CraftPlayer) player).getHandle().playerConnection.sendPacket(packet);
+            ((CraftPlayer)player).getHandle().playerConnection.sendPacket(packet);
         }
     }
 
     /**
      * Serialize a message.
+     *
      * @param message The message that needs to be serialized.
      * @return Serialized chat as {@link IChatBaseComponent}
      */

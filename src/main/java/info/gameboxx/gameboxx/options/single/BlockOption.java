@@ -83,13 +83,13 @@ public class BlockOption extends SingleOption {
             }
             if (input.startsWith("#")) {
                 value = playerOption.getValue().getTargetBlock(Utils.TRANSPARENT_MATERIALS, 64);
-            } else  {
+            } else {
                 value = playerOption.getValue().getLocation().getBlock();
             }
             return true;
         }
 
-        Location location = new Location(null, 0,0,0, 0f,0f);
+        Location location = new Location(null, 0, 0, 0, 0f, 0f);
 
 
         //Split string by semicolon like x,y,z:world or x,y,z:player
@@ -210,6 +210,6 @@ public class BlockOption extends SingleOption {
 
     @Override
     public BlockOption clone() {
-        return (BlockOption) new BlockOption(name, (Block)defaultValue).setDescription(description).setFlag(flag);
+        return (BlockOption)new BlockOption(name, (Block)defaultValue).setDescription(description).setFlag(flag);
     }
 }

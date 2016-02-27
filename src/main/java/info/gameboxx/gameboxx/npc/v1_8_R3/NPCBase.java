@@ -43,7 +43,7 @@ public abstract class NPCBase implements NPC {
 
     public NPCBase(Location location) {
         Preconditions.checkNotNull(location);
-        world = ((CraftWorld) location.getWorld()).getHandle();
+        world = ((CraftWorld)location.getWorld()).getHandle();
     }
 
 }

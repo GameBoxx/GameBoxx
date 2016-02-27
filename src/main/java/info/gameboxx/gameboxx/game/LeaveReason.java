@@ -32,7 +32,7 @@ package info.gameboxx.gameboxx.game;
  * RESET - the session is being reset.
  */
 public enum LeaveReason {
-	KICK,
-	DISCONNECT,
-	RESET;
+    KICK,
+    DISCONNECT,
+    RESET;
 }

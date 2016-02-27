@@ -43,8 +43,9 @@ public class NMS {
 
     private NMS() {
         try {
-            versionString = Bukkit.getServer().getClass().getPackage().getName().replace(".",  ",").split(",")[3];
-        } catch (ArrayIndexOutOfBoundsException e) {}
+            versionString = Bukkit.getServer().getClass().getPackage().getName().replace(".", ",").split(",")[3];
+        } catch (ArrayIndexOutOfBoundsException e) {
+        }
         version = NMSVersion.fromString(versionString);
 
         GameBoxx gb = GameBoxx.get();
@@ -77,7 +78,7 @@ public class NMS {
     }
 
     public static NMS get() {
-        if(instance == null) {
+        if (instance == null) {
             instance = new NMS();
         }
         return instance;

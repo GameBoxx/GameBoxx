@@ -71,8 +71,7 @@ public enum TextAction {
      * <b>Trigger:</b> Hover
      * <b>Syntax:</b> [[message||text]]
      */
-    HOVER("show_text", "[[", "]]"),
-    ;
+    HOVER("show_text", "[[", "]]"),;
 
 
     private String name;
@@ -87,6 +86,7 @@ public enum TextAction {
 
     /**
      * The name for the text action used in the JSON string.
+     *
      * @return The internal name of the action.
      */
     public String getName() {
@@ -95,6 +95,7 @@ public enum TextAction {
 
     /**
      * The prefix for the custom message syntax.
+     *
      * @return Prefix for syntax.
      */
     public String getPrefix() {
@@ -103,6 +104,7 @@ public enum TextAction {
 
     /**
      * The suffix for the custom message syntax.
+     *
      * @return Suffix for syntax.
      */
     public String getSuffix() {

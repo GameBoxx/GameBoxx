@@ -201,6 +201,7 @@ public class StringOption extends SingleOption {
 
     @Override
     public StringOption clone() {
-        return (StringOption) new StringOption(name, (String)defaultValue).minChars(minChars).maxChars(maxChars).match(matchList).match(matchMap).matchRegex(regex).setDescription(description).setFlag(flag);
+        return (StringOption)new StringOption(name, (String)defaultValue).minChars(minChars).maxChars(maxChars).match(matchList).match(matchMap).matchRegex(regex).setDescription(description)
+                .setFlag(flag);
     }
 }

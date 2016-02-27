@@ -84,15 +84,15 @@ public class MessageConfig {
         this.plugin = plugin;
         this.name = name;
 
-        if (! fallback) {
+        if (!fallback) {
             configs.add(this);
         }
 
         loadFull(fallback ? "en" : gb.getLanguage().getID());
 
-        if (! fallback) {
+        if (!fallback) {
             loadedLanguage = gb.getLanguage();
-            if (! gb.getLanguage().getID().equalsIgnoreCase("en")) {
+            if (!gb.getLanguage().getID().equalsIgnoreCase("en")) {
                 this.fallback = new MessageConfig(plugin, name, true);
             }
         } else {
@@ -192,15 +192,15 @@ public class MessageConfig {
 
     /**
      * @param lang The language to loadFull.
-     *             You should just use {@link #loadFull()} to loadFull the user selected language.
-     *             Only use this to force loadFull a different langauge.
+     * You should just use {@link #loadFull()} to loadFull the user selected language.
+     * Only use this to force loadFull a different langauge.
      * @return Whether or not the loading was successful.
      * @see #loadFull()
      */
     public boolean loadFull(String lang) {
         File dir = new File(new File(plugin.getDataFolder(), "messages"), lang);
         dir.mkdirs();
-        file = new File(dir, name+"_"+lang+".properties");
+        file = new File(dir, name + "_" + lang + ".properties");
 
         boolean save = false;
         if (file.exists()) {
@@ -209,7 +209,7 @@ public class MessageConfig {
             try {
                 config.load(new FileInputStream(file));
             } catch (Exception e) {
-                gb.error("An error occurred trying to load the language file '"+file.getAbsolutePath()+"'!");
+                gb.error("An error occurred trying to load the language file '" + file.getAbsolutePath() + "'!");
                 gb.error(e.getMessage());
                 config = null;
                 return false;
@@ -234,21 +234,21 @@ public class MessageConfig {
         }
 
         //Get/set the version
-        if (config.getProperty(name.toUpperCase()+VERSION_KEY) != null) {
-            version = Parse.Int(config.getProperty(name.toUpperCase()+VERSION_KEY).trim());
+        if (config.getProperty(name.toUpperCase() + VERSION_KEY) != null) {
+            version = Parse.Int(config.getProperty(name.toUpperCase() + VERSION_KEY).trim());
         } else {
-            config.setProperty(name.toUpperCase()+VERSION_KEY, Integer.toString(version));
+            config.setProperty(name.toUpperCase() + VERSION_KEY, Integer.toString(version));
             save = true;
         }
 
         //Load changes if there is a changes file.
-        String source = "changelogs/"+lang+"/"+name+"_"+lang+".yml";
+        String source = "changelogs/" + lang + "/" + name + "_" + lang + ".yml";
         InputStream in = plugin.getResource(source);
         if (in != null) {
             changelog = YamlConfiguration.loadConfiguration(in);
             targetVersion = changelog.getInt("version");
             if (targetVersion > version) {
-                gb.warn("Message file "+name+"_"+lang+".yml is "+(targetVersion-version)+" version(s) behind.\n"+
+                gb.warn("Message file " + name + "_" + lang + ".yml is " + (targetVersion - version) + " version(s) behind.\n" +
                         "Please run /gameboxx messages for more details.");
 
             }
@@ -272,10 +272,10 @@ public class MessageConfig {
      */
     private EProperties getConfigFromJar(String lang) {
         //Get the default file from the jar.
-        String source = "messages/"+name+"_"+lang+".properties";
+        String source = "messages/" + name + "_" + lang + ".properties";
         InputStream in = plugin.getResource(source);
         if (in == null) {
-            gb.warn("Language file '"+source+"' not found! Either a corrupt jar or "+plugin.getName()+" doesn't support the language '"+lang+"'!");
+            gb.warn("Language file '" + source + "' not found! Either a corrupt jar or " + plugin.getName() + " doesn't support the language '" + lang + "'!");
             return null;
         }
 
@@ -286,7 +286,7 @@ public class MessageConfig {
             in.close();
             return config;
         } catch (IOException e) {
-            gb.error("An error occurred trying to load the language file '"+source+"'!");
+            gb.error("An error occurred trying to load the language file '" + source + "'!");
             gb.error(e.getMessage());
             return null;
         }
@@ -316,7 +316,7 @@ public class MessageConfig {
                 config.load(new FileInputStream(file));
                 success = true;
             } catch (Exception e) {
-                gb.error("An error occurred trying to load the language file '"+file.getAbsolutePath()+"'!");
+                gb.error("An error occurred trying to load the language file '" + file.getAbsolutePath() + "'!");
                 gb.error(e.getMessage());
             }
         }
@@ -340,7 +340,7 @@ public class MessageConfig {
                 config.store(new FileOutputStream(file), "");
                 return true;
             } catch (Exception e) {
-                gb.error("Failed to save the messages file '"+file.getAbsolutePath()+"'");
+                gb.error("Failed to save the messages file '" + file.getAbsolutePath() + "'");
                 gb.error(e.getMessage());
                 return false;
             }
@@ -491,12 +491,12 @@ public class MessageConfig {
      */
     private Map<Integer, List<String>> getKeys(String type) {
         Map<Integer, List<String>> keys = new HashMap<>();
-        if (! hasChanges()) {
+        if (!hasChanges()) {
             return keys;
         }
-        for (int v = version+1; v <= targetVersion; v++) {
-            final String key = v+"."+type;
-            if (! changelog.contains(key)) {
+        for (int v = version + 1; v <= targetVersion; v++) {
+            final String key = v + "." + type;
+            if (!changelog.contains(key)) {
                 continue;
             }
             if (changelog.isList(key)) {
@@ -555,7 +555,7 @@ public class MessageConfig {
 
         //Skip everything only bump version
         if (mode == UpdateMode.SKIP_ALL) {
-            config.setProperty(name.toUpperCase()+VERSION_KEY, Integer.toString(version));
+            config.setProperty(name.toUpperCase() + VERSION_KEY, Integer.toString(version));
             save();
             return;
         }
@@ -565,7 +565,7 @@ public class MessageConfig {
 
         EProperties latest = getConfigFromJar(getLanguage().getID());
 
-        for (int v = version+1; v <= targetVersion; v++) {
+        for (int v = version + 1; v <= targetVersion; v++) {
             //Remove options
             if (removedKeys.containsKey(v) && (mode == UpdateMode.REMOVAL_ONLY || mode == UpdateMode.ALL)) {
                 for (String key : removedKeys.get(v)) {
@@ -580,7 +580,7 @@ public class MessageConfig {
                     if (config.contains(key)) {
                         if (keepOld) {
                             //When keeping old value rename the key by prefixing it with OLD-
-                            config.setProperty("OLD-"+key, config.getProperty(key));
+                            config.setProperty("OLD-" + key, config.getProperty(key));
                         }
                         config.setProperty(key, latest.getProperty(key));
                     }
@@ -588,7 +588,7 @@ public class MessageConfig {
             }
         }
 
-        config.setProperty(name.toUpperCase()+VERSION_KEY, Integer.toString(version));
+        config.setProperty(name.toUpperCase() + VERSION_KEY, Integer.toString(version));
         save();
         cacheMessages(false);
     }

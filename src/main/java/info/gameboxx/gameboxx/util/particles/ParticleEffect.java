@@ -38,15 +38,15 @@ import java.util.Map.Entry;
 
 /**
  * <b>ParticleEffect Library</b>
- * <p>
+ * <p/>
  * This library was created by @DarkBlade12 and allows you to display all Minecraft particle effects on a Bukkit server
- * <p>
+ * <p/>
  * You are welcome to use it, modify it and redistribute it under the following conditions:
  * <ul>
  * <li>Don't claim this class as your own
  * <li>Don't remove this disclaimer
  * </ul>
- * <p>
+ * <p/>
  * Special thanks:
  * <ul>
  * <li>@microgeek (original idea, names and packet parameters)
@@ -55,7 +55,7 @@ import java.util.Map.Entry;
  * <li>@Cybermaxke (particle behavior)
  * <li>@JamieSinn (hosting a jenkins server and documentation for particleeffect)
  * </ul>
- * <p>
+ * <p/>
  * <i>It would be nice if you provide credit to me if you use this class in a published project</i>
  *
  * @author DarkBlade12
@@ -579,7 +579,8 @@ public enum ParticleEffect {
      * @see ParticlePacket
      * @see ParticlePacket#sendTo(Location, double)
      */
-    public void display(float offsetX, float offsetY, float offsetZ, float speed, int amount, Location center, double range) throws ParticleVersionException, ParticleDataException, IllegalArgumentException {
+    public void display(float offsetX, float offsetY, float offsetZ, float speed, int amount, Location center, double range)
+            throws ParticleVersionException, ParticleDataException, IllegalArgumentException {
         if (!isSupported()) {
             throw new ParticleVersionException("This particle effect is not supported by your server version");
         }
@@ -608,7 +609,8 @@ public enum ParticleEffect {
      * @see ParticlePacket
      * @see ParticlePacket#sendTo(Location, List)
      */
-    public void display(float offsetX, float offsetY, float offsetZ, float speed, int amount, Location center, List<Player> players) throws ParticleVersionException, ParticleDataException, IllegalArgumentException {
+    public void display(float offsetX, float offsetY, float offsetZ, float speed, int amount, Location center, List<Player> players)
+            throws ParticleVersionException, ParticleDataException, IllegalArgumentException {
         if (!isSupported()) {
             throw new ParticleVersionException("This particle effect is not supported by your server version");
         }
@@ -814,7 +816,8 @@ public enum ParticleEffect {
      * @see ParticlePacket
      * @see ParticlePacket#sendTo(Location, List)
      */
-    public void display(ParticleData data, float offsetX, float offsetY, float offsetZ, float speed, int amount, Location center, List<Player> players) throws ParticleVersionException, ParticleDataException {
+    public void display(ParticleData data, float offsetX, float offsetY, float offsetZ, float speed, int amount, Location center, List<Player> players)
+            throws ParticleVersionException, ParticleDataException {
         if (!isSupported()) {
             throw new ParticleVersionException("This particle effect is not supported by your server version");
         }
@@ -915,7 +918,7 @@ public enum ParticleEffect {
 
     /**
      * Represents the property of a particle effect
-     * <p>
+     * <p/>
      * This class is part of the <b>ParticleEffect Library</b> and follows the same usage conditions
      *
      * @author DarkBlade12
@@ -942,7 +945,7 @@ public enum ParticleEffect {
 
     /**
      * Represents the particle data for effects like {@link ParticleEffect#ITEM_CRACK}, {@link ParticleEffect#BLOCK_CRACK} and {@link ParticleEffect#BLOCK_DUST}
-     * <p>
+     * <p/>
      * This class is part of the <b>ParticleEffect Library</b> and follows the same usage conditions
      *
      * @author DarkBlade12
@@ -959,11 +962,11 @@ public enum ParticleEffect {
          * @param material Material of the item/block
          * @param data Data value of the item/block
          */
-        @SuppressWarnings("deprecation")
+        @SuppressWarnings ("deprecation")
         public ParticleData(Material material, byte data) {
             this.material = material;
             this.data = data;
-            this.packetData = new int[] { material.getId(), data };
+            this.packetData = new int[] {material.getId(), data};
         }
 
         /**
@@ -1005,7 +1008,7 @@ public enum ParticleEffect {
 
     /**
      * Represents the item data for the {@link ParticleEffect#ITEM_CRACK} effect
-     * <p>
+     * <p/>
      * This class is part of the <b>ParticleEffect Library</b> and follows the same usage conditions
      *
      * @author DarkBlade12
@@ -1025,7 +1028,7 @@ public enum ParticleEffect {
 
     /**
      * Represents the block data for the {@link ParticleEffect#BLOCK_CRACK} and {@link ParticleEffect#BLOCK_DUST} effects
-     * <p>
+     * <p/>
      * This class is part of the <b>ParticleEffect Library</b> and follows the same usage conditions
      *
      * @author DarkBlade12
@@ -1049,7 +1052,7 @@ public enum ParticleEffect {
 
     /**
      * Represents the color for effects like {@link ParticleEffect#SPELL_MOB}, {@link ParticleEffect#SPELL_MOB_AMBIENT}, {@link ParticleEffect#REDSTONE} and {@link ParticleEffect#NOTE}
-     * <p>
+     * <p/>
      * This class is part of the <b>ParticleEffect Library</b> and follows the same usage conditions
      *
      * @author DarkBlade12
@@ -1080,7 +1083,7 @@ public enum ParticleEffect {
 
     /**
      * Represents the color for effects like {@link ParticleEffect#SPELL_MOB}, {@link ParticleEffect#SPELL_MOB_AMBIENT} and {@link ParticleEffect#NOTE}
-     * <p>
+     * <p/>
      * This class is part of the <b>ParticleEffect Library</b> and follows the same usage conditions
      *
      * @author DarkBlade12
@@ -1166,7 +1169,7 @@ public enum ParticleEffect {
          */
         @Override
         public float getValueX() {
-            return (float) red / 255F;
+            return (float)red / 255F;
         }
 
         /**
@@ -1176,7 +1179,7 @@ public enum ParticleEffect {
          */
         @Override
         public float getValueY() {
-            return (float) green / 255F;
+            return (float)green / 255F;
         }
 
         /**
@@ -1186,13 +1189,13 @@ public enum ParticleEffect {
          */
         @Override
         public float getValueZ() {
-            return (float) blue / 255F;
+            return (float)blue / 255F;
         }
     }
 
     /**
      * Represents the color for the {@link ParticleEffect#NOTE} effect
-     * <p>
+     * <p/>
      * This class is part of the <b>ParticleEffect Library</b> and follows the same usage conditions
      *
      * @author DarkBlade12
@@ -1224,7 +1227,7 @@ public enum ParticleEffect {
          */
         @Override
         public float getValueX() {
-            return (float) note / 24F;
+            return (float)note / 24F;
         }
 
         /**
@@ -1251,7 +1254,7 @@ public enum ParticleEffect {
 
     /**
      * Represents a runtime exception that is thrown either if the displayed particle effect requires data and has none or vice-versa or if the data type is incorrect
-     * <p>
+     * <p/>
      * This class is part of the <b>ParticleEffect Library</b> and follows the same usage conditions
      *
      * @author DarkBlade12
@@ -1272,7 +1275,7 @@ public enum ParticleEffect {
 
     /**
      * Represents a runtime exception that is thrown either if the displayed particle effect is not colorable or if the particle color type is incorrect
-     * <p>
+     * <p/>
      * This class is part of the <b>ParticleEffect Library</b> and follows the same usage conditions
      *
      * @author DarkBlade12
@@ -1293,7 +1296,7 @@ public enum ParticleEffect {
 
     /**
      * Represents a runtime exception that is thrown if the displayed particle effect requires a newer version
-     * <p>
+     * <p/>
      * This class is part of the <b>ParticleEffect Library</b> and follows the same usage conditions
      *
      * @author DarkBlade12
@@ -1314,7 +1317,7 @@ public enum ParticleEffect {
 
     /**
      * Represents a particle effect packet with all attributes which is used for sending packets to the players
-     * <p>
+     * <p/>
      * This class is part of the <b>ParticleEffect Library</b> and follows the same usage conditions
      *
      * @author DarkBlade12
@@ -1381,7 +1384,7 @@ public enum ParticleEffect {
          * @throws IllegalArgumentException If the speed is lower than 0
          */
         public ParticlePacket(ParticleEffect effect, Vector direction, float speed, boolean longDistance, ParticleData data) throws IllegalArgumentException {
-            this(effect, (float) direction.getX(), (float) direction.getY(), (float) direction.getZ(), speed, 0, longDistance, data);
+            this(effect, (float)direction.getX(), (float)direction.getY(), (float)direction.getZ(), speed, 0, longDistance, data);
         }
 
         /**
@@ -1393,14 +1396,14 @@ public enum ParticleEffect {
          */
         public ParticlePacket(ParticleEffect effect, ParticleColor color, boolean longDistance) {
             this(effect, color.getValueX(), color.getValueY(), color.getValueZ(), 1, 0, longDistance, null);
-            if (effect == ParticleEffect.REDSTONE && color instanceof OrdinaryColor && ((OrdinaryColor) color).getRed() == 0) {
+            if (effect == ParticleEffect.REDSTONE && color instanceof OrdinaryColor && ((OrdinaryColor)color).getRed() == 0) {
                 offsetX = Float.MIN_NORMAL;
             }
         }
 
         /**
          * Initializes {@link #packetConstructor}, {@link #getHandle}, {@link #playerConnection} and {@link #sendPacket} and sets {@link #initialized} to <code>true</code> if it succeeds
-         * <p>
+         * <p/>
          * <b>Note:</b> These fields only have to be initialized once, so it will return if {@link #initialized} is already set to <code>true</code>
          *
          * @throws VersionIncompatibleException if your bukkit version is not supported by this library
@@ -1470,12 +1473,12 @@ public enum ParticleEffect {
                     ReflectionUtils.setValue(packet, true, "j", longDistance);
                     if (data != null) {
                         int[] packetData = data.getPacketData();
-                        ReflectionUtils.setValue(packet, true, "k", effect == ParticleEffect.ITEM_CRACK ? packetData : new int[] { packetData[0] | (packetData[1] << 12) });
+                        ReflectionUtils.setValue(packet, true, "k", effect == ParticleEffect.ITEM_CRACK ? packetData : new int[] {packetData[0] | (packetData[1] << 12)});
                     }
                 }
-                ReflectionUtils.setValue(packet, true, "b", (float) center.getX());
-                ReflectionUtils.setValue(packet, true, "c", (float) center.getY());
-                ReflectionUtils.setValue(packet, true, "d", (float) center.getZ());
+                ReflectionUtils.setValue(packet, true, "b", (float)center.getX());
+                ReflectionUtils.setValue(packet, true, "c", (float)center.getY());
+                ReflectionUtils.setValue(packet, true, "d", (float)center.getZ());
                 ReflectionUtils.setValue(packet, true, "e", offsetX);
                 ReflectionUtils.setValue(packet, true, "f", offsetY);
                 ReflectionUtils.setValue(packet, true, "g", offsetZ);
@@ -1544,7 +1547,7 @@ public enum ParticleEffect {
 
         /**
          * Represents a runtime exception that is thrown if a bukkit version is not compatible with this library
-         * <p>
+         * <p/>
          * This class is part of the <b>ParticleEffect Library</b> and follows the same usage conditions
          *
          * @author DarkBlade12
@@ -1566,7 +1569,7 @@ public enum ParticleEffect {
 
         /**
          * Represents a runtime exception that is thrown if packet instantiation fails
-         * <p>
+         * <p/>
          * This class is part of the <b>ParticleEffect Library</b> and follows the same usage conditions
          *
          * @author DarkBlade12
@@ -1588,7 +1591,7 @@ public enum ParticleEffect {
 
         /**
          * Represents a runtime exception that is thrown if packet sending fails
-         * <p>
+         * <p/>
          * This class is part of the <b>ParticleEffect Library</b> and follows the same usage conditions
          *
          * @author DarkBlade12

@@ -41,7 +41,7 @@ import org.bukkit.scheduler.BukkitRunnable;
  */
 //TODO: Method to start/stop/reset the countdown.
 public class CountdownCP extends GameComponent {
-    
+
     public static final long TICKS_IN_SECOND = 20L;
 
     private int countdown = 30;
@@ -64,12 +64,13 @@ public class CountdownCP extends GameComponent {
 
     @Override
     public CountdownCP newInstance(GameSession session) {
-        return (CountdownCP) new CountdownCP(getGame()).setSession(session);
+        return (CountdownCP)new CountdownCP(getGame()).setSession(session);
     }
 
 
     /**
      * Get the remaining countdown time in seconds.
+     *
      * @return The remaining time on the countdown in seconds.
      */
     public int getCountdown() {
@@ -79,6 +80,7 @@ public class CountdownCP extends GameComponent {
     /**
      * Force override the countdown time.
      * There is no need to manually decrease the countdown time unless you want to force decrease it.
+     *
      * @param countdown The countdown time in seconds to set.
      */
     public void setCountdown(int countdown) {
@@ -87,6 +89,7 @@ public class CountdownCP extends GameComponent {
 
     /**
      * Get the amount in seconds to start the countdown from.
+     *
      * @return countdown-time option value.
      */
     public int getCountdownTime() {
@@ -95,6 +98,7 @@ public class CountdownCP extends GameComponent {
 
     /**
      * Get the main interval between counts.
+     *
      * @return count-interval option value.
      */
     public int getCountInterval() {
@@ -103,6 +107,7 @@ public class CountdownCP extends GameComponent {
 
     /**
      * Get the start time in seconds when to start the second interval.
+     *
      * @return count-seconds option value.
      */
     public int getCountSeconds() {
@@ -111,6 +116,7 @@ public class CountdownCP extends GameComponent {
 
     /**
      * Get the {@link SoundEffect} to play on each count.
+     *
      * @return count-sound option value.
      */
     public SoundEffect getSound() {
@@ -120,6 +126,7 @@ public class CountdownCP extends GameComponent {
 
     /**
      * Get the message that will be broadcasted on each count.
+     *
      * @return The message that will be broadcasted.
      */
     public String getMessage() {
@@ -127,21 +134,21 @@ public class CountdownCP extends GameComponent {
         return "".replace("{game}", getGame().getName()).replace("{seconds}", String.valueOf(getCountdown())).replace("{s}", getCountdown() == 1 ? "" : "s");
     }
 
-    
+
     /**
      * Starts the countdown associated with this class.
      */
     public void startCountdown() {
         runnable.runTaskTimer(getAPI(), 0L, TICKS_IN_SECOND);
     }
-    
+
     /**
      * Stops the countdown.
      */
     public void stopCountdown() {
         runnable.cancel();
     }
-    
+
     /**
      * Resets the countdown.
      */
@@ -150,7 +157,7 @@ public class CountdownCP extends GameComponent {
         this.countdown = 30;
         startCountdown();
     }
-    
+
     /**
      * Resumes the countdown.
      */
@@ -178,7 +185,7 @@ public class CountdownCP extends GameComponent {
         }
         countdown--;
     }
-    
+
     private class CountdownRunnable extends BukkitRunnable {
         @Override
         public void run() {

@@ -43,7 +43,7 @@ public class UtilsTest {
 
 
     @Test
-    @Ignore("Debug")
+    @Ignore ("Debug")
     public void testQuotes() {
         System.out.println(Str.splitQuotes("This is a test message.").toString());
         System.out.println(Str.splitQuotes("This is 'a test' message.").toString());
@@ -53,7 +53,7 @@ public class UtilsTest {
     }
 
     @Test
-    @Ignore("Debug")
+    @Ignore ("Debug")
     public void testImplode() {
         String[] values = new String[] {"apple", "banana", "pear", "lime", "orange", "melon"};
         System.out.println(Str.implode(values));

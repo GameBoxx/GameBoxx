@@ -37,6 +37,7 @@ public class Random {
 
     /**
      * Get a random number between start and end.
+     *
      * @param start
      * @param end
      * @return random int
@@ -47,6 +48,7 @@ public class Random {
 
     /**
      * Get a random Integer between 0 and the number specified.
+     *
      * @param end
      * @return random int
      */
@@ -56,6 +58,7 @@ public class Random {
 
     /**
      * Get a random float number between start and end.
+     *
      * @param start
      * @param end
      * @return random float
@@ -66,6 +69,7 @@ public class Random {
 
     /**
      * Get a random float (Same as Random.nextFloat())
+     *
      * @return random float between 0-1
      */
     public static float Float() {
@@ -74,6 +78,7 @@ public class Random {
 
     /**
      * Get a random double number between start and end.
+     *
      * @param start
      * @param end
      * @return random double
@@ -84,6 +89,7 @@ public class Random {
 
     /**
      * Get a random double (Same as Random.nextDouble())
+     *
      * @return random double between 0-1
      */
     public static double Double() {
@@ -92,15 +98,17 @@ public class Random {
 
     /**
      * Get a random value out of a Array.
+     *
      * @param array The array like String[] or int[]
      * @return Random value out of array.
      */
     public static <T> T Item(T[] array) {
-        return array[Int(array.length-1)];
+        return array[Int(array.length - 1)];
     }
 
     /**
      * Get a random value out of a List.
+     *
      * @param list The list like List<String>
      * @return Random value out of list.
      */
@@ -110,6 +118,7 @@ public class Random {
 
     /**
      * Get the raw random instance from java.util.
+     *
      * @return Random instance from java.util.
      */
     public static java.util.Random raw() {

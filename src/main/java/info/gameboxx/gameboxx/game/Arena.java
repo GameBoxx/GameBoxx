@@ -61,6 +61,7 @@ public class Arena {
 
     /**
      * Use the {@link Game#createArena(ArenaType, String)} method to create a new arena.
+     *
      * @param game The {@link Game} that has this arena.
      * @param configFile The {@link File} for the arena config.
      * @param type The {@link ArenaType} for the arena.
@@ -83,6 +84,7 @@ public class Arena {
 
     /**
      * Arenas from config will be instantiated using this constructor.
+     *
      * @param game The {@link Game} that has this arena.
      * @param configFile The {@link File} for the arena config.
      */
@@ -110,6 +112,7 @@ public class Arena {
 
     /**
      * Check if all the setup options have been set up correctly.
+     *
      * @return True when all setup options have been set up.
      */
     public boolean isSetupCorrectly() {
@@ -134,6 +137,7 @@ public class Arena {
 
     /**
      * Get the total amount of sessions this arena has.
+     *
      * @return The amount of active sessions.
      */
     public int getSessionCount() {
@@ -142,6 +146,7 @@ public class Arena {
 
     /**
      * Get the map with all the game sessions.
+     *
      * @return map with sessions where the key is the session ID and the value is the session instance.
      */
     public Map<Integer, GameSession> getSessions() {
@@ -152,6 +157,7 @@ public class Arena {
      * Create a new {@link GameSession} for this arena.
      * An unique ID will be created and assigned to the session to reference it further on.
      * It will also copy all the components and child components with all settings from the {@link Game}.
+     *
      * @return The created new GameSession.
      * @throws SessionLimitException When the session limit has been reached.
      * @throws MissingArenaWorldException When the arena type is {@link ArenaType#WORLD} and there is no world for the arena.
@@ -224,6 +230,7 @@ public class Arena {
 
     /**
      * Get the {@link GameSession} for the given ID.
+     *
      * @param id The index/ID of the session to get.
      * @return The {@link GameSession} for the specified ID or {@code null} if there is no session for the given ID.
      */
@@ -233,6 +240,7 @@ public class Arena {
 
     /**
      * Check whether or not the arena has a {@link GameSession} with the given ID.
+     *
      * @param id The session ID to check for.
      * @return True when the arena has a session with the given ID.
      */
@@ -242,6 +250,7 @@ public class Arena {
 
     /**
      * Remove a {@link GameSession} by it's ID.
+     *
      * @param id The session ID to remove.
      */
     public void removeSession(int id) {
@@ -251,6 +260,7 @@ public class Arena {
 
     /**
      * Get the arena options config.
+     *
      * @return {@link OptionCfg} with all the arena options.
      */
     public OptionCfg getConfig() {
@@ -259,6 +269,7 @@ public class Arena {
 
     /**
      * Get the game that this arena belongs to.
+     *
      * @return The game this arena belongs to.
      */
     public Game getGame() {
@@ -267,6 +278,7 @@ public class Arena {
 
     /**
      * Get the {@link ArenaType} of the arena.
+     *
      * @return The arena type
      */
     public ArenaType getType() {
@@ -275,6 +287,7 @@ public class Arena {
 
     /**
      * Get the name of the arena.
+     *
      * @return The name of the arena.
      */
     public String getName() {

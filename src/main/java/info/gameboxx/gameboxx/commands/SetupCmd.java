@@ -62,7 +62,6 @@ public class SetupCmd implements CommandExecutor {
         }
 
 
-
         return true;
     }
 }

@@ -46,7 +46,7 @@ public class Pair<F, S> {
         return true;
     }
 
-    public static <F, S> Pair <F, S> P(F first, S second) {
+    public static <F, S> Pair<F, S> P(F first, S second) {
         return new Pair<F, S>(first, second);
     }
 }

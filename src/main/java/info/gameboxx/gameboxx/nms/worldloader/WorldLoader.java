@@ -38,6 +38,7 @@ public interface WorldLoader {
 
     /**
      * Creates a new world.
+     *
      * @param creator The {@link WorldCreator} to use for creating the world.
      * @return The newly created {@link World}.
      */

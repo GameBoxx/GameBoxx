@@ -33,12 +33,13 @@ import org.bukkit.entity.Player;
  * The event that gets called whenever a player leaves a session.
  */
 public final class PlayerLeaveSessionEvent extends SessionEvent {
-    
+
     private Player player;
     private LeaveReason reason;
-    
+
     /**
      * Called whenever a Player leaves a session.
+     *
      * @param who The player who left a session.
      * @param session The session that a player left.
      * @param reason The reason why a player was disconnected from their session.
@@ -51,18 +52,20 @@ public final class PlayerLeaveSessionEvent extends SessionEvent {
 
     /**
      * Get the reason ({@link LeaveReason}) that the player left a session.
+     *
      * @return The reason for leaving.
      */
     public final LeaveReason getLeaveReason() {
         return this.reason;
     }
-    
+
     /**
      * Get the player who left a session.
+     *
      * @return The Player who left.
      */
     public Player getPlayer() {
         return this.player;
     }
-    
+
 }

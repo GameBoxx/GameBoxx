@@ -60,7 +60,7 @@ public class Utils {
     public static <T> T convertInstance(Object o, Class<T> clazz) {
         try {
             return clazz.cast(o);
-        } catch(ClassCastException e) {
+        } catch (ClassCastException e) {
             return null;
         }
     }
@@ -89,6 +89,7 @@ public class Utils {
      * For example a space and then a string like 'GameSession' would change to 'Game Session'
      * Some other examples: 'SimpleXMLParser' -> 'Simple XML Parser', 'May12' -> 'May 12'
      * http://stackoverflow.com/a/2560017
+     *
      * @param string The string to split and replace.
      * @param splitReplace The string to put between each split.
      * @return The formatted string.
@@ -108,14 +109,15 @@ public class Utils {
      * It will combine arguments that are quoted with spaces.
      * For example the following string: 'Hello there "you''re awesome"!'
      * Would result in 0:Hello 1:there 2:You''re awesome 3:!
+     *
      * @param args The list of arguments to fix.
      * @return The modified array with arguments.
      */
     public static String[] fixCommandArgs(String[] args) {
         StringBuilder builder = new StringBuilder();
-        for (int i = 0 ; i < args.length; i++) {
+        for (int i = 0; i < args.length; i++) {
             builder.append(args[i]);
-            if (i+1 < args.length) {
+            if (i + 1 < args.length) {
                 builder.append(" ");
             }
         }
@@ -131,11 +133,12 @@ public class Utils {
      * You can then use {@link WorldCreator#createWorld()} to create the actual world.
      * If any of the options are missing or if they are invalid it will set it to default. (default world, default type and no generator)
      * <b>The options are:</b><ul>
-     *     <li>environment:{environment} (default, nether, end)</li>
-     *     <li>type:{type} (normal, amplified, flat, largebiomes)</li>
-     *     <li>generator:{plugin:generator} or just {plugin}</li>
-     *     <li>settings:{settings...} extra settings for the generator</li>
+     * <li>environment:{environment} (default, nether, end)</li>
+     * <li>type:{type} (normal, amplified, flat, largebiomes)</li>
+     * <li>generator:{plugin:generator} or just {plugin}</li>
+     * <li>settings:{settings...} extra settings for the generator</li>
      * </ul>
+     *
      * @param name The name for the world to create.
      * @param args The list of arguments to parse.
      * @param startIndex The start index for the arguments to start parsing at.
@@ -161,7 +164,7 @@ public class Utils {
                     } else if (val.equals("end") || val.equals("theend")) {
                         worldCreator.environment(World.Environment.THE_END);
                     }
-                } else if (key.equals("worldtype") || key.equals("type") || key.equals("t") ||key.equals("wt")) {
+                } else if (key.equals("worldtype") || key.equals("type") || key.equals("t") || key.equals("wt")) {
                     if (val.equals("default") || val.equals("normal")) {
                         worldCreator.type(WorldType.NORMAL);
                     } else if (val.equals("amplified") || val.equals("hills") || val.equals("mountains")) {
@@ -187,6 +190,7 @@ public class Utils {
      * It will work properly for the nether and such.
      * Basically instead of starting from the top it will first scan down for the first empty block.
      * From there on it will scan down for air and then return the first non air block.
+     *
      * @param world The world to look in.
      * @param x The x coordinate.
      * @param z The z coordinate.
@@ -194,10 +198,10 @@ public class Utils {
      */
     public static Block getHighestBlockAt(World world, int x, int z) {
         Block block = world.getBlockAt(x, world.getEnvironment() == World.Environment.NETHER ? 127 : 255, z);
-        while(block.getType() != Material.AIR && block.getY() > 0) {
+        while (block.getType() != Material.AIR && block.getY() > 0) {
             block = block.getRelative(BlockFace.DOWN);
         }
-        while(block.getType() == Material.AIR && block.getY() > 0) {
+        while (block.getType() == Material.AIR && block.getY() > 0) {
             block = block.getRelative(BlockFace.DOWN);
         }
         return block;
@@ -214,6 +218,7 @@ public class Utils {
      * %MS = MilliSeconds
      * %% Remainder percentage of seconds with 1 decimal like '%S.%%s' could be '34.1s'
      * %%% Remainder percentage of seconds with 2 decimals like '%S.%%%s' could be '34.13s'
+     *
      * @param time The time to convert to min:sec
      * @param syntax The string with the above options which will be replaced with the time.
      * @return Formatted time string.
@@ -221,26 +226,26 @@ public class Utils {
     public static String formatTime(long time, String syntax, boolean extraZeros) {
         //time = time / 1000;
 
-        int days = (int) time / MSEC_IN_DAY;
+        int days = (int)time / MSEC_IN_DAY;
         time = time - days * MSEC_IN_DAY;
 
-        int hours = (int) time / MSEC_IN_HOUR;
+        int hours = (int)time / MSEC_IN_HOUR;
         time = time - hours * MSEC_IN_HOUR;
 
-        int mins = (int) time / MSEC_IN_MIN;
+        int mins = (int)time / MSEC_IN_MIN;
         time = time - mins * MSEC_IN_MIN;
 
-        int secs = (int) time / MSEC_IN_SEC;
+        int secs = (int)time / MSEC_IN_SEC;
         time = time - secs * MSEC_IN_SEC;
 
-        int ms = (int) time;
-        int ds = (int) time / 100;
-        int fs = (int) time / 10;
+        int ms = (int)time;
+        int ds = (int)time / 100;
+        int fs = (int)time / 10;
 
         syntax = syntax.replace("%D", "" + days);
-        syntax = syntax.replace("%H", "" + (hours < 10 && extraZeros ? "0"+hours : hours));
-        syntax = syntax.replace("%M", "" + (mins < 10 && extraZeros ? "0"+mins : mins));
-        syntax = syntax.replace("%S", "" + (secs < 10 && extraZeros ? "0"+secs : secs));
+        syntax = syntax.replace("%H", "" + (hours < 10 && extraZeros ? "0" + hours : hours));
+        syntax = syntax.replace("%M", "" + (mins < 10 && extraZeros ? "0" + mins : mins));
+        syntax = syntax.replace("%S", "" + (secs < 10 && extraZeros ? "0" + secs : secs));
         syntax = syntax.replace("%MS", "" + ms);
         syntax = syntax.replace("%%%", "" + fs);
         syntax = syntax.replace("%%", "" + ds);
@@ -252,6 +257,7 @@ public class Utils {
      * It will try to format the object nicely in a user friendly way for common objects.
      * If no custom formatting it will fall back to {@link Object#toString()}
      * If the object is null it will return 'null'.
+     *
      * @param obj The object to convert to string.
      * @return String from object.
      */
@@ -262,15 +268,15 @@ public class Utils {
 
         switch (obj.getClass().getName().toLowerCase()) {
             case "location":
-                return Parse.Location(((Location) obj));
+                return Parse.Location(((Location)obj));
             case "block":
-                return Parse.Block(((Block) obj));
+                return Parse.Block(((Block)obj));
             case "player":
                 return ((Player)obj).getName();
             case "world":
                 return ((World)obj).getName();
             case "color":
-                return Parse.Color(((Color) obj));
+                return Parse.Color(((Color)obj));
             case "itemstack":
                 return new ItemParser(((ItemStack)obj)).getString();
             case "eitem":
