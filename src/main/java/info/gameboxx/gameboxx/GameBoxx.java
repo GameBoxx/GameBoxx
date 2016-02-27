@@ -120,7 +120,7 @@ public class GameBoxx extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new MainListener(this), this);
     }
 
-    private boolean setupLanguage() {
+    public boolean setupLanguage() {
         language = Language.find(getCfg().language);
         if (language == null) {
             language = Language.ENGLISH;

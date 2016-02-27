@@ -26,9 +26,7 @@
 package info.gameboxx.gameboxx.commands;
 
 import info.gameboxx.gameboxx.GameBoxx;
-import info.gameboxx.gameboxx.messages.MessageConfig;
-import info.gameboxx.gameboxx.messages.Msg;
-import info.gameboxx.gameboxx.messages.Param;
+import info.gameboxx.gameboxx.messages.*;
 import info.gameboxx.gameboxx.util.Str;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -62,6 +60,36 @@ public class GameBoxxCmd implements CommandExecutor {
             }
 
             Msg.get("gameboxx.reloaded", Param.P("type", "all")).send(sender);
+            return true;
+        }
+
+        //Language
+        if (args[0].equalsIgnoreCase("language") || args[0].equalsIgnoreCase("lang")) {
+            if (!sender.hasPermission("gameboxx.cmd.language")) {
+                Msg.get("no-permission", Param.P("node", "gameboxx.cmd.language")).send(sender);
+                return true;
+            }
+
+            if (args.length < 2) {
+                Msg.get("gameboxx.language.get", Param.P("language", gb.getLanguage().getName()), Param.P("cmd", label)).send(sender);
+                return true;
+            }
+
+            Language lang = Language.find(args[1]);
+            if (lang == null) {
+                Msg.get("gameboxx.language.invalid", Param.P("input", args[1]), Param.P("languages", Str.implode(Language.getNames()))).send(sender);
+                return true;
+            }
+
+            gb.getCfg().language = lang.getID();
+            gb.getCfg().save();
+            gb.setupLanguage();
+
+            for (MessageConfig config : MessageConfig.getConfigs()) {
+                config.loadFull();
+            }
+
+            Msg.get("gameboxx.language.set", Param.P("language", lang.getName())).send(sender);
             return true;
         }
 
