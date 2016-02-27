@@ -27,11 +27,11 @@ package info.gameboxx.gameboxx;
 
 import info.gameboxx.gameboxx.commands.*;
 import info.gameboxx.gameboxx.config.PluginCfg;
-import info.gameboxx.gameboxx.messages.Language;
-import info.gameboxx.gameboxx.messages.MessageConfig;
 import info.gameboxx.gameboxx.game.GameManager;
 import info.gameboxx.gameboxx.listeners.MainListener;
 import info.gameboxx.gameboxx.menu.Menu;
+import info.gameboxx.gameboxx.messages.Language;
+import info.gameboxx.gameboxx.messages.MessageConfig;
 import info.gameboxx.gameboxx.nms.NMS;
 import info.gameboxx.gameboxx.nms.NMSVersion;
 import info.gameboxx.gameboxx.user.UserManager;

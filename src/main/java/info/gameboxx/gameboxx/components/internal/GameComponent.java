@@ -30,18 +30,12 @@ import info.gameboxx.gameboxx.config.internal.OptionCfg;
 import info.gameboxx.gameboxx.exceptions.ComponentConflictException;
 import info.gameboxx.gameboxx.exceptions.DependencyNotFoundException;
 import info.gameboxx.gameboxx.exceptions.OptionAlreadyExistsException;
-import info.gameboxx.gameboxx.game.Arena;
-import info.gameboxx.gameboxx.game.Game;
-import info.gameboxx.gameboxx.game.GameManager;
-import info.gameboxx.gameboxx.game.GameSession;
+import info.gameboxx.gameboxx.game.*;
 import info.gameboxx.gameboxx.options.Option;
 import info.gameboxx.gameboxx.util.Utils;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * The base class for a game component.

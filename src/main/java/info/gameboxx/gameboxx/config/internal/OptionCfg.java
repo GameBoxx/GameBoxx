@@ -45,10 +45,7 @@ import org.bukkit.material.MaterialData;
 import org.bukkit.util.Vector;
 
 import java.io.File;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Configuration file for {@link Option} values.

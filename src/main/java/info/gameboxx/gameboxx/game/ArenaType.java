@@ -28,10 +28,7 @@ package info.gameboxx.gameboxx.game;
 import com.google.common.collect.Maps;
 import info.gameboxx.gameboxx.util.Str;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * The type of arena.

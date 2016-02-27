@@ -29,10 +29,7 @@ import info.gameboxx.gameboxx.options.ListOption;
 import info.gameboxx.gameboxx.options.single.StringOption;
 import info.gameboxx.gameboxx.util.Pair;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class StringListOption extends ListOption {
 

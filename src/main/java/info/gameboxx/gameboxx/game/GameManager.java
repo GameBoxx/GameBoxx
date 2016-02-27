@@ -26,16 +26,10 @@
 package info.gameboxx.gameboxx.game;
 
 import info.gameboxx.gameboxx.GameBoxx;
-import info.gameboxx.gameboxx.exceptions.ComponentConflictException;
-import info.gameboxx.gameboxx.exceptions.DependencyNotFoundException;
-import info.gameboxx.gameboxx.exceptions.GameAlreadyExistsException;
-import info.gameboxx.gameboxx.exceptions.OptionAlreadyExistsException;
+import info.gameboxx.gameboxx.exceptions.*;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * The game manager used to register games.

@@ -28,8 +28,8 @@ package info.gameboxx.gameboxx.nms;
 import info.gameboxx.gameboxx.GameBoxx;
 import info.gameboxx.gameboxx.nms.chat.Chat;
 import info.gameboxx.gameboxx.nms.chat.Chat_v1_8_R3;
-import info.gameboxx.gameboxx.nms.worldloader.WorldLoader_v1_8_R3;
 import info.gameboxx.gameboxx.nms.worldloader.WorldLoader;
+import info.gameboxx.gameboxx.nms.worldloader.WorldLoader_v1_8_R3;
 import org.bukkit.Bukkit;
 
 public class NMS {

@@ -29,10 +29,7 @@ import info.gameboxx.gameboxx.options.SingleOption;
 import info.gameboxx.gameboxx.util.Pair;
 import org.bukkit.entity.Player;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class StringOption extends SingleOption {
 

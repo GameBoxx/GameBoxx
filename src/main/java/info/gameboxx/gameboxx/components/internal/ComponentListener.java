@@ -26,7 +26,6 @@
 package info.gameboxx.gameboxx.components.internal;
 
 import info.gameboxx.gameboxx.GameBoxx;
-
 import org.bukkit.Bukkit;
 import org.bukkit.event.Listener;
 

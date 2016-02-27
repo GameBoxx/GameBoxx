@@ -26,7 +26,6 @@
 package info.gameboxx.gameboxx.events;
 
 import info.gameboxx.gameboxx.game.GameSession;
-
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 

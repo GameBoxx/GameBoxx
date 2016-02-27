@@ -26,7 +26,6 @@
 package info.gameboxx.gameboxx.events;
 
 import info.gameboxx.gameboxx.game.GameSession;
-
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
 
