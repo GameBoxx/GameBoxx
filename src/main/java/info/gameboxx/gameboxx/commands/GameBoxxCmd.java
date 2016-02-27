@@ -58,7 +58,7 @@ public class GameBoxxCmd implements CommandExecutor {
 
             gb.getCfg().load();
             for (MessageConfig cfg : MessageConfig.getConfigs()) {
-                cfg.loadSimple(true);
+                cfg.load(true);
             }
 
             Msg.get("gameboxx.reloaded", Param.P("type", "all")).send(sender);
