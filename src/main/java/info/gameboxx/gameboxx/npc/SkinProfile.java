@@ -26,16 +26,6 @@
 package info.gameboxx.gameboxx.npc;
 
 
-import org.bukkit.Location;
-
-public interface NPC {
-
-    void despawn();
-
-    void setLocation(Location location);
-
-    Location getLocation();
-
-    SkinProfile getProfile();
+public interface SkinProfile {
 
 }

@@ -26,16 +26,21 @@
 package info.gameboxx.gameboxx.npc;
 
 
-import org.bukkit.Location;
+import com.google.common.collect.Sets;
 
-public interface NPC {
+import java.util.Set;
 
-    void despawn();
+public class NPCFactory {
 
-    void setLocation(Location location);
+    private Set<NPC> npcs = Sets.newHashSet();
 
-    Location getLocation();
+    private static final NPCFactory INSTANCE = new NPCFactory();
 
-    SkinProfile getProfile();
+    private NPCFactory() {}
+
+    public static NPCFactory instance() {
+        return INSTANCE;
+    }
+
 
 }

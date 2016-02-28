@@ -25,25 +25,25 @@
 
 package info.gameboxx.gameboxx.npc.v1_8_R3;
 
-import com.google.common.base.Preconditions;
-import com.google.common.collect.Lists;
-import info.gameboxx.gameboxx.npc.NPC;
-import net.minecraft.server.v1_8_R3.WorldServer;
-import org.bukkit.Location;
-import org.bukkit.craftbukkit.v1_8_R3.CraftWorld;
 
-import java.util.List;
+import com.mojang.authlib.GameProfile;
+import org.bukkit.Bukkit;
+import org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer;
+
+import java.util.UUID;
 
 
-public abstract class NPCBase implements NPC {
+public class SkinProfile implements info.gameboxx.gameboxx.npc.SkinProfile {
 
-    private List<String> commands = Lists.newArrayList();
+    private GameProfile gameProfile;
 
-    private WorldServer world;
-
-    public NPCBase(Location location) {
-        Preconditions.checkNotNull(location);
-        world = ((CraftWorld)location.getWorld()).getHandle();
+    public SkinProfile(GameProfile gameProfile) {
+        this.gameProfile = gameProfile;
     }
 
+    public void setSkin(UUID uuid) {
+        GameProfile temp = ((CraftPlayer)Bukkit.getPlayer(uuid)).getProfile();
+        gameProfile.getProperties().removeAll("textures");
+        gameProfile.getProperties().putAll("textures", temp.getProperties().get("textures"));
+    }
 }

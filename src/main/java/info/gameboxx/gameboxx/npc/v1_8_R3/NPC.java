@@ -23,19 +23,32 @@
  *  THE SOFTWARE.
  */
 
-package info.gameboxx.gameboxx.npc;
+package info.gameboxx.gameboxx.npc.v1_8_R3;
 
-
+import com.google.common.base.Preconditions;
+import com.google.common.collect.Lists;
+import info.gameboxx.gameboxx.npc.SkinProfile;
+import net.minecraft.server.v1_8_R3.WorldServer;
 import org.bukkit.Location;
+import org.bukkit.craftbukkit.v1_8_R3.CraftWorld;
 
-public interface NPC {
+import java.util.List;
 
-    void despawn();
 
-    void setLocation(Location location);
+public abstract class NPC implements info.gameboxx.gameboxx.npc.NPC {
 
-    Location getLocation();
+    private List<String> commands = Lists.newArrayList();
 
-    SkinProfile getProfile();
+    private WorldServer world;
 
+    private SkinProfile skinProfile;
+
+    public NPC(Location location) {
+        Preconditions.checkNotNull(location);
+        world = ((CraftWorld)location.getWorld()).getHandle();
+    }
+
+    public SkinProfile getSkinProfile() {
+        return skinProfile;
+    }
 }
