@@ -85,19 +85,16 @@ public class MessageConfig {
         this.name = name;
 
         if (!fallback) {
-            configs.add(this);
-        }
-
-        loadFull(fallback ? "en" : gb.getLanguage().getID());
-
-        if (!fallback) {
-            loadedLanguage = gb.getLanguage();
             if (!gb.getLanguage().getID().equalsIgnoreCase("en")) {
                 this.fallback = new MessageConfig(plugin, name, true);
             }
+            loadedLanguage = gb.getLanguage();
+            configs.add(this);
         } else {
             loadedLanguage = Language.ENGLISH;
         }
+
+        loadFull(fallback ? "en" : gb.getLanguage().getID());
     }
 
     /**
