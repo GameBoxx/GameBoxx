@@ -110,4 +110,8 @@ public class TextParserTest extends TestCase {
     public void testLongMessage() {
         parse("[[&a&lhover!||&aThis is a very long hover message that should span multiple lines and keep the coloring.]]");
     }
+
+    public void testExample() {
+        parse("§8[§9GameBoxx§8] [[§8Permission node: §7gameboxx.cmd.reload||§cInsufficient permissions.]] test ((gameboxx.cmd.reload||[[§7Shift click to copy the permission!||§4§l+]]))");
+    }
 }

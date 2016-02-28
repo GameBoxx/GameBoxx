@@ -25,12 +25,14 @@
 
 package info.gameboxx.gameboxx.util.text;
 
+import info.gameboxx.gameboxx.util.Pair;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONValue;
 import org.json.simple.parser.JSONParser;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.TreeMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -64,62 +66,68 @@ public class TextParser {
     public TextParser(String text) {
         this.text = text;
 
-        StringBuilder JSON = new StringBuilder("[");
-        int lastIndex = 0;
+        //StringBuilder JSON = new StringBuilder();
+        Map<Integer, Pair<Integer, String>> parsedSections = new HashMap<>();
 
         //Parse all the actions by replacing the syntax regex match.
         for (TextAction action : TextAction.values()) {
+
             //Get the syntax from action out of the text string.
-            String regex = Pattern.quote(action.getPrefix()) + "(.*?)\\|\\|(.*?)" + Pattern.quote(action.getSuffix());
-            Pattern p = Pattern.compile(regex, Pattern.DOTALL);
+            Pattern p = Pattern.compile(action.getRegex(), Pattern.DOTALL);
             Matcher m = p.matcher(text);
 
             //All the matches found.
-            while (m.find()) {
-                if (m.start() < lastIndex && m.group().startsWith("[")) {
-                    //Fix so it doesn't parse hover text that is inherited.
-                    continue;
-                }
-                if (action == TextAction.CMD && (m.group(1).startsWith("!") || m.group(1).startsWith("#"))) {
-                    //Don't parse cmd suggest and book actions as command actions.
-                    continue;
-                }
-                if (m.start() > lastIndex) {
-                    //Add regular text in front of the match.
-                    //Need to make sure that it's regular text and not syntax.
-                    String textBegin = text.substring(lastIndex, m.start());
-                    boolean matchPrefix = false;
-                    for (TextAction ta : TextAction.values()) {
-                        if (textBegin.startsWith(ta.getPrefix())) {
-                            matchPrefix = true;
-                            break;
-                        }
-                    }
-                    if (!matchPrefix) {
-                        JSON.append("{" + getJsonText(textBegin) + "}");
-                        JSON.append(",");
-                    }
-                }
-                lastIndex = m.end();
+            int lastMatchIndex = 0;
+            while (m.find(lastMatchIndex)) {
+                //Get the proper start/end position of the syntax.
+                int start = m.start(2) - action.getPrefix().length();
+                int end = m.end(3) + 2;
+                lastMatchIndex = end;
 
-                JSON.append("{" + getJsonComponent(action, m.group(1), m.group(2)) + "}");
-                JSON.append(",");
+                //This shouldn't happen but just to be safe.
+                if (m.group(1).length() < 2 || m.group(4).length() < 2) {
+                    continue;
+                }
+
+                //Skip matches that are already parsed. (for example inherited hover messages and such)
+                boolean match = false;
+                for (Map.Entry<Integer, Pair<Integer, String>> entry : parsedSections.entrySet()) {
+                    if (start >= entry.getKey() && end <= entry.getValue().first) {
+                        match = true;
+                        break;
+                    }
+                }
+                if (match) {
+                    continue;
+                }
+
+                parsedSections.put(start, Pair.P(end, "{" + getJsonComponent(action, m.group(2), m.group(3)) + "}"));
             }
         }
 
-        //Parse regular text
+        //Add regular text in between parsed sections.
+        Map<Integer, Pair<Integer, String>> sections = new TreeMap<>(parsedSections);
+        int lastIndex = 0;
+        for (Map.Entry<Integer, Pair<Integer, String>> entry : sections.entrySet()) {
+            if ((lastIndex == 0 && entry.getKey() > 0) || lastIndex < entry.getKey()) {
+                String str = text.substring(lastIndex, entry.getKey());
+                parsedSections.put(lastIndex, Pair.P(entry.getKey(), "{" + getJsonText(str) + "}"));
+            }
+            lastIndex = entry.getValue().first;
+        }
+
+        //Get remaining text on the end
         if (lastIndex < text.length()) {
-            JSON.append("{" + getJsonText(text.substring(lastIndex, text.length())) + "}");
+            String endText = text.substring(lastIndex, text.length());
+            parsedSections.put(lastIndex, Pair.P(text.length(), "{" + getJsonText(endText) + "}"));
         }
 
-        //Remove trailing comma if it's there
-        if (JSON.lastIndexOf(",") == JSON.length() - 1) {
-            JSON.setLength(JSON.length() - 1);
+        json = "[";
+        sections = new TreeMap<>(parsedSections);
+        for (Pair<Integer, String> pair : sections.values()) {
+            json += pair.second + ",";
         }
-
-        //Finalize
-        JSON.append("]");
-        json = JSON.toString();
+        json = json.substring(0,json.length()-1) + "]";
     }
 
     /**
@@ -229,15 +237,14 @@ public class TextParser {
             return getJsonText(display) + ",\"hoverEvent\": {\"action\": \"show_text\",\"value\": {" + getJsonText(value) + "}}";
         } else {
             //Check for inherited hover message like <<cmd||[[hover||text]]>> it will then display text, on hover display hover and on click run the command cmd.
-            String regex = Pattern.quote(TextAction.HOVER.getPrefix()) + "(.*?)\\|\\|(.*?)" + Pattern.quote(TextAction.HOVER.getSuffix());
-            Pattern p = Pattern.compile(regex, Pattern.DOTALL);
+            Pattern p = Pattern.compile(TextAction.HOVER.getRegex(), Pattern.DOTALL);
             Matcher m = p.matcher(display);
 
             //When there is hover text change the display text to use the value from hover and set the hover text component.
             String hover = "";
             if (m.find()) {
-                hover = ",\"hoverEvent\": {\"action\": \"show_text\",\"value\": {\"text\": \"\",\"extra\": [{" + getJsonText(m.group(1)) + "}]}}";
-                display = m.group(2);
+                hover = ",\"hoverEvent\": {\"action\": \"show_text\",\"value\": {\"text\": \"\",\"extra\": [{" + getJsonText(m.group(2)) + "}]}}";
+                display = m.group(3);
             }
 
             //Insertion doesn't use clickEvent
@@ -247,8 +254,8 @@ public class TextParser {
             }
 
             //Append slash for commands if it's not there.
-            if (action == TextAction.CMD || action == TextAction.CMD_SUGGEST && !value.startsWith("/")) {
-                value = "/" + value;
+            if (action == TextAction.CMD || action == TextAction.CMD_SUGGEST && !value.trim().startsWith("/")) {
+                value = "/" + value.trim();
             }
 
             //Return the JSON for general click events.
@@ -270,7 +277,7 @@ public class TextParser {
             return false;
         }
         for (TextAction ta : TextAction.values()) {
-            if (text.contains(ta.getPrefix())) {
+            if (text.matches(ta.getRegex())) {
                 return false;
             }
         }

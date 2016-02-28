@@ -34,35 +34,35 @@ public enum TextAction {
      * <b>Trigger:</b> Shift click
      * <b>Syntax:</b> ((Insert||Text))
      */
-    INSERT("insertion", "((", "))"),
+    INSERT("insertion", "(^\\(\\(|[^\\(]\\(\\()(.*?)\\|\\|(.*?)(\\)\\)[^\\)]|\\)\\)$)", "(("),
 
     /**
      * Opens the specified URL
      * <b>Trigger:</b> Click
      * <b>Syntax:</b> {{URL||text}}
      */
-    URL("open_url", "{{", "}}"),
+    URL("open_url", "(^\\{\\{|[^\\{]\\{\\{)(.*?)\\|\\|(.*?)(\\}\\}[^\\}]|\\}\\}$)", "{{"),
 
     /**
      * Switches to the specified page if it exists.
      * <b>Trigger:</b> Click
      * <b>Syntax:</b> <<#page||text>>
      */
-    PAGE("change_page", "<<#", ">>"),
+    PAGE("change_page", "(^<<#|[^<]<<#)(.*?)\\|\\|(.*?)(>>[^>]|>>$)", "<<#"),
 
     /**
      * Puts the specified command in player chat. (replaces any existing content)
      * <b>Trigger:</b> Click
-     * <b>Syntax:</b> <<!command||text>>
+     * <b>Syntax:</b> <<<command||text>>
      */
-    CMD_SUGGEST("suggest_command", "<<!", ">>"),
+    CMD_SUGGEST("suggest_command", "(^<<<|[^<]<<<)(.*?)\\|\\|(.*?)(>>[^>]|>>$)", "<<<"),
 
     /**
      * Runs the specified command.
      * <b>Trigger:</b> Click
      * <b>Syntax:</b> <<command||text>>
      */
-    CMD("run_command", "<<", ">>"),
+    CMD("run_command", "(^<<|[^<]<<)(.*?)\\|\\|(.*?)(>>[^>]|>>$)", "<<"),
 
     /**
      * Shows a message.
@@ -71,17 +71,17 @@ public enum TextAction {
      * <b>Trigger:</b> Hover
      * <b>Syntax:</b> [[message||text]]
      */
-    HOVER("show_text", "[[", "]]"),;
+    HOVER("show_text", "(^\\[\\[|[^\\[]\\[\\[)(.*?)\\|\\|(.*?)(\\]\\][^\\]]|\\]\\]$)", "<<"),;
 
 
     private String name;
+    private String regex;
     private String prefix;
-    private String suffix;
 
-    TextAction(String name, String prefix, String suffix) {
+    TextAction(String name, String regex, String prefix) {
         this.name = name;
+        this.regex = regex;
         this.prefix = prefix;
-        this.suffix = suffix;
     }
 
     /**
@@ -94,20 +94,20 @@ public enum TextAction {
     }
 
     /**
-     * The prefix for the custom message syntax.
+     * Get the regex for the action syntax.
      *
-     * @return Prefix for syntax.
+     * @return Regex for syntax
      */
-    public String getPrefix() {
-        return prefix;
+    public String getRegex() {
+        return regex;
     }
 
     /**
-     * The suffix for the custom message syntax.
+     * Get the prefix for the action syntax.
      *
-     * @return Suffix for syntax.
+     * @return Prefix for syntax
      */
-    public String getSuffix() {
-        return suffix;
+    public String getPrefix() {
+        return prefix;
     }
 }
