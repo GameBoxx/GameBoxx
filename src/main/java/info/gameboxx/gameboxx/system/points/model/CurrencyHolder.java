@@ -23,32 +23,16 @@
  *  THE SOFTWARE.
  */
 
-package info.gameboxx.gameboxx.npc.v1_8_R3;
-
-import com.google.common.base.Preconditions;
-import com.google.common.collect.Lists;
-import info.gameboxx.gameboxx.npc.SkinProfile;
-import net.minecraft.server.v1_8_R3.WorldServer;
-import org.bukkit.Location;
-import org.bukkit.craftbukkit.v1_8_R3.CraftWorld;
-
-import java.util.List;
+package info.gameboxx.gameboxx.system.points.model;
 
 
-public abstract class NPC implements info.gameboxx.gameboxx.npc.NPC {
+public interface CurrencyHolder {
 
-    private List<String> commands = Lists.newArrayList();
+    void give(String currency, double amount);
 
-    private WorldServer world;
+    double get(String currency);
 
-    private SkinProfile skinProfile;
+    void take(String currency, double amount);
 
-    public NPC(Location location) {
-        Preconditions.checkNotNull(location);
-        world = ((CraftWorld)location.getWorld()).getHandle();
-    }
-
-    public SkinProfile getSkinProfile() {
-        return skinProfile;
-    }
+    void set(String currency, double amount);
 }

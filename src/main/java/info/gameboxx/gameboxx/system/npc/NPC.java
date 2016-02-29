@@ -23,24 +23,19 @@
  *  THE SOFTWARE.
  */
 
-package info.gameboxx.gameboxx.npc;
+package info.gameboxx.gameboxx.system.npc;
 
 
-import com.google.common.collect.Sets;
+import org.bukkit.Location;
 
-import java.util.Set;
+public interface NPC {
 
-public class NPCFactory {
+    void despawn();
 
-    private Set<NPC> npcs = Sets.newHashSet();
+    void setLocation(Location location);
 
-    private static final NPCFactory INSTANCE = new NPCFactory();
+    Location getLocation();
 
-    private NPCFactory() {}
-
-    public static NPCFactory instance() {
-        return INSTANCE;
-    }
-
+    SkinProfile getProfile();
 
 }
