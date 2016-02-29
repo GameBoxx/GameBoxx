@@ -51,8 +51,6 @@ public class User implements CurrencyHolder {
     private UUID uuid;
     private String name;
 
-    private Set<Currency> currencies = Sets.newHashSet();
-
     private Arena selectedArena = null;
 
     public User(Player player) {
