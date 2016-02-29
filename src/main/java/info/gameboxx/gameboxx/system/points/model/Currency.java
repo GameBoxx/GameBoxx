@@ -23,27 +23,55 @@
  *  THE SOFTWARE.
  */
 
-package info.gameboxx.gameboxx.npc.v1_8_R3;
+package info.gameboxx.gameboxx.system.points.model;
 
 
-import com.mojang.authlib.GameProfile;
-import org.bukkit.Bukkit;
-import org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer;
+import com.google.common.collect.Maps;
 
-import java.util.UUID;
+import java.util.Iterator;
+import java.util.Map;
 
+public class Currency {
 
-public class SkinProfile implements info.gameboxx.gameboxx.npc.SkinProfile {
+    private static Map<String, Currency> forName = Maps.newHashMap();
 
-    private GameProfile gameProfile;
-
-    public SkinProfile(GameProfile gameProfile) {
-        this.gameProfile = gameProfile;
+    static {
+        // TODO: 2/28/2016 LOAD CURRENCIES FROM FILE
     }
 
-    public void setSkin(UUID uuid) {
-        GameProfile temp = ((CraftPlayer)Bukkit.getPlayer(uuid)).getProfile();
-        gameProfile.getProperties().removeAll("textures");
-        gameProfile.getProperties().putAll("textures", temp.getProperties().get("textures"));
+    public static Currency forName(String name) {
+        return forName.get(name);
+    }
+
+    public static Iterator<Currency> iterator() {
+        return forName.values().iterator();
+    }
+
+    private String name;
+    private String singular;
+    private String plural;
+    private String syntax;
+
+    public Currency(String name, String singular, String plural, String syntax) {
+        this.name = name;
+        this.singular = singular;
+        this.plural = plural;
+        this.syntax = syntax;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getPlural() {
+        return plural;
+    }
+
+    public String getSingular() {
+        return singular;
+    }
+
+    public String getSyntax() {
+        return syntax;
     }
 }

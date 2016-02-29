@@ -34,6 +34,7 @@ import info.gameboxx.gameboxx.messages.Language;
 import info.gameboxx.gameboxx.messages.MessageConfig;
 import info.gameboxx.gameboxx.nms.NMS;
 import info.gameboxx.gameboxx.nms.NMSVersion;
+import info.gameboxx.gameboxx.system.points.CurrencyManager;
 import info.gameboxx.gameboxx.user.UserManager;
 import info.gameboxx.gameboxx.util.Parse;
 import info.gameboxx.gameboxx.util.cuboid.Cuboid;
@@ -57,6 +58,7 @@ public class GameBoxx extends JavaPlugin {
     private UserManager um;
     private SelectionManager sm;
     private GameManager gm;
+    private CurrencyManager cm;
 
     private PluginCfg cfg;
 
@@ -98,6 +100,7 @@ public class GameBoxx extends JavaPlugin {
         um = new UserManager();
         sm = new SelectionManager();
         gm = new GameManager();
+        cm = new CurrencyManager();
 
         registerCommands();
         registerListeners();
@@ -216,6 +219,9 @@ public class GameBoxx extends JavaPlugin {
         return um;
     }
 
+    public CurrencyManager getCM() {
+        return cm;
+    }
 
     public PluginCfg getCfg() {
         return cfg;

@@ -23,9 +23,27 @@
  *  THE SOFTWARE.
  */
 
-package info.gameboxx.gameboxx.npc;
+package info.gameboxx.gameboxx.system.npc.v1_8_R3;
 
 
-public interface SkinProfile {
+import com.mojang.authlib.GameProfile;
+import org.bukkit.Bukkit;
+import org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer;
 
+import java.util.UUID;
+
+
+public class SkinProfile implements info.gameboxx.gameboxx.system.npc.SkinProfile {
+
+    private GameProfile gameProfile;
+
+    public SkinProfile(GameProfile gameProfile) {
+        this.gameProfile = gameProfile;
+    }
+
+    public void setSkin(UUID uuid) {
+        GameProfile temp = ((CraftPlayer)Bukkit.getPlayer(uuid)).getProfile();
+        gameProfile.getProperties().removeAll("textures");
+        gameProfile.getProperties().putAll("textures", temp.getProperties().get("textures"));
+    }
 }
