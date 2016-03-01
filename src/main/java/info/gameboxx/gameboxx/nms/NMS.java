@@ -27,9 +27,9 @@ package info.gameboxx.gameboxx.nms;
 
 import info.gameboxx.gameboxx.GameBoxx;
 import info.gameboxx.gameboxx.nms.chat.Chat;
-import info.gameboxx.gameboxx.nms.chat.Chat_v1_8_R3;
+import info.gameboxx.gameboxx.nms.chat.Chat_v1_9_R1;
 import info.gameboxx.gameboxx.nms.worldloader.WorldLoader;
-import info.gameboxx.gameboxx.nms.worldloader.WorldLoader_v1_8_R3;
+import info.gameboxx.gameboxx.nms.worldloader.WorldLoader_v1_9_R1;
 import org.bukkit.Bukkit;
 
 public class NMS {
@@ -49,9 +49,9 @@ public class NMS {
         version = NMSVersion.fromString(versionString);
 
         GameBoxx gb = GameBoxx.get();
-        if (version == NMSVersion.V1_8_R3) {
-            worldLoader = new WorldLoader_v1_8_R3(gb);
-            chat = new Chat_v1_8_R3();
+        if (version == NMSVersion.V1_9_R1) {
+            worldLoader = new WorldLoader_v1_9_R1(gb);
+            chat = new Chat_v1_9_R1();
         }
     }
 

@@ -23,14 +23,14 @@
  *  THE SOFTWARE.
  */
 
-package info.gameboxx.gameboxx.system.npc.v1_8_R3;
+package info.gameboxx.gameboxx.system.npc.v1_9_R1;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 import info.gameboxx.gameboxx.system.npc.SkinProfile;
-import net.minecraft.server.v1_8_R3.WorldServer;
+import net.minecraft.server.v1_9_R1.WorldServer;
 import org.bukkit.Location;
-import org.bukkit.craftbukkit.v1_8_R3.CraftWorld;
+import org.bukkit.craftbukkit.v1_9_R1.CraftWorld;
 
 import java.util.List;
 

@@ -121,7 +121,7 @@ public class CountdownCP extends GameComponent {
      */
     public SoundEffect getSound() {
         //TODO: Implement when SoundOption is added.
-        return new SoundEffect(Sound.NOTE_PLING);
+        return new SoundEffect(Sound.BLOCK_NOTE_PLING);
     }
 
     /**

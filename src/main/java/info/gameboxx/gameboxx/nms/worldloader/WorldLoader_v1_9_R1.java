@@ -26,31 +26,26 @@
 package info.gameboxx.gameboxx.nms.worldloader;
 
 import info.gameboxx.gameboxx.GameBoxx;
-import net.minecraft.server.v1_8_R3.*;
-import net.minecraft.server.v1_8_R3.Chunk;
-import org.bukkit.*;
+import net.minecraft.server.v1_9_R1.Chunk;
+import net.minecraft.server.v1_9_R1.MinecraftServer;
+import org.bukkit.Bukkit;
 import org.bukkit.World;
+import org.bukkit.WorldCreator;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.craftbukkit.v1_8_R3.CraftServer;
-import org.bukkit.craftbukkit.v1_8_R3.chunkio.ChunkIOExecutor;
-import org.bukkit.craftbukkit.v1_8_R3.util.LongHash;
-import org.bukkit.event.world.ChunkLoadEvent;
-import org.bukkit.event.world.WorldInitEvent;
-import org.bukkit.event.world.WorldLoadEvent;
+import org.bukkit.craftbukkit.v1_9_R1.CraftServer;
 import org.bukkit.generator.ChunkGenerator;
 import org.bukkit.plugin.Plugin;
-import org.bukkit.scheduler.BukkitRunnable;
 
 import java.io.File;
 import java.lang.reflect.Field;
-import java.util.Map;
 import java.util.logging.Level;
 
 /**
  * @author Friwi (https://www.spigotmc.org/resources/lib-asyncworldloader.7370/)
  */
-public class WorldLoader_v1_8_R3 implements info.gameboxx.gameboxx.nms.worldloader.WorldLoader {
+public class WorldLoader_v1_9_R1 implements info.gameboxx.gameboxx.nms.worldloader.WorldLoader {
+    //TODO: Recreate this (It's a mess and needs to be updated to 1.9)
 
     private GameBoxx gb;
     private boolean alreadyLoading = false;
@@ -60,12 +55,13 @@ public class WorldLoader_v1_8_R3 implements info.gameboxx.gameboxx.nms.worldload
     private Chunk wait = null;
     private ChunkGenerator generator = null;
 
-    public WorldLoader_v1_8_R3(GameBoxx gb) {
+    public WorldLoader_v1_9_R1(GameBoxx gb) {
         this.gb = gb;
     }
 
     @SuppressWarnings ("unchecked")
     public World createAsyncWorld(final WorldCreator creator) {
+        /*
         //Only allow loading 1 world at a time.
         while (alreadyLoading) {
             try {
@@ -88,7 +84,7 @@ public class WorldLoader_v1_8_R3 implements info.gameboxx.gameboxx.nms.worldload
         aborted = false;
         wait = null;
         ret = null;
-        final net.minecraft.server.v1_8_R3.WorldType type = net.minecraft.server.v1_8_R3.WorldType.getType(creator.type().getName());
+        final net.minecraft.server.v1_9_R1.WorldType type = net.minecraft.server.v1_9_R1.WorldType.getType(creator.type().getName());
 
         File folder = new File(getWorldContainer(), name);
         if ((folder.exists()) && (!folder.isDirectory())) {
@@ -422,6 +418,7 @@ public class WorldLoader_v1_8_R3 implements info.gameboxx.gameboxx.nms.worldload
 
         //DONE!
         alreadyLoading = false;
+        */
         return ret;
     }
 

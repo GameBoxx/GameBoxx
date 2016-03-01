@@ -23,12 +23,12 @@
  *  THE SOFTWARE.
  */
 
-package info.gameboxx.gameboxx.system.npc.v1_8_R3;
+package info.gameboxx.gameboxx.system.npc.v1_9_R1;
 
 
 import com.mojang.authlib.GameProfile;
 import org.bukkit.Bukkit;
-import org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_9_R1.entity.CraftPlayer;
 
 import java.util.UUID;
 

@@ -25,15 +25,15 @@
 
 package info.gameboxx.gameboxx.nms.util;
 
-import net.minecraft.server.v1_8_R3.IChatBaseComponent;
-import net.minecraft.server.v1_8_R3.Packet;
-import org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer;
+import net.minecraft.server.v1_9_R1.IChatBaseComponent;
+import net.minecraft.server.v1_9_R1.Packet;
+import org.bukkit.craftbukkit.v1_9_R1.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 
 /**
- * NMS Utilities for version 1.8 R3
+ * NMS Utilities for version 1.9 R1
  */
-public class NMSUtil_v1_8_R3 {
+public class NMSUtil_v1_9_R1 {
 
     /**
      * Send a packet to the specified player.
