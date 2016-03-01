@@ -197,4 +197,10 @@ public abstract class GameSession extends ComponentHolder {
         return true;
     }
 
+    @Override
+    public int hashCode() {
+        int result = arena.hashCode();
+        result = 31 * result + id;
+        return result;
+    }
 }
