@@ -28,14 +28,7 @@ package info.gameboxx.gameboxx.util;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.block.*;
-import org.bukkit.entity.Horse;
-import org.bukkit.entity.HumanEntity;
-import org.bukkit.entity.Player;
-import org.bukkit.entity.minecart.HopperMinecart;
-import org.bukkit.entity.minecart.StorageMinecart;
 import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
@@ -382,7 +375,7 @@ public class ItemUtil {
             return excess;
         }
 
-        Location location = getLocation(inventory);
+        Location location = inventory.getLocation();
         if (location != null) {
             for (ItemStack itemStack : excess.values()) {
                 location.getWorld().dropItem(location, itemStack);
@@ -402,50 +395,6 @@ public class ItemUtil {
         for (int i = 0; i < inventory.getSize(); i++) {
             inventory.setItem(i, AIR);
         }
-    }
-
-
-    /**
-     * Gets the location of the inventory if the inventory holder has a location.
-     *
-     * @param inventory The inventory to get the location from.
-     * @return The location of the inventory or null if the inventory doesn't have an location.
-     */
-    public static Location getLocation(Inventory inventory) {
-        InventoryHolder holder = inventory.getHolder();
-        Location location = null;
-        if (holder instanceof Chest) {
-            location = ((Chest)holder).getLocation();
-        } else if (holder instanceof DoubleChest) {
-            location = ((DoubleChest)holder).getLocation();
-        } else if (holder instanceof Beacon) {
-            location = ((Beacon)holder).getLocation();
-        } else if (holder instanceof Beacon) {
-            location = ((Beacon)holder).getLocation();
-        } else if (holder instanceof BrewingStand) {
-            location = ((BrewingStand)holder).getLocation();
-        } else if (holder instanceof Dispenser) {
-            location = ((Dispenser)holder).getLocation();
-        } else if (holder instanceof Dropper) {
-            location = ((Dropper)holder).getLocation();
-        } else if (holder instanceof Hopper) {
-            location = ((Hopper)holder).getLocation();
-        } else if (holder instanceof Furnace) {
-            location = ((Furnace)holder).getLocation();
-        } else if (holder instanceof HopperMinecart) {
-            location = ((HopperMinecart)holder).getLocation();
-        } else if (holder instanceof HopperMinecart) {
-            location = ((HopperMinecart)holder).getLocation();
-        } else if (holder instanceof StorageMinecart) {
-            location = ((StorageMinecart)holder).getLocation();
-        } else if (holder instanceof Horse) {
-            location = ((Horse)holder).getLocation();
-        } else if (holder instanceof HumanEntity) {
-            location = ((HumanEntity)holder).getLocation();
-        } else if (holder instanceof Player) {
-            location = ((Player)holder).getLocation();
-        }
-        return location;
     }
 
 
