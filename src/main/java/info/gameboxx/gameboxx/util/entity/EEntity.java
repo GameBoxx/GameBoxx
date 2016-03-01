@@ -1364,6 +1364,169 @@ public class EEntity {
     // ##################################################
     //region Ageable
 
+    /**
+     * Gets the age of this animal.
+     * <p/>
+     * <b>Entities: </b> {@link Ageable}
+     *
+     * @return age (-1 when not Ageable)
+     */
+    public Integer getAge() {
+        if (entity instanceof Ageable) {
+            return ((Ageable)entity).getAge();
+        }
+        return -1;
+    }
+
+    /**
+     * Sets the age of this animal.
+     * <p/>
+     * <b>Entities: </b> {@link Ageable}
+     *
+     * @param age new age
+     * @return this instance
+     */
+    public EEntity setAge(Integer age) {
+        if (entity instanceof Ageable) {
+            ((Ageable)entity).setAge(age);
+        }
+        return this;
+    }
+
+    /**
+     * Gets the current agelock.
+     * <p/>
+     * <b>Entities: </b> {@link Ageable}
+     *
+     * @return the current agelock state (true when not Ageable)
+     */
+    public Boolean getAgeLock() {
+        if (entity instanceof Ageable) {
+            return ((Ageable)entity).getAgeLock();
+        }
+        return true;
+    }
+
+    /**
+     * Lock the age of the animal, setting this will prevent the animal from maturing or getting ready for mating.
+     * <p/>
+     * <b>Entities: </b> {@link Ageable}
+     *
+     * @param lock gets the current agelock.
+     * @return this instance
+     */
+    public EEntity setAgeLock(Boolean lock) {
+        if (entity instanceof Ageable) {
+            ((Ageable)entity).setAgeLock(lock);
+        }
+        return this;
+    }
+
+    /**
+     * Returns true if the animal is a baby.
+     * <p/>
+     * <b>Entities: </b> {@link Ageable}
+     *
+     * @return true if the animal is a baby. (false when not Ageable)
+     */
+    public Boolean isBaby() {
+        if (entity instanceof Ageable) {
+            return !((Ageable)entity).isAdult();
+        }
+        return false;
+    }
+
+    /**
+     * Sets the age of the animal to a baby
+     * <p/>
+     * <b>Entities: </b> {@link Ageable}
+     *
+     * @return this instance
+     */
+    public EEntity setBaby() {
+        if (entity instanceof Ageable) {
+            ((Ageable)entity).setBaby();
+        }
+        return this;
+    }
+
+    /**
+     * Sets the age of the animal to baby or adult.
+     * <p/>
+     * <b>Entities: </b> {@link Ageable}
+     *
+     * @param baby whether to set the animal to baby or adult.
+     * @return this instance
+     */
+    public EEntity setBaby(Boolean baby) {
+        if (entity instanceof Ageable) {
+            if (baby) {
+                ((Ageable)entity).setBaby();
+            } else {
+                ((Ageable)entity).setAdult();
+            }
+        }
+        return this;
+    }
+
+
+    /**
+     * Returns true if the animal is an adult.
+     * <p/>
+     * <b>Entities: </b> {@link Ageable}
+     *
+     * @return true if the animal is an adult. (true when not Ageable)
+     */
+    public Boolean isAdult() {
+        if (entity instanceof Ageable) {
+            return ((Ageable)entity).isAdult();
+        }
+        return true;
+    }
+
+    /**
+     * Sets the age of the animal to an adult
+     * <p/>
+     * <b>Entities: </b> {@link Ageable}
+     *
+     * @return this instance
+     */
+    public EEntity setAdult() {
+        if (entity instanceof Ageable) {
+            ((Ageable)entity).setAdult();
+        }
+        return this;
+    }
+
+    /**
+     * Return the ability to breed of the animal
+     * <p/>
+     * <b>Entities: </b> {@link Ageable}
+     *
+     * @return the ability to breed of the animal (false when not Ageable)
+     */
+    public Boolean canBreed() {
+        if (entity instanceof Ageable) {
+            return ((Ageable)entity).canBreed();
+        }
+        return false;
+    }
+
+    /**
+     * Set breedability of the animal,
+     * if the animal is a baby and set to breed it will instantly grow up.
+     * <p/>
+     * <b>Entities: </b> {@link Ageable}
+     *
+     * @param breed breedability of the animal
+     * @return this instance
+     */
+    public EEntity setBreed(Boolean breed) {
+        if (entity instanceof Ageable) {
+            ((Ageable)entity).setBreed(breed);
+        }
+        return this;
+    }
     //endregion
 
 
@@ -1372,7 +1535,69 @@ public class EEntity {
     // #################### TAMEABLE ####################
     // ##################################################
     //region Tameable
+    /**
+     * Check if this is tamed
+     * <p/>
+     * If something is tamed then a player can not tame it through normal methods, even if it does not belong to anyone in particular.
+     * <p/>
+     * <b>Entities: </b> {@link Tameable}
+     *
+     * @return true if this has been tamed (false when not Tameable)
+     */
+    public Boolean isTamed() {
+        if (entity instanceof Tameable) {
+            return ((Tameable)entity).isTamed();
+        }
+        return false;
+    }
 
+    /**
+     * Sets if this has been tamed. Not necessary if the method setOwner has been used, as it tames automatically.
+     * <p/>
+     * If something is tamed then a player can not tame it through normal methods, even if it does not belong to anyone in particular.
+     * <p/>
+     * <b>Entities: </b> {@link Tameable}
+     *
+     * @param tamed true if tame
+     * @return this instance
+     */
+    public EEntity setTamed(Boolean tamed) {
+        if (entity instanceof Tameable) {
+            ((Tameable)entity).setTamed(tamed);
+        }
+        return this;
+    }
+
+    /**
+     * Gets the current owning AnimalTamer
+     * <p/>
+     * <b>Entities: </b> {@link Tameable}
+     *
+     * @return the owning {@link AnimalTamer}, or null if not owned ({@code null} when not Tameable)
+     */
+    public AnimalTamer getOwner() {
+        if (entity instanceof Tameable) {
+            return ((Tameable)entity).getOwner();
+        }
+        return null;
+    }
+
+    /**
+     * Set this to be owned by given AnimalTamer.
+     * <p/>
+     * If the owner is not null, this will be tamed and will have any current path it is following removed. If the owner is set to null, this will be untamed, and the current owner removed.
+     * <p/>
+     * <b>Entities: </b> {@link Tameable}
+     *
+     * @param owner the {@link AnimalTamer} who should own this
+     * @return this instance
+     */
+    public EEntity setOwner(AnimalTamer owner) {
+        if (entity instanceof Tameable) {
+            ((Tameable)entity).setOwner(owner);
+        }
+        return this;
+    }
     //endregion
 
 
