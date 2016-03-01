@@ -370,5 +370,13 @@ public abstract class Game extends ComponentHolder {
         }
         return true;
     }
+
+    @Override
+    public int hashCode() {
+        int result = name.hashCode();
+        result = 31 * result + plugin.getName().hashCode();
+        return result;
+    }
+
     //endregion
 }
