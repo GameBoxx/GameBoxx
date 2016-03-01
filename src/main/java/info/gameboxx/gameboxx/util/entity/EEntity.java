@@ -28,12 +28,14 @@ package info.gameboxx.gameboxx.util.entity;
 import info.gameboxx.gameboxx.util.Str;
 import org.bukkit.*;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
 import org.bukkit.entity.*;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.inventory.EntityEquipment;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+import org.bukkit.projectiles.ProjectileSource;
 import org.bukkit.util.Vector;
 
 import java.util.*;
@@ -1607,6 +1609,36 @@ public class EEntity {
     // ##################################################
     //region Creature
 
+    /**
+     * Gets the current target of this Creature
+     * <p/>
+     * <b>Entities: </b> {@link Creature}
+     *
+     * @return Current target of this creature, or null if none exists ({@code null} when not Creature)
+     */
+    public LivingEntity getTarget() {
+        if (entity instanceof Creature) {
+            return ((Creature)entity).getTarget();
+        }
+        return null;
+    }
+
+    /**
+     * Instructs this Creature to set the specified LivingEntity as its target.
+     * <p/>
+     * Hostile creatures may attack their target, and friendly creatures may follow their target.
+     * <p/>
+     * <b>Entities: </b> {@link Creature}
+     *
+     * @param target New {@link LivingEntity} to target, or {@code null} to clear the target
+     * @return this instance
+     */
+    public EEntity setTarget(LivingEntity target) {
+        if (entity instanceof Creature) {
+            ((Creature)entity).setTarget(target);
+        }
+        return this;
+    }
     //endregion
 
 
@@ -1616,6 +1648,67 @@ public class EEntity {
     // ##################################################
     //region Projectile
 
+    /**
+     * Retrieve the shooter of this projectile.
+     * <p/>
+     * <b>Entities: </b> {@link Projectile}
+     *
+     * @return the {@link ProjectileSource} that shot this projectile ({@code null} when not Projectile)
+     */
+    public ProjectileSource getShooter() {
+        if (entity instanceof Projectile) {
+            return ((Projectile)entity).getShooter();
+        }
+        return null;
+    }
+
+    /**
+     * Set the shooter of this projectile.
+     * <p/>
+     * <b>Entities: </b> {@link Projectile}
+     *
+     * @param shooter the {@link ProjectileSource} that shot this projectile
+     * @return this instance
+     */
+    public EEntity setShooter(ProjectileSource shooter) {
+        if (entity instanceof Projectile) {
+            ((Projectile)entity).setShooter(shooter);
+        }
+        return this;
+    }
+
+    /**
+     * Determine if this projectile should bounce or not when it hits.
+     * <p/>
+     * If a small fireball does not bounce it will set the target on fire.
+     * <p/>
+     * <b>Entities: </b> {@link Projectile}
+     *
+     * @return true if it should bounce.
+     */
+    public Boolean doesBounce() {
+        if (entity instanceof Projectile) {
+            return ((Projectile)entity).doesBounce();
+        }
+        return false;
+    }
+
+    /**
+     * Set whether or not this projectile should bounce or not when it hits something.
+     * <p/>
+     * If a small fireball does not bounce it will set the target on fire.
+     * <p/>
+     * <b>Entities: </b> {@link Projectile}
+     *
+     * @param bounce whether or not it should bounce.
+     * @return this instance
+     */
+    public EEntity setBounce(Boolean bounce) {
+        if (entity instanceof Projectile) {
+            ((Projectile)entity).setBounce(bounce);
+        }
+        return this;
+    }
     //endregion
 
 
@@ -1625,6 +1718,22 @@ public class EEntity {
     // ##################################################
     //region Hanging
 
+    /**
+     * Sets the direction of the hanging entity, potentially overriding rules of placement.
+     * <p/>
+     * Note that if the result is not valid the object would normally drop as an item.
+     * <b>Entities: </b> {@link Hanging}
+     *
+     * @param face The new direction.
+     * @param force Whether to force it.
+     * @return False if force was false and there was no block for it to attach to in order to face the given direction.
+     */
+    public Boolean setFacingDirection(BlockFace face, Boolean force) {
+        if (entity instanceof Hanging) {
+            return ((Hanging)entity).setFacingDirection(face, force);
+        }
+        return false;
+    }
     //endregion
 
 
