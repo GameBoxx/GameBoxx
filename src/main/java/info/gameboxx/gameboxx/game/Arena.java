@@ -317,4 +317,12 @@ public class Arena {
         }
         return true;
     }
+
+    @Override
+    public int hashCode() {
+        int result = game.hashCode();
+        result = 31 * result + type.hashCode();
+        result = 31 * result + name.hashCode();
+        return result;
+    }
 }
