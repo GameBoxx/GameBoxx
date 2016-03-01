@@ -212,7 +212,7 @@ public class Arena {
                 }
             }.runTaskAsynchronously(getGame().getAPI());
         } else if (getType() == ArenaType.GENERATE_WORLD) {
-            String mapName = getName() + "_" + id;
+            String mapName = game.getName() + "_" + getName() + "_" + id;
             final WorldCreator wc = new WorldCreator(mapName);
             new BukkitRunnable() {
                 @Override
