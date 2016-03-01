@@ -29,9 +29,9 @@ import info.gameboxx.gameboxx.messages.Msg;
 import info.gameboxx.gameboxx.messages.Param;
 import info.gameboxx.gameboxx.util.ItemUtil;
 import info.gameboxx.gameboxx.util.item.EItem;
-import info.gameboxx.gameboxx.util.particles.ParticleEffect;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.Particle;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -278,7 +278,7 @@ public class SelectionManager {
             if (getStatus(player) == SelectionStatus.BOTH) {
                 Cuboid cuboid = getSelection(player);
                 for (org.bukkit.util.Vector vector : cuboid.getEdgeVectors()) {
-                    ParticleEffect.VILLAGER_HAPPY.display(0.1f, 0.1f, 0.1f, 0, 2, vector.toLocation(player.getWorld()).add(0.5f, 0.5f, 0.5f), 300);
+                    cuboid.getWorld().spawnParticle(Particle.VILLAGER_HAPPY, vector.toLocation(cuboid.getWorld()).add(0.5f, 0.5f, 0.5f), 2, 0.1f, 0.1f, 0.1f, 0);
                 }
             }
         }
