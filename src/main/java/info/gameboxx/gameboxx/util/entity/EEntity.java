@@ -42,6 +42,8 @@ import org.bukkit.inventory.MerchantRecipe;
 import org.bukkit.inventory.meta.FireworkMeta;
 import org.bukkit.material.Colorable;
 import org.bukkit.material.MaterialData;
+import org.bukkit.metadata.MetadataValue;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.projectiles.ProjectileSource;
@@ -696,6 +698,28 @@ public class EEntity {
             return ((Attributable)entity).getAttribute(attribute);
         }
         return null;
+    }
+    //endregion
+
+
+    //region Metadatable
+
+    public List<MetadataValue> getMetadata(String metadataKey) {
+        return entity.getMetadata(metadataKey);
+    }
+
+    public EEntity setMetadata(String metadataKey, MetadataValue newMetadataValue) {
+        entity.setMetadata(metadataKey, newMetadataValue);
+        return this;
+    }
+
+    public Boolean hasMetadata(String metadataKey) {
+        return entity.hasMetadata(metadataKey);
+    }
+
+    public EEntity removeMetadata(String metadataKey, Plugin owningPlugin) {
+        entity.removeMetadata(metadataKey, owningPlugin);
+        return this;
     }
     //endregion
 
@@ -1887,6 +1911,22 @@ public class EEntity {
     }
     //endregion
 
+    //region ProjectileSource
+
+    public <T extends Projectile> EEntity launchProjectile(Class<? extends T> projectile) {
+        if (entity instanceof ProjectileSource) {
+            ((ProjectileSource)entity).launchProjectile(projectile);
+        }
+        return this;
+    }
+
+    public <T extends Projectile> EEntity launchProjectile(Class<? extends T> projectile, Vector velocity) {
+        if (entity instanceof ProjectileSource) {
+            ((ProjectileSource)entity).launchProjectile(projectile, velocity);
+        }
+        return this;
+    }
+    //endregion
 
 
     // ##################################################
