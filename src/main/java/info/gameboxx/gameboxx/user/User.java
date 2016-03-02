@@ -86,6 +86,11 @@ public class User implements CurrencyHolder {
         return name;
     }
 
+    /**
+     * Assigns a {@link Player} to a given {@link Game}. An {@link Arena} is chosen randomly. A {@link GameSession} is chosen based on {@link Player} count in each {@link GameSession}.
+     *
+     * @param game Game to join
+     */
     public void join(String game) {
         Game gameObj = GameBoxx.get().getGM().getGame(game);
         int rand = Random.Int(gameObj.getArenas().size());
@@ -94,7 +99,12 @@ public class User implements CurrencyHolder {
         sessionObj.addPlayer(getPlayer());
     }
 
-    // TODO: 1/26/2016 Choose session based on player count
+    /**
+     * Assigns a {@link Player} to a given {@link Game} and {@link Arena}. A {@link GameSession} is chosen based on {@link Player} count in each {@link GameSession}.
+     *
+     * @param game  Game to join
+     * @param arena Arena to join
+     */
     public void join(String game, String arena) {
         Game gameObj = GameBoxx.get().getGM().getGame(game);
         Arena arenaObj = gameObj.getArena(arena);
@@ -102,6 +112,13 @@ public class User implements CurrencyHolder {
         sessionObj.addPlayer(getPlayer());
     }
 
+    /**
+     * Assigns a {@link Player} to a given {@link Game}, {@link Arena} and {@link GameSession}.
+     *
+     * @param game        Game to join
+     * @param arena       Arena to join
+     * @param gameSession GameSession to join
+     */
     public void join(String game, String arena, int gameSession) {
         Game gameObj = GameBoxx.get().getGM().getGame(game);
         Arena arenaObj = gameObj.getArena(arena);
@@ -129,15 +146,6 @@ public class User implements CurrencyHolder {
         this.selectedArena = arena;
     }
 
-    private GameSession getOptimalSession(Arena arena) {
-        Map<Integer, GameSession> sessionMap = Maps.newHashMap();
-        for (GameSession gameSession : arena.getSessions().values()) {
-            sessionMap.put(gameSession.getComponent(PlayersCP.class).getOnlinePlayers().size(), gameSession);
-        }
-        int resKey = Numbers.smallest(sessionMap.keySet().toArray(new Integer[sessionMap.keySet().size()]));
-        return sessionMap.get(resKey);
-    }
-
     @Override
     public void give(String currency, double amount) {
         GameBoxx.get().getCM().give(this, currency, amount);
@@ -157,4 +165,14 @@ public class User implements CurrencyHolder {
     public void set(String currency, double amount) {
         GameBoxx.get().getCM().set(this, currency, amount);
     }
+
+    private GameSession getOptimalSession(Arena arena) {
+        Map<Integer, GameSession> sessionMap = Maps.newHashMap();
+        for (GameSession gameSession : arena.getSessions().values()) {
+            sessionMap.put(gameSession.getComponent(PlayersCP.class).getOnlinePlayers().size(), gameSession);
+        }
+        int resKey = Numbers.smallest(sessionMap.keySet().toArray(new Integer[sessionMap.keySet().size()]));
+        return sessionMap.get(resKey);
+    }
+
 }
