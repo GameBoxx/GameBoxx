@@ -1170,106 +1170,6 @@ public class EEntity {
     //endregion
 
 
-    //region Potion Effects
-    //TODO: Methods to apply potion effects safely. (increase duration for same effect, override when effect is better and ignore when effect is worse)
-
-    /**
-     * Adds the given {@link PotionEffect} to the living entity.
-     * <p/>
-     * Only one potion effect can be present for a given {@link PotionEffectType}.
-     * <p/>
-     * <b>Entities: </b> {@link LivingEntity}
-     *
-     * @param effect PotionEffect to be added
-     * @return this instance
-     */
-    public EEntity addPotionEffect(PotionEffect effect) {
-        if (entity instanceof LivingEntity) {
-            ((LivingEntity)entity).addPotionEffect(effect);
-        }
-        return this;
-    }
-
-    /**
-     * Adds the given {@link PotionEffect} to the living entity.
-     * <p/>
-     * Only one potion effect can be present for a given {@link PotionEffectType}.
-     * <p/>
-     * <b>Entities: </b> {@link LivingEntity}
-     *
-     * @param effect PotionEffect to be added
-     * @param force whether conflicting effects should be removed/overwritten
-     * @return this instance
-     */
-    public EEntity addPotionEffect(PotionEffect effect, boolean force) {
-        if (entity instanceof LivingEntity) {
-            ((LivingEntity)entity).addPotionEffect(effect, force);
-        }
-        return this;
-    }
-
-    /**
-     * Attempts to add all of the given {@link PotionEffect} to the living entity.
-     * <p/>
-     * <b>Entities: </b> {@link LivingEntity}
-     *
-     * @param effects the effects to add
-     * @return this instance
-     */
-    public EEntity addPotionEffects(Collection<PotionEffect> effects) {
-        if (entity instanceof LivingEntity) {
-            ((LivingEntity)entity).addPotionEffects(effects);
-        }
-        return this;
-    }
-
-    /**
-     * Returns whether the living entity already has an existing effect of the given {@link PotionEffectType} applied to it.
-     * <p/>
-     * <b>Entities: </b> {@link LivingEntity}
-     *
-     * @param type the potion type to check
-     * @return whether the living entity has this potion effect active on them
-     */
-    public Boolean hasPotionEffect(PotionEffectType type) {
-        if (entity instanceof LivingEntity) {
-            ((LivingEntity)entity).hasPotionEffect(type);
-        }
-        return false;
-    }
-
-    /**
-     * Removes any effects present of the given {@link PotionEffectType}.
-     * <p/>
-     * <b>Entities: </b> {@link LivingEntity}
-     *
-     * @param type the potion type to remove
-     * @return this instance
-     */
-    public EEntity removePotionEffect(PotionEffectType type) {
-        if (entity instanceof LivingEntity) {
-            ((LivingEntity)entity).removePotionEffect(type);
-        }
-        return this;
-    }
-
-    /**
-     * Returns all currently active {@link PotionEffect}s on the living entity.
-     * <p/>
-     * <b>Entities: </b> {@link LivingEntity}
-     *
-     * @return a collection of {@link PotionEffect}s
-     */
-    public Collection<PotionEffect> getActivePotionEffects() {
-        if (entity instanceof LivingEntity) {
-            ((LivingEntity)entity).getActivePotionEffects();
-        }
-        return new ArrayList<>();
-    }
-
-    //endregion
-
-
     //region Equipment
     /**
      * Gets the inventory with the equipment worn by the living entity.
@@ -2057,6 +1957,146 @@ public class EEntity {
     }
 
 
+    //TODO: Methods to apply potion effects safely. (increase duration for same effect, override when effect is better and ignore when effect is worse)
+
+    /**
+     * Adds the given {@link PotionEffect} to the living entity.
+     * <p/>
+     * Only one potion effect can be present for a given {@link PotionEffectType}.
+     * <p/>
+     * <b>Entities: </b> {@link LivingEntity}, {@link AreaEffectCloud}
+     *
+     * @param effect PotionEffect to be added
+     * @return this instance
+     */
+    public EEntity addEffect(PotionEffect effect) {
+        if (entity instanceof LivingEntity) {
+            ((LivingEntity)entity).addPotionEffect(effect);
+        } else if (entity instanceof AreaEffectCloud) {
+            ((AreaEffectCloud)entity).addEffect(effect);
+        }
+        return this;
+    }
+
+    /**
+     * Adds the given {@link PotionEffect} to the living entity.
+     * <p/>
+     * Only one potion effect can be present for a given {@link PotionEffectType}.
+     * <p/>
+     * <b>Entities: </b> {@link LivingEntity}, {@link AreaEffectCloud}
+     *
+     * @param effect PotionEffect to be added
+     * @param force whether conflicting effects should be removed/overwritten
+     * @return this instance
+     */
+    public EEntity addEffect(PotionEffect effect, boolean force) {
+        if (entity instanceof LivingEntity) {
+            ((LivingEntity)entity).addPotionEffect(effect, force);
+        } else if (entity instanceof AreaEffectCloud) {
+            ((AreaEffectCloud)entity).addEffect(effect);
+        }
+        return this;
+    }
+
+    /**
+     * Attempts to add all of the given {@link PotionEffect} to the living entity.
+     * <p/>
+     * <b>Entities: </b> {@link LivingEntity}, {@link AreaEffectCloud}
+     *
+     * @param effects the effects to add
+     * @return this instance
+     */
+    public EEntity addEffects(Collection<PotionEffect> effects) {
+        if (entity instanceof LivingEntity) {
+            ((LivingEntity)entity).addPotionEffects(effects);
+        } else if (entity instanceof AreaEffectCloud) {
+            for (PotionEffect effect : effects) {
+                ((AreaEffectCloud)entity).addEffect(effect);
+            }
+        }
+        return this;
+    }
+
+    /**
+     * Attempts to add all of the given {@link PotionEffect} to the living entity.
+     * <p/>
+     * <b>Entities: </b> {@link LivingEntity}, {@link AreaEffectCloud}
+     *
+     * @param effects the effects to add
+     * @return this instance
+     */
+    public EEntity setEffects(Collection<PotionEffect> effects) {
+        if (entity instanceof LivingEntity) {
+            ((LivingEntity)entity).getActivePotionEffects().clear();
+            ((LivingEntity)entity).addPotionEffects(effects);
+        } else if (entity instanceof AreaEffectCloud) {
+            ((AreaEffectCloud)entity).setEffects((List<PotionEffect>)effects);
+        }
+        return this;
+    }
+
+    /**
+     * Returns whether the living entity already has an existing effect of the given {@link PotionEffectType} applied to it.
+     * <p/>
+     * <b>Entities: </b> {@link LivingEntity}, {@link AreaEffectCloud}
+     *
+     * @param type the potion type to check
+     * @return whether the living entity has this potion effect active on them
+     */
+    public Boolean hasEffect(PotionEffectType type) {
+        if (entity instanceof LivingEntity) {
+            ((LivingEntity)entity).hasPotionEffect(type);
+        } else if (entity instanceof AreaEffectCloud) {
+            for (PotionEffect effect : ((AreaEffectCloud)entity).getEffects()) {
+                if (effect.getType() == type) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Removes any effects present of the given {@link PotionEffectType}.
+     * <p/>
+     * <b>Entities: </b> {@link LivingEntity}, {@link AreaEffectCloud}
+     *
+     * @param type the potion type to remove
+     * @return this instance
+     */
+    public EEntity removeEffect(PotionEffectType type) {
+        if (entity instanceof LivingEntity) {
+            ((LivingEntity)entity).removePotionEffect(type);
+        } else if (entity instanceof AreaEffectCloud) {
+            List<PotionEffect> acitveEffects = new ArrayList<>(((AreaEffectCloud)entity).getEffects());
+            for (PotionEffect effect : acitveEffects) {
+                if (effect.getType() == type) {
+                    ((AreaEffectCloud)entity).getEffects().remove(effect);
+                }
+            }
+        }
+        return this;
+    }
+
+    /**
+     * Returns all currently active {@link PotionEffect}s on the living entity.
+     * <p/>
+     * <b>Entities: </b> {@link LivingEntity}, {@link AreaEffectCloud}, {@link ThrownPotion}
+     *
+     * @return a collection of {@link PotionEffect}s
+     */
+    public Collection<PotionEffect> getEffects() {
+        if (entity instanceof LivingEntity) {
+            ((LivingEntity)entity).getActivePotionEffects();
+        } else if (entity instanceof AreaEffectCloud) {
+            ((AreaEffectCloud)entity).getEffects();
+        } else if (entity instanceof ThrownPotion) {
+            return ((ThrownPotion)entity).getEffects();
+        }
+        return new ArrayList<>();
+    }
+
+
     public Boolean isSitting() {
         if (entity instanceof Ocelot) {
             return ((Ocelot)entity).isSitting();
@@ -2092,16 +2132,6 @@ public class EEntity {
             ((PigZombie)entity).setAngry(angry);
         }
         return this;
-    }
-
-
-    public Collection<PotionEffect> getEffects() {
-        if (entity instanceof AreaEffectCloud) {
-            return ((AreaEffectCloud)entity).getEffects();
-        } else if (entity instanceof ThrownPotion) {
-            return ((ThrownPotion)entity).getEffects();
-        }
-        return null;
     }
 
 
@@ -2156,6 +2186,25 @@ public class EEntity {
             ((Colorable)entity).setColor(color);
         } else if (entity instanceof Wolf) {
             ((Wolf)entity).setCollarColor(color);
+        }
+        return this;
+    }
+
+
+    public Villager.Profession getProfession() {
+        if (entity instanceof Villager) {
+            return ((Villager)entity).getProfession();
+        } else if (entity instanceof Zombie) {
+            return ((Zombie)entity).getVillagerProfession();
+        }
+        return Villager.Profession.FARMER;
+    }
+
+    public EEntity setProfession(Villager.Profession profession) {
+        if (entity instanceof Villager) {
+            ((Villager)entity).setProfession(profession);
+        } else if (entity instanceof Zombie) {
+            ((Zombie)entity).setVillagerProfession(profession);
         }
         return this;
     }
@@ -2484,27 +2533,6 @@ public class EEntity {
         return this;
     }
 
-    public EEntity addEffect(PotionEffect effect) {
-        if (entity instanceof AreaEffectCloud) {
-            ((AreaEffectCloud)entity).addEffect(effect);
-        }
-        return this;
-    }
-
-    public EEntity removeEffect(PotionEffect effect) {
-        if (entity instanceof AreaEffectCloud) {
-            ((AreaEffectCloud)entity).removeEffect(effect);
-        }
-        return this;
-    }
-
-    public EEntity setEffects(List<PotionEffect> effects) {
-        if (entity instanceof AreaEffectCloud) {
-            ((AreaEffectCloud)entity).setEffects(effects);
-        }
-        return this;
-    }
-
     public Color getEffectColor() {
         if (entity instanceof AreaEffectCloud) {
             return ((AreaEffectCloud)entity).getColor();
@@ -2709,7 +2737,7 @@ public class EEntity {
         return false;
     }
 
-    public EEntity setDropItem(boolean drop) {
+    public EEntity setDropItem(Boolean drop) {
         if (entity instanceof FallingBlock) {
             ((FallingBlock)entity).setDropItem(drop);
         }
@@ -2723,7 +2751,7 @@ public class EEntity {
         return false;
     }
 
-    public EEntity setHurtEntities(boolean hurtEntities) {
+    public EEntity setHurtEntities(Boolean hurtEntities) {
         if (entity instanceof FallingBlock) {
             ((FallingBlock)entity).setHurtEntities(hurtEntities);
         }
@@ -3210,6 +3238,17 @@ public class EEntity {
         return Skeleton.SkeletonType.NORMAL;
     }
 
+    public EEntity setWitherSkeleton(Boolean wither) {
+        if (entity instanceof Skeleton) {
+            if (wither) {
+                ((Skeleton)entity).setSkeletonType(Skeleton.SkeletonType.WITHER);
+            } else {
+                ((Skeleton)entity).setSkeletonType(Skeleton.SkeletonType.NORMAL);
+            }
+        }
+        return this;
+    }
+
     public EEntity setSkeletonType(Skeleton.SkeletonType type) {
         if (entity instanceof Skeleton) {
             ((Skeleton)entity).setSkeletonType(type);
@@ -3240,20 +3279,6 @@ public class EEntity {
 
 
     //region villager
-
-    public Villager.Profession getProfession() {
-        if (entity instanceof Villager) {
-            return ((Villager)entity).getProfession();
-        }
-        return Villager.Profession.FARMER;
-    }
-
-    public EEntity setProfession(Villager.Profession profession) {
-        if (entity instanceof Villager) {
-            ((Villager)entity).setProfession(profession);
-        }
-        return this;
-    }
 
     public List<MerchantRecipe> getRecipes() {
         if (entity instanceof Villager) {
@@ -3339,26 +3364,6 @@ public class EEntity {
     //endregion
 
 
-
-    //region region Wolf
-
-    public DyeColor getCollarColor() {
-        if (entity instanceof Wolf) {
-            return ((Wolf)entity).getCollarColor();
-        }
-        return DyeColor.RED;
-    }
-
-    public EEntity setCollarColor(DyeColor color) {
-        if (entity instanceof Wolf) {
-            ((Wolf)entity).setCollarColor(color);
-        }
-        return this;
-    }
-    //endregion
-
-
-
     //region Zombie
 
     public Boolean isVillager() {
@@ -3366,21 +3371,6 @@ public class EEntity {
             return ((Zombie)entity).isVillager();
         }
         return false;
-    }
-
-    public Villager.Profession getVillagerProfession() {
-        if (entity instanceof Zombie) {
-            return ((Zombie)entity).getVillagerProfession();
-        }
-        return Villager.Profession.FARMER;
-    }
-
-
-    public EEntity setVillagerProfession(Villager.Profession profession) {
-        if (entity instanceof Zombie) {
-            ((Zombie)entity).setVillagerProfession(profession);
-        }
-        return this;
     }
     //endregion
 
