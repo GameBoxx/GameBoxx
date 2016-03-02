@@ -318,6 +318,10 @@ public class EntityTag {
         return BY_ENTITY.get(type);
     }
 
+    public static Collection<EntityTag> values() {
+        return BY_NAME.values();
+    }
+
 
     public static EntityTag register(SingleOption option, EntityTagCallback executeCallback, Class... entities) {
         return register(new EntityTag(option, executeCallback, entities));
