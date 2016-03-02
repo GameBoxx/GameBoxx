@@ -26,16 +26,26 @@
 package info.gameboxx.gameboxx.util.entity;
 
 import info.gameboxx.gameboxx.util.Str;
+import info.gameboxx.gameboxx.util.item.EItem;
 import org.bukkit.*;
+import org.bukkit.attribute.Attributable;
+import org.bukkit.attribute.Attribute;
+import org.bukkit.attribute.AttributeInstance;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.*;
+import org.bukkit.entity.minecart.CommandMinecart;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.inventory.EntityEquipment;
+import org.bukkit.inventory.MerchantRecipe;
+import org.bukkit.inventory.meta.FireworkMeta;
+import org.bukkit.material.Colorable;
+import org.bukkit.material.MaterialData;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.projectiles.ProjectileSource;
+import org.bukkit.util.EulerAngle;
 import org.bukkit.util.Vector;
 
 import java.util.*;
@@ -371,7 +381,9 @@ public class EEntity {
      * @return {@link Vector} with the current velocity
      */
     public Vector getVelocity() {
-        if (entity instanceof Fireball) {
+        if (entity instanceof Vehicle) {
+            return ((Vehicle)entity).getVelocity();
+        } else if (entity instanceof Fireball) {
             return ((Fireball)entity).getDirection();
         }
         return entity.getVelocity();
@@ -386,7 +398,9 @@ public class EEntity {
      * @return this instance
      */
     public EEntity setVelocity(Vector velocity) {
-        if (entity instanceof Fireball) {
+        if (entity instanceof Vehicle) {
+            ((Vehicle)entity).setVelocity(velocity);
+        } else if (entity instanceof Fireball) {
             ((Fireball)entity).setDirection(velocity);
         } else {
             entity.setVelocity(velocity);
@@ -661,6 +675,17 @@ public class EEntity {
     public EEntity setCustomNameVisible(Boolean state) {
         entity.setCustomNameVisible(state);
         return this;
+    }
+    //endregion
+
+
+    //region Attributes
+
+    public AttributeInstance getAttribute(Attribute attribute) {
+        if (entity instanceof Attributable) {
+            return ((Attributable)entity).getAttribute(attribute);
+        }
+        return null;
     }
     //endregion
 
@@ -1212,8 +1237,6 @@ public class EEntity {
 
 
     //region Equipment
-    //TODO: Wrapper methods for EntityEquipment like setHelmet and such.
-
     /**
      * Gets the inventory with the equipment worn by the living entity.
      * <p/>
@@ -1226,6 +1249,129 @@ public class EEntity {
             return ((LivingEntity) entity).getEquipment();
         }
         return null;
+    }
+
+    public EItem getItemInMainHand() {
+        if (entity instanceof LivingEntity) {
+            return new EItem(((LivingEntity)entity).getEquipment().getItemInMainHand());
+        }
+        return null;
+    }
+
+    public EEntity setItemInMainHand(EItem item) {
+        if (entity instanceof LivingEntity) {
+            ((LivingEntity)entity).getEquipment().setItemInMainHand(item);
+        }
+        return this;
+    }
+
+    public EItem getItemInOffHand() {
+        if (entity instanceof LivingEntity) {
+            return new EItem(((LivingEntity)entity).getEquipment().getItemInOffHand());
+        }
+        return null;
+    }
+
+    public EEntity setItemInOffHand(EItem item) {
+        if (entity instanceof LivingEntity) {
+            ((LivingEntity)entity).getEquipment().setItemInOffHand(item);
+        }
+        return this;
+    }
+
+    public EItem[] getArmorContents() {
+        if (entity instanceof LivingEntity) {
+            EItem[] items = new EItem[((LivingEntity)entity).getEquipment().getArmorContents().length];
+            for (int i = 0; i < items.length; i++) {
+                items[i] = new EItem(((LivingEntity)entity).getEquipment().getArmorContents()[i]);
+            }
+            return items;
+        }
+        return null;
+    }
+
+    public EEntity setArmorContents(EItem[] items) {
+        if (entity instanceof LivingEntity) {
+            ((LivingEntity)entity).getEquipment().setArmorContents(items);
+        }
+        return this;
+    }
+
+    public EEntity clearEquipment() {
+        if (entity instanceof LivingEntity) {
+            ((LivingEntity)entity).getEquipment().clear();
+        }
+        return this;
+    }
+
+    public Float getItemInHandDropChance() {
+        if (entity instanceof LivingEntity) {
+            return ((LivingEntity)entity).getEquipment().getItemInHandDropChance();
+        }
+        return 0f;
+    }
+
+    public EEntity setItemInHandDropChance(Float chance) {
+        if (entity instanceof LivingEntity) {
+            ((LivingEntity)entity).getEquipment().setItemInHandDropChance(chance);
+        }
+        return this;
+    }
+
+    public Float getHelmetDropChance() {
+        if (entity instanceof LivingEntity) {
+            return ((LivingEntity)entity).getEquipment().getItemInHandDropChance();
+        }
+        return 0f;
+    }
+
+    public EEntity setHelmetDropChance(Float chance) {
+        if (entity instanceof LivingEntity) {
+            ((LivingEntity)entity).getEquipment().setHelmetDropChance(chance);
+        }
+        return this;
+    }
+
+    public Float getChestplateDropChance() {
+        if (entity instanceof LivingEntity) {
+            return ((LivingEntity)entity).getEquipment().getChestplateDropChance();
+        }
+        return 0f;
+    }
+
+    public EEntity setChestplateDropChance(Float chance) {
+        if (entity instanceof LivingEntity) {
+            ((LivingEntity)entity).getEquipment().setChestplateDropChance(chance);
+        }
+        return this;
+    }
+
+    public Float getLeggingsDropChance() {
+        if (entity instanceof LivingEntity) {
+            return ((LivingEntity)entity).getEquipment().getLeggingsDropChance();
+        }
+        return 0f;
+    }
+
+    public EEntity setLeggingsDropChance(Float chance) {
+        if (entity instanceof LivingEntity) {
+            ((LivingEntity)entity).getEquipment().setLeggingsDropChance(chance);
+        }
+        return this;
+    }
+
+    public Float getBootsDropChance() {
+        if (entity instanceof LivingEntity) {
+            return ((LivingEntity)entity).getEquipment().getBootsDropChance();
+        }
+        return 0f;
+    }
+
+    public EEntity setBootsDropChance(Float chance) {
+        if (entity instanceof LivingEntity) {
+            ((LivingEntity)entity).getEquipment().setBootsDropChance(chance);
+        }
+        return this;
     }
 
     /**
@@ -1412,7 +1558,7 @@ public class EEntity {
     /**
      * Lock the age of the animal, setting this will prevent the animal from maturing or getting ready for mating.
      * <p/>
-     * <b>Entities: </b> {@link Ageable}
+     * <b>Entities: </b> {@link Ageable}, {@link Zombie}
      *
      * @param lock gets the current agelock.
      * @return this instance
@@ -1427,13 +1573,15 @@ public class EEntity {
     /**
      * Returns true if the animal is a baby.
      * <p/>
-     * <b>Entities: </b> {@link Ageable}
+     * <b>Entities: </b> {@link Ageable}, {@link Zombie}
      *
      * @return true if the animal is a baby. (false when not Ageable)
      */
     public Boolean isBaby() {
         if (entity instanceof Ageable) {
             return !((Ageable)entity).isAdult();
+        } else if (entity instanceof Zombie) {
+            return ((Zombie)entity).isBaby();
         }
         return false;
     }
@@ -1441,13 +1589,15 @@ public class EEntity {
     /**
      * Sets the age of the animal to a baby
      * <p/>
-     * <b>Entities: </b> {@link Ageable}
+     * <b>Entities: </b> {@link Ageable}, {@link Zombie}
      *
      * @return this instance
      */
     public EEntity setBaby() {
         if (entity instanceof Ageable) {
             ((Ageable)entity).setBaby();
+        } else if (entity instanceof Zombie) {
+            ((Zombie)entity).setBaby(true);
         }
         return this;
     }
@@ -1455,7 +1605,7 @@ public class EEntity {
     /**
      * Sets the age of the animal to baby or adult.
      * <p/>
-     * <b>Entities: </b> {@link Ageable}
+     * <b>Entities: </b> {@link Ageable}, {@link Zombie}
      *
      * @param baby whether to set the animal to baby or adult.
      * @return this instance
@@ -1467,6 +1617,8 @@ public class EEntity {
             } else {
                 ((Ageable)entity).setAdult();
             }
+        } else if (entity instanceof Zombie) {
+            ((Zombie)entity).setBaby(baby);
         }
         return this;
     }
@@ -1475,13 +1627,15 @@ public class EEntity {
     /**
      * Returns true if the animal is an adult.
      * <p/>
-     * <b>Entities: </b> {@link Ageable}
+     * <b>Entities: </b> {@link Ageable}, {@link Zombie}
      *
      * @return true if the animal is an adult. (true when not Ageable)
      */
     public Boolean isAdult() {
         if (entity instanceof Ageable) {
             return ((Ageable)entity).isAdult();
+        } else if (entity instanceof Zombie) {
+            return !((Zombie)entity).isBaby();
         }
         return true;
     }
@@ -1496,6 +1650,8 @@ public class EEntity {
     public EEntity setAdult() {
         if (entity instanceof Ageable) {
             ((Ageable)entity).setAdult();
+        } else if (entity instanceof Zombie) {
+            ((Zombie)entity).setBaby(false);
         }
         return this;
     }
@@ -1612,13 +1768,15 @@ public class EEntity {
     /**
      * Gets the current target of this Creature
      * <p/>
-     * <b>Entities: </b> {@link Creature}
+     * <b>Entities: </b> {@link Creature}, {@link ShulkerBullet}
      *
      * @return Current target of this creature, or null if none exists ({@code null} when not Creature)
      */
-    public LivingEntity getTarget() {
-        if (entity instanceof Creature) {
-            return ((Creature)entity).getTarget();
+    public EEntity getTarget() {
+        if (entity instanceof ShulkerBullet) {
+            return new EEntity(((ShulkerBullet)entity).getTarget());
+        } else if (entity instanceof Creature) {
+            return new EEntity(((Creature)entity).getTarget());
         }
         return null;
     }
@@ -1628,14 +1786,18 @@ public class EEntity {
      * <p/>
      * Hostile creatures may attack their target, and friendly creatures may follow their target.
      * <p/>
-     * <b>Entities: </b> {@link Creature}
+     * <b>Entities: </b> {@link Creature}, {@link ShulkerBullet}
      *
      * @param target New {@link LivingEntity} to target, or {@code null} to clear the target
      * @return this instance
      */
-    public EEntity setTarget(LivingEntity target) {
-        if (entity instanceof Creature) {
-            ((Creature)entity).setTarget(target);
+    public EEntity setTarget(EEntity target) {
+        if (entity instanceof ShulkerBullet) {
+            ((ShulkerBullet)entity).setTarget(target.bukkit());
+        } else if (entity instanceof Creature) {
+            if (target.bukkit() instanceof LivingEntity) {
+                ((Creature)entity).setTarget((LivingEntity)target.bukkit());
+            }
         }
         return this;
     }
@@ -1651,13 +1813,15 @@ public class EEntity {
     /**
      * Retrieve the shooter of this projectile.
      * <p/>
-     * <b>Entities: </b> {@link Projectile}
+     * <b>Entities: </b> {@link Projectile}, {@link ShulkerBullet}
      *
      * @return the {@link ProjectileSource} that shot this projectile ({@code null} when not Projectile)
      */
     public ProjectileSource getShooter() {
         if (entity instanceof Projectile) {
             return ((Projectile)entity).getShooter();
+        } else if (entity instanceof ShulkerBullet) {
+            return ((ShulkerBullet)entity).getShooter();
         }
         return null;
     }
@@ -1665,7 +1829,7 @@ public class EEntity {
     /**
      * Set the shooter of this projectile.
      * <p/>
-     * <b>Entities: </b> {@link Projectile}
+     * <b>Entities: </b> {@link Projectile}, {@link ShulkerBullet}
      *
      * @param shooter the {@link ProjectileSource} that shot this projectile
      * @return this instance
@@ -1673,6 +1837,8 @@ public class EEntity {
     public EEntity setShooter(ProjectileSource shooter) {
         if (entity instanceof Projectile) {
             ((Projectile)entity).setShooter(shooter);
+        } else if (entity instanceof ShulkerBullet) {
+            ((ShulkerBullet)entity).setShooter(shooter);
         }
         return this;
     }
@@ -1743,164 +1909,1431 @@ public class EEntity {
     // ##################################################
     //region Entities
 
+    //region Mixed
+
+    public EItem getBoots() {
+        if (entity instanceof ArmorStand) {
+            return new EItem(((ArmorStand)entity).getBoots());
+        } else if (entity instanceof LivingEntity) {
+            return new EItem(((LivingEntity)entity).getEquipment().getBoots());
+        }
+        return null;
+    }
+
+    public EEntity setBoots(EItem item) {
+        if (entity instanceof ArmorStand) {
+            ((ArmorStand)entity).setBoots(item);
+        } else if (entity instanceof LivingEntity) {
+            ((LivingEntity)entity).getEquipment().setBoots(item);
+        }
+        return this;
+    }
+
+    public EItem getLeggings() {
+        if (entity instanceof ArmorStand) {
+            return new EItem(((ArmorStand)entity).getLeggings());
+        } else if (entity instanceof LivingEntity) {
+            return new EItem(((LivingEntity)entity).getEquipment().getLeggings());
+        }
+        return null;
+    }
+
+    public EEntity setLeggings(EItem item) {
+        if (entity instanceof ArmorStand) {
+            ((ArmorStand)entity).setLeggings(item);
+        } else if (entity instanceof LivingEntity) {
+            ((LivingEntity)entity).getEquipment().setLeggings(item);
+        }
+        return this;
+    }
+
+    public EItem getChestplate() {
+        if (entity instanceof ArmorStand) {
+            return new EItem(((ArmorStand)entity).getChestplate());
+        } else if (entity instanceof LivingEntity) {
+            return new EItem(((LivingEntity)entity).getEquipment().getChestplate());
+        }
+        return null;
+    }
+
+    public EEntity setChestplate(EItem item) {
+        if (entity instanceof ArmorStand) {
+            ((ArmorStand)entity).setChestplate(item);
+        } else if (entity instanceof LivingEntity) {
+            ((LivingEntity)entity).getEquipment().setChestplate(item);
+        }
+        return this;
+    }
+
+    public EItem getHelmet() {
+        if (entity instanceof ArmorStand) {
+            return new EItem(((ArmorStand)entity).getHelmet());
+        } else if (entity instanceof LivingEntity) {
+            return new EItem(((LivingEntity)entity).getEquipment().getHelmet());
+        }
+        return null;
+    }
+
+    public EEntity setHelmet(EItem item) {
+        if (entity instanceof ArmorStand) {
+            ((ArmorStand)entity).setHelmet(item);
+        } else if (entity instanceof LivingEntity) {
+            ((LivingEntity)entity).getEquipment().setHelmet(item);
+        }
+        return this;
+    }
+
+
+    public EItem getItem() {
+        if (entity instanceof Item) {
+            return new EItem(((Item)entity).getItemStack());
+        } else if (entity instanceof ItemFrame) {
+            return new EItem(((ItemFrame)entity).getItem());
+        } else if (entity instanceof ThrownPotion) {
+            return new EItem(((ThrownPotion)entity).getItem());
+        }
+        return null;
+    }
+
+    public EEntity setItem(EItem stack) {
+        if (entity instanceof Item) {
+            ((Item)entity).setItemStack(stack);
+        } else if (entity instanceof ItemFrame) {
+            ((ItemFrame)entity).setItem(stack);
+        } else if (entity instanceof ThrownPotion) {
+            ((ThrownPotion)entity).setItem(stack);
+        }
+        return this;
+    }
+
+
+    public Boolean isSitting() {
+        if (entity instanceof Ocelot) {
+            return ((Ocelot)entity).isSitting();
+        } else if (entity instanceof Wolf) {
+            return ((Wolf)entity).isSitting();
+        }
+        return null;
+    }
+
+    public EEntity setSitting(Boolean sitting) {
+        if (entity instanceof Ocelot) {
+            ((Ocelot)entity).setSitting(sitting);
+        } else if (entity instanceof Wolf) {
+            ((Wolf)entity).setSitting(sitting);
+        }
+        return this;
+    }
+
+
+    public Boolean isAngry() {
+        if (entity instanceof Wolf) {
+            return ((Wolf)entity).isAngry();
+        } else if (entity instanceof PigZombie) {
+            return ((PigZombie)entity).isAngry();
+        }
+        return null;
+    }
+
+    public EEntity setAngry(Boolean angry) {
+        if (entity instanceof Wolf) {
+            ((Wolf)entity).setAngry(angry);
+        } else if (entity instanceof PigZombie) {
+            ((PigZombie)entity).setAngry(angry);
+        }
+        return this;
+    }
+
+
+    public Collection<PotionEffect> getEffects() {
+        if (entity instanceof AreaEffectCloud) {
+            return ((AreaEffectCloud)entity).getEffects();
+        } else if (entity instanceof ThrownPotion) {
+            return ((ThrownPotion)entity).getEffects();
+        }
+        return null;
+    }
+
+
+    public Boolean hasSaddle() {
+        if (entity instanceof Pig) {
+            return ((Pig)entity).hasSaddle();
+        } else if (entity instanceof Horse) {
+            return ((Horse)entity).getInventory().getSaddle() != null;
+        }
+        return false;
+    }
+
+    public EEntity setSaddle(Boolean saddled) {
+        if (entity instanceof Pig) {
+            ((Pig)entity).setSaddle(saddled);
+        } else if (entity instanceof Horse) {
+            ((Horse)entity).getInventory().setSaddle(new EItem(Material.SADDLE));
+        }
+        return this;
+    }
+
+    public EItem getSaddle() {
+        if (entity instanceof Horse) {
+            return new EItem(((Horse)entity).getInventory().getSaddle());
+        } else if (entity instanceof Pig) {
+            return ((Pig)entity).hasSaddle() ? new EItem(Material.SADDLE) : null;
+        }
+        return null;
+    }
+
+    public EEntity setSaddle(EItem stack) {
+        if (entity instanceof Horse) {
+            ((Horse)entity).getInventory().setSaddle(stack);
+        } else if (entity instanceof Pig) {
+            ((Pig)entity).setSaddle(stack != null && stack.getType() == Material.SADDLE);
+        }
+        return this;
+    }
+
+
+    public DyeColor getColor() {
+        if (entity instanceof Colorable) {
+            return ((Colorable)entity).getColor();
+        } else if (entity instanceof Wolf) {
+            return ((Wolf)entity).getCollarColor();
+        }
+        return DyeColor.WHITE;
+    }
+
+    public EEntity setColor(DyeColor color) {
+        if (entity instanceof Colorable) {
+            ((Colorable)entity).setColor(color);
+        } else if (entity instanceof Wolf) {
+            ((Wolf)entity).setCollarColor(color);
+        }
+        return this;
+    }
+    //endregion
+
+
+
     //region ArmorStand
 
+    //TODO: Change this when API changes (assuming it will have offhand and mainhand methods)
+    public EItem getItemInHand() {
+        if (entity instanceof ArmorStand) {
+            return new EItem(((ArmorStand)entity).getItemInHand());
+        }
+        return null;
+    }
+
+    public EEntity setItemInHand(EItem item) {
+        if (entity instanceof ArmorStand) {
+            ((ArmorStand)entity).setItemInHand(item);
+        }
+        return this;
+    }
+
+    public EulerAngle getBodyPose() {
+        if (entity instanceof ArmorStand) {
+            return ((ArmorStand)entity).getBodyPose();
+        }
+        return new EulerAngle(0,0,0);
+    }
+
+    public EEntity setBodyPose(EulerAngle pose) {
+        if (entity instanceof ArmorStand) {
+            ((ArmorStand)entity).setBodyPose(pose);
+        }
+        return this;
+    }
+
+    public EulerAngle getHeadPose() {
+        if (entity instanceof ArmorStand) {
+            return ((ArmorStand)entity).getHeadPose();
+        }
+        return new EulerAngle(0,0,0);
+    }
+
+    public EEntity setHeadPose(EulerAngle pose) {
+        if (entity instanceof ArmorStand) {
+            ((ArmorStand)entity).setHeadPose(pose);
+        }
+        return this;
+    }
+
+    public EulerAngle getLeftArmPose() {
+        if (entity instanceof ArmorStand) {
+            return ((ArmorStand)entity).getLeftArmPose();
+        }
+        return new EulerAngle(0,0,0);
+    }
+
+    public EEntity setLeftArmPose(EulerAngle pose) {
+        if (entity instanceof ArmorStand) {
+            ((ArmorStand)entity).setLeftArmPose(pose);
+        }
+        return this;
+    }
+
+    public EulerAngle getRightArmPose() {
+        if (entity instanceof ArmorStand) {
+            return ((ArmorStand)entity).getRightArmPose();
+        }
+        return new EulerAngle(0,0,0);
+    }
+
+    public EEntity setRightArmPose(EulerAngle pose) {
+        if (entity instanceof ArmorStand) {
+            ((ArmorStand)entity).setRightArmPose(pose);
+        }
+        return this;
+    }
+
+    public EulerAngle getLeftLegPose() {
+        if (entity instanceof ArmorStand) {
+            return ((ArmorStand)entity).getLeftLegPose();
+        }
+        return new EulerAngle(0,0,0);
+    }
+
+    public EEntity setLeftLegPose(EulerAngle pose) {
+        if (entity instanceof ArmorStand) {
+            ((ArmorStand)entity).setLeftLegPose(pose);
+        }
+        return this;
+    }
+
+    public EulerAngle getRightLegPose() {
+        if (entity instanceof ArmorStand) {
+            return ((ArmorStand)entity).getRightLegPose();
+        }
+        return new EulerAngle(0,0,0);
+    }
+
+    public EEntity setRightLegPose(EulerAngle pose) {
+        if (entity instanceof ArmorStand) {
+            ((ArmorStand)entity).setRightLegPose(pose);
+        }
+        return this;
+    }
+
+    public Boolean hasBasePlate() {
+        if (entity instanceof ArmorStand) {
+            return ((ArmorStand)entity).hasBasePlate();
+        }
+        return false;
+    }
+
+    public EEntity setBasePlate(Boolean baseplate) {
+        if (entity instanceof ArmorStand) {
+            ((ArmorStand)entity).setBasePlate(baseplate);
+        }
+        return this;
+    }
+
+    public Boolean hasGravity() {
+        if (entity instanceof ArmorStand) {
+            return ((ArmorStand)entity).hasGravity();
+        }
+        return true;
+    }
+
+    public EEntity setGravity(Boolean gravity) {
+        if (entity instanceof ArmorStand) {
+            ((ArmorStand)entity).setGravity(gravity);
+        }
+        return this;
+    }
+
+    public Boolean isVisible() {
+        if (entity instanceof ArmorStand) {
+            return ((ArmorStand)entity).isVisible();
+        }
+        return true;
+    }
+
+    public EEntity setVisible(Boolean visible) {
+        if (entity instanceof ArmorStand) {
+            ((ArmorStand)entity).setVisible(visible);
+        }
+        return this;
+    }
+
+    public Boolean hasArms() {
+        if (entity instanceof ArmorStand) {
+            return ((ArmorStand)entity).hasArms();
+        }
+        return false;
+    }
+
+    public EEntity setArms(Boolean arms) {
+        if (entity instanceof ArmorStand) {
+            ((ArmorStand)entity).setArms(arms);
+        }
+        return this;
+    }
+
+    public Boolean isMarker() {
+        if (entity instanceof ArmorStand) {
+            return ((ArmorStand)entity).isMarker();
+        }
+        return false;
+    }
+
+    public EEntity setMarker(Boolean marker) {
+        if (entity instanceof ArmorStand) {
+            ((ArmorStand)entity).setMarker(marker);
+        }
+        return this;
+    }
     //endregion
 
 
 
     //region Arrow
 
+    public Integer getKnockbackStrength() {
+        if (entity instanceof Arrow) {
+            return ((Arrow)entity).getKnockbackStrength();
+        }
+        return 0;
+    }
+
+    public EEntity setKnockbackStrength(Integer knockbackStrength) {
+        if (entity instanceof Arrow) {
+            ((Arrow)entity).setKnockbackStrength(knockbackStrength);
+        }
+        return this;
+    }
+
+    public Boolean isCritical() {
+        if (entity instanceof Arrow) {
+            return ((Arrow)entity).isCritical();
+        }
+        return false;
+    }
+
+    public EEntity setCritical(Boolean critical) {
+        if (entity instanceof Arrow) {
+            ((Arrow)entity).setCritical(critical);
+        }
+        return this;
+    }
     //endregion
 
 
 
-    //region Boat
+    //region AreaEffectCloud
 
+    public Integer getDuration() {
+        if (entity instanceof AreaEffectCloud) {
+            return ((AreaEffectCloud)entity).getDuration();
+        }
+        return 0;
+    }
+
+    public EEntity setDuration(Integer ticks) {
+        if (entity instanceof AreaEffectCloud) {
+            ((AreaEffectCloud)entity).setDuration(ticks);
+        }
+        return this;
+    }
+
+    public Integer getWaitTime() {
+        if (entity instanceof AreaEffectCloud) {
+            return ((AreaEffectCloud)entity).getWaitTime();
+        }
+        return 0;
+    }
+
+    public EEntity setWaitTime(Integer ticks) {
+        if (entity instanceof AreaEffectCloud) {
+            ((AreaEffectCloud)entity).setWaitTime(ticks);
+        }
+        return this;
+    }
+
+    public Integer getReapplicationDelay() {
+        if (entity instanceof AreaEffectCloud) {
+            return ((AreaEffectCloud)entity).getReapplicationDelay();
+        }
+        return 0;
+    }
+
+    public EEntity setReapplicationDelay(Integer ticks) {
+        if (entity instanceof AreaEffectCloud) {
+            ((AreaEffectCloud)entity).setReapplicationDelay(ticks);
+        }
+        return this;
+    }
+
+    public Integer getDurationOnUse() {
+        if (entity instanceof AreaEffectCloud) {
+            return ((AreaEffectCloud)entity).getDurationOnUse();
+        }
+        return 0;
+    }
+
+    public EEntity setDurationOnUse(Integer ticks) {
+        if (entity instanceof AreaEffectCloud) {
+            ((AreaEffectCloud)entity).setDurationOnUse(ticks);
+        }
+        return this;
+    }
+
+    public Float getRadius() {
+        if (entity instanceof AreaEffectCloud) {
+            return ((AreaEffectCloud)entity).getRadius();
+        }
+        return 0f;
+    }
+
+    public EEntity setRadius(Float radius) {
+        if (entity instanceof AreaEffectCloud) {
+            ((AreaEffectCloud)entity).setRadius(radius);
+        }
+        return this;
+    }
+
+    public Float getRadiusOnUse() {
+        if (entity instanceof AreaEffectCloud) {
+            return ((AreaEffectCloud)entity).getRadiusOnUse();
+        }
+        return 0f;
+    }
+
+    public EEntity setRadiusOnUse(Float radius) {
+        if (entity instanceof AreaEffectCloud) {
+            ((AreaEffectCloud)entity).setRadiusOnUse(radius);
+        }
+        return this;
+    }
+
+    public Float getRadiusPerTick() {
+        if (entity instanceof AreaEffectCloud) {
+            return ((AreaEffectCloud)entity).getRadiusPerTick();
+        }
+        return 0f;
+    }
+
+    public EEntity setRadiusPerTick(Float radius) {
+        if (entity instanceof AreaEffectCloud) {
+            ((AreaEffectCloud)entity).setRadiusPerTick(radius);
+        }
+        return this;
+    }
+
+    public Particle getParticle() {
+        if (entity instanceof AreaEffectCloud) {
+            return ((AreaEffectCloud)entity).getParticle();
+        }
+        return null;
+    }
+
+    public EEntity setParticle(Particle particle) {
+        if (entity instanceof AreaEffectCloud) {
+            ((AreaEffectCloud)entity).setParticle(particle);
+        }
+        return this;
+    }
+
+    public EEntity addEffect(PotionEffect effect) {
+        if (entity instanceof AreaEffectCloud) {
+            ((AreaEffectCloud)entity).addEffect(effect);
+        }
+        return this;
+    }
+
+    public EEntity removeEffect(PotionEffect effect) {
+        if (entity instanceof AreaEffectCloud) {
+            ((AreaEffectCloud)entity).removeEffect(effect);
+        }
+        return this;
+    }
+
+    public EEntity setEffects(List<PotionEffect> effects) {
+        if (entity instanceof AreaEffectCloud) {
+            ((AreaEffectCloud)entity).setEffects(effects);
+        }
+        return this;
+    }
+
+    public Color getEffectColor() {
+        if (entity instanceof AreaEffectCloud) {
+            return ((AreaEffectCloud)entity).getColor();
+        }
+        return Color.fromRGB(0,0,0);
+    }
+
+    public EEntity setEffectColor(Color color) {
+        if (entity instanceof AreaEffectCloud) {
+            ((AreaEffectCloud)entity).setColor(color);
+        }
+        return this;
+    }
     //endregion
 
 
 
     //region Minecarts
 
+    public Double getDamage() {
+        if (entity instanceof Minecart) {
+            return ((Minecart)entity).getDamage();
+        }
+        return 0d;
+    }
+
+    public EEntity setDamage(Double damage) {
+        if (entity instanceof Minecart) {
+            ((Minecart)entity).setDamage(damage);
+        }
+        return this;
+    }
+
+    public Double getMaxSpeed() {
+        if (entity instanceof Minecart) {
+            return ((Minecart)entity).getMaxSpeed();
+        }
+        return 0d;
+    }
+
+    public EEntity setMaxSpeed(Double speed) {
+        if (entity instanceof Minecart) {
+            ((Minecart)entity).setMaxSpeed(speed);
+        }
+        return this;
+    }
+
+    public Boolean isSlowWhenEmpty() {
+        if (entity instanceof Minecart) {
+            return ((Minecart)entity).isSlowWhenEmpty();
+        }
+        return false;
+    }
+
+    public EEntity setSlowWhenEmpty(Boolean slow) {
+        if (entity instanceof Minecart) {
+            ((Minecart)entity).setSlowWhenEmpty(slow);
+        }
+        return this;
+    }
+
+    public Vector getFlyingVelocityMod() {
+        if (entity instanceof Minecart) {
+            return ((Minecart)entity).getFlyingVelocityMod();
+        }
+        return new Vector(0,0,0);
+    }
+
+    public EEntity setFlyingVelocityMod(Vector flying) {
+        if (entity instanceof Minecart) {
+            ((Minecart)entity).setFlyingVelocityMod(flying);
+        }
+        return this;
+    }
+
+    public Vector getDerailedVelocityMod() {
+        if (entity instanceof Minecart) {
+            return ((Minecart)entity).getDerailedVelocityMod();
+        }
+        return new Vector(0,0,0);
+    }
+
+    public EEntity setDerailedVelocityMod(Vector derailed) {
+        if (entity instanceof Minecart) {
+            ((Minecart)entity).setDerailedVelocityMod(derailed);
+        }
+        return this;
+    }
+
+    public MaterialData getDisplayBlock() {
+        if (entity instanceof Minecart) {
+            return ((Minecart)entity).getDisplayBlock();
+        }
+        return null;
+    }
+
+    public EEntity setDisplayBlock(MaterialData material) {
+        if (entity instanceof Minecart) {
+            ((Minecart)entity).setDisplayBlock(material);
+        }
+        return this;
+    }
+
+    public Integer getDisplayBlockOffset() {
+        if (entity instanceof Minecart) {
+            return ((Minecart)entity).getDisplayBlockOffset();
+        }
+        return 0;
+    }
+
+    public EEntity setDisplayBlockOffset(Integer offset) {
+        if (entity instanceof Minecart) {
+            ((Minecart)entity).setDisplayBlockOffset(offset);
+        }
+        return this;
+    }
+
+    public String getCommand() {
+        if (entity instanceof CommandMinecart) {
+            return ((CommandMinecart)entity).getCommand();
+        }
+        return "";
+    }
+
+    public EEntity setCommand(String command) {
+        if (entity instanceof CommandMinecart) {
+            ((CommandMinecart)entity).setCommand(command);
+        }
+        return this;
+    }
+
+    public EEntity setName(String name) {
+        if (entity instanceof CommandMinecart) {
+            ((CommandMinecart)entity).setCommand(name);
+        }
+        return this;
+    }
+    //endregion
+
+
+
+    //region Enderdragon
+
+    public ComplexLivingEntity getParent() {
+        if (entity instanceof ComplexEntityPart) {
+            return ((ComplexEntityPart)entity).getParent();
+        }
+        return null;
+    }
+
+    public Set<ComplexEntityPart> getParts() {
+        if (entity instanceof ComplexLivingEntity) {
+            return ((ComplexLivingEntity)entity).getParts();
+        } else if (entity instanceof EnderDragon) {
+            return ((EnderDragon)entity).getParts();
+        }
+        return new HashSet<>();
+    }
     //endregion
 
 
 
     //region ExperienceOrb
 
+    public Integer getExperience() {
+        if (entity instanceof ExperienceOrb) {
+            return ((ExperienceOrb)entity).getExperience();
+        }
+        return 0;
+    }
+
+    public EEntity setExperience(Integer experience) {
+        if (entity instanceof ExperienceOrb) {
+            ((ExperienceOrb)entity).setExperience(experience);
+        }
+        return this;
+    }
     //endregion
 
 
 
     //region FallingBlock
 
+    public Material getMaterial() {
+        if (entity instanceof FallingBlock) {
+            return ((FallingBlock)entity).getMaterial();
+        }
+        return Material.AIR;
+    }
+
+    public Byte getData() {
+        if (entity instanceof FallingBlock) {
+            return ((FallingBlock)entity).getBlockData();
+        }
+        return 0;
+    }
+
+    public Boolean getDropItem() {
+        if (entity instanceof FallingBlock) {
+            return ((FallingBlock)entity).getDropItem();
+        }
+        return false;
+    }
+
+    public EEntity setDropItem(boolean drop) {
+        if (entity instanceof FallingBlock) {
+            ((FallingBlock)entity).setDropItem(drop);
+        }
+        return this;
+    }
+
+    public Boolean canHurtEntities() {
+        if (entity instanceof FallingBlock) {
+            return ((FallingBlock)entity).canHurtEntities();
+        }
+        return false;
+    }
+
+    public EEntity setHurtEntities(boolean hurtEntities) {
+        if (entity instanceof FallingBlock) {
+            ((FallingBlock)entity).setHurtEntities(hurtEntities);
+        }
+        return this;
+    }
     //endregion
 
 
 
     //region Firework
 
+    public FireworkMeta getFireworkMeta() {
+        if (entity instanceof Firework) {
+            return ((Firework)entity).getFireworkMeta();
+        }
+        return null;
+    }
+
+    public EEntity setFireworkMeta(FireworkMeta fireworkMeta) {
+        if (entity instanceof Firework) {
+            ((Firework)entity).setFireworkMeta(fireworkMeta);
+        }
+        return this;
+    }
+
+    public EEntity detonate() {
+        if (entity instanceof Firework) {
+            ((Firework)entity).detonate();
+        }
+        return this;
+    }
     //endregion
 
 
 
     //region Item
 
+    public Integer getPickupDelay() {
+        if (entity instanceof Item) {
+            return ((Item)entity).getPickupDelay();
+        }
+        return 0;
+    }
+
+    public EEntity setPickupDelay(Integer delay) {
+        if (entity instanceof Item) {
+            ((Item)entity).setPickupDelay(delay);
+        }
+        return this;
+    }
     //endregion
 
 
 
     //region ItemFrame
 
+    public Rotation getRotation() {
+        if (entity instanceof ItemFrame) {
+            return ((ItemFrame)entity).getRotation();
+        }
+        return Rotation.NONE;
+    }
+
+    public EEntity setRotation(Rotation rotation) {
+        if (entity instanceof ItemFrame) {
+            ((ItemFrame)entity).setRotation(rotation);
+        }
+        return this;
+    }
     //endregion
 
 
 
     //region Painting
 
+    public Art getArt() {
+        if (entity instanceof Painting) {
+            return ((Painting)entity).getArt();
+        }
+        return Art.ALBAN;
+    }
+
+    public EEntity setArt(Art art) {
+        if (entity instanceof Painting) {
+            ((Painting)entity).setArt(art);
+        }
+        return this;
+    }
+
+    public EEntity setArt(Art art, Boolean force) {
+        if (entity instanceof Painting) {
+            ((Painting)entity).setArt(art, force);
+        }
+        return this;
+    }
     //endregion
 
 
 
-    //region ThrownPotion
+    //region FishHook
 
+    public Double getBiteChance() {
+        if (entity instanceof FishHook) {
+            return ((FishHook)entity).getBiteChance();
+        }
+        return 0d;
+    }
+
+    public EEntity setBiteChance(Double chance) {
+        if (entity instanceof FishHook) {
+            ((FishHook)entity).setBiteChance(chance);
+        }
+        return this;
+    }
     //endregion
 
 
 
-    //region PrimedTNT
+    //region TNTPrimed
 
+    public Integer getFuseTicks() {
+        if (entity instanceof TNTPrimed) {
+            return ((TNTPrimed)entity).getFuseTicks();
+        }
+        return 0;
+    }
+
+    public EEntity setFuseTicks(Integer fuseTicks) {
+        if (entity instanceof TNTPrimed) {
+            ((TNTPrimed)entity).setFuseTicks(fuseTicks);
+        }
+        return this;
+    }
+
+    public EEntity getSource() {
+        if (entity instanceof TNTPrimed) {
+            return new EEntity(((TNTPrimed)entity).getSource());
+        }
+        return null;
+    }
+    //endregion
+
+
+
+    //region Explosive
+
+    public Float getYield() {
+        if (entity instanceof Explosive) {
+            return ((Explosive)entity).getYield();
+        }
+        return 0f;
+    }
+
+    public EEntity setYield(Float yield) {
+        if (entity instanceof Explosive) {
+            ((Explosive)entity).setYield(yield);
+        }
+        return this;
+    }
+
+    public Boolean isIncendiary() {
+        if (entity instanceof Explosive) {
+            return ((Explosive)entity).isIncendiary();
+        }
+        return false;
+    }
+
+    public EEntity setIsIncendiary(Boolean isIncendiary) {
+        if (entity instanceof Explosive) {
+            ((Explosive)entity).setIsIncendiary(isIncendiary);
+        }
+        return this;
+    }
     //endregion
 
 
 
     //region WitherSkull
 
+    public Boolean isCharged() {
+        if (entity instanceof WitherSkull) {
+            return ((WitherSkull)entity).isCharged();
+        }
+        return false;
+    }
+
+    public EEntity setCharged(Boolean charged) {
+        if (entity instanceof WitherSkull) {
+            ((WitherSkull)entity).setCharged(charged);
+        }
+        return this;
+    }
+    //endregion
+
+
+
+    //region LightningStrike
+
+    public Boolean isEffect() {
+        if (entity instanceof LightningStrike) {
+            return ((LightningStrike)entity).isEffect();
+        }
+        return false;
+    }
     //endregion
 
 
 
     //region Bat
 
+    public Boolean isAwake() {
+        if (entity instanceof Bat) {
+            return ((Bat)entity).isAwake();
+        }
+        return false;
+    }
+
+    public EEntity setAwake(Boolean awake) {
+        if (entity instanceof Bat) {
+            ((Bat)entity).setAwake(awake);
+        }
+        return this;
+    }
     //endregion
 
 
 
     //region Creeper
 
+    public Boolean isPowered() {
+        if (entity instanceof Creeper) {
+            return ((Creeper)entity).isPowered();
+        }
+        return false;
+    }
+
+    public EEntity setPowered(Boolean powered) {
+        if (entity instanceof Creeper) {
+            ((Creeper)entity).setPowered(powered);
+        }
+        return this;
+    }
     //endregion
 
 
 
     //region Enderman
 
+    public MaterialData getCarriedMaterial() {
+        if (entity instanceof Enderman) {
+            return ((Enderman)entity).getCarriedMaterial();
+        }
+        return null;
+    }
+
+    public EEntity setCarriedMaterial(MaterialData material) {
+        if (entity instanceof Enderman) {
+            ((Enderman)entity).setCarriedMaterial(material);
+        }
+        return this;
+    }
     //endregion
 
 
 
     //region Guardian
 
+    public Boolean isElder() {
+        if (entity instanceof Guardian) {
+            return ((Guardian)entity).isElder();
+        }
+        return false;
+    }
+
+    public EEntity setElder(Boolean elder) {
+        if (entity instanceof Guardian) {
+            ((Guardian)entity).setElder(elder);
+        }
+        return this;
+    }
     //endregion
 
 
 
     //region Horse
 
+    public Horse.Variant getHorseVariant() {
+        if (entity instanceof Horse) {
+            return ((Horse)entity).getVariant();
+        }
+        return Horse.Variant.HORSE;
+    }
+
+    public EEntity setHorseVariant(Horse.Variant variant) {
+        if (entity instanceof Horse) {
+            ((Horse)entity).setVariant(variant);
+        }
+        return this;
+    }
+
+    public Horse.Color getHorseColor() {
+        if (entity instanceof Horse) {
+            return ((Horse)entity).getColor();
+        }
+        return Horse.Color.WHITE;
+    }
+
+    public EEntity setHorseColor(Horse.Color color) {
+        if (entity instanceof Horse) {
+            ((Horse)entity).setColor(color);
+        }
+        return this;
+    }
+
+    public Horse.Style getHorseStyle() {
+        if (entity instanceof Horse) {
+            return ((Horse)entity).getStyle();
+        }
+        return Horse.Style.NONE;
+    }
+
+    public EEntity setHorseStyle(Horse.Style style) {
+        if (entity instanceof Horse) {
+            ((Horse)entity).setStyle(style);
+        }
+        return this;
+    }
+
+    public Boolean isCarryingChest() {
+        if (entity instanceof Horse) {
+            return ((Horse)entity).isCarryingChest();
+        }
+        return false;
+    }
+
+    public EEntity setCarryingChest(Boolean chest) {
+        if (entity instanceof Horse) {
+            ((Horse)entity).setCarryingChest(chest);
+        }
+        return this;
+    }
+
+    public Integer getDomestication() {
+        if (entity instanceof Horse) {
+            return ((Horse)entity).getDomestication();
+        }
+        return 0;
+    }
+
+    public EEntity setDomestication(Integer level) {
+        if (entity instanceof Horse) {
+            ((Horse)entity).setDomestication(level);
+        }
+        return this;
+    }
+
+    public Integer getMaxDomestication() {
+        if (entity instanceof Horse) {
+            return ((Horse)entity).getMaxDomestication();
+        }
+        return 0;
+    }
+
+    public EEntity setMaxDomestication(Integer level) {
+        if (entity instanceof Horse) {
+            ((Horse)entity).setMaxDomestication(level);
+        }
+        return this;
+    }
+
+    public Double getJumpStrength() {
+        if (entity instanceof Horse) {
+            return ((Horse)entity).getJumpStrength();
+        }
+        return 0d;
+    }
+
+    public EEntity setJumpStrength(Double strength) {
+        if (entity instanceof Horse) {
+            ((Horse)entity).setJumpStrength(strength);
+        }
+        return this;
+    }
+
+    public EItem getHorseArmor() {
+        if (entity instanceof Horse) {
+            return new EItem(((Horse)entity).getInventory().getArmor());
+        }
+        return null;
+    }
+
+    public EEntity setHorseArmor(EItem stack) {
+        if (entity instanceof Horse) {
+            ((Horse)entity).getInventory().setArmor(stack);
+        }
+        return this;
+    }
     //endregion
 
 
 
     //region Ocelot
 
+    public Ocelot.Type getCatType() {
+        if (entity instanceof Ocelot) {
+            return ((Ocelot)entity).getCatType();
+        }
+        return Ocelot.Type.WILD_OCELOT;
+    }
+
+    public EEntity setCatType(Ocelot.Type type) {
+        if (entity instanceof Ocelot) {
+            ((Ocelot)entity).setCatType(type);
+        }
+        return this;
+    }
     //endregion
 
 
 
     //region Rabbit
 
-    //endregion
+    public Rabbit.Type getRabbitType() {
+        if (entity instanceof Rabbit) {
+            return ((Rabbit)entity).getRabbitType();
+        }
+        return Rabbit.Type.GOLD;
+    }
 
-
-
-    //region Pig
-
+    public EEntity setRabbitType(Rabbit.Type type) {
+        if (entity instanceof Rabbit) {
+            ((Rabbit)entity).setRabbitType(type);
+        }
+        return this;
+    }
     //endregion
 
 
 
     //region PigZombie
 
+    public Integer getAnger() {
+        if (entity instanceof PigZombie) {
+            return ((PigZombie)entity).getAnger();
+        }
+        return 0;
+    }
+
+    public EEntity setAnger(Integer level) {
+        if (entity instanceof PigZombie) {
+            ((PigZombie)entity).setAnger(level);
+        }
+        return this;
+    }
     //endregion
 
 
 
     //region Sheep
 
+    public Boolean isSheared() {
+        if (entity instanceof Sheep) {
+            return ((Sheep)entity).isSheared();
+        }
+        return false;
+    }
+
+    public EEntity setSheared(Boolean flag) {
+        if (entity instanceof Sheep) {
+            ((Sheep)entity).setSheared(flag);
+        }
+        return this;
+    }
+    //endregion
+
+
+
+    //region Skeleton
+
+    public Skeleton.SkeletonType getSkeletonType() {
+        if (entity instanceof Skeleton) {
+            return ((Skeleton)entity).getSkeletonType();
+        }
+        return Skeleton.SkeletonType.NORMAL;
+    }
+
+    public EEntity setSkeletonType(Skeleton.SkeletonType type) {
+        if (entity instanceof Skeleton) {
+            ((Skeleton)entity).setSkeletonType(type);
+        }
+        return this;
+    }
     //endregion
 
 
 
     //region Slime
 
+    public Integer getSize() {
+        if (entity instanceof Slime) {
+            return ((Slime)entity).getSize();
+        }
+        return 0;
+    }
+
+    public EEntity setSize(Integer size) {
+        if (entity instanceof Slime) {
+            ((Slime)entity).setSize(size);
+        }
+        return this;
+    }
     //endregion
 
 
 
     //region villager
 
+    public Villager.Profession getProfession() {
+        if (entity instanceof Villager) {
+            return ((Villager)entity).getProfession();
+        }
+        return Villager.Profession.FARMER;
+    }
+
+    public EEntity setProfession(Villager.Profession profession) {
+        if (entity instanceof Villager) {
+            ((Villager)entity).setProfession(profession);
+        }
+        return this;
+    }
+
+    public List<MerchantRecipe> getRecipes() {
+        if (entity instanceof Villager) {
+            return ((Villager)entity).getRecipes();
+        }
+        return new ArrayList<>();
+    }
+
+    public EEntity setRecipes(List<MerchantRecipe> recipes) {
+        if (entity instanceof Villager) {
+            ((Villager)entity).setRecipes(recipes);
+        }
+        return this;
+    }
+
+    public MerchantRecipe getRecipe(Integer i) {
+        if (entity instanceof Villager) {
+            return ((Villager)entity).getRecipe(i);
+        }
+        return null;
+    }
+
+    public EEntity setRecipe(Integer i, MerchantRecipe recipe) {
+        if (entity instanceof Villager) {
+            ((Villager)entity).setRecipe(i, recipe);
+        }
+        return this;
+    }
+
+    public Integer getRecipeCount() {
+        if (entity instanceof Villager) {
+            return ((Villager)entity).getRecipeCount();
+        }
+        return 0;
+    }
+
+    public Boolean isTrading() {
+        if (entity instanceof Villager) {
+            return ((Villager)entity).isTrading();
+        }
+        return false;
+    }
+
+    public HumanEntity getTrader() {
+        if (entity instanceof Villager) {
+            return ((Villager)entity).getTrader();
+        }
+        return null;
+    }
+
+    public Integer getRiches() {
+        if (entity instanceof Villager) {
+            return ((Villager)entity).getRiches();
+        }
+        return 0;
+    }
+
+    public EEntity setRiches(Integer riches) {
+        if (entity instanceof Villager) {
+            ((Villager)entity).setRiches(riches);
+        }
+        return this;
+    }
+    //endregion
+
+
+
+    //region IronGolem
+
+    public Boolean isPlayerCreated() {
+        if (entity instanceof IronGolem) {
+            return ((IronGolem)entity).isPlayerCreated();
+        }
+        return false;
+    }
+
+    public EEntity setPlayerCreated(Boolean playerCreated) {
+        if (entity instanceof IronGolem) {
+            ((IronGolem)entity).setPlayerCreated(playerCreated);
+        }
+        return this;
+    }
     //endregion
 
 
 
     //region region Wolf
 
+    public DyeColor getCollarColor() {
+        if (entity instanceof Wolf) {
+            return ((Wolf)entity).getCollarColor();
+        }
+        return DyeColor.RED;
+    }
+
+    public EEntity setCollarColor(DyeColor color) {
+        if (entity instanceof Wolf) {
+            ((Wolf)entity).setCollarColor(color);
+        }
+        return this;
+    }
     //endregion
 
 
 
     //region Zombie
 
+    public Boolean isVillager() {
+        if (entity instanceof Zombie) {
+            return ((Zombie)entity).isVillager();
+        }
+        return false;
+    }
+
+    public Villager.Profession getVillagerProfession() {
+        if (entity instanceof Zombie) {
+            return ((Zombie)entity).getVillagerProfession();
+        }
+        return Villager.Profession.FARMER;
+    }
+
+
+    public EEntity setVillagerProfession(Villager.Profession profession) {
+        if (entity instanceof Zombie) {
+            ((Zombie)entity).setVillagerProfession(profession);
+        }
+        return this;
+    }
     //endregion
+
     //endregion
+
 }
