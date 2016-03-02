@@ -30,179 +30,206 @@ import info.gameboxx.gameboxx.options.single.*;
 import info.gameboxx.gameboxx.util.Parse;
 import org.bukkit.Art;
 import org.bukkit.DyeColor;
+import org.bukkit.EntityEffect;
 import org.bukkit.entity.*;
 import org.bukkit.entity.minecart.CommandMinecart;
+import org.bukkit.material.Colorable;
 
 import java.util.*;
 
 public enum EntityTag {
     //TODO: More modfiers for all options like min/max values etc.
     //TODO: More custom tags,
-    //TODO: Check for missing tags.
+    //TODO: Attributes
 
     //All entities
-    VELOCITY(new VectorOption("velocity"), "setVelocity", Entity.class),
-    FIRETICKS(new IntOption("fireticks"), "setFireTicks", Entity.class),
-    TICKSLIVED(new IntOption("tickslived"), "setTicksLived", Entity.class),
-    NAME(new StringOption("name"), "setCustomName", Entity.class),
-    NAMEVISIBLE(new BoolOption("namevisible", true), "setCustomNameVisible", Entity.class),
+    VELOCITY(new VectorOption("VELOCITY"), "setVelocity", Entity.class),
+    FALLDISTANCE(new IntOption("FALLDISTANCE"), "setFallDistance", Entity.class),
+    FIRETICKS(new IntOption("FIRETICKS"), "setFireTicks", Entity.class),
+    LIVED(new IntOption("LIVED"), "setTicksLived", Entity.class),
+    NAME(new StringOption("NAME"), "setCustomName", Entity.class),
+    NAMEVISIBLE(new BoolOption("NAMEVISIBLE", true), "setCustomNameVisible", Entity.class),
+    META(new StringOption("META").matchRegex("(.*?).(.*?)", "String must have the syntax name.value"), "CUSTOM", Entity.class), //TODO: Test regex and add translatable message.
+    PLAYEFFECT(new StringOption("PLAYEFFECT").match(Parse.Array(EntityEffect.values())), "playEffect", Entity.class), //TODO: Aliases
+    RIDE(new PlayerOption("RIDE"), "CUSTOM", Entity.class),
 
-    //Damagable/Living
+    //Damagable
     HEALTH(new DoubleOption("health"), "setHealth", Damageable.class),
     MAXHEALTH(new DoubleOption("maxhealth"), "setMaxHealth", Damageable.class),
-    REMOVEFAR(new BoolOption("removefar", true), "setRemoveWhenFarAway", LivingEntity.class),
-    PICKUPITEMS(new BoolOption("pickupitems", true), "setCanPickupItems", LivingEntity.class),
-    AIR(new IntOption("air"), "setAir", LivingEntity.class),
+
+    //Living
+    AIR(new IntOption("AIR"), "setRemainingAir", LivingEntity.class),
+    MAXAIR(new IntOption("MAXAIR"), "setMaximumAir", LivingEntity.class),
+    MAXNODMGTICKS(new IntOption("MAXNODMGTICKS"), "setMaximumNoDamageTicks", LivingEntity.class),
+    NODMGTICKS(new IntOption("NODMGTICKS"), "setNoDamageTicks", LivingEntity.class),
+    //MAINHAND(new ItemOption("MAINHAND"), "setItemInMainHand", LivingEntity.class),
+    //OFFHAND(new ItemOption("OFFHAND"), "setItemInOffHand", LivingEntity.class),
+    HANDDROP(new DoubleOption("HANDDROP"), "setItemInHandDropChance", LivingEntity.class),
+    HELMETDROP(new DoubleOption("HELMETDROP"), "setHelmetDropChance", LivingEntity.class),
+    CHESTPLATEDROP(new DoubleOption("CHESTPLATEDROP"), "setChestplateDropChance", LivingEntity.class),
+    LEGGINGSDROP(new DoubleOption("LEGGINGSDROP"), "setLeggingsDropChance", LivingEntity.class),
+    BOOTSDROP(new DoubleOption("BOOTSDROP"), "setBootsDropChance", LivingEntity.class),
+    PICKUP(new BoolOption("PICKUP", true), "setCanPickupItems", LivingEntity.class),
+    REMOVEFAR(new BoolOption("REMOVEFAR", true), "setRemoveWhenFarAway", LivingEntity.class),
+    //LEASH(new EntityOption("LEASH"), "setLeashHolder", LivingEntity.class),
 
     //Ageable
-    AGE(new IntOption("age"), "setAge", Ageable.class),
-    AGELOCK(new BoolOption("agelock", true), "setAgeLock", Ageable.class),
-    BABY(new BoolOption("baby", true), "setBaby", Ageable.class),
-    BREED(new BoolOption("breed", true), "setBreed", Ageable.class),
+    AGE(new IntOption("AGE"), "setAge", Ageable.class),
+    AGELOCK(new BoolOption("AGELOCK", true), "setAgeLock", Ageable.class),
+    BABY(new BoolOption("BABY", true), "setBaby", Ageable.class),
+    BREED(new BoolOption("BREED", true), "setBreed", Ageable.class),
 
     //Tamable
-    TAMED(new BoolOption("tamed", true), "setTamed", Tameable.class),
-    OWNER(new PlayerOption("owner"), "setOwner", Tameable.class),
+    TAMED(new BoolOption("TAMED", true), "setTamed", Tameable.class),
+    OWNER(new PlayerOption("OWNER"), "setOwner", Tameable.class), //TODO: OfflinePlayerOption?
+
+    //Creature
+    //TARGET(new EntityOption("TARGET"), "setTarget", Creature.class),
 
     //Projectile
-    BOUNCE(new BoolOption("bounce", true), "setBounce", Projectile.class),
+    //SHOOTER(new EntityOption("SHOOTER"), "setShooter", Projectile.class),
+    BOUNCE(new BoolOption("BOUNCE", true), "setBounce", Projectile.class),
 
     //Hanging
-    DIR(new StringOption("dir").match(Arrays.asList("north","east","south","west","up","down")), "CUSTOM", Hanging.class),
+    DIR(new StringOption("DIR").match(Arrays.asList("north","east","south","west","up","down")), "CUSTOM", Hanging.class),
+
+    //Mixed Entities
+    //BOOTS(new ItemOption("BOOTS"), "setBoots", ArmorStand.class, LivingEntity.class),
+    //LEGGINGS(new ItemOption("LEGGINGS"), "setLeggings", ArmorStand.class, LivingEntity.class),
+    //CHESTPLATE(new ItemOption("CHESTPLATE"), "setChestplate", ArmorStand.class, LivingEntity.class),
+    //HELMET(new ItemOption("HELMET"), "setHelmet", ArmorStand.class, LivingEntity.class),
+    //ITEM(new ItemOption("ITEM"), "setItem", Item.class, ItemFrame.class, ThrownPotion.class),
+    SITTING(new BoolOption("SITTING", true), "setSitting", Ocelot.class, Wolf.class),
+    ANGRY(new BoolOption("ANGRY", true), "setAngry", Wolf.class, PigZombie.class),
+    SADDLE(new BoolOption("SADDLE", true), "setSaddle", Horse.class, Pig.class),
+    //SADDLEITEM(new ItemOption("SADDLEITEM", true), "setSaddle", Horse.class, Pig.class),
+    COLOR(new StringOption("COLOR").match(Parse.Array(DyeColor.values())), "setColor", Colorable.class, Wolf.class), //TODO: Aliases
+    //EFFECT(new PotionOption("EFFECT"), "addEffect", LivingEntity.class, AreaEffectCloud.class),
+    PROFESSION(new StringOption("PROFESSION").match(Parse.Array(Villager.Profession.values())), "setProfession", Villager.class, Zombie.class), //TODO: Aliases
 
     //ArmorStand
-    POSE(new VectorOption("pose"), "setBodyPose", ArmorStand.class),
-    HEAD(new VectorOption("head"), "setHeadPose", ArmorStand.class),
-    LARM(new VectorOption("larm"), "setLeftArmPose", ArmorStand.class),
-    RARM(new VectorOption("rarm"), "setRightArmPose", ArmorStand.class),
-    LLEG(new VectorOption("lleg"), "setLeftLegPose", ArmorStand.class),
-    RLEG(new VectorOption("rleg"), "setRightLegPose", ArmorStand.class),
-    BASEPLATE(new BoolOption("baseplate", true), "setBasePlate", ArmorStand.class),
-    GRAVITY(new BoolOption("gravity", true), "setGravity", ArmorStand.class),
-    VISIBLE(new BoolOption("visible", true), "setVisible", ArmorStand.class),
-    ARMS(new BoolOption("arms", true), "setArms", ArmorStand.class),
-    SMALL(new BoolOption("small", true), "setSmall", ArmorStand.class),
-    MARKER(new BoolOption("marker", true), "setMarker", ArmorStand.class),
+    //HAND(new ItemOption("HAND"), "setItemInHand", ArmorStand.class),
+    POSE(new VectorOption("POSE"), "setBodyPose", ArmorStand.class),
+    HEAD(new VectorOption("HEAD"), "setHeadPose", ArmorStand.class),
+    LARM(new VectorOption("LARM"), "setLeftArmPose", ArmorStand.class),
+    RARM(new VectorOption("RARM"), "setRightArmPose", ArmorStand.class),
+    LLEG(new VectorOption("LLEG"), "setLeftLegPose", ArmorStand.class),
+    RLEG(new VectorOption("RLEG"), "setRightLegPose", ArmorStand.class),
+    BASEPLATE(new BoolOption("BASEPLATE", true), "setBasePlate", ArmorStand.class),
+    GRAVITY(new BoolOption("GRAVITY", true), "setGravity", ArmorStand.class),
+    VISIBLE(new BoolOption("VISIBLE", true), "setVisible", ArmorStand.class),
+    ARMS(new BoolOption("ARMS", true), "setArms", ArmorStand.class),
+    SMALL(new BoolOption("SMALL", true), "setSmall", ArmorStand.class),
+    MARKER(new BoolOption("MARKER", true), "setMarker", ArmorStand.class),
 
     //Arrow
-    CRITICAL(new BoolOption("critical", true), "setCritical", Arrow.class),
-    KNOCKBACK(new IntOption("knockback"), "setKnockbackStrength", Arrow.class),
+    KNOCKBACK(new IntOption("KNOCKBACK"), "setKnockbackStrength", Arrow.class),
+    CRITICAL(new BoolOption("CRITICAL", true), "setCritical", Arrow.class),
 
-    //Boat
-    HOVER(new BoolOption("hover", true), "setWorkOnLand", Boat.class),
-    EMPTYDECEL(new DoubleOption("emptydecel"), "setUnoccupiedDeceleration", Boat.class),
-    DECEL(new DoubleOption("decel"), "setOccupiedDeceleration", Boat.class),
-
-    //Cmdblock minecart
-    CMD(new StringOption("cmd"), "setCommand", CommandMinecart.class),
-    SENDER(new StringOption("sender"), "setName", CommandMinecart.class),
-
-    //Experience
-    EXP(new IntOption("exp"), "setExperience", ExperienceOrb.class),
-
-    //Falling block
-    DROPITEM(new BoolOption("dropitem", true), "setDropItem", FallingBlock.class),
-    HURTENTITIES(new BoolOption("hurtentities", true), "setHurtEntities", FallingBlock.class),
-
-    //Firework
-    DETONATE(new BoolOption("detonate", true), "detonate", Firework.class),
-
-    //Item
-    PICKUPDELAY(new IntOption("pickupdelay"), "setPickupDelay", Item.class),
-
-    //Itemframe
-    ROTATION(new StringOption("rotation").match(Arrays.asList("0","45","90","135","180","225","270","315","360")), "setRotation", ItemFrame.class),
+    //AreaEffectCloud
+    DURATION(new IntOption("DURATION"), "setDuration", AreaEffectCloud.class),
+    WAITTIME(new IntOption("WAITTIME"), "setWaitTime", AreaEffectCloud.class),
+    DELAYTICKS(new IntOption("DELAYTICKS"), "setReapplicationDelay", AreaEffectCloud.class),
+    USETICKS(new IntOption("USETICKS"), "setDurationOnUse", AreaEffectCloud.class),
+    RADIUS(new DoubleOption("RADIUS"), "setRadius", AreaEffectCloud.class),
+    USERADIUS(new DoubleOption("USERADIUS"), "setRadiusOnUse", AreaEffectCloud.class),
+    RADIUSDECAY(new DoubleOption("RADIUSDECAY"), "setRadiusPerTick", AreaEffectCloud.class),
+    PARTICLE(new IntOption("PARTICLE"), "setParticle", AreaEffectCloud.class),
+    //EFFECTCOLOR(new ColorOption("COLOR"), "setEffectColor", AreaEffectCloud.class),
 
     //Minecart
-    SLOWEMPTY(new BoolOption("slowempty", true), "setSlowWhenEmpty", Minecart.class),
-    FLYVELOCITY(new VectorOption("flyvelocity"), "setFlyingVelocityMod", Minecart.class),
-    DERAILVELOCITY(new VectorOption("derailvelocity"), "setDerailedVelocityMod", Minecart.class),
-    DISPLAYBLOCK(new MaterialOption("displayblock"), "setDisplayBlock", Minecart.class),
-    BLOCKOFFSET(new IntOption("blockoffset"), "setDisplayBlockOffset", Minecart.class),
+    MAXSPEED(new DoubleOption("MAXSPEED"), "setMaxSpeed", Minecart.class),
+    SLOWEMPTY(new BoolOption("SLOWEMPTY", true), "setSlowWhenEmpty", Minecart.class),
+    FLYVELOCITY(new VectorOption("FLYVELOCITY"), "setFlyingVelocityMod", Minecart.class),
+    DERAILVELOCITY(new VectorOption("DERAILVELOCITY"), "setDerailedVelocityMod", Minecart.class),
+    DISPLAYBLOCK(new MaterialOption("DISPLAYBLOCK"), "setDisplayBlock", Minecart.class), //TODO: Block modifier
+    BLOCKOFFSET(new IntOption("BLOCKOFFSET"), "setDisplayBlockOffset", Minecart.class),
+
+    //Cmdblock minecart
+    CMD(new StringOption("CMD"), "setCommand", CommandMinecart.class),
+    SENDER(new StringOption("SENDER"), "setName", CommandMinecart.class),
+
+    //Experience
+    EXP(new IntOption("EXP"), "setExperience", ExperienceOrb.class),
+
+    //Falling block
+    DROPITEM(new BoolOption("DROPITEM", true), "setDropItem", FallingBlock.class),
+    HURTENTITIES(new BoolOption("HURTENTITIES", true), "setHurtEntities", FallingBlock.class),
+
+    //Firework
+    DETONATE(new BoolOption("DETONATE", true), "detonate", Firework.class),
+    //FIREWORK(new FireworkOption("FIREWORK"), "setFireworkMeta", Firework.class),
+
+    //Item
+    //PICKUPDELAY(new IntOption("PICKUPDELAY"), "setPickupDelay", Item.class),
+
+    //Itemframe
+    ROTATION(new StringOption("ROTATION").match(Arrays.asList("0","45","90","135","180","225","270","315","360")), "setRotation", ItemFrame.class),
 
     //Painting
-    //TODO: Aliases
-    ART(new StringOption("art").match(Parse.Array(Art.values())), "setArt", Painting.class),
+    ART(new StringOption("ART").match(Parse.Array(Art.values())), "setArt", Painting.class), //TODO: Aliases
+
+    //FishHook
+    BITECHANCE(new DoubleOption("BITECHANCE"), "setBiteChance", FishHook.class),
 
     //Primed TnT
-    FUSETICKS(new IntOption("fuseticks"), "setFuseTicks", TNTPrimed.class),
+    FUSETICKS(new IntOption("FUSETICKS"), "setFuseTicks", TNTPrimed.class),
+
+    //Explosive
+    YIELD(new DoubleOption("YIELD"), "setYield", Explosive.class),
+    FIRE(new BoolOption("FIRE", true), "setIsIncendiary", Explosive.class),
 
     //Witherskull
-    CHARGED(new BoolOption("charged", true), "setCharged", WitherSkull.class),
+    CHARGED(new BoolOption("CHARGED", true), "setCharged", WitherSkull.class),
 
     //Bat
-    AWAKE(new BoolOption("awake", true), "setAwake", Bat.class),
+    AWAKE(new BoolOption("AWAKE", true), "setAwake", Bat.class),
 
     //Creeper
-    POWERED(new BoolOption("powered", true), "setPowered", Creeper.class),
+    POWERED(new BoolOption("POWERED", true), "setPowered", Creeper.class),
 
     //Enderman
-    //TODO: Block modifier
-    HOLDING(new MaterialOption("holding"), "setCarriedMaterial", Enderman.class),
+    HOLDING(new MaterialOption("holding"), "setCarriedMaterial", Enderman.class), //TODO: Block modifier
 
     //Guardian
-    ELDER(new BoolOption("elder", true), "setElder", Guardian.class),
+    ELDER(new BoolOption("ELDER", true), "setElder", Guardian.class),
 
     //Horse
-    //TODO: Aliases for VARIANT, COLOR & STYLE
-    VARIANT(new StringOption("variant").match(Parse.Array(Horse.Variant.values())), "setVariant", Horse.class),
-    COLOR(new StringOption("color").match(Parse.Array(Horse.Color.values())), "setColor", Horse.class),
-    STYLE(new StringOption("style").match(Parse.Array(Horse.Style.values())), "setStyle", Horse.class),
-    CHEST(new BoolOption("chest", true), "setCarryingChest", Horse.class),
-    DOMESTICATION(new IntOption("domestication"), "setDomestication", Horse.class),
-    MAXDOMESTICATION(new IntOption("maxdomestication"), "setMaxDomestication", Horse.class),
-    JUMPSTRENGTH(new DoubleOption("jumpstrength"), "setJumpStrength", Horse.class),
-    //ARMOR(new ItemOption("armor"), "setArmor", Horse.class),
-    //SADDLEITEM(new ItemOption("saddleitem"), "setSaddle", Horse.class),
+    HORSEVARIANT(new StringOption("HORSEVARIANT").match(Parse.Array(Horse.Variant.values())), "setHorseVariant", Horse.class), //TODO: Aliases
+    HORSECOLOR(new StringOption("HORSECOLOR").match(Parse.Array(Horse.Color.values())), "setHorseColor", Horse.class), //TODO: Aliases
+    HORSESTYLE(new StringOption("HORSESTYLE").match(Parse.Array(Horse.Style.values())), "setHorseStyle", Horse.class), //TODO: Aliases
+    CHEST(new BoolOption("CHEST", true), "setCarryingChest", Horse.class),
+    DOMESTICATION(new IntOption("DOMESTICATION"), "setDomestication", Horse.class),
+    MAXDOMESTICATION(new IntOption("MAXDOMESTICATION"), "setMaxDomestication", Horse.class),
+    JUMPSTRENGTH(new DoubleOption("JUMPSTRENGTH"), "setJumpStrength", Horse.class),
+    //ARMOR(new ItemOption("ARMOR"), "setHorseArmor", Horse.class),
 
     //Ocelot
-    //TODO: Aliases
-    CATTYPE(new StringOption("cattype").match(Parse.Array(Ocelot.Type.values())), "setCatType", Ocelot.class),
+    CATTYPE(new StringOption("CATTYPE").match(Parse.Array(Ocelot.Type.values())), "setCatType", Ocelot.class), //TODO: Aliases
 
     //Rabbit
-    //TODO: Aliases
-    RABITTYPE(new StringOption("rabbittype").match(Parse.Array(Rabbit.Type.values())), "setRabbitType", Rabbit.class),
+    RABITTYPE(new StringOption("RABITTYPE").match(Parse.Array(Rabbit.Type.values())), "setRabbitType", Rabbit.class), //TODO: Aliases
 
     //Pigman
-    ANGER(new IntOption("anger"), "setAnger", PigZombie.class),
+    ANGER(new IntOption("ANGER"), "setAnger", PigZombie.class),
 
     //Sheep
-    SHEARED(new BoolOption("sheared", true), "setSheared", Sheep.class),
+    SHEARED(new BoolOption("SHEARED", true), "setSheared", Sheep.class),
 
     //Skeleton
-    WITHER(new BoolOption("wither", true), "makeWitherSkeleton", Wither.class),
+    WITHER(new BoolOption("WITHER", true), "setWitherSkeleton", Skeleton.class),
 
     //Slime
-    SIZE(new IntOption("size"), "setSize", Slime.class),
+    SIZE(new IntOption("SIZE"), "setSize", Slime.class),
 
-    //Villager
-    //TODO: Aliases
-    PROFESSION(new StringOption("profession").match(Parse.Array(Villager.Profession.values())), "setProfession", Villager.class),
-
-    //Wolf
-    //TODO: Aliases
-    COLLAR(new StringOption("collar").match(Parse.Array(DyeColor.values())), "setCollarColor", Wolf.class),
-
-    //Zombie
-    VILLAGER(new BoolOption("villager", true), "setVillager", Zombie.class),
-
-    //Mixed
-    SADDLE(new BoolOption("saddle", true), "setSaddle", Horse.class, Pig.class),
-    ANGRY(new BoolOption("angry", true), "setAngry", Wolf.class, PigZombie.class),
-    SITTING(new BoolOption("sitting", true), "setSitting", Ocelot.class, Wolf.class),
-    MAXSPEED(new BoolOption("maxspeed"), "setMaxSpeed", Minecart.class, Boat.class),
-    //ITEM(new ItemOption("item"), "setItem", Item.class, ItemFrame.class, ThrownPotion.class),
-    //HAND(new ItemOption("hand"), "setItemInHand", ArmorStand.class, LivingEntity.class),
-    //HELMET(new ItemOption("helmet"), "setHelmet", ArmorStand.class, LivingEntity.class),
-    //CHESTPLATE(new ItemOption("chestplate"), "setChestplate", ArmorStand.class, LivingEntity.class),
-    //LEGGINGS(new ItemOption("leggings"), "setLeggings", ArmorStand.class, LivingEntity.class),
-    //BOOTS(new ItemOption("boots"), "setBoots", ArmorStand.class, LivingEntity.class),
+    //IronGolem
+    PLAYERCREATED(new BoolOption("PLAYERCREATED", true), "setPlayerCreated", IronGolem.class),
 
     //Tags
-    NOAI(new BoolOption("noai", true), "setAI", Entity.class),
-    INVULNERABLE(new BoolOption("setInvulnerable", true), "invulnerable", Entity.class),
-    SILENT(new BoolOption("silent", true), "setSilent", Entity.class),
-    INVISIBLE(new BoolOption("invisible", true), "setInvisible", Entity.class),
+    NOAI(new BoolOption("NOAI", true), "setAI", Entity.class),
+    INVULNERABLE(new BoolOption("INVULNERABLE", true), "setInvulnerable", Entity.class),
+    SILENT(new BoolOption("SILENT", true), "setSilent", Entity.class),
+    INVISIBLE(new BoolOption("INVISIBLE", true), "setInvisible", Entity.class),
     ;
 
     private static Map<EntityType, List<EntityTag>> BY_ENTITY = new HashMap<>();
