@@ -25,15 +25,20 @@
 
 package info.gameboxx.gameboxx.util.entity;
 
+import info.gameboxx.gameboxx.GameBoxx;
 import info.gameboxx.gameboxx.options.Option;
+import info.gameboxx.gameboxx.options.SingleOption;
 import info.gameboxx.gameboxx.options.single.*;
 import info.gameboxx.gameboxx.util.Parse;
 import org.bukkit.Art;
 import org.bukkit.DyeColor;
 import org.bukkit.EntityEffect;
+import org.bukkit.block.BlockFace;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.*;
 import org.bukkit.entity.minecart.CommandMinecart;
 import org.bukkit.material.Colorable;
+import org.bukkit.metadata.FixedMetadataValue;
 
 import java.util.*;
 
@@ -49,9 +54,29 @@ public class EntityTag {
     public static final EntityTag LIVED = EntityTag.register(new IntOption("LIVED"), "setTicksLived", Entity.class);
     public static final EntityTag NAME = EntityTag.register(new StringOption("NAME"), "setCustomName", Entity.class);
     public static final EntityTag NAMEVISIBLE = EntityTag.register(new BoolOption("NAMEVISIBLE", true), "setCustomNameVisible", Entity.class);
-    public static final EntityTag META = EntityTag.register(new StringOption("META").matchRegex("(.*?).(.*?)", "String must have the syntax name.value"), "CUSTOM", Entity.class); //TODO: Test regex and add translatable message.
+    public static final EntityTag META = EntityTag.register(new StringOption("META").matchRegex("([^:]*?):([^:]*?)", "String must have the syntax key:value"), new EntityTagCallback() {
+        @Override boolean execute(CommandSender sender, EEntity entity, SingleOption result) {
+            String[] split = ((StringOption)result).getValue().split(":");
+            if (split.length < 2) {
+                return false;
+            }
+            entity.setMetadata(split[0], new FixedMetadataValue(GameBoxx.get(), split[1]));
+            return true;
+        }
+    }, Entity.class); //TODO: Test regex and add translatable message.
     public static final EntityTag PLAYEFFECT = EntityTag.register(new StringOption("PLAYEFFECT").match(Parse.Array(EntityEffect.values())), "playEffect", Entity.class); //TODO: Aliases
-    public static final EntityTag RIDE = EntityTag.register(new PlayerOption("RIDE"), "CUSTOM", Entity.class);
+    public static final EntityTag RIDE = EntityTag.register(new PlayerOption("RIDE"), new EntityTagCallback() {
+        @Override boolean execute(CommandSender sender, EEntity entity, SingleOption result) {
+            Player player = ((PlayerOption)result).getValue();
+            if (player == null && sender instanceof Player) {
+                player = (Player)sender;
+            } else if (player == null) {
+                return false;
+            }
+            entity.setVehicle(player);
+            return true;
+        }
+    }, Entity.class);
 
     //Damagable
     public static final EntityTag HEALTH = EntityTag.register(new DoubleOption("health"), "setHealth", Damageable.class);
@@ -91,7 +116,12 @@ public class EntityTag {
     public static final EntityTag BOUNCE = EntityTag.register(new BoolOption("BOUNCE", true), "setBounce", Projectile.class);
 
     //Hanging
-    public static final EntityTag DIR = EntityTag.register(new StringOption("DIR").match(Arrays.asList("north","east","south","west","up","down")), "CUSTOM", Hanging.class);
+    public static final EntityTag DIR = EntityTag.register(new StringOption("DIR").match(Arrays.asList("north", "east", "south", "west", "up", "down")), new EntityTagCallback() {
+        @Override boolean execute(CommandSender sender, EEntity entity, SingleOption result) {
+            entity.setFacingDirection(BlockFace.valueOf(((StringOption)result).getValue()), true);
+            return true;
+        }
+    }, Hanging.class);
 
     //Mixed Entities
     //public static final EntityTag BOOTS = EntityTag.register(new ItemOption("BOOTS"), "setBoots", ArmorStand.class, LivingEntity.class);
@@ -236,19 +266,19 @@ public class EntityTag {
     private static final Map<EntityType, List<EntityTag>> BY_ENTITY = new HashMap<>();
     private static final Map<String, EntityTag> BY_NAME = new HashMap<>();
 
-    private Option option;
+    private SingleOption option;
     private EntityTagCallback callback = null;
     private String entityMethod = null;
     private Class<? extends Entity>[] entities;
 
 
-    private EntityTag(Option option, String entityMethod, Class... entities) {
+    private EntityTag(SingleOption option, String entityMethod, Class... entities) {
         this.option = option;
         this.entityMethod = entityMethod;
         this.entities = entities;
     }
 
-    private EntityTag(Option option, EntityTagCallback callback, Class... entities) {
+    private EntityTag(SingleOption option, EntityTagCallback callback, Class... entities) {
         this.option = option;
         this.callback = callback;
         this.entities = entities;
@@ -289,11 +319,11 @@ public class EntityTag {
     }
 
 
-    public static EntityTag register(Option option, EntityTagCallback executeCallback, Class... entities) {
+    public static EntityTag register(SingleOption option, EntityTagCallback executeCallback, Class... entities) {
         return register(new EntityTag(option, executeCallback, entities));
     }
 
-    private static EntityTag register(Option option, String entityMethod, Class... entities) {
+    private static EntityTag register(SingleOption option, String entityMethod, Class... entities) {
         return register(new EntityTag(option, entityMethod, entities));
     }
 

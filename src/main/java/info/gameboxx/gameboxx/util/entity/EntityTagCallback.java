@@ -25,9 +25,9 @@
 
 package info.gameboxx.gameboxx.util.entity;
 
-import info.gameboxx.gameboxx.options.Option;
+import info.gameboxx.gameboxx.options.SingleOption;
 import org.bukkit.command.CommandSender;
 
 public abstract class EntityTagCallback {
-    abstract boolean execute(CommandSender sender, EEntity entity, Option result);
+    abstract boolean execute(CommandSender sender, EEntity entity, SingleOption result);
 }
