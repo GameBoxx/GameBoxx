@@ -95,6 +95,16 @@ public class EEntity {
     public EEntity(EntityType type, Location location) {
         this(location.getWorld().spawn(location, type.getEntityClass()));
     }
+
+    /**
+     * Spawns a <b>new</b> {@link FallingBlock} entity at the specified location.
+     *
+     * @param location The location where to spawn the entity.
+     * @param fallingBlockMaterial MaterialData used for the falling block.
+     */
+    public EEntity(Location location, MaterialData fallingBlockMaterial) {
+        this(location.getWorld().spawnFallingBlock(location, fallingBlockMaterial.getItemType(), fallingBlockMaterial.getData()));
+    }
     //endregion
 
 
