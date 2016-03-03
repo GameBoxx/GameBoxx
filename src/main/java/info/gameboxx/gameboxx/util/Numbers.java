@@ -33,7 +33,7 @@ import java.util.List;
 public class Numbers {
 
     /**
-     * Returns the smallest entry in the array
+     * Returns the smallest entry in the array. If there are multiple entries that are equal, it will choose a random one if 'randomIfMultiple' is true. Otherwise, the first element in the array will be chosen.
      *
      * @param ints {@link Integer} array
      * @return smallest entry in array
@@ -61,7 +61,7 @@ public class Numbers {
     }
 
     /**
-     * Returns the largest entry in the array
+     * Returns the largest entry in the array. If there are multiple entries that are equal, it will choose a random one if 'randomIfMultiple' is true. Otherwise, the first element in the array will be chosen.
      *
      * @param ints {@link Integer} array
      * @return largest entry in array
