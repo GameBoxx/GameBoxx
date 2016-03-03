@@ -51,13 +51,7 @@ public class LocationOption extends SingleOption {
 
     @Override
     public boolean parse(Object input) {
-        if (!parseObject(input)) {
-            return false;
-        }
-        if (value != null) {
-            return true;
-        }
-        return parse((String)input);
+        return parseObject(input) && (value != null || parse((String) input));
     }
 
     @Override

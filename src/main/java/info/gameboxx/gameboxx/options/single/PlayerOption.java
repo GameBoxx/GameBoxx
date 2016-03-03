@@ -59,7 +59,7 @@ public class PlayerOption extends SingleOption {
     public boolean parse(Object input) {
         if (!parseObject(input)) {
             if (input instanceof UUID) {
-                value = Bukkit.getServer().getPlayer((UUID)input);
+                value = Bukkit.getServer().getPlayer((UUID) input);
                 if (value == null) {
                     error = "No player with the specified UUID.";
                 }
@@ -67,10 +67,7 @@ public class PlayerOption extends SingleOption {
             }
             return false;
         }
-        if (value != null) {
-            return true;
-        }
-        return parse((String)input);
+        return value != null || parse((String) input);
     }
 
     @Override

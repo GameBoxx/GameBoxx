@@ -91,18 +91,21 @@ public class StringListOption extends ListOption {
         if (strings == null) {
             return this;
         }
+        int i = 0;
         for (String str : strings) {
-            str.toLowerCase();
+            strings.set(i++, str.toLowerCase());
         }
         matchList = strings;
         return this;
     }
 
-    public StringListOption match(Pair<String, List<String>>... strings) {
+    @SafeVarargs
+    public final StringListOption match(Pair<String, List<String>>... strings) {
         matchMap = new HashMap<>();
         for (Pair<String, List<String>> pair : strings) {
+            int i = 0;
             for (String str : pair.second) {
-                str.toLowerCase();
+                pair.second.set(i++, str.toLowerCase());
             }
             matchMap.put(pair.first.toLowerCase(), pair.second);
         }
@@ -114,10 +117,11 @@ public class StringListOption extends ListOption {
             return this;
         }
         for (Map.Entry<String, List<String>> entry : strings.entrySet()) {
+            int i = 0;
             for (String str : entry.getValue()) {
-                str.toLowerCase();
+                entry.getValue().set(i++, str.toLowerCase());
             }
-            entry.getKey().toLowerCase();
+            entry.getKey().toLowerCase();// TODO: 3/3/2016 FIX THIS!!
         }
         matchMap = strings;
         return this;
@@ -126,7 +130,7 @@ public class StringListOption extends ListOption {
 
     @Override
     public StringOption getSingleOption(int index) {
-        return (StringOption)new StringOption(name, (String)getDefault(index)).minChars(minChars).maxChars(maxChars).matchRegex(regex, regexError).match(matchList).match(matchMap)
+        return (StringOption) new StringOption(name, (String) getDefault(index)).minChars(minChars).maxChars(maxChars).matchRegex(regex, regexError).match(matchList).match(matchMap)
                 .setDescription(description).setFlag(flag);
     }
 
@@ -141,12 +145,12 @@ public class StringListOption extends ListOption {
 
     @Override
     public String getValue(int index) {
-        return (String)getValueOrDefault(index);
+        return (String) getValueOrDefault(index);
     }
 
     @Override
     public StringListOption clone() {
-        return (StringListOption)new StringListOption(name, (String)defaultValue).minChars(minChars).maxChars(maxChars).match(matchList).match(matchMap).matchRegex(regex).setDescription(description)
+        return (StringListOption) new StringListOption(name, (String) defaultValue).minChars(minChars).maxChars(maxChars).match(matchList).match(matchMap).matchRegex(regex).setDescription(description)
                 .setFlag(flag);
     }
 }

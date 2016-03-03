@@ -91,18 +91,21 @@ public class StringOption extends SingleOption {
         if (strings == null) {
             return this;
         }
+        int i = 0;
         for (String str : strings) {
-            str.toLowerCase();
+            strings.set(i++, str.toLowerCase());
         }
         matchList = strings;
         return this;
     }
 
-    public StringOption match(Pair<String, List<String>>... strings) {
+    @SafeVarargs
+    public final StringOption match(Pair<String, List<String>>... strings) {
         matchMap = new HashMap<>();
         for (Pair<String, List<String>> pair : strings) {
+            int i = 0;
             for (String str : pair.second) {
-                str.toLowerCase();
+                pair.second.set(i++, str.toLowerCase());
             }
             matchMap.put(pair.first.toLowerCase(), pair.second);
         }
@@ -114,10 +117,11 @@ public class StringOption extends SingleOption {
             return this;
         }
         for (Map.Entry<String, List<String>> entry : strings.entrySet()) {
+            int i = 0;
             for (String str : entry.getValue()) {
-                str.toLowerCase();
+                entry.getValue().set(i++, str.toLowerCase());
             }
-            entry.getKey().toLowerCase();
+            entry.getKey().toLowerCase();// TODO: 3/3/2016 FIX THIS!!!
         }
         matchMap = strings;
         return this;
@@ -129,7 +133,7 @@ public class StringOption extends SingleOption {
         if (!parseObject(input)) {
             return false;
         }
-        return parse((String)input);
+        return parse((String) input);
     }
 
     @Override
@@ -181,7 +185,7 @@ public class StringOption extends SingleOption {
 
     @Override
     public String getValue() {
-        return (String)getValueOrDefault();
+        return (String) getValueOrDefault();
     }
 
     @Override
@@ -201,7 +205,7 @@ public class StringOption extends SingleOption {
 
     @Override
     public StringOption clone() {
-        return (StringOption)new StringOption(name, (String)defaultValue).minChars(minChars).maxChars(maxChars).match(matchList).match(matchMap).matchRegex(regex).setDescription(description)
+        return (StringOption) new StringOption(name, (String) defaultValue).minChars(minChars).maxChars(maxChars).match(matchList).match(matchMap).matchRegex(regex).setDescription(description)
                 .setFlag(flag);
     }
 }
