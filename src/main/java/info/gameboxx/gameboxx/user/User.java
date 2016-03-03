@@ -171,7 +171,7 @@ public class User implements CurrencyHolder {
         for (GameSession gameSession : arena.getSessions().values()) {
             sessionMap.put(gameSession.getComponent(PlayersCP.class).getOnlinePlayers().size(), gameSession);
         }
-        int resKey = Numbers.smallest(sessionMap.keySet().toArray(new Integer[sessionMap.keySet().size()]));
+        int resKey = Numbers.largest(sessionMap.keySet().toArray(new Integer[sessionMap.keySet().size()]), true);
         return sessionMap.get(resKey);
     }
 

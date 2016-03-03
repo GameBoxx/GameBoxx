@@ -26,6 +26,10 @@
 package info.gameboxx.gameboxx.util;
 
 
+import com.google.common.collect.Lists;
+
+import java.util.List;
+
 public class Numbers {
 
     /**
@@ -34,14 +38,26 @@ public class Numbers {
      * @param ints {@link Integer} array
      * @return smallest entry in array
      */
-    public static int smallest(Integer[] ints) {
+    public static int smallest(Integer[] ints, boolean randomIfMultiple) {
         int res = ints[0];
+        List<Integer> list = Lists.newArrayList();
         for (int anInt : ints) {
             if (anInt < res) {
                 res = anInt;
             }
         }
-        return res;
+        for (int anInt : ints) {
+            if (anInt == res) {
+                list.add(anInt);
+            }
+        }
+        if (list.size() == 0) {
+            return res;
+        }
+        if (randomIfMultiple) {
+            return list.get(Random.Int(list.size()));
+        }
+        return list.get(0);
     }
 
     /**
@@ -50,13 +66,25 @@ public class Numbers {
      * @param ints {@link Integer} array
      * @return largest entry in array
      */
-    public static int largest(Integer[] ints) {
+    public static int largest(Integer[] ints, boolean randomIfMultiple) {
         int res = ints[0];
+        List<Integer> list = Lists.newArrayList();
         for (int anInt : ints) {
             if (anInt > res) {
                 res = anInt;
             }
         }
-        return res;
+        for (int anInt : ints) {
+            if (anInt == res) {
+                list.add(anInt);
+            }
+        }
+        if (list.size() == 0) {
+            return res;
+        }
+        if (randomIfMultiple) {
+            return list.get(Random.Int(list.size()));
+        }
+        return list.get(0);
     }
 }
