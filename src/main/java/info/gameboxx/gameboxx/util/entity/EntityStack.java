@@ -25,6 +25,9 @@
 
 package info.gameboxx.gameboxx.util.entity;
 
+import org.bukkit.Location;
+import org.bukkit.event.player.PlayerTeleportEvent;
+
 import java.util.*;
 
 public class EntityStack {
@@ -84,6 +87,10 @@ public class EntityStack {
         return entities.get(entities.size()-1);
     }
 
+    public List<EEntity> getEntities() {
+        return entities;
+    }
+
     public int getAmount() {
         return entities.size();
     }
@@ -108,6 +115,14 @@ public class EntityStack {
         for (EEntity entity : entities) {
             entity.remove();
         }
+    }
+
+    public void teleport(Location location, PlayerTeleportEvent.TeleportCause cause) {
+        unstack();
+        for (EEntity entity : entities) {
+            entity.bukkit().teleport(location, cause);
+        }
+        stack();
     }
 
 }

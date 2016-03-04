@@ -357,76 +357,86 @@ public class EEntity {
 
 
     //region Teleportation
-    //TODO: Methods for safe teleportation with mounts and such
 
     /**
      * Teleports this entity to the given location.
      * If this entity is riding a vehicle, it will be dismounted prior to teleportation.
      *
      * @param target Entity to teleport this entity to
-     * @return true if the teleport was successful
+     * @return this instance
      */
-    public boolean teleport(Location target) {
-        return entity.teleport(target);
+    public EEntity teleport(Location target) {
+        new EntityStack(this).teleport(target, PlayerTeleportEvent.TeleportCause.PLUGIN);
+        return this;
     }
 
     /**
      * Teleports this entity to the target Entity.
-     * If this entity is riding a vehicle, it will be dismounted prior to teleportation.
+     * <p/>
+     * It will teleport the entire stack of entities. {@link EntityStack#teleport(Location, PlayerTeleportEvent.TeleportCause)}
      *
      * @param target Entity to teleport this entity to
      * @param cause The cause of this teleportation
-     * @return true if the teleport was successful
+     * @return this instance
      */
-    public boolean teleport(Location target, PlayerTeleportEvent.TeleportCause cause) {
-        return entity.teleport(target, cause);
+    public EEntity teleport(Location target, PlayerTeleportEvent.TeleportCause cause) {
+        new EntityStack(this).teleport(target, cause);
+        return this;
     }
 
     /**
      * Teleports this entity to the target Entity.
-     * If this entity is riding a vehicle, it will be dismounted prior to teleportation.
+     * <p/>
+     * It will teleport the entire stack of entities. {@link EntityStack#teleport(Location, PlayerTeleportEvent.TeleportCause)}
      *
      * @param target Entity to teleport this entity to
-     * @return true if the teleport was successful
+     * @return this instance
      */
-    public boolean teleport(Entity target) {
-        return entity.teleport(target);
+    public EEntity teleport(Entity target) {
+        new EntityStack(this).teleport(target.getLocation(), PlayerTeleportEvent.TeleportCause.PLUGIN);
+        return this;
     }
 
 
     /**
      * Teleports this entity to the target Entity.
-     * If this entity is riding a vehicle, it will be dismounted prior to teleportation.
+     * <p/>
+     * It will teleport the entire stack of entities. {@link EntityStack#teleport(Location, PlayerTeleportEvent.TeleportCause)}
      *
      * @param target Entity to teleport this entity to
      * @param cause The cause of this teleportation
-     * @return true if the teleport was successful
+     * @return this instance
      */
-    public boolean teleport(Entity target, PlayerTeleportEvent.TeleportCause cause) {
-        return entity.teleport(target, cause);
+    public EEntity teleport(Entity target, PlayerTeleportEvent.TeleportCause cause) {
+        new EntityStack(this).teleport(target.getLocation(), cause);
+        return this;
     }
 
     /**
      * Teleports this entity to the target Entity.
-     * If this entity is riding a vehicle, it will be dismounted prior to teleportation.
+     * <p/>
+     * It will teleport the entire stack of entities. {@link EntityStack#teleport(Location, PlayerTeleportEvent.TeleportCause)}
      *
      * @param target EEntity to teleport this entity to
-     * @return true if the teleport was successful
+     * @return this instance
      */
-    public boolean teleport(EEntity target) {
-        return entity.teleport(target.bukkit());
+    public EEntity teleport(EEntity target) {
+        new EntityStack(this).teleport(target.getLocation(), PlayerTeleportEvent.TeleportCause.PLUGIN);
+        return this;
     }
 
     /**
      * Teleports this entity to the target Entity.
-     * If this entity is riding a vehicle, it will be dismounted prior to teleportation.
+     * <p/>
+     * It will teleport the entire stack of entities. {@link EntityStack#teleport(Location, PlayerTeleportEvent.TeleportCause)}
      *
      * @param target EEntity to teleport this entity to
      * @param cause The cause of this teleportation
-     * @return true if the teleport was successful
+     * @return this instance
      */
-    public boolean teleport(EEntity target, PlayerTeleportEvent.TeleportCause cause) {
-        return entity.teleport(target.bukkit(), cause);
+    public EEntity teleport(EEntity target, PlayerTeleportEvent.TeleportCause cause) {
+        new EntityStack(this).teleport(target.getLocation(), cause);
+        return this;
     }
     //endregion
 
