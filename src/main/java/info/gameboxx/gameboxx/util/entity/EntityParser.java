@@ -25,17 +25,19 @@
 
 package info.gameboxx.gameboxx.util.entity;
 
+import info.gameboxx.gameboxx.GameBoxx;
 import info.gameboxx.gameboxx.options.SingleOption;
-import info.gameboxx.gameboxx.options.single.BoolOption;
-import info.gameboxx.gameboxx.options.single.IntOption;
-import info.gameboxx.gameboxx.options.single.LocationOption;
+import info.gameboxx.gameboxx.options.single.*;
 import info.gameboxx.gameboxx.util.Str;
 import org.apache.commons.lang.reflect.MethodUtils;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
 import java.util.List;
 
 public class EntityParser {
@@ -128,7 +130,7 @@ public class EntityParser {
                 //Get entity from first section
                 if (i == 0) {
                     //TODO: Get entity from alias.
-                    EntityType type = EntityType.fromName(section);
+                    EntityType type = EntityType.valueOf(section);
                     if (type == null) {
                         error = "Invalid entity...";
                         return;
@@ -193,7 +195,7 @@ public class EntityParser {
 
                 //Apply the tag to the entity
                 if (tag.hasCallback()) {
-                    if (!tag.getCallback().execute(player, entity, option)) {
+                    if (!tag.getCallback().onSet(player, entity, option)) {
                         error = "Failed to apply the tag..";
                         if (!ignoreErrors) {
                             entity.remove();
@@ -206,7 +208,7 @@ public class EntityParser {
                 } else {
                     boolean success = false;
                     try {
-                        MethodUtils.invokeMethod(entity, tag.getEntityMethod(), option.getValue());
+                        MethodUtils.invokeMethod(entity, tag.setMethod(), option.getValue());
                         success = true;
                     } catch (NoSuchMethodException e) {
                         error = "No method to apply the tag..";
@@ -240,6 +242,74 @@ public class EntityParser {
         }
         stack.stack();
         this.entities = stack;
+    }
+
+    public EntityParser(Entity entity) {
+        this(new EEntity(entity));
+    }
+
+    public EntityParser(EEntity eentity) {
+        if (eentity == null || eentity.bukkit() == null) {
+            return;
+        }
+        this.entities = new EntityStack(eentity);
+        if (entities.getAmount() < 1) {
+            return;
+        }
+
+        Bukkit.broadcastMessage("Entities: " + entities.getAmount());
+
+        List<String> entitySections = new ArrayList<>();
+        for (EEntity entity : entities.getEntities()) {
+            List<String> sections = new ArrayList<>();
+
+            sections.add(entity.getType().toString());
+            for (EntityTag tag : EntityTag.getTags(entity.getType())) {
+                if (tag.hasCallback()) {
+                    String result = tag.getCallback().onGet(entity);
+                    if (result == null || result.isEmpty()) {
+                        continue;
+                    }
+                    sections.add(tag.getName().toLowerCase() + ":" + result);
+                } else {
+                    if (tag.getMethod() == null || tag.getMethod().isEmpty() || tag.getMethod().equalsIgnoreCase("null")) {
+                        continue;
+                    }
+                    try {
+                        Object result = MethodUtils.invokeMethod(entity, tag.getMethod(), new Class[0]);
+                        if (result == null) {
+                            continue;
+                        }
+                        SingleOption option = (SingleOption)tag.getOption().clone();
+                        if (!option.parse(result)) {
+                            GameBoxx.get().warn("Failed to parse entity data! [tag=" + tag.getName() + " value=" + result.toString() + " error='" + option.getError() + "']");
+                            continue;
+                        }
+                        if (option.getValue().equals(option.getDefault())) {
+                            continue;
+                        }
+                        String val = option.serialize();
+                        if (option instanceof DoubleOption) {
+                            val = ((DoubleOption)option).serialize(2);
+                        }
+                        sections.add(tag.getName().toLowerCase() + ":" + val);
+                    } catch (NoSuchMethodException e) {
+                        e.printStackTrace();
+                    } catch (IllegalAccessException e) {
+                        e.printStackTrace();
+                    } catch (InvocationTargetException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+
+            entitySections.add(Str.implode(sections, " "));
+        }
+
+        LocationOption location = new LocationOption();
+        location.parse(entities.getBottom().getLocation());
+
+        this.string = Str.implode(entitySections, " > ") + " loc:" + location.serialize(2);
     }
 
     /**
