@@ -28,6 +28,7 @@ package info.gameboxx.gameboxx.util;
 
 import com.google.common.collect.Lists;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 public class Numbers {
@@ -90,5 +91,11 @@ public class Numbers {
             return list.get(Random.Int(list.size()));
         }
         return list.get(0);
+    }
+
+    public static double round(double value, int decimalPlace) {
+        BigDecimal bd = new BigDecimal(value);
+        bd = bd.setScale(decimalPlace, BigDecimal.ROUND_HALF_UP);
+        return bd.doubleValue();
     }
 }

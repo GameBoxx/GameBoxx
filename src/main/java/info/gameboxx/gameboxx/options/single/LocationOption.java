@@ -26,6 +26,7 @@
 package info.gameboxx.gameboxx.options.single;
 
 import info.gameboxx.gameboxx.options.SingleOption;
+import info.gameboxx.gameboxx.util.Numbers;
 import info.gameboxx.gameboxx.util.Parse;
 import info.gameboxx.gameboxx.util.Utils;
 import org.bukkit.Location;
@@ -201,6 +202,15 @@ public class LocationOption extends SingleOption {
             return null;
         }
         return value.getX() + "," + value.getY() + "," + value.getZ() + "," + value.getYaw() + "," + value.getPitch() + ":" + value.getWorld().getName();
+    }
+
+    public String serialize(int roundDecimals) {
+        Location value = getValue();
+        if (value == null) {
+            return null;
+        }
+        return Numbers.round(value.getX(), roundDecimals) + "," + Numbers.round(value.getY(), roundDecimals) + "," + Numbers.round(value.getZ(), roundDecimals) +
+                "," + Numbers.round(value.getYaw(), roundDecimals) + "," + Numbers.round(value.getPitch(), roundDecimals) + ":" + value.getWorld().getName();
     }
 
     @Override

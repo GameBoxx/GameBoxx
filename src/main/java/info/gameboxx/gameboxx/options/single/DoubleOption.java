@@ -26,6 +26,7 @@
 package info.gameboxx.gameboxx.options.single;
 
 import info.gameboxx.gameboxx.options.SingleOption;
+import info.gameboxx.gameboxx.util.Numbers;
 import org.bukkit.entity.Player;
 
 public class DoubleOption extends SingleOption {
@@ -105,6 +106,14 @@ public class DoubleOption extends SingleOption {
             return null;
         }
         return value.toString();
+    }
+
+    public String serialize(int roundDecimals) {
+        Double value = getValue();
+        if (value == null) {
+            return null;
+        }
+        return Double.toString(Numbers.round(value, roundDecimals));
     }
 
     @Override
