@@ -26,6 +26,7 @@
 package info.gameboxx.gameboxx.util.entity;
 
 import org.bukkit.Location;
+import org.bukkit.entity.Entity;
 import org.bukkit.event.player.PlayerTeleportEvent;
 
 import java.util.*;
@@ -44,17 +45,15 @@ public class EntityStack {
         this.entities.addAll(entities);
     }
 
+    public EntityStack(Entity entity) {
+        this(new EEntity(entity));
+    }
+
     public EntityStack(EEntity entity) {
-        EEntity current = entity;
-        while (current.hasPassenger()) {
-            current = entity.getPassenger();
-            entities.add(current);
-        }
-        current = entity;
-        while (current.hasVehicle()) {
-            current = entity.getVehicle();
-            entities.set(0, current);
-        }
+        entity = entity.getVehicle() == null ? entity : entity.getVehicle();
+        do {
+            entities.add(entity);
+        } while ((entity = entity.getPassenger()) != null);
     }
 
     public void add(EEntity entity) {
