@@ -47,32 +47,44 @@ public class BoolOption extends SingleOption {
     public boolean parse(Object input) {
         if (!parseObject(input)) {
             if (input instanceof Number) {
-                if (((Number)input) == 0) {
+                if (input == 0) {
                     value = false;
                     return true;
-                } else if (((Number)input) == 1) {
+                } else if (input == 1) {
                     value = true;
                     return true;
                 }
             }
             return false;
         }
-        if (value != null) {
-            return true;
-        }
-        return parse((String)input);
+        return value != null || parse((String) input);
     }
 
     @Override
     public boolean parse(String input) {
         input = input.toLowerCase();
-        if (input.equals("true") || input.equals("t") || input.equals("yes") || input.equals("y") || input.equals("+") || input.equals("v") || input.equals("1")) {
-            value = true;
-        } else if (input.equals("false") || input.equals("f") || input.equals("no") || input.equals("n") || input.equals("-") || input.equals("x") || input.equals("0")) {
-            value = false;
-        } else {
-            error = "Input string is not a boolean.";
-            return false;
+        switch (input) {
+            case "true":
+            case "t":
+            case "yes":
+            case "y":
+            case "+":
+            case "v":
+            case "1":
+                value = true;
+                break;
+            case "false":
+            case "f":
+            case "no":
+            case "n":
+            case "-":
+            case "x":
+            case "0":
+                value = false;
+                break;
+            default:
+                error = "Input string is not a boolean.";
+                return false;
         }
         return true;
     }
