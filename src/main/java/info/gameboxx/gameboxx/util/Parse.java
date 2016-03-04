@@ -82,11 +82,12 @@ public class Parse {
 
     /**
      * Parse a list in to a comma separated string.
+     * It uses {@link Object#toString()}
      *
      * @param list The list to parse.
      * @return String with list values comma separated.
      */
-    public static String List(List<? extends Object> list) {
+    public static String List(Collection<? extends Object> list) {
         if (list == null || list.isEmpty()) {
             return "";
         }
@@ -99,7 +100,7 @@ public class Parse {
 
     /**
      * Parse an array in to a comma separated string.
-     * It used {@link Object#toString()}
+     * It uses {@link Object#toString()}
      *
      * @param objects The objects to parse.
      * @return String with list values comma separated.
@@ -113,6 +114,42 @@ public class Parse {
             values.add(obj.toString());
         }
         return Str.implode(values, ",");
+    }
+
+    /**
+     * Parse an array of objects in to an array of strings..
+     * It uses {@link Object#toString()}
+     *
+     * @param objects The objects to parse.
+     * @return Array with strings
+     */
+    public static String[] StringArray(Object... objects) {
+        if (objects == null || objects.length == 0) {
+            return new String[0];
+        }
+        String[] values = new String[objects.length];
+        for (int i = 0; i < values.length; i++) {
+            values[i] = objects[i].toString();
+        }
+        return values;
+    }
+
+    /**
+     * Parse a list of objects in to a list of strings.
+     * It uses {@link Object#toString()}
+     *
+     * @param list The list with objects to parse.
+     * @return list with strings.
+     */
+    public static List<String> StringList(Collection<? extends Object> list) {
+        if (list == null || list.isEmpty()) {
+            return new ArrayList<>();
+        }
+        List<String> values = new ArrayList<String>();
+        for (Object obj : list) {
+            values.add(obj.toString());
+        }
+        return values;
     }
 
     /**
