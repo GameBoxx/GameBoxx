@@ -29,14 +29,9 @@ import info.gameboxx.gameboxx.options.ListOption;
 import info.gameboxx.gameboxx.options.single.VectorOption;
 import org.bukkit.util.Vector;
 
-import java.util.ArrayList;
-import java.util.List;
+public class VectorListOption extends ListOption<VectorOption> {
 
-public class VectorListOption extends ListOption {
-
-    public VectorListOption() {
-        super();
-    }
+    public VectorListOption() {}
 
     public VectorListOption(String name) {
         super(name);
@@ -50,20 +45,6 @@ public class VectorListOption extends ListOption {
     @Override
     public VectorOption getSingleOption(int index) {
         return (VectorOption)new VectorOption(name, (Vector)getDefault(index)).setDescription(description).setFlag(flag);
-    }
-
-    @Override
-    public List<Vector> getValues() {
-        List<Vector> values = new ArrayList<>();
-        for (int i = 0; i < value.size(); i++) {
-            values.add(getValue(i));
-        }
-        return values;
-    }
-
-    @Override
-    public Vector getValue(int index) {
-        return (Vector)getValueOrDefault(index);
     }
 
     @Override

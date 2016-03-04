@@ -29,14 +29,9 @@ import info.gameboxx.gameboxx.options.ListOption;
 import info.gameboxx.gameboxx.options.single.PlayerOption;
 import org.bukkit.entity.Player;
 
-import java.util.ArrayList;
-import java.util.List;
+public class PlayerListOption extends ListOption<PlayerOption> {
 
-public class PlayerListOption extends ListOption {
-
-    public PlayerListOption() {
-        super();
-    }
+    public PlayerListOption() {}
 
     public PlayerListOption(String name) {
         super(name);
@@ -50,20 +45,6 @@ public class PlayerListOption extends ListOption {
     @Override
     public PlayerOption getSingleOption(int index) {
         return (PlayerOption)new PlayerOption(name, (Player)getDefault(index)).setDescription(description).setFlag(flag);
-    }
-
-    @Override
-    public List<Player> getValues() {
-        List<Player> values = new ArrayList<>();
-        for (int i = 0; i < value.size(); i++) {
-            values.add(getValue(i));
-        }
-        return values;
-    }
-
-    @Override
-    public Player getValue(int index) {
-        return (Player)getValueOrDefault(index);
     }
 
     @Override

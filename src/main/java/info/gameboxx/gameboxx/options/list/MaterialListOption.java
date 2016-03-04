@@ -29,14 +29,9 @@ import info.gameboxx.gameboxx.options.ListOption;
 import info.gameboxx.gameboxx.options.single.MaterialOption;
 import org.bukkit.material.MaterialData;
 
-import java.util.ArrayList;
-import java.util.List;
+public class MaterialListOption extends ListOption<MaterialOption> {
 
-public class MaterialListOption extends ListOption {
-
-    public MaterialListOption() {
-        super();
-    }
+    public MaterialListOption() {}
 
     public MaterialListOption(String name) {
         super(name);
@@ -50,20 +45,6 @@ public class MaterialListOption extends ListOption {
     @Override
     public MaterialOption getSingleOption(int index) {
         return (MaterialOption)new MaterialOption(name, (MaterialData)getDefault(index)).setDescription(description).setFlag(flag);
-    }
-
-    @Override
-    public List<MaterialData> getValues() {
-        List<MaterialData> values = new ArrayList<>();
-        for (int i = 0; i < value.size(); i++) {
-            values.add(getValue(i));
-        }
-        return values;
-    }
-
-    @Override
-    public MaterialData getValue(int index) {
-        return (MaterialData)getValueOrDefault(index);
     }
 
     @Override

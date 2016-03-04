@@ -32,7 +32,7 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.material.MaterialData;
 
-public class MaterialOption extends SingleOption {
+public class MaterialOption extends SingleOption<MaterialData> {
 
     public MaterialOption() {
         super();
@@ -82,11 +82,6 @@ public class MaterialOption extends SingleOption {
         }
         value = new MaterialData(item.getType(), (byte)item.getData());
         return true;
-    }
-
-    @Override
-    public MaterialData getValue() {
-        return (MaterialData)getValueOrDefault();
     }
 
     @Override

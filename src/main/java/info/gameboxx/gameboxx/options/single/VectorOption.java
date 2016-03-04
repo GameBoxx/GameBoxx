@@ -31,7 +31,7 @@ import info.gameboxx.gameboxx.util.Utils;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
-public class VectorOption extends SingleOption {
+public class VectorOption extends SingleOption<Vector> {
 
     public VectorOption() {
         super();
@@ -98,11 +98,6 @@ public class VectorOption extends SingleOption {
 
         value = v;
         return true;
-    }
-
-    @Override
-    public Vector getValue() {
-        return (Vector)getValueOrDefault();
     }
 
     @Override

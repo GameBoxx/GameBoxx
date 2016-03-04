@@ -28,17 +28,12 @@ package info.gameboxx.gameboxx.options.list;
 import info.gameboxx.gameboxx.options.ListOption;
 import info.gameboxx.gameboxx.options.single.IntOption;
 
-import java.util.ArrayList;
-import java.util.List;
-
-public class IntListOption extends ListOption {
+public class IntListOption extends ListOption<IntOption> {
 
     private Integer min = null;
     private Integer max = null;
 
-    public IntListOption() {
-        super();
-    }
+    public IntListOption() {}
 
     public IntListOption(String name) {
         super(name);
@@ -63,20 +58,6 @@ public class IntListOption extends ListOption {
     @Override
     public IntOption getSingleOption(int index) {
         return (IntOption)new IntOption(name, (Integer)getDefault(index)).min(min).max(max).setDescription(description).setFlag(flag);
-    }
-
-    @Override
-    public List<Integer> getValues() {
-        List<Integer> values = new ArrayList<>();
-        for (int i = 0; i < value.size(); i++) {
-            values.add(getValue(i));
-        }
-        return values;
-    }
-
-    @Override
-    public Integer getValue(int index) {
-        return (Integer)getValueOrDefault(index);
     }
 
     @Override

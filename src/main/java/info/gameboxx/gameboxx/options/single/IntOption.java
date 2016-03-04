@@ -28,7 +28,7 @@ package info.gameboxx.gameboxx.options.single;
 import info.gameboxx.gameboxx.options.SingleOption;
 import org.bukkit.entity.Player;
 
-public class IntOption extends SingleOption {
+public class IntOption extends SingleOption<Integer> {
 
     private Integer min = null;
     private Integer max = null;
@@ -85,11 +85,6 @@ public class IntOption extends SingleOption {
     @Override
     public boolean parse(Player player, String input) {
         return parse(input);
-    }
-
-    @Override
-    public Integer getValue() {
-        return (Integer)getValueOrDefault();
     }
 
     @Override

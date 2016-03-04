@@ -33,11 +33,9 @@ import org.bukkit.block.Block;
 import java.util.ArrayList;
 import java.util.List;
 
-public class BlockListOption extends ListOption {
+public class BlockListOption extends ListOption<BlockOption> {
 
-    public BlockListOption() {
-        super();
-    }
+    public BlockListOption() {}
 
     public BlockListOption(String name) {
         super(name);
@@ -48,16 +46,6 @@ public class BlockListOption extends ListOption {
     }
 
 
-    @Override
-    public BlockOption getSingleOption(int index) {
-        return (BlockOption)new BlockOption(name, (Block)getDefault(index)).setDescription(description).setFlag(flag);
-    }
-
-    @Override
-    public List<Block> getValues() {
-        return getValues(null);
-    }
-
     public List<Block> getValues(World world) {
         List<Block> values = new ArrayList<>();
         for (int i = 0; i < value.size(); i++) {
@@ -66,17 +54,18 @@ public class BlockListOption extends ListOption {
         return values;
     }
 
-    @Override
-    public Block getValue(int index) {
-        return (Block)getValueOrDefault(index);
-    }
-
     public Block getValue(int index, World world) {
         Block b = getValue(index);
         if (b == null || world == null) {
             return b;
         }
         return world.getBlockAt(b.getLocation());
+    }
+
+
+    @Override
+    public BlockOption getSingleOption(int index) {
+        return (BlockOption)new BlockOption(name, (Block)getDefault(index)).setDescription(description).setFlag(flag);
     }
 
     @Override

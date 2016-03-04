@@ -28,7 +28,7 @@ package info.gameboxx.gameboxx.options.single;
 import info.gameboxx.gameboxx.options.SingleOption;
 import org.bukkit.entity.Player;
 
-public class BoolOption extends SingleOption {
+public class BoolOption extends SingleOption<Boolean> {
 
     public BoolOption() {
         super();
@@ -92,11 +92,6 @@ public class BoolOption extends SingleOption {
     @Override
     public boolean parse(Player player, String input) {
         return parse(input);
-    }
-
-    @Override
-    public Boolean getValue() {
-        return (Boolean)getValueOrDefault();
     }
 
     @Override

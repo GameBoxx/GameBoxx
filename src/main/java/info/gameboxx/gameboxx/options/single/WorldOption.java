@@ -34,7 +34,7 @@ import org.bukkit.entity.Player;
 
 import java.util.UUID;
 
-public class WorldOption extends SingleOption {
+public class WorldOption extends SingleOption<World> {
 
     public WorldOption() {
         super();
@@ -102,11 +102,6 @@ public class WorldOption extends SingleOption {
         }
 
         return true;
-    }
-
-    @Override
-    public World getValue() {
-        return (World)getValueOrDefault();
     }
 
     @Override

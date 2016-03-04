@@ -36,7 +36,7 @@ import org.bukkit.entity.Player;
 
 import java.util.Map;
 
-public class CuboidOption extends SingleOption {
+public class CuboidOption extends SingleOption<Cuboid> {
 
     public CuboidOption() {
         super();
@@ -189,11 +189,6 @@ public class CuboidOption extends SingleOption {
 
         value = new Cuboid(pos1, pos2);
         return true;
-    }
-
-    @Override
-    public Cuboid getValue() {
-        return (Cuboid)getValueOrDefault();
     }
 
     public Cuboid getValue(World world) {

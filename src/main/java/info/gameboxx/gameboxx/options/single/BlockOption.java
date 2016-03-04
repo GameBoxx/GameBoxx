@@ -37,11 +37,9 @@ import org.bukkit.entity.Player;
 import java.util.List;
 import java.util.Map;
 
-public class BlockOption extends SingleOption {
+public class BlockOption extends SingleOption<Block> {
 
-    public BlockOption() {
-        super();
-    }
+    public BlockOption() {}
 
     public BlockOption(String name) {
         super(name);
@@ -49,27 +47,6 @@ public class BlockOption extends SingleOption {
 
     public BlockOption(String name, Block defaultValue) {
         super(name, defaultValue);
-    }
-
-    public BlockOption(String name, Location defaultValue) {
-        super(name, defaultValue.getBlock());
-    }
-
-
-    @Override
-    public boolean parse(Object input) {
-        if (!parseObject(input)) {
-            return false;
-        }
-        if (value != null) {
-            return true;
-        }
-        return parse((String)input);
-    }
-
-    @Override
-    public boolean parse(String input) {
-        return parse(null, input);
     }
 
     @Override
@@ -190,11 +167,6 @@ public class BlockOption extends SingleOption {
         return true;
     }
 
-    @Override
-    public Block getValue() {
-        return (Block)getValueOrDefault();
-    }
-
     public Block getValue(World world) {
         Block b = getValue();
         if (b == null || world == null) {
@@ -224,6 +196,6 @@ public class BlockOption extends SingleOption {
 
     @Override
     public BlockOption clone() {
-        return (BlockOption)new BlockOption(name, (Block)defaultValue).setDescription(description).setFlag(flag);
+        return (BlockOption)new BlockOption(name, defaultValue).setDescription(description).setFlag(flag);
     }
 }

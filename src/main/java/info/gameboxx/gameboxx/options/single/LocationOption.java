@@ -38,7 +38,7 @@ import org.bukkit.entity.Player;
 import java.util.List;
 import java.util.Map;
 
-public class LocationOption extends SingleOption {
+public class LocationOption extends SingleOption<Location> {
 
     public LocationOption() {
         super();
@@ -179,11 +179,6 @@ public class LocationOption extends SingleOption {
             return false;
         }
         return true;
-    }
-
-    @Override
-    public Location getValue() {
-        return (Location)getValueOrDefault();
     }
 
     public Location getValue(World world) {

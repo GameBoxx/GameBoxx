@@ -29,7 +29,7 @@ import info.gameboxx.gameboxx.options.SingleOption;
 import info.gameboxx.gameboxx.util.Numbers;
 import org.bukkit.entity.Player;
 
-public class DoubleOption extends SingleOption {
+public class DoubleOption extends SingleOption<Double> {
 
     private Double min = null;
     private Double max = null;
@@ -92,11 +92,6 @@ public class DoubleOption extends SingleOption {
     @Override
     public boolean parse(Player player, String input) {
         return parse(input);
-    }
-
-    @Override
-    public Double getValue() {
-        return (Double)getValueOrDefault();
     }
 
     @Override

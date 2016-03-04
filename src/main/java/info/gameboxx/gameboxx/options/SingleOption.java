@@ -25,15 +25,12 @@
 
 package info.gameboxx.gameboxx.options;
 
-import org.bukkit.configuration.MemorySection;
 import org.bukkit.entity.Player;
 
-import java.util.LinkedHashMap;
+public abstract class SingleOption<T> extends Option {
 
-public abstract class SingleOption extends Option {
-
-    protected Object value = null;
-    protected Object defaultValue = null;
+    protected T value = null;
+    protected T defaultValue = null;
 
     public SingleOption() {}
 
@@ -41,7 +38,7 @@ public abstract class SingleOption extends Option {
         super(name);
     }
 
-    public SingleOption(String name, Object defaultValue) {
+    public SingleOption(String name, T defaultValue) {
         super(name);
         this.defaultValue = defaultValue;
     }
@@ -66,7 +63,9 @@ public abstract class SingleOption extends Option {
      *
      * @return The parse result value or the default value.
      */
-    public abstract Object getValue();
+    public T getValue() {
+        return getValueOrDefault();
+    }
 
     /**
      * Get the value with user friendly format for displaying purposes.
@@ -92,7 +91,7 @@ public abstract class SingleOption extends Option {
      *
      * @return The value or the default value if it's null.
      */
-    public Object getValueOrDefault() {
+    public T getValueOrDefault() {
         if (value == null && defaultValue != null) {
             return defaultValue;
         }
@@ -105,7 +104,7 @@ public abstract class SingleOption extends Option {
      *
      * @return The default value or {@code null} if it's not set.
      */
-    public Object getDefault() {
+    public T getDefault() {
         return defaultValue;
     }
 
@@ -115,7 +114,7 @@ public abstract class SingleOption extends Option {
      * @param defaultValue The default value to set. (set to null for no default)
      * @return The option instance.
      */
-    public SingleOption setDefault(Object defaultValue) {
+    public SingleOption setDefault(T defaultValue) {
         this.defaultValue = defaultValue;
         return this;
     }
@@ -150,14 +149,8 @@ public abstract class SingleOption extends Option {
             return false;
         }
         if (!(input instanceof String)) {
-            if (input instanceof MemorySection && this instanceof SerializableOptionValue) {
-                return ((SerializableOptionValue)this).parse(((MemorySection)input).getValues(true));
-            }
-            if (input instanceof LinkedHashMap && this instanceof SerializableOptionValue) {
-                return ((SerializableOptionValue)this).parse((LinkedHashMap)input);
-            }
             if (input.getClass().equals(getRawClass())) {
-                value = input;
+                value = (T)input;
                 return true;
             } else {
                 error = "Invalid input, must be a string " + (getRawClass().equals(String.class) ? "." : " or a " + getTypeName() + ".") + " [type=" + input.getClass().getSimpleName() + "]";
@@ -168,9 +161,23 @@ public abstract class SingleOption extends Option {
     }
 
 
-    public abstract boolean parse(Object input);
+    public boolean parse(Object input) {
+        return parse(input, null);
+    }
 
-    public abstract boolean parse(String input);
+    public boolean parse(Object input, Player player) {
+        if (!parseObject(input)) {
+            return false;
+        }
+        if (value != null) {
+            return true;
+        }
+        return parse((String)input, player);
+    }
+
+    public boolean parse(String input) {
+        return parse(null, input);
+    }
 
     public abstract boolean parse(Player player, String input);
 

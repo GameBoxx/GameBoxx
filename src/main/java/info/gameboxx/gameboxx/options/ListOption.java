@@ -30,9 +30,9 @@ import org.bukkit.entity.Player;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class ListOption extends Option {
+public abstract class ListOption<T extends SingleOption> extends Option {
 
-    protected List<SingleOption> value = new ArrayList<>();
+    protected List<T> value = new ArrayList<>();
     protected List<Object> defaultValues = new ArrayList<>();
     protected Object defaultValue = null;
 
@@ -68,7 +68,7 @@ public abstract class ListOption extends Option {
      *
      * @return The cached list with values. (May be empty)
      */
-    public List<SingleOption> getOptions() {
+    public List<T> getOptions() {
         return value;
     }
 
@@ -228,7 +228,7 @@ public abstract class ListOption extends Option {
             }
             Object obj = input[i];
 
-            SingleOption option = getSingleOption(i);
+            T option = getSingleOption(i);
             option.parse(obj);
             if (option.hasError() && (!ignoreErrors || !option.hasValue())) {
                 error = option.getError() + " [index:" + i + "]";
@@ -265,7 +265,7 @@ public abstract class ListOption extends Option {
             }
             String str = input[i];
 
-            SingleOption option = getSingleOption(i);
+            T option = getSingleOption(i);
             option.parse(player, str);
             if (option.hasError() && (!ignoreErrors || !option.hasValue())) {
                 error = option.getError() + " [index:" + i + "]";
@@ -290,7 +290,7 @@ public abstract class ListOption extends Option {
             value.add(getSingleOption(index));
             index = value.size() - 1;
         }
-        SingleOption option = value.get(index);
+        T option = value.get(index);
         boolean result = option.parse(input);
         error = option.getError();
         return result;
@@ -309,7 +309,7 @@ public abstract class ListOption extends Option {
             value.add(getSingleOption(index));
             index = value.size() - 1;
         }
-        SingleOption option = value.get(index);
+        T option = value.get(index);
         boolean result = option.parse(player, input);
         error = option.getError();
         return result;
@@ -358,19 +358,19 @@ public abstract class ListOption extends Option {
         return value.get(index).success();
     }
 
-    protected Object getValueOrDefault(int index) {
+    protected <V> V getValueOrDefault(int index) {
         if (index >= value.size() || (maxValues > 0 && index > maxValues)) {
             throw new IndexOutOfBoundsException();
         }
         if (value.get(index) == null) {
             return null;
         }
-        return value.get(index).getValueOrDefault();
+        return (V)value.get(index).getValueOrDefault();
     }
 
     public List<String> serialize() {
         List<String> values = new ArrayList<>();
-        for (SingleOption option : value) {
+        for (T option : value) {
             values.add(option.serialize());
         }
         return values;
@@ -388,7 +388,7 @@ public abstract class ListOption extends Option {
 
     public List<String> getDisplayValues() {
         List<String> values = new ArrayList<>();
-        for (SingleOption option : value) {
+        for (T option : value) {
             values.add(option.getDisplayValue());
         }
         return values;
@@ -404,10 +404,18 @@ public abstract class ListOption extends Option {
         return value.get(index).getDisplayValue();
     }
 
-    public abstract List<?> getValues();
+    public <V> List<V> getValues() {
+        List<V> values = new ArrayList<>();
+        for (int i = 0; i < value.size(); i++) {
+            values.add((V)getValue(i));
+        }
+        return values;
+    }
 
-    public abstract Object getValue(int index);
+    public <V> V getValue(int index) {
+        return getValueOrDefault(index);
+    }
 
-    public abstract SingleOption getSingleOption(int index);
+    public abstract T getSingleOption(int index);
 
 }

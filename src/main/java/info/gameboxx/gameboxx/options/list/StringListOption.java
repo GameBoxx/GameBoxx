@@ -31,7 +31,7 @@ import info.gameboxx.gameboxx.util.Pair;
 
 import java.util.*;
 
-public class StringListOption extends ListOption {
+public class StringListOption extends ListOption<StringOption> {
 
     private Integer minChars = null;
     private Integer maxChars = null;
@@ -43,9 +43,7 @@ public class StringListOption extends ListOption {
     private Map<String, List<String>> matchMap = null;
 
 
-    public StringListOption() {
-        super();
-    }
+    public StringListOption() {}
 
     public StringListOption(String name) {
         super(name);
@@ -132,20 +130,6 @@ public class StringListOption extends ListOption {
     public StringOption getSingleOption(int index) {
         return (StringOption) new StringOption(name, (String) getDefault(index)).minChars(minChars).maxChars(maxChars).matchRegex(regex, regexError).match(matchList).match(matchMap)
                 .setDescription(description).setFlag(flag);
-    }
-
-    @Override
-    public List<String> getValues() {
-        List<String> values = new ArrayList<>();
-        for (int i = 0; i < value.size(); i++) {
-            values.add(getValue(i));
-        }
-        return values;
-    }
-
-    @Override
-    public String getValue(int index) {
-        return (String) getValueOrDefault(index);
     }
 
     @Override

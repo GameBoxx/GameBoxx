@@ -31,7 +31,7 @@ import org.bukkit.entity.Player;
 
 import java.util.*;
 
-public class StringOption extends SingleOption {
+public class StringOption extends SingleOption<String> {
 
     private Integer minChars = null;
     private Integer maxChars = null;
@@ -181,11 +181,6 @@ public class StringOption extends SingleOption {
     @Override
     public boolean parse(Player player, String input) {
         return parse(input);
-    }
-
-    @Override
-    public String getValue() {
-        return (String) getValueOrDefault();
     }
 
     @Override

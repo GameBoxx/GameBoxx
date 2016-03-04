@@ -32,7 +32,7 @@ import org.bukkit.entity.Player;
 
 import java.util.UUID;
 
-public class PlayerOption extends SingleOption {
+public class PlayerOption extends SingleOption<Player> {
 
     public PlayerOption() {
         super();
@@ -112,11 +112,6 @@ public class PlayerOption extends SingleOption {
         }
 
         return true;
-    }
-
-    @Override
-    public Player getValue() {
-        return (Player)getValueOrDefault();
     }
 
     @Override

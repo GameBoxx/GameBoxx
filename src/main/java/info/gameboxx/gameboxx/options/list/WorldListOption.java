@@ -29,14 +29,9 @@ import info.gameboxx.gameboxx.options.ListOption;
 import info.gameboxx.gameboxx.options.single.WorldOption;
 import org.bukkit.World;
 
-import java.util.ArrayList;
-import java.util.List;
+public class WorldListOption extends ListOption<WorldOption> {
 
-public class WorldListOption extends ListOption {
-
-    public WorldListOption() {
-        super();
-    }
+    public WorldListOption() {}
 
     public WorldListOption(String name) {
         super(name);
@@ -50,20 +45,6 @@ public class WorldListOption extends ListOption {
     @Override
     public WorldOption getSingleOption(int index) {
         return (WorldOption)new WorldOption(name, (World)getDefault(index)).setDescription(description).setFlag(flag);
-    }
-
-    @Override
-    public List<World> getValues() {
-        List<World> values = new ArrayList<>();
-        for (int i = 0; i < value.size(); i++) {
-            values.add(getValue(i));
-        }
-        return values;
-    }
-
-    @Override
-    public World getValue(int index) {
-        return (World)getValueOrDefault(index);
     }
 
     @Override

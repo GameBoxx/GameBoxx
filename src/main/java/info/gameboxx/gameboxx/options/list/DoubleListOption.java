@@ -28,17 +28,12 @@ package info.gameboxx.gameboxx.options.list;
 import info.gameboxx.gameboxx.options.ListOption;
 import info.gameboxx.gameboxx.options.single.DoubleOption;
 
-import java.util.ArrayList;
-import java.util.List;
-
-public class DoubleListOption extends ListOption {
+public class DoubleListOption extends ListOption<DoubleOption> {
 
     private Double min = null;
     private Double max = null;
 
-    public DoubleListOption() {
-        super();
-    }
+    public DoubleListOption() {}
 
     public DoubleListOption(String name) {
         super(name);
@@ -63,20 +58,6 @@ public class DoubleListOption extends ListOption {
     @Override
     public DoubleOption getSingleOption(int index) {
         return (DoubleOption)new DoubleOption(name, (Double)getDefault(index)).min(min).max(max).setDescription(description).setFlag(flag);
-    }
-
-    @Override
-    public List<Double> getValues() {
-        List<Double> values = new ArrayList<>();
-        for (int i = 0; i < value.size(); i++) {
-            values.add(getValue(i));
-        }
-        return values;
-    }
-
-    @Override
-    public Double getValue(int index) {
-        return (Double)getValueOrDefault(index);
     }
 
     @Override

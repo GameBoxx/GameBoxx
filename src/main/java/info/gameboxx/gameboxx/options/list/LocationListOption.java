@@ -33,11 +33,9 @@ import org.bukkit.World;
 import java.util.ArrayList;
 import java.util.List;
 
-public class LocationListOption extends ListOption {
+public class LocationListOption extends ListOption<LocationOption> {
 
-    public LocationListOption() {
-        super();
-    }
+    public LocationListOption() {}
 
     public LocationListOption(String name) {
         super(name);
@@ -48,27 +46,12 @@ public class LocationListOption extends ListOption {
     }
 
 
-    @Override
-    public LocationOption getSingleOption(int index) {
-        return (LocationOption)new LocationOption(name, (Location)getDefault(index)).setDescription(description).setFlag(flag);
-    }
-
-    @Override
-    public List<Location> getValues() {
-        return getValues(null);
-    }
-
     public List<Location> getValues(World world) {
         List<Location> values = new ArrayList<>();
         for (int i = 0; i < value.size(); i++) {
             values.add(getValue(i, world));
         }
         return values;
-    }
-
-    @Override
-    public Location getValue(int index) {
-        return (Location)getValueOrDefault(index);
     }
 
     public Location getValue(int index, World world) {
@@ -78,6 +61,12 @@ public class LocationListOption extends ListOption {
         }
         l.setWorld(world);
         return l;
+    }
+
+
+    @Override
+    public LocationOption getSingleOption(int index) {
+        return (LocationOption)new LocationOption(name, (Location)getDefault(index)).setDescription(description).setFlag(flag);
     }
 
     @Override
