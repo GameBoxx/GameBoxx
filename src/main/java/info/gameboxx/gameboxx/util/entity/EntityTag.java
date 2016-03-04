@@ -26,7 +26,6 @@
 package info.gameboxx.gameboxx.util.entity;
 
 import info.gameboxx.gameboxx.GameBoxx;
-import info.gameboxx.gameboxx.options.Option;
 import info.gameboxx.gameboxx.options.SingleOption;
 import info.gameboxx.gameboxx.options.single.*;
 import info.gameboxx.gameboxx.util.Parse;
@@ -43,6 +42,105 @@ import org.bukkit.metadata.FixedMetadataValue;
 import java.util.*;
 
 public class EntityTag {
+
+    private static Map<EntityType, List<EntityTag>> BY_ENTITY = new HashMap<>();
+    private static Map<String, EntityTag> BY_NAME = new HashMap<>();
+
+    private final SingleOption option;
+    private final EntityTagCallback callback;
+    private final String entityMethod;
+    private final Class<? extends Entity>[] entities;
+
+    private EntityTag(SingleOption option, String entityMethod, Class... entities) {
+        this.option = option;
+        this.callback = null;
+        this.entityMethod = entityMethod;
+        this.entities = entities;
+    }
+
+    private EntityTag(SingleOption option, EntityTagCallback callback, Class... entities) {
+        this.option = option;
+        this.callback = callback;
+        this.entityMethod = null;
+        this.entities = entities;
+    }
+
+
+    public String getName() {
+        return option.getName();
+    }
+
+    public Class<? extends Entity>[] getEntities() {
+        return entities;
+    }
+
+    public SingleOption getOption() {
+        return option;
+    }
+
+    public String getEntityMethod() {
+        return entityMethod;
+    }
+
+    public EntityTagCallback getCallback() {
+        return callback;
+    }
+
+    public boolean hasCallback() {
+        return callback != null;
+    }
+
+
+    public static EntityTag fromString(String name) {
+        return BY_NAME.get(name.toUpperCase().replace("_","").replace(" ", ""));
+    }
+
+    public static List<EntityTag> getTags(EntityType type) {
+        return BY_ENTITY.get(type);
+    }
+
+    public static Collection<EntityTag> values() {
+        return BY_NAME.values();
+    }
+
+
+    public static EntityTag register(SingleOption option, EntityTagCallback executeCallback, Class... entities) {
+        return register(new EntityTag(option, executeCallback, entities));
+    }
+
+    private static EntityTag register(SingleOption option, String entityMethod, Class... entities) {
+        return register(new EntityTag(option, entityMethod, entities));
+    }
+
+    private static EntityTag register(EntityTag tag) {
+        String key = tag.getName().toUpperCase().replace("_","").replace(" ", "");
+        if (BY_NAME.containsKey(key)) {
+            throw new IllegalArgumentException("There is already an EntityTag registered with the name '" + key + "'!");
+        }
+        BY_NAME.put(key, tag);
+
+        for (EntityType entityType : EntityType.values()) {
+            if (entityType == EntityType.UNKNOWN) {
+                continue;
+            }
+            for (Class clazz : tag.getEntities()) {
+                if (clazz.isAssignableFrom(entityType.getEntityClass())) {
+                    List<EntityTag> tags;
+                    if (BY_ENTITY.containsKey(entityType)) {
+                        tags = BY_ENTITY.get(entityType);
+                    } else {
+                        tags = new ArrayList<>();
+                    }
+                    tags.add(tag);
+                    BY_ENTITY.put(entityType, tags);
+                }
+            }
+        }
+        return tag;
+    }
+
+
+    //region Tags
     //TODO: More modfiers for all options like min/max values etc.
     //TODO: More custom tags,
     //TODO: Attributes
@@ -63,8 +161,13 @@ public class EntityTag {
             entity.setMetadata(split[0], new FixedMetadataValue(GameBoxx.get(), split[1]));
             return true;
         }
-    }, Entity.class); //TODO: Test regex and add translatable message.
-    public static final EntityTag PLAYEFFECT = EntityTag.register(new StringOption("PLAYEFFECT").match(Parse.Array(EntityEffect.values())), "playEffect", Entity.class); //TODO: Aliases
+    }, Entity.class);
+    public static final EntityTag PLAYEFFECT = EntityTag.register(new StringOption("PLAYEFFECT").match(Parse.StringArray(EntityEffect.values())), new EntityTagCallback() {
+        @Override boolean execute(CommandSender sender, EEntity entity, SingleOption result) {
+            entity.playEffect(EntityEffect.valueOf(((StringOption)result).getValue().toUpperCase()));
+            return true;
+        }
+    }, Entity.class); //TODO: Aliases
     public static final EntityTag RIDE = EntityTag.register(new PlayerOption("RIDE"), new EntityTagCallback() {
         @Override boolean execute(CommandSender sender, EEntity entity, SingleOption result) {
             Player player = ((PlayerOption)result).getValue();
@@ -73,22 +176,20 @@ public class EntityTag {
             } else if (player == null) {
                 return false;
             }
-            entity.setVehicle(player);
+            entity.setPassenger(player);
             return true;
         }
     }, Entity.class);
 
     //Damagable
-    public static final EntityTag HEALTH = EntityTag.register(new DoubleOption("health"), "setHealth", Damageable.class);
     public static final EntityTag MAXHEALTH = EntityTag.register(new DoubleOption("maxhealth"), "setMaxHealth", Damageable.class);
+    public static final EntityTag HEALTH = EntityTag.register(new DoubleOption("health"), "setHealth", Damageable.class);
 
     //Living
     public static final EntityTag AIR = EntityTag.register(new IntOption("AIR"), "setRemainingAir", LivingEntity.class);
-    public static final EntityTag MAXAIR = EntityTag.register(new IntOption("MAXAIR"), "setMaximumAir", LivingEntity.class);
     public static final EntityTag MAXNODMGTICKS = EntityTag.register(new IntOption("MAXNODMGTICKS"), "setMaximumNoDamageTicks", LivingEntity.class);
+    public static final EntityTag MAXAIR = EntityTag.register(new IntOption("MAXAIR"), "setMaximumAir", LivingEntity.class);
     public static final EntityTag NODMGTICKS = EntityTag.register(new IntOption("NODMGTICKS"), "setNoDamageTicks", LivingEntity.class);
-    //public static final EntityTag MAINHAND = EntityTag.register(new ItemOption("MAINHAND"), "setItemInMainHand", LivingEntity.class);
-    //public static final EntityTag OFFHAND = EntityTag.register(new ItemOption("OFFHAND"), "setItemInOffHand", LivingEntity.class);
     public static final EntityTag HANDDROP = EntityTag.register(new DoubleOption("HANDDROP"), "setItemInHandDropChance", LivingEntity.class);
     public static final EntityTag HELMETDROP = EntityTag.register(new DoubleOption("HELMETDROP"), "setHelmetDropChance", LivingEntity.class);
     public static final EntityTag CHESTPLATEDROP = EntityTag.register(new DoubleOption("CHESTPLATEDROP"), "setChestplateDropChance", LivingEntity.class);
@@ -96,12 +197,12 @@ public class EntityTag {
     public static final EntityTag BOOTSDROP = EntityTag.register(new DoubleOption("BOOTSDROP"), "setBootsDropChance", LivingEntity.class);
     public static final EntityTag PICKUP = EntityTag.register(new BoolOption("PICKUP", true), "setCanPickupItems", LivingEntity.class);
     public static final EntityTag REMOVEFAR = EntityTag.register(new BoolOption("REMOVEFAR", true), "setRemoveWhenFarAway", LivingEntity.class);
-    //public static final EntityTag public static final EntityTag LEASH = EntityTag.register(new EntityOption("LEASH"), "setLeashHolder", LivingEntity.class);
+    //public static final EntityTag LEASH = EntityTag.register(new EntityOption("LEASH"), "setLeashHolder", LivingEntity.class);
 
     //Ageable
     public static final EntityTag AGE = EntityTag.register(new IntOption("AGE"), "setAge", Ageable.class);
     public static final EntityTag AGELOCK = EntityTag.register(new BoolOption("AGELOCK", true), "setAgeLock", Ageable.class);
-    public static final EntityTag BABY = EntityTag.register(new BoolOption("BABY", true), "setBaby", Ageable.class);
+    public static final EntityTag BABY = EntityTag.register(new BoolOption("BABY", true), "setBaby", Ageable.class, Zombie.class);
     public static final EntityTag BREED = EntityTag.register(new BoolOption("BREED", true), "setBreed", Ageable.class);
 
     //Tamable
@@ -118,12 +219,14 @@ public class EntityTag {
     //Hanging
     public static final EntityTag DIR = EntityTag.register(new StringOption("DIR").match(Arrays.asList("north", "east", "south", "west", "up", "down")), new EntityTagCallback() {
         @Override boolean execute(CommandSender sender, EEntity entity, SingleOption result) {
-            entity.setFacingDirection(BlockFace.valueOf(((StringOption)result).getValue()), true);
+            entity.setFacingDirection(BlockFace.valueOf(((StringOption)result).getValue().toUpperCase()), true);
             return true;
         }
     }, Hanging.class);
 
     //Mixed Entities
+    //public static final EntityTag MAINHAND = EntityTag.register(new ItemOption("MAINHAND"), "setItemInMainHand", ArmorStand.class, LivingEntity.class);
+    //public static final EntityTag OFFHAND = EntityTag.register(new ItemOption("OFFHAND"), "setItemInOffHand", ArmorStand.class, LivingEntity.class);
     //public static final EntityTag BOOTS = EntityTag.register(new ItemOption("BOOTS"), "setBoots", ArmorStand.class, LivingEntity.class);
     //public static final EntityTag LEGGINGS = EntityTag.register(new ItemOption("LEGGINGS"), "setLeggings", ArmorStand.class, LivingEntity.class);
     //public static final EntityTag CHESTPLATE = EntityTag.register(new ItemOption("CHESTPLATE"), "setChestplate", ArmorStand.class, LivingEntity.class);
@@ -133,12 +236,21 @@ public class EntityTag {
     public static final EntityTag ANGRY = EntityTag.register(new BoolOption("ANGRY", true), "setAngry", Wolf.class, PigZombie.class);
     public static final EntityTag SADDLE = EntityTag.register(new BoolOption("SADDLE", true), "setSaddle", Horse.class, Pig.class);
     //public static final EntityTag SADDLEITEM = EntityTag.register(new ItemOption("SADDLEITEM", true), "setSaddle", Horse.class, Pig.class);
-    public static final EntityTag COLOR = EntityTag.register(new StringOption("COLOR").match(Parse.Array(DyeColor.values())), "setColor", Colorable.class, Wolf.class); //TODO: Aliases
+    public static final EntityTag COLOR = EntityTag.register(new StringOption("COLOR").match(Parse.StringArray(DyeColor.values())), new EntityTagCallback() {
+        @Override boolean execute(CommandSender sender, EEntity entity, SingleOption result) {
+            entity.setColor(DyeColor.valueOf(((StringOption)result).getValue().toUpperCase()));
+            return true;
+        }
+    }, Colorable.class, Wolf.class); //TODO: Aliases
     //public static final EntityTag EFFECT = EntityTag.register(new PotionOption("EFFECT"), "addEffect", LivingEntity.class, AreaEffectCloud.class);
-    public static final EntityTag PROFESSION = EntityTag.register(new StringOption("PROFESSION").match(Parse.Array(Villager.Profession.values())), "setProfession", Villager.class, Zombie.class); //TODO: Aliases
+    public static final EntityTag PROFESSION = EntityTag.register(new StringOption("PROFESSION").match(Parse.StringArray(Villager.Profession.values())), new EntityTagCallback() {
+        @Override boolean execute(CommandSender sender, EEntity entity, SingleOption result) {
+            entity.setProfession(Villager.Profession.valueOf(((StringOption)result).getValue().toUpperCase()));
+            return true;
+        }
+    }, Villager.class, Zombie.class); //TODO: Aliases
 
     //ArmorStand
-    //public static final EntityTag HAND = EntityTag.register(new ItemOption("HAND"), "setItemInHand", ArmorStand.class);
     public static final EntityTag POSE = EntityTag.register(new VectorOption("POSE"), "setBodyPose", ArmorStand.class);
     public static final EntityTag HEAD = EntityTag.register(new VectorOption("HEAD"), "setHeadPose", ArmorStand.class);
     public static final EntityTag LARM = EntityTag.register(new VectorOption("LARM"), "setLeftArmPose", ArmorStand.class);
@@ -197,7 +309,12 @@ public class EntityTag {
     public static final EntityTag ROTATION = EntityTag.register(new StringOption("ROTATION").match(Arrays.asList("0","45","90","135","180","225","270","315","360")), "setRotation", ItemFrame.class);
 
     //Painting
-    public static final EntityTag ART = EntityTag.register(new StringOption("ART").match(Parse.Array(Art.values())), "setArt", Painting.class); //TODO: Aliases
+    public static final EntityTag ART = EntityTag.register(new StringOption("ART").match(Parse.StringArray(Art.values())), new EntityTagCallback() {
+        @Override boolean execute(CommandSender sender, EEntity entity, SingleOption result) {
+            entity.setArt(Art.valueOf(((StringOption)result).getValue().toUpperCase()));
+            return true;
+        }
+    }, Painting.class); //TODO: Aliases
 
     //FishHook
     public static final EntityTag BITECHANCE = EntityTag.register(new DoubleOption("BITECHANCE"), "setBiteChance", FishHook.class);
@@ -225,9 +342,24 @@ public class EntityTag {
     public static final EntityTag ELDER = EntityTag.register(new BoolOption("ELDER", true), "setElder", Guardian.class);
 
     //Horse
-    public static final EntityTag HORSEVARIANT = EntityTag.register(new StringOption("HORSEVARIANT").match(Parse.Array(Horse.Variant.values())), "setHorseVariant", Horse.class); //TODO: Aliases
-    public static final EntityTag HORSECOLOR = EntityTag.register(new StringOption("HORSECOLOR").match(Parse.Array(Horse.Color.values())), "setHorseColor", Horse.class); //TODO: Aliases
-    public static final EntityTag HORSESTYLE = EntityTag.register(new StringOption("HORSESTYLE").match(Parse.Array(Horse.Style.values())), "setHorseStyle", Horse.class); //TODO: Aliases
+    public static final EntityTag HORSEVARIANT = EntityTag.register(new StringOption("HORSEVARIANT").match(Parse.StringArray(Horse.Variant.values())), new EntityTagCallback() {
+        @Override boolean execute(CommandSender sender, EEntity entity, SingleOption result) {
+            entity.setHorseVariant(Horse.Variant.valueOf(((StringOption)result).getValue().toUpperCase()));
+            return true;
+        }
+    }, Horse.class); //TODO: Aliases
+    public static final EntityTag HORSECOLOR = EntityTag.register(new StringOption("HORSECOLOR").match(Parse.StringArray(Horse.Color.values())), new EntityTagCallback() {
+        @Override boolean execute(CommandSender sender, EEntity entity, SingleOption result) {
+            entity.setHorseColor(Horse.Color.valueOf(((StringOption)result).getValue().toUpperCase()));
+            return true;
+        }
+    }, Horse.class); //TODO: Aliases
+    public static final EntityTag HORSESTYLE = EntityTag.register(new StringOption("HORSESTYLE").match(Parse.StringArray(Horse.Style.values())), new EntityTagCallback() {
+        @Override boolean execute(CommandSender sender, EEntity entity, SingleOption result) {
+            entity.setHorseStyle(Horse.Style.valueOf(((StringOption)result).getValue().toUpperCase()));
+            return true;
+        }
+    }, Horse.class); //TODO: Aliases
     public static final EntityTag CHEST = EntityTag.register(new BoolOption("CHEST", true), "setCarryingChest", Horse.class);
     public static final EntityTag DOMESTICATION = EntityTag.register(new IntOption("DOMESTICATION"), "setDomestication", Horse.class);
     public static final EntityTag MAXDOMESTICATION = EntityTag.register(new IntOption("MAXDOMESTICATION"), "setMaxDomestication", Horse.class);
@@ -235,10 +367,20 @@ public class EntityTag {
     //public static final EntityTag ARMOR = EntityTag.register(new ItemOption("ARMOR"), "setHorseArmor", Horse.class);
 
     //Ocelot
-    public static final EntityTag CATTYPE = EntityTag.register(new StringOption("CATTYPE").match(Parse.Array(Ocelot.Type.values())), "setCatType", Ocelot.class); //TODO: Aliases
+    public static final EntityTag CATTYPE = EntityTag.register(new StringOption("CATTYPE").match(Parse.StringArray(Ocelot.Type.values())), new EntityTagCallback() {
+        @Override boolean execute(CommandSender sender, EEntity entity, SingleOption result) {
+            entity.setCatType(Ocelot.Type.valueOf(((StringOption)result).getValue().toUpperCase()));
+            return true;
+        }
+    }, Ocelot.class); //TODO: Aliases
 
     //Rabbit
-    public static final EntityTag RABITTYPE = EntityTag.register(new StringOption("RABITTYPE").match(Parse.Array(Rabbit.Type.values())), "setRabbitType", Rabbit.class); //TODO: Aliases
+    public static final EntityTag RABBITTYPE = EntityTag.register(new StringOption("RABBITTYPE").match(Parse.StringArray(Rabbit.Type.values())), new EntityTagCallback() {
+        @Override boolean execute(CommandSender sender, EEntity entity, SingleOption result) {
+            entity.setRabbitType(Rabbit.Type.valueOf(((StringOption)result).getValue().toUpperCase()));
+            return true;
+        }
+    }, Rabbit.class); //TODO: Aliases
 
     //Pigman
     public static final EntityTag ANGER = EntityTag.register(new IntOption("ANGER"), "setAnger", PigZombie.class);
@@ -260,97 +402,5 @@ public class EntityTag {
     public static final EntityTag INVULNERABLE = EntityTag.register(new BoolOption("INVULNERABLE", true), "setInvulnerable", Entity.class);
     public static final EntityTag SILENT = EntityTag.register(new BoolOption("SILENT", true), "setSilent", Entity.class);
     public static final EntityTag INVISIBLE = EntityTag.register(new BoolOption("INVISIBLE", true), "setInvisible", Entity.class);
-
-
-
-    private static final Map<EntityType, List<EntityTag>> BY_ENTITY = new HashMap<>();
-    private static final Map<String, EntityTag> BY_NAME = new HashMap<>();
-
-    private SingleOption option;
-    private EntityTagCallback callback = null;
-    private String entityMethod = null;
-    private Class<? extends Entity>[] entities;
-
-
-    private EntityTag(SingleOption option, String entityMethod, Class... entities) {
-        this.option = option;
-        this.entityMethod = entityMethod;
-        this.entities = entities;
-    }
-
-    private EntityTag(SingleOption option, EntityTagCallback callback, Class... entities) {
-        this.option = option;
-        this.callback = callback;
-        this.entities = entities;
-    }
-
-
-    public String getName() {
-        return option.getName();
-    }
-
-    public Class<? extends Entity>[] getEntities() {
-        return entities;
-    }
-
-    public Option getOption() {
-        return option;
-    }
-
-    public String getEntityMethod() {
-        return entityMethod;
-    }
-
-    public EntityTagCallback getCallback() {
-        return callback;
-    }
-
-    public boolean hasCallback() {
-        return callback != null;
-    }
-
-
-    public static EntityTag fromString(String name) {
-        return BY_NAME.get(name.toUpperCase().replace("_","").replace(" ", ""));
-    }
-
-    public static List<EntityTag> getTags(EntityType type) {
-        return BY_ENTITY.get(type);
-    }
-
-    public static Collection<EntityTag> values() {
-        return BY_NAME.values();
-    }
-
-
-    public static EntityTag register(SingleOption option, EntityTagCallback executeCallback, Class... entities) {
-        return register(new EntityTag(option, executeCallback, entities));
-    }
-
-    private static EntityTag register(SingleOption option, String entityMethod, Class... entities) {
-        return register(new EntityTag(option, entityMethod, entities));
-    }
-
-    private static EntityTag register(EntityTag tag) {
-        String key = tag.getName().toUpperCase().replace("_","").replace(" ", "");
-        if (BY_NAME.containsKey(key)) {
-            throw new IllegalArgumentException("There is already an EntityTag registered with the name '" + key + "'!");
-        }
-        BY_NAME.put(key, tag);
-
-        for (EntityType entityType : EntityType.values()) {
-            for (Class clazz : tag.getEntities()) {
-                if (clazz.isAssignableFrom(entityType.getEntityClass())) {
-                    if (BY_ENTITY.containsKey(entityType)) {
-                        List<EntityTag> tags = BY_ENTITY.get(entityType);
-                        tags.add(tag);
-                        BY_ENTITY.put(entityType, tags);
-                    } else {
-                        BY_ENTITY.put(entityType, Arrays.asList(tag));
-                    }
-                }
-            }
-        }
-        return tag;
-    }
+    //endregion
 }
