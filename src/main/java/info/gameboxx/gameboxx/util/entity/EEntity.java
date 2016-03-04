@@ -149,8 +149,8 @@ public class EEntity {
         return this;
     }
 
-    public boolean hasAI() {
-        return !NMS.get().getEntityUtils().getTag(bukkit(), EntityUtils.Tag.NOAI);
+    public boolean hasNoAI() {
+        return NMS.get().getEntityUtils().getTag(bukkit(), EntityUtils.Tag.NOAI);
     }
 
     public EEntity setSilent(boolean state) {
@@ -582,7 +582,7 @@ public class EEntity {
      * @return true when there is a passenger riding this entity.
      */
     public Boolean hasPassenger() {
-        return entity.isEmpty();
+        return entity.getPassenger() != null;
     }
 
     /**
@@ -625,7 +625,7 @@ public class EEntity {
      *
      * @return distance the entity has fallen
      */
-    public float getFallDistance() {
+    public double getFallDistance() {
         return entity.getFallDistance();
     }
 
@@ -1243,7 +1243,7 @@ public class EEntity {
 
 
     //region Equipment
-    public float getItemInHandDropChance() {
+    public double getItemInHandDropChance() {
         if (entity instanceof LivingEntity) {
             return ((LivingEntity)entity).getEquipment().getItemInHandDropChance();
         }
@@ -1257,7 +1257,7 @@ public class EEntity {
         return this;
     }
 
-    public float getHelmetDropChance() {
+    public double getHelmetDropChance() {
         if (entity instanceof LivingEntity) {
             return ((LivingEntity)entity).getEquipment().getItemInHandDropChance();
         }
@@ -1271,7 +1271,7 @@ public class EEntity {
         return this;
     }
 
-    public float getChestplateDropChance() {
+    public double getChestplateDropChance() {
         if (entity instanceof LivingEntity) {
             return ((LivingEntity)entity).getEquipment().getChestplateDropChance();
         }
@@ -1285,7 +1285,7 @@ public class EEntity {
         return this;
     }
 
-    public float getLeggingsDropChance() {
+    public double getLeggingsDropChance() {
         if (entity instanceof LivingEntity) {
             return ((LivingEntity)entity).getEquipment().getLeggingsDropChance();
         }
@@ -1299,7 +1299,7 @@ public class EEntity {
         return this;
     }
 
-    public float getBootsDropChance() {
+    public double getBootsDropChance() {
         if (entity instanceof LivingEntity) {
             return ((LivingEntity)entity).getEquipment().getBootsDropChance();
         }
@@ -2473,6 +2473,20 @@ public class EEntity {
         return this;
     }
 
+    public Boolean isSmall() {
+        if (entity instanceof ArmorStand) {
+            return ((ArmorStand)entity).isSmall();
+        }
+        return true;
+    }
+
+    public EEntity setSmall(Boolean small) {
+        if (entity instanceof ArmorStand) {
+            ((ArmorStand)entity).setSmall(small);
+        }
+        return this;
+    }
+
     public Boolean isVisible() {
         if (entity instanceof ArmorStand) {
             return ((ArmorStand)entity).isVisible();
@@ -2609,7 +2623,7 @@ public class EEntity {
         return this;
     }
 
-    public float getRadius() {
+    public double getRadius() {
         if (entity instanceof AreaEffectCloud) {
             return ((AreaEffectCloud)entity).getRadius();
         }
@@ -2623,7 +2637,7 @@ public class EEntity {
         return this;
     }
 
-    public float getRadiusOnUse() {
+    public double getRadiusOnUse() {
         if (entity instanceof AreaEffectCloud) {
             return ((AreaEffectCloud)entity).getRadiusOnUse();
         }
@@ -2637,7 +2651,7 @@ public class EEntity {
         return this;
     }
 
-    public float getRadiusPerTick() {
+    public double getRadiusPerTick() {
         if (entity instanceof AreaEffectCloud) {
             return ((AreaEffectCloud)entity).getRadiusPerTick();
         }
@@ -3030,7 +3044,7 @@ public class EEntity {
 
     //region Explosive
 
-    public float getYield() {
+    public double getYield() {
         if (entity instanceof Explosive) {
             return ((Explosive)entity).getYield();
         }
@@ -3368,6 +3382,13 @@ public class EEntity {
             return ((Skeleton)entity).getSkeletonType();
         }
         return Skeleton.SkeletonType.NORMAL;
+    }
+
+    public boolean isWitherSkeleton() {
+        if (entity instanceof Skeleton) {
+            return ((Skeleton)entity).getSkeletonType() == Skeleton.SkeletonType.WITHER;
+        }
+        return false;
     }
 
     public EEntity setWitherSkeleton(Boolean wither) {
