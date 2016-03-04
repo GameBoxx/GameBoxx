@@ -95,7 +95,7 @@ public class EEntity {
      * @param location The location where to spawn the entity.
      */
     public EEntity(EntityType type, Location location) {
-        this(location.getWorld().spawn(location, type.getEntityClass()));
+        this(EEntity.spawn(type, location));
     }
 
     /**
@@ -106,6 +106,30 @@ public class EEntity {
      */
     public EEntity(Location location, MaterialData fallingBlockMaterial) {
         this(location.getWorld().spawnFallingBlock(location, fallingBlockMaterial.getItemType(), fallingBlockMaterial.getData()));
+    }
+
+    /**
+     * Spawns a <b>new</b> {@link Item} entity at the specified location.
+     *
+     * @param location The location where to spawn the entity.
+     * @param item The item to spawn
+     */
+    public EEntity(Location location, EItem item) {
+        this(location.getWorld().dropItem(location, item));
+    }
+
+    private static Entity spawn(EntityType type, Location location) {
+        try {
+            if (type == EntityType.DROPPED_ITEM) {
+                return location.getWorld().dropItem(location, new EItem(Material.STONE));
+            } else if (type == EntityType.ITEM_FRAME || type == EntityType.PAINTING) {
+                return location.getWorld().spawn(location.getBlock().getLocation(), type.getEntityClass());
+            } else {
+                return location.getWorld().spawn(location, type.getEntityClass());
+            }
+        } catch (Exception e) {
+            return null;
+        }
     }
     //endregion
 
@@ -180,7 +204,7 @@ public class EEntity {
      *
      * @return entity ID
      */
-    public Integer getID() {
+    public int getID() {
         return entity.getEntityId();
     }
 
@@ -264,7 +288,7 @@ public class EEntity {
      * @param z half the size of the box along the z axis.
      * @return list with entities
      */
-    public List<EEntity> getNearbyEntities(Double x, Double y, Double z) {
+    public List<EEntity> getNearbyEntities(double x, double y, double z) {
         List<Entity> nearby = entity.getNearbyEntities(x, y, z);
         List<EEntity> converted = new ArrayList<>();
         for (Entity e : nearby) {
@@ -279,7 +303,7 @@ public class EEntity {
      * @param radius half the size of the box along all axis.
      * @return list with entities
      */
-    public List<EEntity> getNearbyEntities(Double radius) {
+    public List<EEntity> getNearbyEntities(double radius) {
         List<Entity> nearby = entity.getNearbyEntities(radius, radius, radius);
         List<EEntity> converted = new ArrayList<>();
         for (Entity e : nearby) {
@@ -378,7 +402,7 @@ public class EEntity {
      * @param z new velocity z axis value
      * @return this instance
      */
-    public EEntity setVelocity(Double x, Double y, Double z) {
+    public EEntity setVelocity(double x, double y, double z) {
         if (entity instanceof Fireball) {
             ((Fireball)entity).setDirection(new Vector(x, y, z));
         } else {
@@ -549,7 +573,7 @@ public class EEntity {
      *
      * @return distance the entity has fallen
      */
-    public Float getFallDistance() {
+    public float getFallDistance() {
         return entity.getFallDistance();
     }
 
@@ -559,8 +583,8 @@ public class EEntity {
      * @param distance the new distance
      * @return this
      */
-    public EEntity setFallDistance(Float distance) {
-        entity.setFallDistance(distance);
+    public EEntity setFallDistance(double distance) {
+        entity.setFallDistance((float)distance);
         return this;
     }
 
@@ -569,7 +593,7 @@ public class EEntity {
      *
      * @return fire ticks
      */
-    public Integer getFireTicks() {
+    public int getFireTicks() {
         return entity.getFireTicks();
     }
 
@@ -579,7 +603,7 @@ public class EEntity {
      * @param ticks ticks remaining
      * @return this instance
      */
-    public EEntity setFireTicks(Integer ticks) {
+    public EEntity setFireTicks(int ticks) {
         entity.setFireTicks(ticks);
         return this;
     }
@@ -589,7 +613,7 @@ public class EEntity {
      *
      * @return max fire ticks
      */
-    public Integer getMaxFireTicks() {
+    public int getMaxFireTicks() {
         return entity.getMaxFireTicks();
     }
 
@@ -599,7 +623,7 @@ public class EEntity {
      *
      * @return amount of ticks the entity lived
      */
-    public Integer getTicksLived() {
+    public int getTicksLived() {
         return entity.getTicksLived();
     }
 
@@ -610,7 +634,7 @@ public class EEntity {
      * @param ticks amount of ticks the entity lived
      * @return this instance
      */
-    public EEntity setTicksLived(Integer ticks) {
+    public EEntity setTicksLived(int ticks) {
         entity.setTicksLived(Math.max(1, ticks));
         return this;
     }
@@ -744,7 +768,7 @@ public class EEntity {
      * @param amount the amount of damage to deal
      * @return this instance
      */
-    public EEntity damage(Double amount) {
+    public EEntity damage(double amount) {
         if (entity instanceof Damageable) {
             ((Damageable)entity).damage(amount);
         }
@@ -760,7 +784,7 @@ public class EEntity {
      * @param source entity to deal the damage from.
      * @return this instance
      */
-    public EEntity damage(Double amount, Entity source) {
+    public EEntity damage(double amount, Entity source) {
         if (entity instanceof Damageable) {
             ((Damageable)entity).damage(amount, source);
         }
@@ -776,7 +800,7 @@ public class EEntity {
      * @param source entity to deal the damage from.
      * @return this instance
      */
-    public EEntity damage(Double amount, EEntity source) {
+    public EEntity damage(double amount, EEntity source) {
         if (entity instanceof Damageable) {
             ((Damageable)entity).damage(amount, source.bukkit());
         }
@@ -788,13 +812,13 @@ public class EEntity {
      * <p/>
      * <b>Entities: </b> {@link Damageable}
      *
-     * @return health represented from 0 to {@link #getMaxHealth()} ({@code null} when not damageable)
+     * @return health represented from 0 to {@link #getMaxHealth()} (-1 when not damageable)
      */
-    public Double getHealth() {
+    public double getHealth() {
         if (entity instanceof Damageable) {
             return ((Damageable)entity).getHealth();
         }
-        return null;
+        return -1;
     }
 
     /**
@@ -806,7 +830,7 @@ public class EEntity {
      * @param amount new health to set
      * @return this instance
      */
-    public EEntity setHealth(Double amount) {
+    public EEntity setHealth(double amount) {
         if (entity instanceof Damageable) {
             ((Damageable)entity).setHealth(Math.min(Math.max(0d, amount), getMaxHealth()));
         }
@@ -818,13 +842,13 @@ public class EEntity {
      * <p/>
      * <b>Entities: </b> {@link Damageable}
      *
-     * @return maximum health. ({@code null} when not damageable)
+     * @return maximum health. (-1 when not damageable)
      */
-    public Double getMaxHealth() {
+    public double getMaxHealth() {
         if (entity instanceof Damageable) {
             return ((Damageable)entity).getMaxHealth();
         }
-        return null;
+        return -1;
     }
 
     /**
@@ -837,7 +861,7 @@ public class EEntity {
      * @param amount amount of health to set the maximum to.
      * @return this instance
      */
-    public EEntity setMaxHealth(Double amount) {
+    public EEntity setMaxHealth(double amount) {
         if (entity instanceof Damageable) {
             ((Damageable)entity).setMaxHealth(amount);
         }
@@ -873,13 +897,13 @@ public class EEntity {
      * <p/>
      * <b>Entities: </b> {@link LivingEntity}
      *
-     * @return height of the living entity's eyes above its location (0d when not living)
+     * @return height of the living entity's eyes above its location (0 when not living)
      */
-    public Double getEyeHeight() {
+    public double getEyeHeight() {
         if (entity instanceof LivingEntity) {
             return ((LivingEntity)entity).getEyeHeight();
         }
-        return null;
+        return 0;
     }
 
     /**
@@ -888,13 +912,13 @@ public class EEntity {
      * <b>Entities: </b> {@link LivingEntity}
      *
      * @param ignoreSneaking if set to true, the effects of sneaking will be ignored
-     * @return height of the living entity's eyes above its location (0d when not living)
+     * @return height of the living entity's eyes above its location (0 when not living)
      */
-    public Double getEyeHeight(Boolean ignoreSneaking) {
+    public double getEyeHeight(Boolean ignoreSneaking) {
         if (entity instanceof LivingEntity) {
             return ((LivingEntity)entity).getEyeHeight(ignoreSneaking);
         }
-        return 0d;
+        return 0;
     }
 
     /**
@@ -1006,13 +1030,13 @@ public class EEntity {
      * <p/>
      * <b>Entities: </b> {@link LivingEntity}
      *
-     * @return amount of air remaining ({@code null} when not living)
+     * @return amount of air remaining (-1 when not living)
      */
-    public Integer getRemainingAir() {
+    public int getRemainingAir() {
         if (entity instanceof LivingEntity) {
             return ((LivingEntity)entity).getRemainingAir();
         }
-        return null;
+        return -1;
     }
 
     /**
@@ -1023,7 +1047,7 @@ public class EEntity {
      * @param ticks amount of air remaining
      * @return this instance
      */
-    public EEntity setRemainingAir(Integer ticks) {
+    public EEntity setRemainingAir(int ticks) {
         if (entity instanceof LivingEntity) {
             ((LivingEntity)entity).setRemainingAir(ticks);
         }
@@ -1035,13 +1059,13 @@ public class EEntity {
      * <p/>
      * <b>Entities: </b> {@link LivingEntity}
      *
-     * @return maximum amount of air ({@code null} when not living)
+     * @return maximum amount of air (-1 when not living)
      */
-    public Integer getMaximumAir() {
+    public int getMaximumAir() {
         if (entity instanceof LivingEntity) {
             return ((LivingEntity)entity).getMaximumAir();
         }
-        return null;
+        return -1;
     }
 
     /**
@@ -1052,7 +1076,7 @@ public class EEntity {
      * @param ticks maximum amount of air
      * @return this instance
      */
-    public EEntity setMaximumAir(Integer ticks) {
+    public EEntity setMaximumAir(int ticks) {
         if (entity instanceof LivingEntity) {
             ((LivingEntity)entity).setMaximumAir(ticks);
         }
@@ -1070,13 +1094,13 @@ public class EEntity {
      * <p/>
      * <b>Entities: </b> {@link LivingEntity}
      *
-     * @return maximum no damage ticks ({@code null} when not living)
+     * @return maximum no damage ticks (-1 when not living)
      */
-    public Integer getMaximumNoDamageTicks() {
+    public int getMaximumNoDamageTicks() {
         if (entity instanceof LivingEntity) {
             return ((LivingEntity)entity).getMaximumNoDamageTicks();
         }
-        return null;
+        return -1;
     }
 
     /**
@@ -1087,7 +1111,7 @@ public class EEntity {
      * @param ticks maximum amount of no damage ticks
      * @return this instance
      */
-    public EEntity setMaximumNoDamageTicks(Integer ticks) {
+    public EEntity setMaximumNoDamageTicks(int ticks) {
         if (entity instanceof LivingEntity) {
             ((LivingEntity)entity).setMaximumNoDamageTicks(ticks);
         }
@@ -1101,13 +1125,13 @@ public class EEntity {
      * <p/>
      * <b>Entities: </b> {@link LivingEntity}
      *
-     * @return damage taken since the last no damage ticks time period ({@code null} when not living)
+     * @return damage taken since the last no damage ticks time period (0 when not living)
      */
-    public Double getLastDamage() {
+    public double getLastDamage() {
         if (entity instanceof LivingEntity) {
             return ((LivingEntity)entity).getLastDamage();
         }
-        return null;
+        return 0;
     }
 
     /**
@@ -1118,7 +1142,7 @@ public class EEntity {
      * @param damage amount of damage
      * @return this instance
      */
-    public EEntity setLastDamage(Double damage) {
+    public EEntity setLastDamage(double damage) {
         if (entity instanceof LivingEntity) {
             ((LivingEntity)entity).setLastDamage(damage);
         }
@@ -1130,13 +1154,13 @@ public class EEntity {
      * <p/>
      * <b>Entities: </b> {@link LivingEntity}
      *
-     * @return amount of no damage ticks ({@code null} when not living)
+     * @return amount of no damage ticks (0 when not living)
      */
-    public Integer getNoDamageTicks() {
+    public int getNoDamageTicks() {
         if (entity instanceof LivingEntity) {
             return ((LivingEntity)entity).getNoDamageTicks();
         }
-        return null;
+        return 0;
     }
 
     /**
@@ -1147,7 +1171,7 @@ public class EEntity {
      * @param ticks amount of no damage ticks
      * @return this instance
      */
-    public EEntity setNoDamageTicks(Integer ticks) {
+    public EEntity setNoDamageTicks(int ticks) {
         if (entity instanceof LivingEntity) {
             ((LivingEntity)entity).setNoDamageTicks(ticks);
         }
@@ -1171,139 +1195,72 @@ public class EEntity {
 
 
     //region Equipment
-    /**
-     * Gets the inventory with the equipment worn by the living entity.
-     * <p/>
-     * <b>Entities: </b> {@link LivingEntity}
-     *
-     * @return the living entity's inventory
-     */
-    public EntityEquipment getEquipment() {
-        if (entity instanceof LivingEntity) {
-            return ((LivingEntity) entity).getEquipment();
-        }
-        return null;
-    }
-
-    public EItem getItemInMainHand() {
-        if (entity instanceof LivingEntity) {
-            return new EItem(((LivingEntity)entity).getEquipment().getItemInMainHand());
-        }
-        return null;
-    }
-
-    public EEntity setItemInMainHand(EItem item) {
-        if (entity instanceof LivingEntity) {
-            ((LivingEntity)entity).getEquipment().setItemInMainHand(item);
-        }
-        return this;
-    }
-
-    public EItem getItemInOffHand() {
-        if (entity instanceof LivingEntity) {
-            return new EItem(((LivingEntity)entity).getEquipment().getItemInOffHand());
-        }
-        return null;
-    }
-
-    public EEntity setItemInOffHand(EItem item) {
-        if (entity instanceof LivingEntity) {
-            ((LivingEntity)entity).getEquipment().setItemInOffHand(item);
-        }
-        return this;
-    }
-
-    public EItem[] getArmorContents() {
-        if (entity instanceof LivingEntity) {
-            EItem[] items = new EItem[((LivingEntity)entity).getEquipment().getArmorContents().length];
-            for (int i = 0; i < items.length; i++) {
-                items[i] = new EItem(((LivingEntity)entity).getEquipment().getArmorContents()[i]);
-            }
-            return items;
-        }
-        return null;
-    }
-
-    public EEntity setArmorContents(EItem[] items) {
-        if (entity instanceof LivingEntity) {
-            ((LivingEntity)entity).getEquipment().setArmorContents(items);
-        }
-        return this;
-    }
-
-    public EEntity clearEquipment() {
-        if (entity instanceof LivingEntity) {
-            ((LivingEntity)entity).getEquipment().clear();
-        }
-        return this;
-    }
-
-    public Float getItemInHandDropChance() {
+    public float getItemInHandDropChance() {
         if (entity instanceof LivingEntity) {
             return ((LivingEntity)entity).getEquipment().getItemInHandDropChance();
         }
         return 0f;
     }
 
-    public EEntity setItemInHandDropChance(Float chance) {
+    public EEntity setItemInHandDropChance(double chance) {
         if (entity instanceof LivingEntity) {
-            ((LivingEntity)entity).getEquipment().setItemInHandDropChance(chance);
+            ((LivingEntity)entity).getEquipment().setItemInHandDropChance((float)chance);
         }
         return this;
     }
 
-    public Float getHelmetDropChance() {
+    public float getHelmetDropChance() {
         if (entity instanceof LivingEntity) {
             return ((LivingEntity)entity).getEquipment().getItemInHandDropChance();
         }
         return 0f;
     }
 
-    public EEntity setHelmetDropChance(Float chance) {
+    public EEntity setHelmetDropChance(double chance) {
         if (entity instanceof LivingEntity) {
-            ((LivingEntity)entity).getEquipment().setHelmetDropChance(chance);
+            ((LivingEntity)entity).getEquipment().setHelmetDropChance((float)chance);
         }
         return this;
     }
 
-    public Float getChestplateDropChance() {
+    public float getChestplateDropChance() {
         if (entity instanceof LivingEntity) {
             return ((LivingEntity)entity).getEquipment().getChestplateDropChance();
         }
         return 0f;
     }
 
-    public EEntity setChestplateDropChance(Float chance) {
+    public EEntity setChestplateDropChance(double chance) {
         if (entity instanceof LivingEntity) {
-            ((LivingEntity)entity).getEquipment().setChestplateDropChance(chance);
+            ((LivingEntity)entity).getEquipment().setChestplateDropChance((float)chance);
         }
         return this;
     }
 
-    public Float getLeggingsDropChance() {
+    public float getLeggingsDropChance() {
         if (entity instanceof LivingEntity) {
             return ((LivingEntity)entity).getEquipment().getLeggingsDropChance();
         }
         return 0f;
     }
 
-    public EEntity setLeggingsDropChance(Float chance) {
+    public EEntity setLeggingsDropChance(double chance) {
         if (entity instanceof LivingEntity) {
-            ((LivingEntity)entity).getEquipment().setLeggingsDropChance(chance);
+            ((LivingEntity)entity).getEquipment().setLeggingsDropChance((float)chance);
         }
         return this;
     }
 
-    public Float getBootsDropChance() {
+    public float getBootsDropChance() {
         if (entity instanceof LivingEntity) {
             return ((LivingEntity)entity).getEquipment().getBootsDropChance();
         }
         return 0f;
     }
 
-    public EEntity setBootsDropChance(Float chance) {
+    public EEntity setBootsDropChance(double chance) {
         if (entity instanceof LivingEntity) {
-            ((LivingEntity)entity).getEquipment().setBootsDropChance(chance);
+            ((LivingEntity)entity).getEquipment().setBootsDropChance((float)chance);
         }
         return this;
     }
@@ -1453,7 +1410,7 @@ public class EEntity {
      *
      * @return age (-1 when not Ageable)
      */
-    public Integer getAge() {
+    public int getAge() {
         if (entity instanceof Ageable) {
             return ((Ageable)entity).getAge();
         }
@@ -1468,7 +1425,7 @@ public class EEntity {
      * @param age new age
      * @return this instance
      */
-    public EEntity setAge(Integer age) {
+    public EEntity setAge(int age) {
         if (entity instanceof Ageable) {
             ((Ageable)entity).setAge(age);
         }
@@ -1861,6 +1818,91 @@ public class EEntity {
 
     //region Mixed
 
+    //region Equipment
+
+    /**
+     * Gets the inventory with the equipment worn by the living entity.
+     * <p/>
+     * <b>Entities: </b> {@link LivingEntity}, {@link ArmorStand}
+     *
+     * @return the living entity's inventory
+     */
+    public EntityEquipment getEquipment() {
+        if (entity instanceof LivingEntity) {
+            return ((LivingEntity) entity).getEquipment();
+        } else if (entity instanceof ArmorStand) {
+            return ((ArmorStand) entity).getEquipment();
+        }
+        return null;
+    }
+
+    public EItem getItemInMainHand() {
+        if (entity instanceof LivingEntity) {
+            return new EItem(((LivingEntity)entity).getEquipment().getItemInMainHand());
+        } else if (entity instanceof ArmorStand) {
+            return new EItem(((ArmorStand)entity).getEquipment().getItemInMainHand());
+        }
+        return null;
+    }
+
+    public EEntity setItemInMainHand(EItem item) {
+        if (entity instanceof LivingEntity) {
+            ((LivingEntity)entity).getEquipment().setItemInMainHand(item);
+        } else if (entity instanceof ArmorStand) {
+            ((ArmorStand)entity).getEquipment().setItemInMainHand(item);
+        }
+        return this;
+    }
+
+    public EItem getItemInOffHand() {
+        if (entity instanceof LivingEntity) {
+            return new EItem(((LivingEntity)entity).getEquipment().getItemInOffHand());
+        } else if (entity instanceof ArmorStand) {
+            return new EItem(((ArmorStand)entity).getEquipment().getItemInOffHand());
+        }
+        return null;
+    }
+
+    public EEntity setItemInOffHand(EItem item) {
+        if (entity instanceof LivingEntity) {
+            ((LivingEntity)entity).getEquipment().setItemInOffHand(item);
+        } else if (entity instanceof ArmorStand) {
+            ((ArmorStand)entity).getEquipment().setItemInMainHand(item);
+        }
+        return this;
+    }
+
+    public EItem[] getArmorContents() {
+        EItem[] items = null;
+        if (entity instanceof LivingEntity) {
+            items = new EItem[((LivingEntity)entity).getEquipment().getArmorContents().length];
+        } else if (entity instanceof ArmorStand) {
+            items = new EItem[((ArmorStand)entity).getEquipment().getArmorContents().length];
+        }
+        for (int i = 0; i < items.length; i++) {
+            items[i] = new EItem(((LivingEntity)entity).getEquipment().getArmorContents()[i]);
+        }
+        return items;
+    }
+
+    public EEntity setArmorContents(EItem[] items) {
+        if (entity instanceof LivingEntity) {
+            ((LivingEntity)entity).getEquipment().setArmorContents(items);
+        } else if (entity instanceof ArmorStand) {
+            ((ArmorStand)entity).getEquipment().setArmorContents(items);
+        }
+        return this;
+    }
+
+    public EEntity clearEquipment() {
+        if (entity instanceof LivingEntity) {
+            ((LivingEntity)entity).getEquipment().clear();
+        } else if (entity instanceof ArmorStand) {
+            ((ArmorStand)entity).getEquipment().clear();
+        }
+        return this;
+    }
+
     public EItem getBoots() {
         if (entity instanceof ArmorStand) {
             return new EItem(((ArmorStand)entity).getBoots());
@@ -1932,8 +1974,10 @@ public class EEntity {
         }
         return this;
     }
+    //endregion Equipment
 
 
+    //region Items
     public EItem getItem() {
         if (entity instanceof Item) {
             return new EItem(((Item)entity).getItemStack());
@@ -1955,8 +1999,10 @@ public class EEntity {
         }
         return this;
     }
+    //endregion
 
 
+    //region PotionEffects
     //TODO: Methods to apply potion effects safely. (increase duration for same effect, override when effect is better and ignore when effect is worse)
 
     /**
@@ -2095,8 +2141,10 @@ public class EEntity {
         }
         return new ArrayList<>();
     }
+    //endregion
 
 
+    //region Sitting
     public Boolean isSitting() {
         if (entity instanceof Ocelot) {
             return ((Ocelot)entity).isSitting();
@@ -2114,8 +2162,10 @@ public class EEntity {
         }
         return this;
     }
+    //endregion
 
 
+    //region Angry
     public Boolean isAngry() {
         if (entity instanceof Wolf) {
             return ((Wolf)entity).isAngry();
@@ -2133,8 +2183,10 @@ public class EEntity {
         }
         return this;
     }
+    //endregion
 
 
+    //region Saddle
     public Boolean hasSaddle() {
         if (entity instanceof Pig) {
             return ((Pig)entity).hasSaddle();
@@ -2170,8 +2222,10 @@ public class EEntity {
         }
         return this;
     }
+    //endregion
 
 
+    //region DyeColor
     public DyeColor getColor() {
         if (entity instanceof Colorable) {
             return ((Colorable)entity).getColor();
@@ -2189,8 +2243,10 @@ public class EEntity {
         }
         return this;
     }
+    //endregion
 
 
+    //region Profession
     public Villager.Profession getProfession() {
         if (entity instanceof Villager) {
             return ((Villager)entity).getProfession();
@@ -2209,25 +2265,11 @@ public class EEntity {
         return this;
     }
     //endregion
+    //endregion
 
 
 
     //region ArmorStand
-
-    //TODO: Change this when API changes (assuming it will have offhand and mainhand methods)
-    public EItem getItemInHand() {
-        if (entity instanceof ArmorStand) {
-            return new EItem(((ArmorStand)entity).getItemInHand());
-        }
-        return null;
-    }
-
-    public EEntity setItemInHand(EItem item) {
-        if (entity instanceof ArmorStand) {
-            ((ArmorStand)entity).setItemInHand(item);
-        }
-        return this;
-    }
 
     public EulerAngle getBodyPose() {
         if (entity instanceof ArmorStand) {
@@ -2239,6 +2281,13 @@ public class EEntity {
     public EEntity setBodyPose(EulerAngle pose) {
         if (entity instanceof ArmorStand) {
             ((ArmorStand)entity).setBodyPose(pose);
+        }
+        return this;
+    }
+
+    public EEntity setBodyPose(Vector pose) {
+        if (entity instanceof ArmorStand) {
+            ((ArmorStand)entity).setBodyPose(new EulerAngle(Math.toRadians(pose.getX()), Math.toRadians(pose.getY()), Math.toRadians(pose.getZ())));
         }
         return this;
     }
@@ -2257,6 +2306,13 @@ public class EEntity {
         return this;
     }
 
+    public EEntity setHeadPose(Vector pose) {
+        if (entity instanceof ArmorStand) {
+            ((ArmorStand)entity).setHeadPose(new EulerAngle(Math.toRadians(pose.getX()), Math.toRadians(pose.getY()), Math.toRadians(pose.getZ())));
+        }
+        return this;
+    }
+
     public EulerAngle getLeftArmPose() {
         if (entity instanceof ArmorStand) {
             return ((ArmorStand)entity).getLeftArmPose();
@@ -2267,6 +2323,13 @@ public class EEntity {
     public EEntity setLeftArmPose(EulerAngle pose) {
         if (entity instanceof ArmorStand) {
             ((ArmorStand)entity).setLeftArmPose(pose);
+        }
+        return this;
+    }
+
+    public EEntity setLeftArmPose(Vector pose) {
+        if (entity instanceof ArmorStand) {
+            ((ArmorStand)entity).setLeftArmPose(new EulerAngle(Math.toRadians(pose.getX()), Math.toRadians(pose.getY()), Math.toRadians(pose.getZ())));
         }
         return this;
     }
@@ -2285,6 +2348,13 @@ public class EEntity {
         return this;
     }
 
+    public EEntity setRightArmPose(Vector pose) {
+        if (entity instanceof ArmorStand) {
+            ((ArmorStand)entity).setRightArmPose(new EulerAngle(Math.toRadians(pose.getX()), Math.toRadians(pose.getY()), Math.toRadians(pose.getZ())));
+        }
+        return this;
+    }
+
     public EulerAngle getLeftLegPose() {
         if (entity instanceof ArmorStand) {
             return ((ArmorStand)entity).getLeftLegPose();
@@ -2299,6 +2369,13 @@ public class EEntity {
         return this;
     }
 
+    public EEntity setLeftLegPose(Vector pose) {
+        if (entity instanceof ArmorStand) {
+            ((ArmorStand)entity).setLeftLegPose(new EulerAngle(Math.toRadians(pose.getX()), Math.toRadians(pose.getY()), Math.toRadians(pose.getZ())));
+        }
+        return this;
+    }
+
     public EulerAngle getRightLegPose() {
         if (entity instanceof ArmorStand) {
             return ((ArmorStand)entity).getRightLegPose();
@@ -2309,6 +2386,13 @@ public class EEntity {
     public EEntity setRightLegPose(EulerAngle pose) {
         if (entity instanceof ArmorStand) {
             ((ArmorStand)entity).setRightLegPose(pose);
+        }
+        return this;
+    }
+
+    public EEntity setRightLegPose(Vector pose) {
+        if (entity instanceof ArmorStand) {
+            ((ArmorStand)entity).setRightLegPose(new EulerAngle(Math.toRadians(pose.getX()), Math.toRadians(pose.getY()), Math.toRadians(pose.getZ())));
         }
         return this;
     }
@@ -2388,14 +2472,14 @@ public class EEntity {
 
     //region Arrow
 
-    public Integer getKnockbackStrength() {
+    public int getKnockbackStrength() {
         if (entity instanceof Arrow) {
             return ((Arrow)entity).getKnockbackStrength();
         }
         return 0;
     }
 
-    public EEntity setKnockbackStrength(Integer knockbackStrength) {
+    public EEntity setKnockbackStrength(int knockbackStrength) {
         if (entity instanceof Arrow) {
             ((Arrow)entity).setKnockbackStrength(knockbackStrength);
         }
@@ -2421,100 +2505,100 @@ public class EEntity {
 
     //region AreaEffectCloud
 
-    public Integer getDuration() {
+    public int getDuration() {
         if (entity instanceof AreaEffectCloud) {
             return ((AreaEffectCloud)entity).getDuration();
         }
         return 0;
     }
 
-    public EEntity setDuration(Integer ticks) {
+    public EEntity setDuration(int ticks) {
         if (entity instanceof AreaEffectCloud) {
             ((AreaEffectCloud)entity).setDuration(ticks);
         }
         return this;
     }
 
-    public Integer getWaitTime() {
+    public int getWaitTime() {
         if (entity instanceof AreaEffectCloud) {
             return ((AreaEffectCloud)entity).getWaitTime();
         }
         return 0;
     }
 
-    public EEntity setWaitTime(Integer ticks) {
+    public EEntity setWaitTime(int ticks) {
         if (entity instanceof AreaEffectCloud) {
             ((AreaEffectCloud)entity).setWaitTime(ticks);
         }
         return this;
     }
 
-    public Integer getReapplicationDelay() {
+    public int getReapplicationDelay() {
         if (entity instanceof AreaEffectCloud) {
             return ((AreaEffectCloud)entity).getReapplicationDelay();
         }
         return 0;
     }
 
-    public EEntity setReapplicationDelay(Integer ticks) {
+    public EEntity setReapplicationDelay(int ticks) {
         if (entity instanceof AreaEffectCloud) {
             ((AreaEffectCloud)entity).setReapplicationDelay(ticks);
         }
         return this;
     }
 
-    public Integer getDurationOnUse() {
+    public int getDurationOnUse() {
         if (entity instanceof AreaEffectCloud) {
             return ((AreaEffectCloud)entity).getDurationOnUse();
         }
         return 0;
     }
 
-    public EEntity setDurationOnUse(Integer ticks) {
+    public EEntity setDurationOnUse(int ticks) {
         if (entity instanceof AreaEffectCloud) {
             ((AreaEffectCloud)entity).setDurationOnUse(ticks);
         }
         return this;
     }
 
-    public Float getRadius() {
+    public float getRadius() {
         if (entity instanceof AreaEffectCloud) {
             return ((AreaEffectCloud)entity).getRadius();
         }
         return 0f;
     }
 
-    public EEntity setRadius(Float radius) {
+    public EEntity setRadius(double radius) {
         if (entity instanceof AreaEffectCloud) {
-            ((AreaEffectCloud)entity).setRadius(radius);
+            ((AreaEffectCloud)entity).setRadius((float)radius);
         }
         return this;
     }
 
-    public Float getRadiusOnUse() {
+    public float getRadiusOnUse() {
         if (entity instanceof AreaEffectCloud) {
             return ((AreaEffectCloud)entity).getRadiusOnUse();
         }
         return 0f;
     }
 
-    public EEntity setRadiusOnUse(Float radius) {
+    public EEntity setRadiusOnUse(double radius) {
         if (entity instanceof AreaEffectCloud) {
-            ((AreaEffectCloud)entity).setRadiusOnUse(radius);
+            ((AreaEffectCloud)entity).setRadiusOnUse((float)radius);
         }
         return this;
     }
 
-    public Float getRadiusPerTick() {
+    public float getRadiusPerTick() {
         if (entity instanceof AreaEffectCloud) {
             return ((AreaEffectCloud)entity).getRadiusPerTick();
         }
         return 0f;
     }
 
-    public EEntity setRadiusPerTick(Float radius) {
+    public EEntity setRadiusPerTick(double radius) {
         if (entity instanceof AreaEffectCloud) {
-            ((AreaEffectCloud)entity).setRadiusPerTick(radius);
+            ((AreaEffectCloud)entity).setRadiusPerTick((float)radius);
         }
         return this;
     }
@@ -2552,28 +2636,28 @@ public class EEntity {
 
     //region Minecarts
 
-    public Double getDamage() {
+    public double getDamage() {
         if (entity instanceof Minecart) {
             return ((Minecart)entity).getDamage();
         }
         return 0d;
     }
 
-    public EEntity setDamage(Double damage) {
+    public EEntity setDamage(double damage) {
         if (entity instanceof Minecart) {
             ((Minecart)entity).setDamage(damage);
         }
         return this;
     }
 
-    public Double getMaxSpeed() {
+    public double getMaxSpeed() {
         if (entity instanceof Minecart) {
             return ((Minecart)entity).getMaxSpeed();
         }
         return 0d;
     }
 
-    public EEntity setMaxSpeed(Double speed) {
+    public EEntity setMaxSpeed(double speed) {
         if (entity instanceof Minecart) {
             ((Minecart)entity).setMaxSpeed(speed);
         }
@@ -2636,14 +2720,14 @@ public class EEntity {
         return this;
     }
 
-    public Integer getDisplayBlockOffset() {
+    public int getDisplayBlockOffset() {
         if (entity instanceof Minecart) {
             return ((Minecart)entity).getDisplayBlockOffset();
         }
         return 0;
     }
 
-    public EEntity setDisplayBlockOffset(Integer offset) {
+    public EEntity setDisplayBlockOffset(int offset) {
         if (entity instanceof Minecart) {
             ((Minecart)entity).setDisplayBlockOffset(offset);
         }
@@ -2697,14 +2781,14 @@ public class EEntity {
 
     //region ExperienceOrb
 
-    public Integer getExperience() {
+    public int getExperience() {
         if (entity instanceof ExperienceOrb) {
             return ((ExperienceOrb)entity).getExperience();
         }
         return 0;
     }
 
-    public EEntity setExperience(Integer experience) {
+    public EEntity setExperience(int experience) {
         if (entity instanceof ExperienceOrb) {
             ((ExperienceOrb)entity).setExperience(experience);
         }
@@ -2789,14 +2873,14 @@ public class EEntity {
 
     //region Item
 
-    public Integer getPickupDelay() {
+    public int getPickupDelay() {
         if (entity instanceof Item) {
             return ((Item)entity).getPickupDelay();
         }
         return 0;
     }
 
-    public EEntity setPickupDelay(Integer delay) {
+    public EEntity setPickupDelay(int delay) {
         if (entity instanceof Item) {
             ((Item)entity).setPickupDelay(delay);
         }
@@ -2853,14 +2937,14 @@ public class EEntity {
 
     //region FishHook
 
-    public Double getBiteChance() {
+    public double getBiteChance() {
         if (entity instanceof FishHook) {
             return ((FishHook)entity).getBiteChance();
         }
         return 0d;
     }
 
-    public EEntity setBiteChance(Double chance) {
+    public EEntity setBiteChance(double chance) {
         if (entity instanceof FishHook) {
             ((FishHook)entity).setBiteChance(chance);
         }
@@ -2872,14 +2956,14 @@ public class EEntity {
 
     //region TNTPrimed
 
-    public Integer getFuseTicks() {
+    public int getFuseTicks() {
         if (entity instanceof TNTPrimed) {
             return ((TNTPrimed)entity).getFuseTicks();
         }
         return 0;
     }
 
-    public EEntity setFuseTicks(Integer fuseTicks) {
+    public EEntity setFuseTicks(int fuseTicks) {
         if (entity instanceof TNTPrimed) {
             ((TNTPrimed)entity).setFuseTicks(fuseTicks);
         }
@@ -2898,16 +2982,16 @@ public class EEntity {
 
     //region Explosive
 
-    public Float getYield() {
+    public float getYield() {
         if (entity instanceof Explosive) {
             return ((Explosive)entity).getYield();
         }
         return 0f;
     }
 
-    public EEntity setYield(Float yield) {
+    public EEntity setYield(double yield) {
         if (entity instanceof Explosive) {
-            ((Explosive)entity).setYield(yield);
+            ((Explosive)entity).setYield((float)yield);
         }
         return this;
     }
@@ -3094,42 +3178,42 @@ public class EEntity {
         return this;
     }
 
-    public Integer getDomestication() {
+    public int getDomestication() {
         if (entity instanceof Horse) {
             return ((Horse)entity).getDomestication();
         }
         return 0;
     }
 
-    public EEntity setDomestication(Integer level) {
+    public EEntity setDomestication(int level) {
         if (entity instanceof Horse) {
             ((Horse)entity).setDomestication(level);
         }
         return this;
     }
 
-    public Integer getMaxDomestication() {
+    public int getMaxDomestication() {
         if (entity instanceof Horse) {
             return ((Horse)entity).getMaxDomestication();
         }
         return 0;
     }
 
-    public EEntity setMaxDomestication(Integer level) {
+    public EEntity setMaxDomestication(int level) {
         if (entity instanceof Horse) {
             ((Horse)entity).setMaxDomestication(level);
         }
         return this;
     }
 
-    public Double getJumpStrength() {
+    public double getJumpStrength() {
         if (entity instanceof Horse) {
             return ((Horse)entity).getJumpStrength();
         }
         return 0d;
     }
 
-    public EEntity setJumpStrength(Double strength) {
+    public EEntity setJumpStrength(double strength) {
         if (entity instanceof Horse) {
             ((Horse)entity).setJumpStrength(strength);
         }
@@ -3193,14 +3277,14 @@ public class EEntity {
 
     //region PigZombie
 
-    public Integer getAnger() {
+    public int getAnger() {
         if (entity instanceof PigZombie) {
             return ((PigZombie)entity).getAnger();
         }
         return 0;
     }
 
-    public EEntity setAnger(Integer level) {
+    public EEntity setAnger(int level) {
         if (entity instanceof PigZombie) {
             ((PigZombie)entity).setAnger(level);
         }
@@ -3261,14 +3345,14 @@ public class EEntity {
 
     //region Slime
 
-    public Integer getSize() {
+    public int getSize() {
         if (entity instanceof Slime) {
             return ((Slime)entity).getSize();
         }
         return 0;
     }
 
-    public EEntity setSize(Integer size) {
+    public EEntity setSize(int size) {
         if (entity instanceof Slime) {
             ((Slime)entity).setSize(size);
         }
@@ -3294,21 +3378,21 @@ public class EEntity {
         return this;
     }
 
-    public MerchantRecipe getRecipe(Integer i) {
+    public MerchantRecipe getRecipe(int i) {
         if (entity instanceof Villager) {
             return ((Villager)entity).getRecipe(i);
         }
         return null;
     }
 
-    public EEntity setRecipe(Integer i, MerchantRecipe recipe) {
+    public EEntity setRecipe(int i, MerchantRecipe recipe) {
         if (entity instanceof Villager) {
             ((Villager)entity).setRecipe(i, recipe);
         }
         return this;
     }
 
-    public Integer getRecipeCount() {
+    public int getRecipeCount() {
         if (entity instanceof Villager) {
             return ((Villager)entity).getRecipeCount();
         }
@@ -3329,14 +3413,14 @@ public class EEntity {
         return null;
     }
 
-    public Integer getRiches() {
+    public int getRiches() {
         if (entity instanceof Villager) {
             return ((Villager)entity).getRiches();
         }
         return 0;
     }
 
-    public EEntity setRiches(Integer riches) {
+    public EEntity setRiches(int riches) {
         if (entity instanceof Villager) {
             ((Villager)entity).setRiches(riches);
         }
