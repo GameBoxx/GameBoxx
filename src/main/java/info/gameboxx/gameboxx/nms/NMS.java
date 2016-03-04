@@ -28,6 +28,8 @@ package info.gameboxx.gameboxx.nms;
 import info.gameboxx.gameboxx.GameBoxx;
 import info.gameboxx.gameboxx.nms.chat.Chat;
 import info.gameboxx.gameboxx.nms.chat.Chat_v1_9_R1;
+import info.gameboxx.gameboxx.nms.entity.EntityUtils;
+import info.gameboxx.gameboxx.nms.entity.EntityUtils_v1_9_R1;
 import info.gameboxx.gameboxx.nms.worldloader.WorldLoader;
 import info.gameboxx.gameboxx.nms.worldloader.WorldLoader_v1_9_R1;
 import org.bukkit.Bukkit;
@@ -40,6 +42,7 @@ public class NMS {
 
     private WorldLoader worldLoader;
     private Chat chat;
+    private EntityUtils entityUtils;
 
     private NMS() {
         try {
@@ -52,6 +55,7 @@ public class NMS {
         if (version == NMSVersion.V1_9_R1) {
             worldLoader = new WorldLoader_v1_9_R1(gb);
             chat = new Chat_v1_9_R1();
+            entityUtils = new EntityUtils_v1_9_R1();
         }
     }
 
@@ -61,6 +65,10 @@ public class NMS {
 
     public Chat getChat() {
         return chat;
+    }
+
+    public EntityUtils getEntityUtils() {
+        return entityUtils;
     }
 
 

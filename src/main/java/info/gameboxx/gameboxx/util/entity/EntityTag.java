@@ -398,9 +398,9 @@ public class EntityTag {
     public static final EntityTag PLAYERCREATED = EntityTag.register(new BoolOption("PLAYERCREATED", true), "setPlayerCreated", IronGolem.class);
 
     //Tags
-    public static final EntityTag NOAI = EntityTag.register(new BoolOption("NOAI", true), "setAI", Entity.class);
+    public static final EntityTag NOAI = EntityTag.register(new BoolOption("NOAI", true), "setNoAI", Entity.class);
     public static final EntityTag INVULNERABLE = EntityTag.register(new BoolOption("INVULNERABLE", true), "setInvulnerable", Entity.class);
     public static final EntityTag SILENT = EntityTag.register(new BoolOption("SILENT", true), "setSilent", Entity.class);
-    public static final EntityTag INVISIBLE = EntityTag.register(new BoolOption("INVISIBLE", true), "setInvisible", Entity.class);
+    public static final EntityTag PERSISTENT = EntityTag.register(new BoolOption("PERSISTENT", true), "setPersistent", Entity.class);
     //endregion
 }

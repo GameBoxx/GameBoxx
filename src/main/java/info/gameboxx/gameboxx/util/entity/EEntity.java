@@ -25,6 +25,8 @@
 
 package info.gameboxx.gameboxx.util.entity;
 
+import info.gameboxx.gameboxx.nms.NMS;
+import info.gameboxx.gameboxx.nms.entity.EntityUtils;
 import info.gameboxx.gameboxx.util.Str;
 import info.gameboxx.gameboxx.util.item.EItem;
 import org.bukkit.*;
@@ -139,6 +141,46 @@ public class EEntity {
     // ################## UTILS/CUSTOM ##################
     // ##################################################
     //region Utils
+
+    //region Tags
+
+    public EEntity setNoAI(boolean state) {
+        NMS.get().getEntityUtils().setTag(bukkit(), EntityUtils.Tag.NOAI, state);
+        return this;
+    }
+
+    public boolean hasAI() {
+        return !NMS.get().getEntityUtils().getTag(bukkit(), EntityUtils.Tag.NOAI);
+    }
+
+    public EEntity setSilent(boolean state) {
+        NMS.get().getEntityUtils().setTag(bukkit(), EntityUtils.Tag.SILENT, state);
+        return this;
+    }
+
+    public boolean isSilent() {
+        return NMS.get().getEntityUtils().getTag(bukkit(), EntityUtils.Tag.SILENT);
+    }
+
+    public EEntity setInvulnerable(boolean state) {
+        NMS.get().getEntityUtils().setTag(bukkit(), EntityUtils.Tag.INVULNERABLE, state);
+        return this;
+    }
+
+    public boolean isInvulnerable() {
+        return NMS.get().getEntityUtils().getTag(bukkit(), EntityUtils.Tag.INVULNERABLE);
+    }
+
+    public EEntity setPersistent(boolean state) {
+        NMS.get().getEntityUtils().setTag(bukkit(), EntityUtils.Tag.PERSISTENT, state);
+        return this;
+    }
+
+    public boolean isPersistent() {
+        return NMS.get().getEntityUtils().getTag(bukkit(), EntityUtils.Tag.PERSISTENT);
+    }
+    //endregion
+
 
     //endregion
 
@@ -747,10 +789,6 @@ public class EEntity {
     }
     //endregion
 
-
-    //region Tags
-
-    //endregion
     //endregion
 
 
