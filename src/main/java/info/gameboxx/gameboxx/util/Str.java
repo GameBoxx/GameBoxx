@@ -259,10 +259,19 @@ public class Str {
     /**
      * Split a string by using a space as split character.
      *
-     * @see Str#splitQuotes(String, char)
+     * @see Str#splitQuotes(String, char, boolean)
      */
     public static List<String> splitQuotes(String string) {
-        return splitQuotes(string, ' ');
+        return splitQuotes(string, ' ', false);
+    }
+
+    /**
+     * Splits the specified string based on the specified character.
+     *
+     * @see Str#splitQuotes(String, char, boolean)
+     */
+    public static List<String> splitQuotes(String string, char split) {
+        return splitQuotes(string, split, false);
     }
 
     /**
@@ -279,10 +288,11 @@ public class Str {
      *
      * @param string The string that needs to be split.
      * @param split The character to use for splitting the string.
+     * @param keepQuotes When true quotes will remain in the slitted strings otherwise they will be removed.
      * This should not be a quote or double quote!
      * @return List of strings split from the input string.
      */
-    public static List<String> splitQuotes(String string, char split) {
+    public static List<String> splitQuotes(String string, char split, boolean keepQuotes) {
         List<String> sections = new ArrayList<String>();
         char[] chars = string.toCharArray();
 
@@ -301,6 +311,9 @@ public class Str {
             if (ch == 34 || ch == 39) {
                 if (ch == quote) {
                     //End of quote
+                    if (keepQuotes) {
+                        section.append(ch);
+                    }
                     sections.add(section.toString());
                     section.setLength(0);
                     quote = 0;
@@ -308,6 +321,9 @@ public class Str {
                 } else if (quote == 0) {
                     //Start of quote
                     quote = ch;
+                    if (keepQuotes) {
+                        section.append(ch);
+                    }
                 } else {
                     //Quote within quote
                     section.append(ch);
