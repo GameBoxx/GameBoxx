@@ -31,6 +31,8 @@ public class EntityStack {
 
     private final List<EEntity> entities = new ArrayList<>();
 
+    public EntityStack() {}
+
     public EntityStack(EEntity[] entities) {
         this.entities.addAll(Arrays.asList(entities));
     }
@@ -99,6 +101,12 @@ public class EntityStack {
     public void stack() {
         for (int i = 0; i < entities.size()-1; i++) {
             entities.get(i).setPassenger(entities.get(i+1));
+        }
+    }
+
+    public void killAll() {
+        for (EEntity entity : entities) {
+            entity.remove();
         }
     }
 
