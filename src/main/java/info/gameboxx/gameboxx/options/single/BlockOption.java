@@ -29,10 +29,12 @@ import info.gameboxx.gameboxx.options.SingleOption;
 import info.gameboxx.gameboxx.util.Parse;
 import info.gameboxx.gameboxx.util.Utils;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 
+import java.util.List;
 import java.util.Map;
 
 public class BlockOption extends SingleOption {
@@ -82,7 +84,13 @@ public class BlockOption extends SingleOption {
                 return false;
             }
             if (input.startsWith("#")) {
-                value = playerOption.getValue().getTargetBlock(Utils.TRANSPARENT_MATERIALS, 64);
+                List<Block> blocks = playerOption.getValue().getLastTwoTargetBlocks(Utils.TRANSPARENT_MATERIALS, 128);
+                Block block = blocks.get(1);
+                if (block.getType() == Material.AIR) {
+                    error = "No target block...";
+                    return false;
+                }
+                value = block.getRelative(blocks.get(1).getFace(blocks.get(0)));
             } else {
                 value = playerOption.getValue().getLocation().getBlock();
             }
@@ -106,7 +114,13 @@ public class BlockOption extends SingleOption {
                     return false;
                 }
                 if (input.startsWith("#")) {
-                    location = playerOption.getValue().getTargetBlock(Utils.TRANSPARENT_MATERIALS, 64).getLocation();
+                    List<Block> blocks = playerOption.getValue().getLastTwoTargetBlocks(Utils.TRANSPARENT_MATERIALS, 128);
+                    Block block = blocks.get(1);
+                    if (block.getType() == Material.AIR) {
+                        error = "No target block...";
+                        return false;
+                    }
+                    location = block.getRelative(blocks.get(1).getFace(blocks.get(0))).getLocation();
                 } else {
                     location = playerOption.getValue().getLocation();
                 }
