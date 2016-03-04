@@ -28,9 +28,13 @@ package info.gameboxx.gameboxx.commands;
 import info.gameboxx.gameboxx.GameBoxx;
 import info.gameboxx.gameboxx.messages.*;
 import info.gameboxx.gameboxx.util.Str;
+import info.gameboxx.gameboxx.util.entity.EntityParser;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Player;
 
 public class GameBoxxCmd implements CommandExecutor {
 
@@ -103,6 +107,39 @@ public class GameBoxxCmd implements CommandExecutor {
                     "&6&lWebsite URL&8&l: &9&lhttp://gameboxx.info"));
             return true;
         }
+
+
+        //Summon
+        if (args[0].equalsIgnoreCase("summon") || args[0].equalsIgnoreCase("spawnmob") || args[0].equalsIgnoreCase("entity")) {
+            if (!(sender instanceof Player)) {
+                Msg.get("player-only").send(sender);
+                return true;
+            }
+
+            String entityString = Str.implode(args, " ", " ", 1, args.length);
+
+            EntityParser parser = new EntityParser(entityString, null, false);
+            if (!parser.isValid()) {
+                Msg.fromString(parser.getError()).send(sender);
+            } else {
+                sender.sendMessage("Spawned!");
+            }
+            return true;
+        }
+
+        if (args[0].equalsIgnoreCase("test")) {
+            if (!(sender instanceof Player)) {
+                Msg.get("player-only").send(sender);
+                return true;
+            }
+            Player player = (Player)sender;
+            Entity entity = player.getWorld().spawnEntity(player.getLocation(), EntityType.BAT);
+            entity.setPassenger(player);
+
+            return true;
+        }
+
+
 
         Msg.get("gameboxx.help", Param.P("cmd", label)).send(sender);
         return true;
