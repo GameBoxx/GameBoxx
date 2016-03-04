@@ -34,36 +34,7 @@ import org.bukkit.entity.Player;
 
 import java.util.UUID;
 
-public class WorldOption extends SingleOption<World> {
-
-    public WorldOption() {
-        super();
-    }
-
-    public WorldOption(String name) {
-        super(name);
-    }
-
-    public WorldOption(String name, World defaultValue) {
-        super(name, defaultValue);
-    }
-
-
-    @Override
-    public boolean parse(Object input) {
-        if (!parseObject(input)) {
-            return false;
-        }
-        if (value != null) {
-            return true;
-        }
-        return parse((String)input);
-    }
-
-    @Override
-    public boolean parse(String input) {
-        return parse(null, input);
-    }
+public class WorldOption extends SingleOption<World, WorldOption> {
 
     @Override
     public boolean parse(Player player, String input) {
@@ -71,7 +42,7 @@ public class WorldOption extends SingleOption<World> {
 
         if (input.startsWith("@")) {
             PlayerOption playerOption = new PlayerOption();
-            playerOption.setDefault(player);
+            playerOption.def(player);
             playerOption.parse(player, input.substring(1));
             if (!playerOption.hasValue()) {
                 error = playerOption.getError().isEmpty() ? "Invalid player to get the world from." : playerOption.getError();
@@ -106,25 +77,11 @@ public class WorldOption extends SingleOption<World> {
 
     @Override
     public String serialize() {
-        World value = getValue();
-        if (value == null) {
-            return null;
-        }
-        return value.getName();
-    }
-
-    @Override
-    public String getTypeName() {
-        return "world";
-    }
-
-    @Override
-    public Class getRawClass() {
-        return World.class;
+        return getValue() == null ? null : getValue().getName();
     }
 
     @Override
     public WorldOption clone() {
-        return (WorldOption)new WorldOption(name, (World)defaultValue).setDescription(description).setFlag(flag);
+        return super.cloneData(new WorldOption());
     }
 }

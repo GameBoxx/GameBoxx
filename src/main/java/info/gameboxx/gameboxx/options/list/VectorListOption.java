@@ -29,26 +29,15 @@ import info.gameboxx.gameboxx.options.ListOption;
 import info.gameboxx.gameboxx.options.single.VectorOption;
 import org.bukkit.util.Vector;
 
-public class VectorListOption extends ListOption<VectorOption> {
-
-    public VectorListOption() {}
-
-    public VectorListOption(String name) {
-        super(name);
-    }
-
-    public VectorListOption(String name, Vector defaultValue) {
-        super(name, defaultValue);
-    }
-
+public class VectorListOption extends ListOption<Vector, VectorListOption, VectorOption> {
 
     @Override
-    public VectorOption getSingleOption(int index) {
-        return (VectorOption)new VectorOption(name, (Vector)getDefault(index)).setDescription(description).setFlag(flag);
+    public VectorOption getSingleOption() {
+        return new VectorOption();
     }
 
     @Override
     public VectorListOption clone() {
-        return (VectorListOption)new VectorListOption(name, (Vector)defaultValue).setDescription(description).setFlag(flag);
+        return new VectorListOption();
     }
 }

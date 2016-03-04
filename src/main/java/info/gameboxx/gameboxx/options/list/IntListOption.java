@@ -28,20 +28,10 @@ package info.gameboxx.gameboxx.options.list;
 import info.gameboxx.gameboxx.options.ListOption;
 import info.gameboxx.gameboxx.options.single.IntOption;
 
-public class IntListOption extends ListOption<IntOption> {
+public class IntListOption extends ListOption<Integer, IntListOption, IntOption> {
 
     private Integer min = null;
     private Integer max = null;
-
-    public IntListOption() {}
-
-    public IntListOption(String name) {
-        super(name);
-    }
-
-    public IntListOption(String name, Integer defaultValue) {
-        super(name, defaultValue);
-    }
 
 
     public IntListOption min(Integer min) {
@@ -56,12 +46,12 @@ public class IntListOption extends ListOption<IntOption> {
 
 
     @Override
-    public IntOption getSingleOption(int index) {
-        return (IntOption)new IntOption(name, (Integer)getDefault(index)).min(min).max(max).setDescription(description).setFlag(flag);
+    public IntOption getSingleOption() {
+        return new IntOption().min(min).max(max);
     }
 
     @Override
     public IntListOption clone() {
-        return (IntListOption)new IntListOption(name, (Integer)defaultValue).min(min).max(max).setDescription(description).setFlag(flag);
+        return new IntListOption().min(min).max(max);
     }
 }

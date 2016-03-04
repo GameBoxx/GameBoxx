@@ -29,26 +29,15 @@ import info.gameboxx.gameboxx.options.ListOption;
 import info.gameboxx.gameboxx.options.single.MaterialOption;
 import org.bukkit.material.MaterialData;
 
-public class MaterialListOption extends ListOption<MaterialOption> {
-
-    public MaterialListOption() {}
-
-    public MaterialListOption(String name) {
-        super(name);
-    }
-
-    public MaterialListOption(String name, MaterialData defaultValue) {
-        super(name, defaultValue);
-    }
-
+public class MaterialListOption extends ListOption<MaterialData, MaterialListOption, MaterialOption> {
 
     @Override
-    public MaterialOption getSingleOption(int index) {
-        return (MaterialOption)new MaterialOption(name, (MaterialData)getDefault(index)).setDescription(description).setFlag(flag);
+    public MaterialOption getSingleOption() {
+        return new MaterialOption();
     }
 
     @Override
     public MaterialListOption clone() {
-        return (MaterialListOption)new MaterialListOption(name, (MaterialData)defaultValue).setDescription(description).setFlag(flag);
+        return new MaterialListOption();
     }
 }

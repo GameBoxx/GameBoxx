@@ -37,24 +37,14 @@ import org.bukkit.entity.Player;
 import java.util.List;
 import java.util.Map;
 
-public class BlockOption extends SingleOption<Block> {
-
-    public BlockOption() {}
-
-    public BlockOption(String name) {
-        super(name);
-    }
-
-    public BlockOption(String name, Block defaultValue) {
-        super(name, defaultValue);
-    }
+public class BlockOption extends SingleOption<Block, BlockOption> {
 
     @Override
     public boolean parse(Player player, String input) {
         //Get block from player location. @[Player name/uuid]
         if (input.startsWith("@") || input.startsWith("#")) {
             PlayerOption playerOption = new PlayerOption();
-            playerOption.setDefault(player);
+            playerOption.def(player);
             playerOption.parse(player, input.substring(1));
             if (!playerOption.hasValue()) {
                 error = playerOption.getError().isEmpty() ? "Invalid player to get the block from." : playerOption.getError();
@@ -84,7 +74,7 @@ public class BlockOption extends SingleOption<Block> {
             if (data.startsWith("@") || data.startsWith("#")) {
                 //Get block/location from player
                 PlayerOption playerOption = new PlayerOption();
-                playerOption.setDefault(player);
+                playerOption.def(player);
                 playerOption.parse(player, data.substring(1));
                 if (!playerOption.hasValue()) {
                     error = playerOption.getError().isEmpty() ? "Invalid player to get the world/block from." : playerOption.getError();
@@ -104,7 +94,7 @@ public class BlockOption extends SingleOption<Block> {
             } else {
                 //Get world.
                 WorldOption worldOption = new WorldOption();
-                worldOption.setDefault(player == null ? null : player.getWorld());
+                worldOption.def(player == null ? null : player.getWorld());
                 worldOption.parse(player, data);
                 if (!worldOption.hasValue()) {
                     error = worldOption.getError().isEmpty() ? "Invalid world specified." : worldOption.getError();
@@ -177,25 +167,11 @@ public class BlockOption extends SingleOption<Block> {
 
     @Override
     public String serialize() {
-        Block value = getValue();
-        if (value == null) {
-            return null;
-        }
-        return value.getX() + "," + value.getY() + "," + value.getZ() + ":" + value.getWorld().getName();
-    }
-
-    @Override
-    public String getTypeName() {
-        return "block";
-    }
-
-    @Override
-    public Class getRawClass() {
-        return Block.class;
+        return getValue() == null ? null : getValue().getX() + "," + getValue().getY() + "," + getValue().getZ() + ":" + getValue().getWorld().getName();
     }
 
     @Override
     public BlockOption clone() {
-        return (BlockOption)new BlockOption(name, defaultValue).setDescription(description).setFlag(flag);
+        return super.cloneData(new BlockOption());
     }
 }

@@ -27,22 +27,10 @@ package info.gameboxx.gameboxx.options;
 
 import org.bukkit.entity.Player;
 
-public abstract class SingleOption<T> extends Option {
+public abstract class SingleOption<O, S extends SingleOption> extends Option<S> {
 
-    protected T value = null;
-    protected T defaultValue = null;
-
-    public SingleOption() {}
-
-    public SingleOption(String name) {
-        super(name);
-    }
-
-    public SingleOption(String name, T defaultValue) {
-        super(name);
-        this.defaultValue = defaultValue;
-    }
-
+    protected O value = null;
+    protected O defaultValue = null;
 
     /**
      * Reset the error message and the value.
@@ -63,7 +51,7 @@ public abstract class SingleOption<T> extends Option {
      *
      * @return The parse result value or the default value.
      */
-    public T getValue() {
+    public O getValue() {
         return getValueOrDefault();
     }
 
@@ -83,7 +71,15 @@ public abstract class SingleOption<T> extends Option {
      *
      * @return Serialized value as string.
      */
-    public abstract String serialize();
+    public String serialize() {
+        O value = getValue();
+        if (value == null) {
+            return null;
+        }
+        return value.toString();
+    }
+
+
 
     /**
      * Used by {@link #getValue()} to return the value and if it's null the default value.
@@ -91,20 +87,19 @@ public abstract class SingleOption<T> extends Option {
      *
      * @return The value or the default value if it's null.
      */
-    public T getValueOrDefault() {
+    public O getValueOrDefault() {
         if (value == null && defaultValue != null) {
             return defaultValue;
         }
         return value;
     }
 
-
     /**
      * Get the default value if it's set.
      *
      * @return The default value or {@code null} if it's not set.
      */
-    public T getDefault() {
+    public O getDefault() {
         return defaultValue;
     }
 
@@ -114,10 +109,12 @@ public abstract class SingleOption<T> extends Option {
      * @param defaultValue The default value to set. (set to null for no default)
      * @return The option instance.
      */
-    public SingleOption setDefault(T defaultValue) {
+    public S def(O defaultValue) {
         this.defaultValue = defaultValue;
-        return this;
+        return (S)this;
     }
+
+
 
     /**
      * Check whether or not the option has a value.
@@ -142,19 +139,19 @@ public abstract class SingleOption<T> extends Option {
     }
 
 
+
     protected boolean parseObject(Object input) {
         reset();
         if (input == null) {
-            error = "Invalid input, must be a string" + (getRawClass().equals(String.class) ? "." : " or a " + getTypeName() + ".") + " [type=null]";
+            error = "Invalid input! [type=null]";
             return false;
         }
         if (!(input instanceof String)) {
-            if (input.getClass().equals(getRawClass())) {
-                value = (T)input;
+            try {
+                value = (O)input;
                 return true;
-            } else {
-                error = "Invalid input, must be a string " + (getRawClass().equals(String.class) ? "." : " or a " + getTypeName() + ".") + " [type=" + input.getClass().getSimpleName() + "]";
-                return false;
+            } catch (ClassCastException e) {
+                error = "Invalid input! Must be a string or a proper option value. [type=" + input.getClass().getSimpleName() + "]";
             }
         }
         return true;
@@ -162,27 +159,22 @@ public abstract class SingleOption<T> extends Option {
 
 
     public boolean parse(Object input) {
-        return parse(input, null);
-    }
-
-    public boolean parse(Object input, Player player) {
         if (!parseObject(input)) {
             return false;
         }
         if (value != null) {
             return true;
         }
-        return parse((String)input, player);
+        return parse((String)input);
     }
 
     public boolean parse(String input) {
         return parse(null, input);
     }
 
+    public S cloneData(S option) {
+        return (S)option.def(defaultValue).desc(description).flag(flag);
+    }
+
     public abstract boolean parse(Player player, String input);
-
-    public abstract String getTypeName();
-
-    public abstract Class getRawClass();
-
 }

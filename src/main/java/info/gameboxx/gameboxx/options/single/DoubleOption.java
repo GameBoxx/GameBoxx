@@ -29,22 +29,10 @@ import info.gameboxx.gameboxx.options.SingleOption;
 import info.gameboxx.gameboxx.util.Numbers;
 import org.bukkit.entity.Player;
 
-public class DoubleOption extends SingleOption<Double> {
+public class DoubleOption extends SingleOption<Double, DoubleOption> {
 
     private Double min = null;
     private Double max = null;
-
-    public DoubleOption() {
-        super();
-    }
-
-    public DoubleOption(String name) {
-        super(name);
-    }
-
-    public DoubleOption(String name, Double defaultValue) {
-        super(name, defaultValue);
-    }
 
     public DoubleOption min(Double min) {
         this.min = min;
@@ -57,18 +45,7 @@ public class DoubleOption extends SingleOption<Double> {
     }
 
     @Override
-    public boolean parse(Object input) {
-        if (!parseObject(input)) {
-            return false;
-        }
-        if (value != null) {
-            return true;
-        }
-        return parse((String)input);
-    }
-
-    @Override
-    public boolean parse(String input) {
+    public boolean parse(Player player, String input) {
         try {
             value = Double.parseDouble(input);
         } catch (Exception e) {
@@ -89,40 +66,12 @@ public class DoubleOption extends SingleOption<Double> {
         return true;
     }
 
-    @Override
-    public boolean parse(Player player, String input) {
-        return parse(input);
-    }
-
-    @Override
-    public String serialize() {
-        Double value = getValue();
-        if (value == null) {
-            return null;
-        }
-        return value.toString();
-    }
-
     public String serialize(int roundDecimals) {
-        Double value = getValue();
-        if (value == null) {
-            return null;
-        }
-        return Double.toString(Numbers.round(value, roundDecimals));
-    }
-
-    @Override
-    public String getTypeName() {
-        return "decimal number";
-    }
-
-    @Override
-    public Class getRawClass() {
-        return Double.class;
+        return getValue() == null ? null : Double.toString(Numbers.round(getValue(), roundDecimals));
     }
 
     @Override
     public DoubleOption clone() {
-        return (DoubleOption)new DoubleOption(name, (Double)defaultValue).min(min).max(max).setDescription(description).setFlag(flag);
+        return super.cloneData(new DoubleOption().min(min).max(max));
     }
 }

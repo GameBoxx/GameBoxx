@@ -93,7 +93,19 @@ public class Numbers {
         return list.get(0);
     }
 
-    public static double round(double value, int decimalPlace) {
+    public static Double round(Double value, int decimalPlace) {
+        if (value == null) {
+            return null;
+        }
+        BigDecimal bd = new BigDecimal(value);
+        bd = bd.setScale(decimalPlace, BigDecimal.ROUND_HALF_UP);
+        return bd.doubleValue();
+    }
+
+    public static Double round(Float value, int decimalPlace) {
+        if (value == null) {
+            return null;
+        }
         BigDecimal bd = new BigDecimal(value);
         bd = bd.setScale(decimalPlace, BigDecimal.ROUND_HALF_UP);
         return bd.doubleValue();

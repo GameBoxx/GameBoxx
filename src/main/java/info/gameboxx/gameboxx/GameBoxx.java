@@ -39,6 +39,7 @@ import info.gameboxx.gameboxx.user.UserManager;
 import info.gameboxx.gameboxx.util.Parse;
 import info.gameboxx.gameboxx.util.cuboid.Cuboid;
 import info.gameboxx.gameboxx.util.cuboid.SelectionManager;
+import info.gameboxx.gameboxx.util.entity.EntityTag;
 import net.milkbowl.vault.Vault;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.plugin.Plugin;
@@ -96,6 +97,8 @@ public class GameBoxx extends JavaPlugin {
             log("Using " + language.getName() + " [" + language.getID() + "] as language!");
         }
         loadMessages();
+
+        EntityTag.registerDefaults();
 
         um = new UserManager();
         sm = new SelectionManager();

@@ -53,7 +53,7 @@ public class MinPlayersCP extends GameComponent {
 
     @Override
     public void registerOptions() {
-        registerArenaOption("min-players", new IntOption("MinPlayers", 2).min(1).setDescription(Msg.getString("opt.min-players")));
+        registerArenaOption("min-players", new IntOption().name("MinPlayers").def(2).min(1).desc(Msg.getString("opt.min-players")));
     }
 
     @Override

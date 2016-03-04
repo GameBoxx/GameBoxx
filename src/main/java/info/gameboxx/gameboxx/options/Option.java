@@ -29,7 +29,7 @@ package info.gameboxx.gameboxx.options;
  * Base class for an option.
  * Options can be used to parse input and validate it.
  */
-public abstract class Option {
+public abstract class Option<T extends Option> {
 
     protected String name = "";
     protected String description = "";
@@ -38,11 +38,6 @@ public abstract class Option {
 
     protected String error = "";
 
-    public Option() {}
-
-    public Option(String name) {
-        this.name = name;
-    }
 
     /**
      * Check whether or not the option produced an error when parsing.
@@ -63,6 +58,11 @@ public abstract class Option {
         return error;
     }
 
+    public T name(String name) {
+        this.name = name;
+        return (T)this;
+    }
+
     /**
      * Get the name of the option which was specified when creating the option.
      * This will be an empty string if the option doesn't have a name.
@@ -75,7 +75,7 @@ public abstract class Option {
 
     /**
      * Get the setDescription for this option.
-     * The setDescription is what's set with {@link #setDescription(String)}
+     * The setDescription is what's set with {@link #desc(String)}
      * May be an empty string if the option doesn't have a setDescription set.
      *
      * @return The setDescription string or an empty string.
@@ -92,9 +92,9 @@ public abstract class Option {
      * @param description The setDescription message. (May contain colors and new lines with \n)
      * @return The option instance.
      */
-    public Option setDescription(String description) {
+    public T desc(String description) {
         this.description = description;
-        return this;
+        return (T)this;
     }
 
     /**
@@ -119,7 +119,7 @@ public abstract class Option {
     /**
      * Get the {@link OptionFlag} for this option.
      *
-     * @return The flag set for this option with {@link #setFlag(OptionFlag)}
+     * @return The flag set for this option with {@link #flag(OptionFlag)}
      */
     public OptionFlag getFlag() {
         return flag;
@@ -131,9 +131,9 @@ public abstract class Option {
      * @param flag The flag to set. (Set to {@link OptionFlag#NONE} for no flag.
      * @return The option instance.
      */
-    public Option setFlag(OptionFlag flag) {
+    public T flag(OptionFlag flag) {
         this.flag = flag;
-        return this;
+        return (T)this;
     }
 
     /**
@@ -141,5 +141,5 @@ public abstract class Option {
      *
      * @return Cloned option
      */
-    public abstract Option clone();
+    public abstract T clone();
 }

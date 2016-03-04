@@ -28,22 +28,10 @@ package info.gameboxx.gameboxx.options.single;
 import info.gameboxx.gameboxx.options.SingleOption;
 import org.bukkit.entity.Player;
 
-public class IntOption extends SingleOption<Integer> {
+public class IntOption extends SingleOption<Integer, IntOption> {
 
     private Integer min = null;
     private Integer max = null;
-
-    public IntOption() {
-        super();
-    }
-
-    public IntOption(String name) {
-        super(name);
-    }
-
-    public IntOption(String name, Integer defaultValue) {
-        super(name, defaultValue);
-    }
 
     public IntOption min(Integer min) {
         this.min = min;
@@ -56,12 +44,7 @@ public class IntOption extends SingleOption<Integer> {
     }
 
     @Override
-    public boolean parse(Object input) {
-        return parseObject(input) && (value != null || parse((String) input));
-    }
-
-    @Override
-    public boolean parse(String input) {
+    public boolean parse(Player player, String input) {
         try {
             value = Integer.parseInt(input);
         } catch (Exception e) {
@@ -83,31 +66,7 @@ public class IntOption extends SingleOption<Integer> {
     }
 
     @Override
-    public boolean parse(Player player, String input) {
-        return parse(input);
-    }
-
-    @Override
-    public String serialize() {
-        Integer value = getValue();
-        if (value == null) {
-            return null;
-        }
-        return value.toString();
-    }
-
-    @Override
-    public String getTypeName() {
-        return "whole number";
-    }
-
-    @Override
-    public Class getRawClass() {
-        return Integer.class;
-    }
-
-    @Override
     public IntOption clone() {
-        return (IntOption)new IntOption(name, (Integer)defaultValue).min(min).max(max).setDescription(description).setFlag(flag);
+        return super.cloneData(new IntOption().min(min).max(max));
     }
 }

@@ -55,11 +55,11 @@ public class MaxPlayersCP extends GameComponent {
     @Override
     public void registerOptions() {
         //TODO: Implement these settings.
-        registerGameOption("countdown", new IntOption("Countdown", 5).min(-1).setDescription(Msg.getString("opt.countdown")));
-        registerGameOption("permission-bypass", new StringOption("PermissionBypass", "").setDescription(Msg.getString("opt.permission-bypass")));
-        registerGameOption("auto-spectate", new BoolOption("AutoSpectate", false).setDescription(Msg.getString("opt.auto-spectate")));
+        registerGameOption("countdown", new IntOption().name("Countdown").def(5).min(-1).desc(Msg.getString("opt.countdown")));
+        registerGameOption("permission-bypass", new StringOption().name("PermissionBypass").def("").desc(Msg.getString("opt.permission-bypass")));
+        registerGameOption("auto-spectate", new BoolOption().name("AutoSpectate").def(false).desc(Msg.getString("opt.auto-spectate")));
 
-        registerArenaOption("max-players", new IntOption("MaxPlayers", 16).min(1).setDescription(Msg.getString("opt.max-players")));
+        registerArenaOption("max-players", new IntOption().name("MaxPlayers").def(16).min(1).desc(Msg.getString("opt.max-players")));
     }
 
     @Override

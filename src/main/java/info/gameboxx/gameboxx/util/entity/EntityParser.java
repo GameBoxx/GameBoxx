@@ -86,7 +86,7 @@ public class EntityParser {
                     continue;
                 }
                 if (split[0].equalsIgnoreCase("LOC") || split[0].equalsIgnoreCase("LOCATION")) {
-                    LocationOption locOpt = new LocationOption("Location");
+                    LocationOption locOpt = new LocationOption();
                     if (locOpt.parse(player, split[1])) {
                         location = locOpt.getValue();
                     } else {
@@ -96,7 +96,7 @@ public class EntityParser {
                         }
                     }
                 } else if (split[0].equalsIgnoreCase("AMT") || split[0].equalsIgnoreCase("AMOUNT")) {
-                    IntOption amtOpt = new IntOption("Amount").min(1).max(MAX_AMOUNT);
+                    IntOption amtOpt = new IntOption().min(1).max(MAX_AMOUNT);
                     if (amtOpt.parse(split[1])) {
                         amount = amtOpt.getValue();
                     } else {
@@ -270,7 +270,7 @@ public class EntityParser {
                     if (result == null || result.isEmpty()) {
                         continue;
                     }
-                    sections.add(tag.getName().toLowerCase() + ":" + result);
+                    sections.add(tag.getTag().toLowerCase() + ":" + result);
                 } else {
                     if (tag.getMethod() == null || tag.getMethod().isEmpty() || tag.getMethod().equalsIgnoreCase("null")) {
                         continue;
@@ -282,7 +282,7 @@ public class EntityParser {
                         }
                         SingleOption option = (SingleOption)tag.getOption().clone();
                         if (!option.parse(result)) {
-                            GameBoxx.get().warn("Failed to parse entity data! [tag=" + tag.getName() + " value=" + result.toString() + " error='" + option.getError() + "']");
+                            GameBoxx.get().warn("Failed to parse entity data! [tag=" + tag.getTag() + " value=" + result.toString() + " error='" + option.getError() + "']");
                             continue;
                         }
                         if (option.getValue().equals(option.getDefault())) {
@@ -292,7 +292,7 @@ public class EntityParser {
                         if (option instanceof DoubleOption) {
                             val = ((DoubleOption)option).serialize(2);
                         }
-                        sections.add(tag.getName().toLowerCase() + ":" + val);
+                        sections.add(tag.getTag().toLowerCase() + ":" + val);
                     } catch (NoSuchMethodException e) {
                         e.printStackTrace();
                     } catch (IllegalAccessException e) {

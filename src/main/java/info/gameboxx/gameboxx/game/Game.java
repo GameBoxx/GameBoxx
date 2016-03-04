@@ -287,10 +287,10 @@ public abstract class Game extends ComponentHolder {
      */
     public void registerCoreOptions() {
         //General game options
-        registerGameOption("general.max-sessions", new IntOption("MaxSessions", -1).min(-1).setDescription("The maximum amount of sessions that can be created for the game."));
+        registerGameOption("general.max-sessions", new IntOption().name("MaxSessions").def(-1).min(-1).desc("The maximum amount of sessions that can be created for the game."));
 
         //General arena options
-        registerArenaOption("general.max-sessions", new IntOption("MaxSessions", -1).min(-1).setDescription("The maximum amount of sessions that can be created for the arena"));
+        registerArenaOption("general.max-sessions", new IntOption().name("MaxSessions").def(-1).min(-1).desc("The maximum amount of sessions that can be created for the arena"));
 
         //Component options
         for (GameComponent component : getComponents().values()) {

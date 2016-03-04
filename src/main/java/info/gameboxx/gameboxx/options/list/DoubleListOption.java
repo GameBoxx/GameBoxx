@@ -28,21 +28,10 @@ package info.gameboxx.gameboxx.options.list;
 import info.gameboxx.gameboxx.options.ListOption;
 import info.gameboxx.gameboxx.options.single.DoubleOption;
 
-public class DoubleListOption extends ListOption<DoubleOption> {
+public class DoubleListOption extends ListOption<Double, DoubleListOption, DoubleOption> {
 
     private Double min = null;
     private Double max = null;
-
-    public DoubleListOption() {}
-
-    public DoubleListOption(String name) {
-        super(name);
-    }
-
-    public DoubleListOption(String name, Double defaultValue) {
-        super(name, defaultValue);
-    }
-
 
     public DoubleListOption min(Double min) {
         this.min = min;
@@ -54,14 +43,13 @@ public class DoubleListOption extends ListOption<DoubleOption> {
         return this;
     }
 
-
     @Override
-    public DoubleOption getSingleOption(int index) {
-        return (DoubleOption)new DoubleOption(name, (Double)getDefault(index)).min(min).max(max).setDescription(description).setFlag(flag);
+    public DoubleOption getSingleOption() {
+        return new DoubleOption().min(min).max(max);
     }
 
     @Override
     public DoubleListOption clone() {
-        return (DoubleListOption)new DoubleListOption(name, (Double)defaultValue).min(min).max(max).setDescription(description).setFlag(flag);
+        return new DoubleListOption().min(min).max(max);
     }
 }

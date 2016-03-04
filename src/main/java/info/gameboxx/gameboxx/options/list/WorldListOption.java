@@ -29,26 +29,15 @@ import info.gameboxx.gameboxx.options.ListOption;
 import info.gameboxx.gameboxx.options.single.WorldOption;
 import org.bukkit.World;
 
-public class WorldListOption extends ListOption<WorldOption> {
-
-    public WorldListOption() {}
-
-    public WorldListOption(String name) {
-        super(name);
-    }
-
-    public WorldListOption(String name, World defaultValue) {
-        super(name, defaultValue);
-    }
-
+public class WorldListOption extends ListOption<World, WorldListOption, WorldOption> {
 
     @Override
-    public WorldOption getSingleOption(int index) {
-        return (WorldOption)new WorldOption(name, (World)getDefault(index)).setDescription(description).setFlag(flag);
+    public WorldOption getSingleOption() {
+        return new WorldOption();
     }
 
     @Override
     public WorldListOption clone() {
-        return (WorldListOption)new WorldListOption(name, (World)defaultValue).setDescription(description).setFlag(flag);
+        return new WorldListOption();
     }
 }

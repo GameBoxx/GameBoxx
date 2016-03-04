@@ -31,37 +31,14 @@ import info.gameboxx.gameboxx.util.Utils;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
-public class VectorOption extends SingleOption<Vector> {
-
-    public VectorOption() {
-        super();
-    }
-
-    public VectorOption(String name) {
-        super(name);
-    }
-
-    public VectorOption(String name, Vector defaultValue) {
-        super(name, defaultValue);
-    }
-
-
-    @Override
-    public boolean parse(Object input) {
-        return parseObject(input) && (value != null || parse((String) input));
-    }
-
-    @Override
-    public boolean parse(String input) {
-        return parse(null, input);
-    }
+public class VectorOption extends SingleOption<Vector, VectorOption> {
 
     @Override
     public boolean parse(Player player, String input) {
         //Get vector from player location. @[Player name/uuid]
         if (input.startsWith("@") || input.startsWith("#")) {
             PlayerOption playerOption = new PlayerOption();
-            playerOption.setDefault(player);
+            playerOption.def(player);
             playerOption.parse(player, input.substring(1));
             if (!playerOption.hasValue()) {
                 error = playerOption.getError().isEmpty() ? "Invalid player to get the location vector from." : playerOption.getError();
@@ -101,26 +78,7 @@ public class VectorOption extends SingleOption<Vector> {
     }
 
     @Override
-    public String serialize() {
-        Vector value = getValue();
-        if (value == null) {
-            return null;
-        }
-        return value.toString();
-    }
-
-    @Override
-    public String getTypeName() {
-        return "vector";
-    }
-
-    @Override
-    public Class getRawClass() {
-        return Vector.class;
-    }
-
-    @Override
     public VectorOption clone() {
-        return (VectorOption)new VectorOption(name, (Vector)defaultValue).setDescription(description).setFlag(flag);
+        return super.cloneData(new VectorOption());
     }
 }

@@ -56,10 +56,10 @@ public class CountdownCP extends GameComponent {
 
     @Override
     public void registerOptions() {
-        registerGameOption("countdown-time", new IntOption("CountdownTime", 30).min(0).setDescription(Msg.getString("opt.countdown-time")));
-        registerGameOption("count-interval", new IntOption("CountInterval", 10).min(1).setDescription(Msg.getString("opt.count-interval")));
-        registerGameOption("count-seconds", new IntOption("CountSeconds", 5).min(0).setDescription(Msg.getString("opt.count-seconds")));
-        //registerGameOption("count-sound", new SoundOption("CountSound", new SoundEffect(Sound.NOTE_PLING)).setDescription(Msg.getString("opt.count-sound")));;
+        registerGameOption("countdown-time", new IntOption().name("CountdownTime").def(30).min(0).desc(Msg.getString("opt.countdown-time")));
+        registerGameOption("count-interval", new IntOption().name("CountInterval").def(10).min(1).desc(Msg.getString("opt.count-interval")));
+        registerGameOption("count-seconds", new IntOption().name("CountSeconds").def(5).min(0).desc(Msg.getString("opt.count-seconds")));
+        //registerGameOption("count-sound", new SoundOption().name("CountSound").def(new SoundEffect(Sound.NOTE_PLING)).desc(Msg.getString("opt.count-sound")));;
     }
 
     @Override

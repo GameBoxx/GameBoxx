@@ -33,18 +33,7 @@ import org.bukkit.World;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CuboidListOption extends ListOption<CuboidOption> {
-
-    public CuboidListOption() {}
-
-    public CuboidListOption(String name) {
-        super(name);
-    }
-
-    public CuboidListOption(String name, Cuboid defaultValue) {
-        super(name, defaultValue);
-    }
-
+public class CuboidListOption extends ListOption<Cuboid, CuboidListOption, CuboidOption> {
 
     public List<Cuboid> getValues(World world) {
         List<Cuboid> values = new ArrayList<>();
@@ -63,14 +52,13 @@ public class CuboidListOption extends ListOption<CuboidOption> {
         return c;
     }
 
-
     @Override
-    public CuboidOption getSingleOption(int index) {
-        return (CuboidOption)new CuboidOption(name, (Cuboid)getDefault(index)).setDescription(description).setFlag(flag);
+    public CuboidOption getSingleOption() {
+        return new CuboidOption();
     }
 
     @Override
     public CuboidListOption clone() {
-        return (CuboidListOption)new CuboidListOption(name, (Cuboid)defaultValue).setDescription(description).setFlag(flag);
+        return new CuboidListOption();
     }
 }

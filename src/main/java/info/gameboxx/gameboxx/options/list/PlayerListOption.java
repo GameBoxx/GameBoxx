@@ -29,26 +29,15 @@ import info.gameboxx.gameboxx.options.ListOption;
 import info.gameboxx.gameboxx.options.single.PlayerOption;
 import org.bukkit.entity.Player;
 
-public class PlayerListOption extends ListOption<PlayerOption> {
-
-    public PlayerListOption() {}
-
-    public PlayerListOption(String name) {
-        super(name);
-    }
-
-    public PlayerListOption(String name, Player defaultValue) {
-        super(name, defaultValue);
-    }
-
+public class PlayerListOption extends ListOption<Player, PlayerListOption, PlayerOption> {
 
     @Override
-    public PlayerOption getSingleOption(int index) {
-        return (PlayerOption)new PlayerOption(name, (Player)getDefault(index)).setDescription(description).setFlag(flag);
+    public PlayerOption getSingleOption() {
+        return new PlayerOption();
     }
 
     @Override
     public PlayerListOption clone() {
-        return (PlayerListOption)new PlayerListOption(name, (Player)defaultValue).setDescription(description).setFlag(flag);
+        return new PlayerListOption();
     }
 }

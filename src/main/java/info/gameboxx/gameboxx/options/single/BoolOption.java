@@ -28,40 +28,10 @@ package info.gameboxx.gameboxx.options.single;
 import info.gameboxx.gameboxx.options.SingleOption;
 import org.bukkit.entity.Player;
 
-public class BoolOption extends SingleOption<Boolean> {
-
-    public BoolOption() {
-        super();
-    }
-
-    public BoolOption(String name) {
-        super(name);
-    }
-
-    public BoolOption(String name, Boolean defaultValue) {
-        super(name, defaultValue);
-    }
-
+public class BoolOption extends SingleOption<Boolean, BoolOption> {
 
     @Override
-    public boolean parse(Object input) {
-        if (!parseObject(input)) {
-            if (input instanceof Number) {
-                if (input == 0) {
-                    value = false;
-                    return true;
-                } else if (input == 1) {
-                    value = true;
-                    return true;
-                }
-            }
-            return false;
-        }
-        return value != null || parse((String) input);
-    }
-
-    @Override
-    public boolean parse(String input) {
+    public boolean parse(Player player, String input) {
         input = input.toLowerCase();
         switch (input) {
             case "true":
@@ -90,31 +60,7 @@ public class BoolOption extends SingleOption<Boolean> {
     }
 
     @Override
-    public boolean parse(Player player, String input) {
-        return parse(input);
-    }
-
-    @Override
-    public String serialize() {
-        Boolean value = getValue();
-        if (value == null) {
-            return null;
-        }
-        return value.toString();
-    }
-
-    @Override
-    public String getTypeName() {
-        return "boolean";
-    }
-
-    @Override
-    public Class getRawClass() {
-        return Boolean.class;
-    }
-
-    @Override
     public BoolOption clone() {
-        return (BoolOption)new BoolOption(name, (Boolean)defaultValue).setDescription(description).setFlag(flag);
+        return super.cloneData(new BoolOption());
     }
 }

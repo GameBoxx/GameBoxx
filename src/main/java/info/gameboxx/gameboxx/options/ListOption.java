@@ -30,31 +30,20 @@ import org.bukkit.entity.Player;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class ListOption<T extends SingleOption> extends Option {
+public abstract class ListOption<O, L extends ListOption, S extends SingleOption> extends Option<L> {
 
-    protected List<T> value = new ArrayList<>();
-    protected List<Object> defaultValues = new ArrayList<>();
-    protected Object defaultValue = null;
+    protected List<S> value = new ArrayList<>();
+    protected List<O> defaultValues = new ArrayList<>();
+    protected O defaultValue = null;
 
     protected int minValues = -1;
     protected int maxValues = -1;
-
-    public ListOption() {}
-
-    public ListOption(String name) {
-        super(name);
-    }
-
-    public ListOption(String name, Object defaultValue) {
-        super(name);
-        this.defaultValue = defaultValue;
-    }
 
 
     /**
      * Reset the option.
      * It will reset the error message and the list with values.
-     * Use this when you want to parse a new list of objects.
+     * Use this when you want to parse a new list of T.
      */
     public void reset() {
         error = "";
@@ -68,7 +57,7 @@ public abstract class ListOption<T extends SingleOption> extends Option {
      *
      * @return The cached list with values. (May be empty)
      */
-    public List<T> getOptions() {
+    public List<S> getOptions() {
         return value;
     }
 
@@ -81,7 +70,7 @@ public abstract class ListOption<T extends SingleOption> extends Option {
      *
      * @return The default value. (May be {@code null}!)
      */
-    public Object getDefault() {
+    public O getDefault() {
         return defaultValue;
     }
 
@@ -90,29 +79,25 @@ public abstract class ListOption<T extends SingleOption> extends Option {
      * The value must of the same type as the raw class type of the single option. So a IntList can only have an integer as default option here.
      * <p/>
      * This does not actually add any values to the list.
-     * Use {@link #setDefaults(Object...)} to set default values for indexes which will be added to the list.
+     * Use {@link #def(O...)} to set default values for indexes which will be added to the list.
      *
      * @param defaultValue The default value. (This value will be added to the list when parsing of a value failed.)
      * @return The option instance.
      */
-    public ListOption setDefault(Object defaultValue) {
-        if (defaultValue == null || !defaultValue.getClass().equals(getSingleOption(0).getRawClass())) {
-            this.defaultValue = null;
-        } else {
-            this.defaultValue = defaultValue;
-        }
+    public L def(O defaultValue) {
+        this.defaultValue = defaultValue;
         updateList();
-        return this;
+        return (L)this;
     }
 
     /**
      * Get the default value for the specified index.
-     * If no index specific default has been set with {@link #setDefaults(Object...)} it will return the default.
+     * If no index specific default has been set with {@link #def(O...)} it will return the default.
      *
      * @param index The index of the default to get.
      * @return The default value for the specified index. (May be {@code null}!)
      */
-    public Object getDefault(int index) {
+    public O getDefault(int index) {
         if (index < defaultValues.size()) {
             return defaultValues.get(index);
         }
@@ -124,24 +109,19 @@ public abstract class ListOption<T extends SingleOption> extends Option {
      * The order you specify the values will be the indexes of the the values.
      * The value must of the same type as the raw class type of the single option. So a IntList can only have an integer as default option here.
      *
-     * @param defaultValues Object array with default values for this list.
+     * @param defaultValues T array with default values for this list.
      * @return The option instance.
      */
-    public ListOption setDefaults(Object... defaultValues) {
+    public L def(O... defaultValues) {
         this.defaultValues.clear();
         if (defaultValues == null) {
-            return this;
+            return (L)this;
         }
         for (int i = 0; i < defaultValues.length; i++) {
-            Object obj = defaultValues[i];
-            if (obj == null || !obj.getClass().equals(getSingleOption(0).getRawClass())) {
-                this.defaultValues.add(null);
-            } else {
-                this.defaultValues.add(obj);
-            }
+            this.defaultValues.add(defaultValues[i]);
         }
         updateList();
-        return this;
+        return (L)this;
     }
 
     /**
@@ -160,10 +140,10 @@ public abstract class ListOption<T extends SingleOption> extends Option {
      * @param minValues The amount of values this list must have.
      * @return The option instance.
      */
-    public ListOption setMinValues(int minValues) {
+    public L minVals(int minValues) {
         this.minValues = minValues;
         updateList();
-        return this;
+        return (L)this;
     }
 
     /**
@@ -182,10 +162,10 @@ public abstract class ListOption<T extends SingleOption> extends Option {
      * @param maxValues The amount of values allowed in this list.
      * @return The option instance.
      */
-    public ListOption setMaxValues(int maxValues) {
+    public L maxVals(int maxValues) {
         this.maxValues = maxValues;
         updateList();
-        return this;
+        return (L)this;
     }
 
     /**
@@ -196,7 +176,7 @@ public abstract class ListOption<T extends SingleOption> extends Option {
     private void updateList() {
         //Update defaults
         for (int i = 0; i < value.size(); i++) {
-            value.get(i).setDefault(getDefault(i));
+            value.get(i).def(getDefault(i));
         }
 
         //Add missing default values to list.
@@ -228,7 +208,7 @@ public abstract class ListOption<T extends SingleOption> extends Option {
             }
             Object obj = input[i];
 
-            T option = getSingleOption(i);
+            S option = getSingleOption(i);
             option.parse(obj);
             if (option.hasError() && (!ignoreErrors || !option.hasValue())) {
                 error = option.getError() + " [index:" + i + "]";
@@ -265,7 +245,7 @@ public abstract class ListOption<T extends SingleOption> extends Option {
             }
             String str = input[i];
 
-            T option = getSingleOption(i);
+            S option = getSingleOption(i);
             option.parse(player, str);
             if (option.hasError() && (!ignoreErrors || !option.hasValue())) {
                 error = option.getError() + " [index:" + i + "]";
@@ -290,7 +270,7 @@ public abstract class ListOption<T extends SingleOption> extends Option {
             value.add(getSingleOption(index));
             index = value.size() - 1;
         }
-        T option = value.get(index);
+        S option = value.get(index);
         boolean result = option.parse(input);
         error = option.getError();
         return result;
@@ -309,7 +289,7 @@ public abstract class ListOption<T extends SingleOption> extends Option {
             value.add(getSingleOption(index));
             index = value.size() - 1;
         }
-        T option = value.get(index);
+        S option = value.get(index);
         boolean result = option.parse(player, input);
         error = option.getError();
         return result;
@@ -358,19 +338,19 @@ public abstract class ListOption<T extends SingleOption> extends Option {
         return value.get(index).success();
     }
 
-    protected <V> V getValueOrDefault(int index) {
+    protected O getValueOrDefault(int index) {
         if (index >= value.size() || (maxValues > 0 && index > maxValues)) {
             throw new IndexOutOfBoundsException();
         }
         if (value.get(index) == null) {
             return null;
         }
-        return (V)value.get(index).getValueOrDefault();
+        return (O)value.get(index).getValueOrDefault();
     }
 
     public List<String> serialize() {
         List<String> values = new ArrayList<>();
-        for (T option : value) {
+        for (S option : value) {
             values.add(option.serialize());
         }
         return values;
@@ -388,7 +368,7 @@ public abstract class ListOption<T extends SingleOption> extends Option {
 
     public List<String> getDisplayValues() {
         List<String> values = new ArrayList<>();
-        for (T option : value) {
+        for (S option : value) {
             values.add(option.getDisplayValue());
         }
         return values;
@@ -404,18 +384,22 @@ public abstract class ListOption<T extends SingleOption> extends Option {
         return value.get(index).getDisplayValue();
     }
 
-    public <V> List<V> getValues() {
-        List<V> values = new ArrayList<>();
+    public List<O> getValues() {
+        List<O> values = new ArrayList<>();
         for (int i = 0; i < value.size(); i++) {
-            values.add((V)getValue(i));
+            values.add((O)getValue(i));
         }
         return values;
     }
 
-    public <V> V getValue(int index) {
+    public O getValue(int index) {
         return getValueOrDefault(index);
     }
 
-    public abstract T getSingleOption(int index);
+    protected abstract S getSingleOption();
+
+    public S getSingleOption(int index) {
+        return (S)getSingleOption().def(getDefault(index)).name(name).desc(description).flag(flag);
+    }
 
 }

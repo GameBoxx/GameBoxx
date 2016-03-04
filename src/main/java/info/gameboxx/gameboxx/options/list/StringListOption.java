@@ -31,7 +31,7 @@ import info.gameboxx.gameboxx.util.Pair;
 
 import java.util.*;
 
-public class StringListOption extends ListOption<StringOption> {
+public class StringListOption extends ListOption<String, StringListOption, StringOption> {
 
     private Integer minChars = null;
     private Integer maxChars = null;
@@ -41,18 +41,6 @@ public class StringListOption extends ListOption<StringOption> {
 
     private List<String> matchList = null;
     private Map<String, List<String>> matchMap = null;
-
-
-    public StringListOption() {}
-
-    public StringListOption(String name) {
-        super(name);
-    }
-
-    public StringListOption(String name, String defaultValue) {
-        super(name, defaultValue);
-    }
-
 
     public StringListOption minChars(Integer minChars) {
         this.minChars = minChars;
@@ -127,14 +115,12 @@ public class StringListOption extends ListOption<StringOption> {
 
 
     @Override
-    public StringOption getSingleOption(int index) {
-        return (StringOption) new StringOption(name, (String) getDefault(index)).minChars(minChars).maxChars(maxChars).matchRegex(regex, regexError).match(matchList).match(matchMap)
-                .setDescription(description).setFlag(flag);
+    public StringOption getSingleOption() {
+        return new StringOption().minChars(minChars).maxChars(maxChars).match(matchList).match(matchMap).matchRegex(regex);
     }
 
     @Override
     public StringListOption clone() {
-        return (StringListOption) new StringListOption(name, (String) defaultValue).minChars(minChars).maxChars(maxChars).match(matchList).match(matchMap).matchRegex(regex).setDescription(description)
-                .setFlag(flag);
+        return new StringListOption().minChars(minChars).maxChars(maxChars).match(matchList).match(matchMap).matchRegex(regex);
     }
 }

@@ -38,37 +38,14 @@ import org.bukkit.entity.Player;
 import java.util.List;
 import java.util.Map;
 
-public class LocationOption extends SingleOption<Location> {
-
-    public LocationOption() {
-        super();
-    }
-
-    public LocationOption(String name) {
-        super(name);
-    }
-
-    public LocationOption(String name, Location defaultValue) {
-        super(name, defaultValue);
-    }
-
-
-    @Override
-    public boolean parse(Object input) {
-        return parseObject(input) && (value != null || parse((String) input));
-    }
-
-    @Override
-    public boolean parse(String input) {
-        return parse(null, input);
-    }
+public class LocationOption extends SingleOption<Location, LocationOption> {
 
     @Override
     public boolean parse(Player player, String input) {
         //Get location from player. @[Player name/uuid]
         if (input.startsWith("@") || input.startsWith("#")) {
             PlayerOption playerOption = new PlayerOption();
-            playerOption.setDefault(player);
+            playerOption.def(player);
             playerOption.parse(player, input.substring(1));
             if (!playerOption.hasValue()) {
                 error = playerOption.getError().isEmpty() ? "Invalid player to get the location from." : playerOption.getError();
@@ -98,7 +75,7 @@ public class LocationOption extends SingleOption<Location> {
             if (data.startsWith("@") || data.startsWith("#")) {
                 //Get world/location from player
                 PlayerOption playerOption = new PlayerOption();
-                playerOption.setDefault(player);
+                playerOption.def(player);
                 playerOption.parse(player, data.substring(1));
                 if (!playerOption.hasValue()) {
                     error = playerOption.getError().isEmpty() ? "Invalid player to get the world/location from." : playerOption.getError();
@@ -118,7 +95,7 @@ public class LocationOption extends SingleOption<Location> {
             } else {
                 //Get world.
                 WorldOption worldOption = new WorldOption();
-                worldOption.setDefault(player == null ? null : player.getWorld());
+                worldOption.def(player == null ? null : player.getWorld());
                 worldOption.parse(player, data);
                 if (!worldOption.hasValue()) {
                     error = worldOption.getError().isEmpty() ? "Invalid world specified." : worldOption.getError();
@@ -192,34 +169,17 @@ public class LocationOption extends SingleOption<Location> {
 
     @Override
     public String serialize() {
-        Location value = getValue();
-        if (value == null) {
-            return null;
-        }
-        return value.getX() + "," + value.getY() + "," + value.getZ() + "," + value.getYaw() + "," + value.getPitch() + ":" + value.getWorld().getName();
+        return getValue() == null ? null : getValue().getX() + "," + getValue().getY() + "," + getValue().getZ() + ","
+                + getValue().getYaw() + "," + getValue().getPitch() + ":" + getValue().getWorld().getName();
     }
 
     public String serialize(int roundDecimals) {
-        Location value = getValue();
-        if (value == null) {
-            return null;
-        }
-        return Numbers.round(value.getX(), roundDecimals) + "," + Numbers.round(value.getY(), roundDecimals) + "," + Numbers.round(value.getZ(), roundDecimals) +
-                "," + Numbers.round(value.getYaw(), roundDecimals) + "," + Numbers.round(value.getPitch(), roundDecimals) + ":" + value.getWorld().getName();
-    }
-
-    @Override
-    public String getTypeName() {
-        return "location";
-    }
-
-    @Override
-    public Class getRawClass() {
-        return Location.class;
+        return getValue() == null ? null :Numbers.round(getValue().getX(), roundDecimals) + "," + Numbers.round(getValue().getY(), roundDecimals) + "," + Numbers.round(getValue().getZ(), roundDecimals) +
+                "," + Numbers.round(getValue().getYaw(), roundDecimals) + "," + Numbers.round(getValue().getPitch(), roundDecimals) + ":" + getValue().getWorld().getName();
     }
 
     @Override
     public LocationOption clone() {
-        return (LocationOption)new LocationOption(name, (Location)defaultValue).setDescription(description).setFlag(flag);
+        return super.cloneData(new LocationOption());
     }
 }

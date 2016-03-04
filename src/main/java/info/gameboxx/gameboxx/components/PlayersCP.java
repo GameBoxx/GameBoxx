@@ -64,7 +64,7 @@ public class PlayersCP extends GameComponent {
 
     @Override
     public void registerOptions() {
-        registerGameOption("always-join", new BoolOption("AlwaysJoin", false).setDescription(Msg.getString("opt.always-join")));
+        registerGameOption("always-join", new BoolOption().name("AlwaysJoin").def(false).desc(Msg.getString("opt.always-join")));
         //TODO: Implement this option
     }
 

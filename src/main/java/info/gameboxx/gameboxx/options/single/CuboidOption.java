@@ -36,43 +36,14 @@ import org.bukkit.entity.Player;
 
 import java.util.Map;
 
-public class CuboidOption extends SingleOption<Cuboid> {
-
-    public CuboidOption() {
-        super();
-    }
-
-    public CuboidOption(String name) {
-        super(name);
-    }
-
-    public CuboidOption(String name, Cuboid defaultValue) {
-        super(name, defaultValue);
-    }
-
-
-    @Override
-    public boolean parse(Object input) {
-        if (!parseObject(input)) {
-            return false;
-        }
-        if (value != null) {
-            return true;
-        }
-        return parse((String)input);
-    }
-
-    @Override
-    public boolean parse(String input) {
-        return parse(null, input);
-    }
+public class CuboidOption extends SingleOption<Cuboid, CuboidOption> {
 
     @Override
     public boolean parse(Player player, String input) {
         //Get cuboid from player. @[Player name/uuid]
         if (input.startsWith("@")) {
             PlayerOption playerOption = new PlayerOption();
-            playerOption.setDefault(player);
+            playerOption.def(player);
             playerOption.parse(player, input.substring(1));
             if (!playerOption.hasValue()) {
                 error = playerOption.getError().isEmpty() ? "Invalid player to get the location from." : playerOption.getError();
@@ -97,7 +68,7 @@ public class CuboidOption extends SingleOption<Cuboid> {
             if (data.startsWith("@") || data.startsWith("#")) {
                 //Get world/location from player
                 PlayerOption playerOption = new PlayerOption();
-                playerOption.setDefault(player);
+                playerOption.def(player);
                 playerOption.parse(player, data.substring(1));
                 if (!playerOption.hasValue()) {
                     error = playerOption.getError().isEmpty() ? "Invalid player to get the world/location from." : playerOption.getError();
@@ -113,7 +84,7 @@ public class CuboidOption extends SingleOption<Cuboid> {
             } else {
                 //Get world.
                 WorldOption worldOption = new WorldOption();
-                worldOption.setDefault(player == null ? null : player.getWorld());
+                worldOption.def(player == null ? null : player.getWorld());
                 worldOption.parse(player, data);
                 if (!worldOption.hasValue()) {
                     error = worldOption.getError().isEmpty() ? "Invalid world specified." : worldOption.getError();
@@ -192,35 +163,12 @@ public class CuboidOption extends SingleOption<Cuboid> {
     }
 
     public Cuboid getValue(World world) {
-        Cuboid c = getValue();
-        if (c == null || world == null) {
-            return c;
-        }
-        c.setWorld(world);
-        return c;
-    }
-
-    @Override
-    public String serialize() {
-        Cuboid value = getValue();
-        if (value == null) {
-            return null;
-        }
-        return value.getMinX() + "," + value.getMinY() + "," + value.getMinZ() + ":" + value.getMaxX() + "," + value.getMaxY() + value.getMaxZ() + ":" + value.getWorld().getName();
-    }
-
-    @Override
-    public String getTypeName() {
-        return "cuboid";
-    }
-
-    @Override
-    public Class getRawClass() {
-        return Cuboid.class;
+        getValue().setWorld(world);
+        return getValue();
     }
 
     @Override
     public CuboidOption clone() {
-        return (CuboidOption)new CuboidOption(name, (Cuboid)defaultValue).setDescription(description).setFlag(flag);
+        return super.cloneData(new CuboidOption());
     }
 }

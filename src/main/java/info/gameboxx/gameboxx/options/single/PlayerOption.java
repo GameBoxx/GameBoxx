@@ -32,47 +32,14 @@ import org.bukkit.entity.Player;
 
 import java.util.UUID;
 
-public class PlayerOption extends SingleOption<Player> {
-
-    public PlayerOption() {
-        super();
-    }
-
-    public PlayerOption(String name) {
-        super(name);
-    }
-
-    public PlayerOption(String name, String playerName) {
-        super(name, Bukkit.getServer().getPlayer(playerName));
-    }
-
-    public PlayerOption(String name, Player player) {
-        super(name, player);
-    }
-
-    public PlayerOption(String name, UUID playerUUID) {
-        super(name, Bukkit.getServer().getPlayer(playerUUID));
-    }
-
+public class PlayerOption extends SingleOption<Player, PlayerOption> {
 
     @Override
     public boolean parse(Object input) {
-        if (!parseObject(input)) {
-            if (input instanceof UUID) {
-                value = Bukkit.getServer().getPlayer((UUID) input);
-                if (value == null) {
-                    error = "No player with the specified UUID.";
-                }
-                return success();
-            }
-            return false;
+        if (input instanceof UUID) {
+            input = input.toString();
         }
-        return value != null || parse((String) input);
-    }
-
-    @Override
-    public boolean parse(String input) {
-        return parse(null, input);
+        return super.parse(input);
     }
 
     @Override
@@ -116,11 +83,7 @@ public class PlayerOption extends SingleOption<Player> {
 
     @Override
     public String serialize() {
-        Player value = getValue();
-        if (value == null) {
-            return null;
-        }
-        return value.getUniqueId().toString();
+        return getValue() == null ? null : getValue().getUniqueId().toString();
     }
 
     @Override
@@ -133,17 +96,7 @@ public class PlayerOption extends SingleOption<Player> {
     }
 
     @Override
-    public String getTypeName() {
-        return "player";
-    }
-
-    @Override
-    public Class getRawClass() {
-        return Player.class;
-    }
-
-    @Override
     public PlayerOption clone() {
-        return (PlayerOption)new PlayerOption(name, (Player)defaultValue).setDescription(description).setFlag(flag);
+        return super.cloneData(new PlayerOption());
     }
 }

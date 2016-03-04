@@ -32,36 +32,13 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.material.MaterialData;
 
-public class MaterialOption extends SingleOption<MaterialData> {
-
-    public MaterialOption() {
-        super();
-    }
-
-    public MaterialOption(String name) {
-        super(name);
-    }
-
-    public MaterialOption(String name, MaterialData defaultValue) {
-        super(name, defaultValue);
-    }
-
-
-    @Override
-    public boolean parse(Object input) {
-        return parseObject(input) && (value != null || parse((String) input));
-    }
-
-    @Override
-    public boolean parse(String input) {
-        return parse(null, input);
-    }
+public class MaterialOption extends SingleOption<MaterialData, MaterialOption> {
 
     @Override
     public boolean parse(Player player, String input) {
         if (input.startsWith("@")) {
             PlayerOption playerOption = new PlayerOption();
-            playerOption.setDefault(player);
+            playerOption.def(player);
             playerOption.parse(player, input.substring(1));
             if (!playerOption.hasValue()) {
                 error = playerOption.getError().isEmpty() ? "Invalid player to get the materialdata from." : playerOption.getError();
@@ -86,11 +63,7 @@ public class MaterialOption extends SingleOption<MaterialData> {
 
     @Override
     public String serialize() {
-        MaterialData value = getValue();
-        if (value == null) {
-            return null;
-        }
-        return value.getItemType().toString() + ":" + value.getData();
+        return getValue() == null ? null : getValue().getItemType().toString() + ":" + getValue().getData();
     }
 
     @Override
@@ -103,17 +76,7 @@ public class MaterialOption extends SingleOption<MaterialData> {
     }
 
     @Override
-    public String getTypeName() {
-        return "materialdata";
-    }
-
-    @Override
-    public Class getRawClass() {
-        return MaterialData.class;
-    }
-
-    @Override
     public MaterialOption clone() {
-        return (MaterialOption)new MaterialOption(name, (MaterialData)defaultValue).setDescription(description).setFlag(flag);
+        return super.cloneData(new MaterialOption());
     }
 }

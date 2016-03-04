@@ -31,7 +31,7 @@ import org.bukkit.entity.Player;
 
 import java.util.*;
 
-public class StringOption extends SingleOption<String> {
+public class StringOption extends SingleOption<String, StringOption> {
 
     private Integer minChars = null;
     private Integer maxChars = null;
@@ -41,20 +41,6 @@ public class StringOption extends SingleOption<String> {
 
     private List<String> matchList = null;
     private Map<String, List<String>> matchMap = null;
-
-
-    public StringOption() {
-        super();
-    }
-
-    public StringOption(String name) {
-        super(name);
-    }
-
-    public StringOption(String name, String defaultValue) {
-        super(name, defaultValue);
-    }
-
 
     public StringOption minChars(Integer minChars) {
         this.minChars = minChars;
@@ -127,7 +113,6 @@ public class StringOption extends SingleOption<String> {
         return this;
     }
 
-
     @Override
     public boolean parse(Object input) {
         if (!parseObject(input)) {
@@ -137,7 +122,7 @@ public class StringOption extends SingleOption<String> {
     }
 
     @Override
-    public boolean parse(String input) {
+    public boolean parse(Player player, String input) {
         if (matchList != null && !matchList.isEmpty()) {
             if (!matchList.contains(input.toLowerCase())) {
                 error = "String doesn't match with a valid option.";
@@ -179,28 +164,7 @@ public class StringOption extends SingleOption<String> {
     }
 
     @Override
-    public boolean parse(Player player, String input) {
-        return parse(input);
-    }
-
-    @Override
-    public String serialize() {
-        return getValue();
-    }
-
-    @Override
-    public String getTypeName() {
-        return "string";
-    }
-
-    @Override
-    public Class getRawClass() {
-        return String.class;
-    }
-
-    @Override
     public StringOption clone() {
-        return (StringOption) new StringOption(name, (String) defaultValue).minChars(minChars).maxChars(maxChars).match(matchList).match(matchMap).matchRegex(regex).setDescription(description)
-                .setFlag(flag);
+        return super.cloneData(new StringOption().minChars(minChars).maxChars(maxChars).match(matchList).match(matchMap).matchRegex(regex));
     }
 }

@@ -28,26 +28,15 @@ package info.gameboxx.gameboxx.options.list;
 import info.gameboxx.gameboxx.options.ListOption;
 import info.gameboxx.gameboxx.options.single.BoolOption;
 
-public class BoolListOption extends ListOption<BoolOption> {
-
-    public BoolListOption() {}
-
-    public BoolListOption(String name) {
-        super(name);
-    }
-
-    public BoolListOption(String name, Boolean defaultValue) {
-        super(name, defaultValue);
-    }
-
+public class BoolListOption extends ListOption<Boolean, BoolListOption, BoolOption> {
 
     @Override
-    public BoolOption getSingleOption(int index) {
-        return (BoolOption)new BoolOption(name, (Boolean)getDefault(index)).setDescription(description).setFlag(flag);
+    public BoolOption getSingleOption() {
+        return new BoolOption();
     }
 
     @Override
     public BoolListOption clone() {
-        return (BoolListOption)new BoolListOption(name, (Boolean)defaultValue).setDescription(description).setFlag(flag);
+        return new BoolListOption();
     }
 }
