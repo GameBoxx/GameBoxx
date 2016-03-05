@@ -37,7 +37,7 @@ public class BlockListOption extends ListOption<Block, BlockListOption, BlockOpt
 
     public List<Block> getValues(World world) {
         List<Block> values = new ArrayList<>();
-        for (int i = 0; i < value.size(); i++) {
+        for (int i = 0; i < this.values.size(); i++) {
             values.add(getValue(i, world));
         }
         return values;

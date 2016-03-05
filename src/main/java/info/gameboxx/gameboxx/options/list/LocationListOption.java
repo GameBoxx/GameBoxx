@@ -37,7 +37,7 @@ public class LocationListOption extends ListOption<Location, LocationListOption,
 
     public List<Location> getValues(World world) {
         List<Location> values = new ArrayList<>();
-        for (int i = 0; i < value.size(); i++) {
+        for (int i = 0; i < this.values.size(); i++) {
             values.add(getValue(i, world));
         }
         return values;

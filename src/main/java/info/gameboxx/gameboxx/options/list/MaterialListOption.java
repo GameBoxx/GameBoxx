@@ -31,13 +31,20 @@ import org.bukkit.material.MaterialData;
 
 public class MaterialListOption extends ListOption<MaterialData, MaterialListOption, MaterialOption> {
 
+    private boolean blocks = false;
+
+    public MaterialListOption blocks(boolean blocks) {
+        this.blocks = blocks;
+        return this;
+    }
+
     @Override
     public MaterialOption getSingleOption() {
-        return new MaterialOption();
+        return new MaterialOption().blocks(blocks);
     }
 
     @Override
     public MaterialListOption clone() {
-        return new MaterialListOption();
+        return new MaterialListOption().blocks(blocks);
     }
 }
