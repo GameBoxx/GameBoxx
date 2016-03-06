@@ -93,7 +93,7 @@ public class CountdownCP extends GameComponent {
      * @return countdown-time option value.
      */
     public int getCountdownTime() {
-        return getGameOptions().getInt(path("countdown-time"));
+        return gameOptions().<IntOption>getOption(path("countdown-time")).getValue();
     }
 
     /**
@@ -102,7 +102,7 @@ public class CountdownCP extends GameComponent {
      * @return count-interval option value.
      */
     public int getCountInterval() {
-        return getGameOptions().getInt(path("count-interval"));
+        return gameOptions().<IntOption>getOption(path("count-interval")).getValue();
     }
 
     /**
@@ -111,7 +111,7 @@ public class CountdownCP extends GameComponent {
      * @return count-seconds option value.
      */
     public int getCountSeconds() {
-        return getGameOptions().getInt(path("count-seconds"));
+        return gameOptions().<IntOption>getOption(path("count-seconds")).getValue();
     }
 
     /**

@@ -29,9 +29,7 @@ import info.gameboxx.gameboxx.GameBoxx;
 import info.gameboxx.gameboxx.game.Arena;
 import info.gameboxx.gameboxx.messages.Msg;
 import info.gameboxx.gameboxx.messages.Param;
-import info.gameboxx.gameboxx.options.ListOption;
-import info.gameboxx.gameboxx.options.Option;
-import info.gameboxx.gameboxx.options.SingleOption;
+import info.gameboxx.gameboxx.options.*;
 import info.gameboxx.gameboxx.util.Parse;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -121,8 +119,33 @@ public class OptionCmd implements CommandExecutor {
             arena.getConfig().save();
             sender.sendMessage("Option value set!");
             return true;
+        } else if (option instanceof MapOption) {
+            // /option {name} [key] [value]
+            MapOption mapOption = (MapOption)option;
+
+            if (args.length < 2) {
+                //TODO: Display option values and info.
+                sender.sendMessage("Map option values");
+                return true;
+            }
+
+            String key = args[1];
+            if (args.length < 3) {
+                //TODO: Display option value for index.
+                Object value = mapOption.getValue(key);
+                sender.sendMessage("value: " + (value == null ? "null" : value.toString()));
+                return true;
+            }
+
+            if (!mapOption.parse(key, args[2])) {
+                sender.sendMessage(mapOption.getError());
+                return true;
+            }
+
+            arena.getConfig().save();
+            sender.sendMessage("Option value set!");
+            return true;
         }
-        //TODO: Map option
 
         sender.sendMessage("Invalid option...");
         return true;
