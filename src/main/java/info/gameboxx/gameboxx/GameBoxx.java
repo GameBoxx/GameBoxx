@@ -35,6 +35,7 @@ import info.gameboxx.gameboxx.messages.MessageConfig;
 import info.gameboxx.gameboxx.nms.NMS;
 import info.gameboxx.gameboxx.nms.NMSVersion;
 import info.gameboxx.gameboxx.system.points.CurrencyManager;
+import info.gameboxx.gameboxx.system.points.model.Currency;
 import info.gameboxx.gameboxx.user.UserManager;
 import info.gameboxx.gameboxx.util.Parse;
 import info.gameboxx.gameboxx.util.cuboid.Cuboid;
@@ -142,6 +143,10 @@ public class GameBoxx extends JavaPlugin {
         new MessageConfig(this, "parser");
     }
 
+    private void loadPoints() {
+        new Currency.Config();
+    }
+
     private boolean loadEconomy() {
         Plugin vaultPlugin = getServer().getPluginManager().getPlugin("Vault");
         if (vaultPlugin != null) {
@@ -151,10 +156,7 @@ public class GameBoxx extends JavaPlugin {
                 economy = economyProvider.getProvider();
             }
         }
-        if (economy == null) {
-            return false;
-        }
-        return true;
+        return economy != null;
     }
 
     public void log(Object msg) {

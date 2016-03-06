@@ -27,7 +27,11 @@ package info.gameboxx.gameboxx.system.points.model;
 
 
 import com.google.common.collect.Maps;
+import info.gameboxx.gameboxx.GameBoxx;
+import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.configuration.file.YamlConfiguration;
 
+import java.io.File;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -36,7 +40,10 @@ public class Currency {
     private static Map<String, Currency> forName = Maps.newHashMap();
 
     static {
-        // TODO: 2/28/2016 LOAD CURRENCIES FROM FILE
+        for (String configurationSection : Config.yamlConfiguration.getKeys(false)) {
+            ConfigurationSection current = Config.yamlConfiguration.getConfigurationSection(configurationSection);
+            forName.put(configurationSection, new Currency(configurationSection, current.getString("singular"), current.getString("plural"), current.getString("syntax")));
+        }
     }
 
     public static Currency forName(String name) {
@@ -52,7 +59,7 @@ public class Currency {
     private String plural;
     private String syntax;
 
-    public Currency(String name, String singular, String plural, String syntax) {
+    private Currency(String name, String singular, String plural, String syntax) {
         this.name = name;
         this.singular = singular;
         this.plural = plural;
@@ -73,5 +80,22 @@ public class Currency {
 
     public String getSyntax() {
         return syntax;
+    }
+
+    public static class Config {
+
+        private static YamlConfiguration yamlConfiguration;
+
+        public Config() {
+            File file = new File(GameBoxx.get().getDataFolder() + File.separator + "points", "points.yml");
+            if (!file.exists()) {
+                file.mkdirs();
+            }
+            yamlConfiguration = YamlConfiguration.loadConfiguration(file);
+        }
+
+        public static YamlConfiguration getConfig() {
+            return yamlConfiguration;
+        }
     }
 }

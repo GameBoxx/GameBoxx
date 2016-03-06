@@ -33,7 +33,7 @@ import info.gameboxx.gameboxx.system.points.model.CurrencyHolder;
 
 
 /**
- * Manages currency transactions within the server.g
+ * Manages currency transactions within the server.
  */
 public class CurrencyManager {
 

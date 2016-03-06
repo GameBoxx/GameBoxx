@@ -1,0 +1,9 @@
+coins:
+  singular: coin
+  plural: coins
+  syntax: '{amount} {singular/plural}'
+
+dollars:
+  singular: dollar
+  plural: dollars
+  syntax: '{amount} $'
