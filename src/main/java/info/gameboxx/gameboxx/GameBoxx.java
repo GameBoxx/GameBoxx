@@ -98,6 +98,7 @@ public class GameBoxx extends JavaPlugin {
             log("Using " + language.getName() + " [" + language.getID() + "] as language!");
         }
         loadMessages();
+        loadPoints();
 
         EntityTag.registerDefaults();
 
