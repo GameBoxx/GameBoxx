@@ -25,8 +25,10 @@
 
 package info.gameboxx.gameboxx.nms.entity;
 
+import info.gameboxx.gameboxx.nms.annotation.NMSDependant;
 import org.bukkit.entity.Entity;
 
+@NMSDependant(implementationPath = "info.gameboxx.gameboxx.nms.entity")
 public interface EntityUtils {
 
     void setTag(Entity entity, Tag tag, boolean state);
@@ -37,7 +39,7 @@ public interface EntityUtils {
         SILENT("Silent"),
         INVULNERABLE("Invulnerable"),
         PERSISTENT("PersistenceRequired");
-        ;
+
 
         private String name;
 

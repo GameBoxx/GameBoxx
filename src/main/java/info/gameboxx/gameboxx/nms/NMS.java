@@ -26,6 +26,7 @@
 package info.gameboxx.gameboxx.nms;
 
 import info.gameboxx.gameboxx.GameBoxx;
+import info.gameboxx.gameboxx.nms.annotation.NMSDependant;
 import info.gameboxx.gameboxx.nms.chat.Chat;
 import info.gameboxx.gameboxx.nms.chat.Chat_v1_9_R1;
 import info.gameboxx.gameboxx.nms.entity.EntityUtils;
@@ -33,6 +34,8 @@ import info.gameboxx.gameboxx.nms.entity.EntityUtils_v1_9_R1;
 import info.gameboxx.gameboxx.nms.worldloader.WorldLoader;
 import info.gameboxx.gameboxx.nms.worldloader.WorldLoader_v1_9_R1;
 import org.bukkit.Bukkit;
+
+import java.lang.reflect.InvocationTargetException;
 
 public class NMS {
 
@@ -47,15 +50,17 @@ public class NMS {
     private NMS() {
         try {
             versionString = Bukkit.getServer().getClass().getPackage().getName().replace(".", ",").split(",")[3];
-        } catch (ArrayIndexOutOfBoundsException e) {
-        }
-        version = NMSVersion.fromString(versionString);
 
-        GameBoxx gb = GameBoxx.get();
-        if (version == NMSVersion.V1_9_R1) {
-            worldLoader = new WorldLoader_v1_9_R1(gb);
-            chat = new Chat_v1_9_R1();
-            entityUtils = new EntityUtils_v1_9_R1();
+            version = NMSVersion.fromString(versionString);
+
+            GameBoxx gb = GameBoxx.get();
+            worldLoader = (WorldLoader) loadFromNMS(WorldLoader.class, gb);
+            chat = (Chat) loadFromNMS(Chat.class);
+            entityUtils = (EntityUtils) loadFromNMS(EntityUtils.class);
+
+        } catch (ArrayIndexOutOfBoundsException | InstantiationException | NoSuchMethodException | InvocationTargetException | IllegalAccessException ignored) {
+        } catch (ClassNotFoundException e) {
+            GameBoxx.get().error("The current version is not supported: " + version + ".\n" + e.getMessage());
         }
     }
 
@@ -70,7 +75,6 @@ public class NMS {
     public EntityUtils getEntityUtils() {
         return entityUtils;
     }
-
 
 
     public NMSVersion getVersion() {
@@ -90,6 +94,20 @@ public class NMS {
             instance = new NMS();
         }
         return instance;
+    }
+
+    private <T> Object loadFromNMS(Class<T> dep) throws ClassNotFoundException, IllegalAccessException, InstantiationException {
+        if (!dep.isAnnotationPresent(NMSDependant.class)) return null;
+        NMSDependant nmsDependant = dep.getAnnotation(NMSDependant.class);
+        Class<?> impl = Class.forName(nmsDependant.implementationPath() + "." + dep.getSimpleName() + "_" + version);
+        return impl.newInstance();
+    }
+
+    private <T> Object loadFromNMS(Class<T> dep, GameBoxx gameBoxx) throws ClassNotFoundException, IllegalAccessException, InstantiationException, NoSuchMethodException, InvocationTargetException {
+        if (!dep.isAnnotationPresent(NMSDependant.class)) return null;
+        NMSDependant nmsDependant = dep.getAnnotation(NMSDependant.class);
+        Class<?> impl = Class.forName(nmsDependant.implementationPath() + "." + dep.getSimpleName() + "_" + version);
+        return impl.getConstructor(GameBoxx.class).newInstance(gameBoxx);
     }
 
 }
