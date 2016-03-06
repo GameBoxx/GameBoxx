@@ -30,9 +30,7 @@ import info.gameboxx.gameboxx.config.internal.OptionCfg;
 import info.gameboxx.gameboxx.exceptions.MissingArenaWorldException;
 import info.gameboxx.gameboxx.exceptions.SessionLimitException;
 import info.gameboxx.gameboxx.nms.NMS;
-import info.gameboxx.gameboxx.options.ListOption;
-import info.gameboxx.gameboxx.options.Option;
-import info.gameboxx.gameboxx.options.SingleOption;
+import info.gameboxx.gameboxx.options.*;
 import org.apache.commons.io.FileUtils;
 import org.bukkit.WorldCreator;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -130,7 +128,11 @@ public class Arena {
                     return false;
                 }
             }
-            //TODO: Map options
+            if (option instanceof MapOption) {
+                if (((MapOption)option).getValues().isEmpty()) {
+                    return false;
+                }
+            }
         }
         return true;
     }

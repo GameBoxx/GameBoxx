@@ -23,42 +23,35 @@
  THE SOFTWARE.
  */
 
-package info.gameboxx.gameboxx.options.list;
+package info.gameboxx.gameboxx.options.map;
 
-import info.gameboxx.gameboxx.options.ListOption;
-import info.gameboxx.gameboxx.options.single.LocationOption;
-import org.bukkit.Location;
-import org.bukkit.World;
+import info.gameboxx.gameboxx.options.MapOption;
+import info.gameboxx.gameboxx.options.single.IntOption;
 
-import java.util.ArrayList;
-import java.util.List;
+public class IntMapOption extends MapOption<Integer, IntMapOption, IntOption> {
 
-public class LocationListOption extends ListOption<Location, LocationListOption, LocationOption> {
+    private Integer min = null;
+    private Integer max = null;
 
-    public List<Location> getValues(World world) {
-        List<Location> values = new ArrayList<>();
-        for (int i = 0; i < this.values.size(); i++) {
-            values.add(getValue(i, world));
-        }
-        return values;
+
+    public IntMapOption min(Integer min) {
+        this.min = min;
+        return this;
     }
 
-    public Location getValue(int index, World world) {
-        Location l = getValue(index);
-        if (l == null || world == null) {
-            return l;
-        }
-        l.setWorld(world);
-        return l;
+    public IntMapOption max(Integer max) {
+        this.max = max;
+        return this;
+    }
+
+
+    @Override
+    public IntOption getSingleOption() {
+        return new IntOption().min(min).max(max);
     }
 
     @Override
-    public LocationOption getSingleOption() {
-        return new LocationOption();
-    }
-
-    @Override
-    public LocationListOption clone() {
-        return new LocationListOption();
+    public IntMapOption clone() {
+        return new IntMapOption().min(min).max(max);
     }
 }

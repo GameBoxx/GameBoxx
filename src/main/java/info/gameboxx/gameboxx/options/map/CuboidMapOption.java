@@ -23,42 +23,42 @@
  THE SOFTWARE.
  */
 
-package info.gameboxx.gameboxx.options.list;
+package info.gameboxx.gameboxx.options.map;
 
-import info.gameboxx.gameboxx.options.ListOption;
-import info.gameboxx.gameboxx.options.single.LocationOption;
-import org.bukkit.Location;
+import info.gameboxx.gameboxx.options.MapOption;
+import info.gameboxx.gameboxx.options.single.CuboidOption;
+import info.gameboxx.gameboxx.util.cuboid.Cuboid;
 import org.bukkit.World;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
-public class LocationListOption extends ListOption<Location, LocationListOption, LocationOption> {
+public class CuboidMapOption extends MapOption<Cuboid, CuboidMapOption, CuboidOption> {
 
-    public List<Location> getValues(World world) {
-        List<Location> values = new ArrayList<>();
-        for (int i = 0; i < this.values.size(); i++) {
-            values.add(getValue(i, world));
+    public Map<String, Cuboid> getValues(World world) {
+        Map<String, Cuboid> values = new HashMap<>();
+        for (String key : this.values.keySet()) {
+            values.put(key, getValue(key, world));
         }
         return values;
     }
 
-    public Location getValue(int index, World world) {
-        Location l = getValue(index);
-        if (l == null || world == null) {
-            return l;
+    public Cuboid getValue(String key, World world) {
+        Cuboid c = getValue(key);
+        if (c == null || world == null) {
+            return c;
         }
-        l.setWorld(world);
-        return l;
+        c.setWorld(world);
+        return c;
     }
 
     @Override
-    public LocationOption getSingleOption() {
-        return new LocationOption();
+    public CuboidOption getSingleOption() {
+        return new CuboidOption();
     }
 
     @Override
-    public LocationListOption clone() {
-        return new LocationListOption();
+    public CuboidMapOption clone() {
+        return new CuboidMapOption();
     }
 }

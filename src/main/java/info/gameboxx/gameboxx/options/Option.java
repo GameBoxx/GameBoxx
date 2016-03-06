@@ -26,8 +26,8 @@
 package info.gameboxx.gameboxx.options;
 
 /**
- * Base class for an option.
- * Options can be used to parse input and validate it.
+ * Base class for all the options.
+ * Options are used to parse user input for a bunch of different Objects.
  */
 public abstract class Option<T extends Option> {
 
@@ -40,45 +40,56 @@ public abstract class Option<T extends Option> {
 
 
     /**
-     * Check whether or not the option produced an error when parsing.
-     *
-     * @return True when there is an error message and false if not.
-     */
-    public boolean hasError() {
-        return !error.isEmpty();
-    }
-
-    /**
      * Get the error message that was produced when parsing the option.
-     * Use {@link #hasError()} to check if there is an error message.
      *
-     * @return The error message.
+     * @return The error message. (Empty string when there is no error)
      */
     public String getError() {
         return error;
     }
 
+    /**
+     * Check whether or not the option has a name set with {@link #name(String)}
+     *
+     * @return True when the option has a name.
+     */
+    public boolean hasName() {
+        return !name.isEmpty();
+    }
+
+    /**
+     * Set the name for the option.
+     *
+     * @param name The name for the option.
+     * @return this instance
+     */
     public T name(String name) {
         this.name = name;
         return (T)this;
     }
 
     /**
-     * Get the name of the option which was specified when creating the option.
-     * This will be an empty string if the option doesn't have a name.
+     * Get the name of the option which was set with {@link #name(String)}
      *
-     * @return The name of the option.
+     * @return The name of the option. (Empty string when no name)
      */
     public String getName() {
         return name;
     }
 
     /**
-     * Get the setDescription for this option.
-     * The setDescription is what's set with {@link #desc(String)}
-     * May be an empty string if the option doesn't have a setDescription set.
+     * Check whether or not the option has a description set with {@link #desc(String)}
      *
-     * @return The setDescription string or an empty string.
+     * @return True when the option has a description.
+     */
+    public boolean hasDescription() {
+        return !description.isEmpty();
+    }
+
+    /**
+     * Get the setDescription for this option which was set with {@link #desc(String)}
+     *
+     * @return The desription of the option. (Empty string when no description)
      */
     public String getDescription() {
         return description;
@@ -86,11 +97,9 @@ public abstract class Option<T extends Option> {
 
     /**
      * Set the setDescription for this option.
-     * The setDescription can be retreived for display purposes with {@link #getDescription()}
-     * By default nothing is done with descriptions.
      *
-     * @param description The setDescription message. (May contain colors and new lines with \n)
-     * @return The option instance.
+     * @param description The description for the option.
+     * @return this instance
      */
     public T desc(String description) {
         this.description = description;
@@ -109,7 +118,7 @@ public abstract class Option<T extends Option> {
     /**
      * Check if the option has the specified {@link OptionFlag} set.
      *
-     * @param flag The flag to compare.
+     * @param flag The flag to check for.
      * @return True when the option has the specified flag.
      */
     public boolean hasFlag(OptionFlag flag) {
@@ -137,9 +146,11 @@ public abstract class Option<T extends Option> {
     }
 
     /**
-     * Clone the option by creating a new instance.
+     * Create a new instance of the option.
+     * <p/>
+     * The name, description, flag and modifiers will be cloned in the new option.
      *
-     * @return Cloned option
+     * @return New option instance.
      */
     public abstract T clone();
 }

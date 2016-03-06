@@ -23,42 +23,33 @@
  THE SOFTWARE.
  */
 
-package info.gameboxx.gameboxx.options.list;
+package info.gameboxx.gameboxx.options.map;
 
-import info.gameboxx.gameboxx.options.ListOption;
-import info.gameboxx.gameboxx.options.single.LocationOption;
-import org.bukkit.Location;
-import org.bukkit.World;
+import info.gameboxx.gameboxx.options.MapOption;
+import info.gameboxx.gameboxx.options.single.DoubleOption;
 
-import java.util.ArrayList;
-import java.util.List;
+public class DoubleMapOption extends MapOption<Double, DoubleMapOption, DoubleOption> {
 
-public class LocationListOption extends ListOption<Location, LocationListOption, LocationOption> {
+    private Double min = null;
+    private Double max = null;
 
-    public List<Location> getValues(World world) {
-        List<Location> values = new ArrayList<>();
-        for (int i = 0; i < this.values.size(); i++) {
-            values.add(getValue(i, world));
-        }
-        return values;
+    public DoubleMapOption min(Double min) {
+        this.min = min;
+        return this;
     }
 
-    public Location getValue(int index, World world) {
-        Location l = getValue(index);
-        if (l == null || world == null) {
-            return l;
-        }
-        l.setWorld(world);
-        return l;
+    public DoubleMapOption max(Double max) {
+        this.max = max;
+        return this;
     }
 
     @Override
-    public LocationOption getSingleOption() {
-        return new LocationOption();
+    public DoubleOption getSingleOption() {
+        return new DoubleOption().min(min).max(max);
     }
 
     @Override
-    public LocationListOption clone() {
-        return new LocationListOption();
+    public DoubleMapOption clone() {
+        return new DoubleMapOption().min(min).max(max);
     }
 }

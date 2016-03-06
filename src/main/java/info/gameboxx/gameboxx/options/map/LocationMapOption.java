@@ -23,28 +23,27 @@
  THE SOFTWARE.
  */
 
-package info.gameboxx.gameboxx.options.list;
+package info.gameboxx.gameboxx.options.map;
 
-import info.gameboxx.gameboxx.options.ListOption;
+import info.gameboxx.gameboxx.options.MapOption;
 import info.gameboxx.gameboxx.options.single.LocationOption;
 import org.bukkit.Location;
 import org.bukkit.World;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
-public class LocationListOption extends ListOption<Location, LocationListOption, LocationOption> {
+public class LocationMapOption extends MapOption<Location, LocationMapOption, LocationOption> {
 
-    public List<Location> getValues(World world) {
-        List<Location> values = new ArrayList<>();
-        for (int i = 0; i < this.values.size(); i++) {
-            values.add(getValue(i, world));
+    public Map<String, Location> getValues(World world) {
+        Map<String, Location> values = new HashMap<>();
+        for (String key : this.values.keySet()) {
+            values.put(key, getValue(key, world));
         }
         return values;
     }
 
-    public Location getValue(int index, World world) {
-        Location l = getValue(index);
+    public Location getValue(String key, World world) {
+        Location l = getValue(key);
         if (l == null || world == null) {
             return l;
         }
@@ -58,7 +57,7 @@ public class LocationListOption extends ListOption<Location, LocationListOption,
     }
 
     @Override
-    public LocationListOption clone() {
-        return new LocationListOption();
+    public LocationMapOption clone() {
+        return new LocationMapOption();
     }
 }

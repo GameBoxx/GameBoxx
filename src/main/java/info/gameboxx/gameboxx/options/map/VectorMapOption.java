@@ -23,42 +23,21 @@
  THE SOFTWARE.
  */
 
-package info.gameboxx.gameboxx.options.list;
+package info.gameboxx.gameboxx.options.map;
 
-import info.gameboxx.gameboxx.options.ListOption;
-import info.gameboxx.gameboxx.options.single.LocationOption;
-import org.bukkit.Location;
-import org.bukkit.World;
+import info.gameboxx.gameboxx.options.MapOption;
+import info.gameboxx.gameboxx.options.single.VectorOption;
+import org.bukkit.util.Vector;
 
-import java.util.ArrayList;
-import java.util.List;
+public class VectorMapOption extends MapOption<Vector, VectorMapOption, VectorOption> {
 
-public class LocationListOption extends ListOption<Location, LocationListOption, LocationOption> {
-
-    public List<Location> getValues(World world) {
-        List<Location> values = new ArrayList<>();
-        for (int i = 0; i < this.values.size(); i++) {
-            values.add(getValue(i, world));
-        }
-        return values;
-    }
-
-    public Location getValue(int index, World world) {
-        Location l = getValue(index);
-        if (l == null || world == null) {
-            return l;
-        }
-        l.setWorld(world);
-        return l;
+    @Override
+    public VectorOption getSingleOption() {
+        return new VectorOption();
     }
 
     @Override
-    public LocationOption getSingleOption() {
-        return new LocationOption();
-    }
-
-    @Override
-    public LocationListOption clone() {
-        return new LocationListOption();
+    public VectorMapOption clone() {
+        return new VectorMapOption();
     }
 }

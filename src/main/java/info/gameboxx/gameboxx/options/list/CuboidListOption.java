@@ -37,7 +37,7 @@ public class CuboidListOption extends ListOption<Cuboid, CuboidListOption, Cuboi
 
     public List<Cuboid> getValues(World world) {
         List<Cuboid> values = new ArrayList<>();
-        for (int i = 0; i < value.size(); i++) {
+        for (int i = 0; i < this.values.size(); i++) {
             values.add(getValue(i, world));
         }
         return values;

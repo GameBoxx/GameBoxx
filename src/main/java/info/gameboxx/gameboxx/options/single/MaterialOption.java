@@ -34,6 +34,13 @@ import org.bukkit.material.MaterialData;
 
 public class MaterialOption extends SingleOption<MaterialData, MaterialOption> {
 
+    private boolean blocks = false;
+
+    public MaterialOption blocks(boolean blocks) {
+        this.blocks = blocks;
+        return this;
+    }
+
     @Override
     public boolean parse(Player player, String input) {
         if (input.startsWith("@")) {
@@ -57,6 +64,12 @@ public class MaterialOption extends SingleOption<MaterialData, MaterialOption> {
             error = "No item found with the specified input.";
             return false;
         }
+
+        if (blocks && !item.getType().isBlock()) {
+            error = "Material must be a block.";
+            return false;
+        }
+
         value = new MaterialData(item.getType(), (byte)item.getData());
         return true;
     }

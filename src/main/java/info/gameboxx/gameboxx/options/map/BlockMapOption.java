@@ -23,42 +23,40 @@
  THE SOFTWARE.
  */
 
-package info.gameboxx.gameboxx.options.list;
+package info.gameboxx.gameboxx.options.map;
 
-import info.gameboxx.gameboxx.options.ListOption;
-import info.gameboxx.gameboxx.options.single.LocationOption;
-import org.bukkit.Location;
+import info.gameboxx.gameboxx.options.MapOption;
+import info.gameboxx.gameboxx.options.single.BlockOption;
 import org.bukkit.World;
+import org.bukkit.block.Block;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
-public class LocationListOption extends ListOption<Location, LocationListOption, LocationOption> {
+public class BlockMapOption extends MapOption<Block, BlockMapOption, BlockOption> {
 
-    public List<Location> getValues(World world) {
-        List<Location> values = new ArrayList<>();
-        for (int i = 0; i < this.values.size(); i++) {
-            values.add(getValue(i, world));
+    public Map<String, Block> getValues(World world) {
+        Map<String, Block> values = new HashMap<>();
+        for (String key : this.values.keySet()) {
+            values.put(key, getValue(key, world));
         }
         return values;
     }
 
-    public Location getValue(int index, World world) {
-        Location l = getValue(index);
-        if (l == null || world == null) {
-            return l;
+    public Block getValue(String key, World world) {
+        Block b = getValue(key);
+        if (b == null || world == null) {
+            return b;
         }
-        l.setWorld(world);
-        return l;
+        return world.getBlockAt(b.getLocation());
     }
 
     @Override
-    public LocationOption getSingleOption() {
-        return new LocationOption();
+    public BlockOption getSingleOption() {
+        return new BlockOption();
     }
 
     @Override
-    public LocationListOption clone() {
-        return new LocationListOption();
+    public BlockMapOption clone() {
+        return new BlockMapOption();
     }
 }

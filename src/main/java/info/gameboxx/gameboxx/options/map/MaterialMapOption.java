@@ -23,42 +23,28 @@
  THE SOFTWARE.
  */
 
-package info.gameboxx.gameboxx.options.list;
+package info.gameboxx.gameboxx.options.map;
 
-import info.gameboxx.gameboxx.options.ListOption;
-import info.gameboxx.gameboxx.options.single.LocationOption;
-import org.bukkit.Location;
-import org.bukkit.World;
+import info.gameboxx.gameboxx.options.MapOption;
+import info.gameboxx.gameboxx.options.single.MaterialOption;
+import org.bukkit.material.MaterialData;
 
-import java.util.ArrayList;
-import java.util.List;
+public class MaterialMapOption extends MapOption<MaterialData, MaterialMapOption, MaterialOption> {
 
-public class LocationListOption extends ListOption<Location, LocationListOption, LocationOption> {
+    private boolean blocks = false;
 
-    public List<Location> getValues(World world) {
-        List<Location> values = new ArrayList<>();
-        for (int i = 0; i < this.values.size(); i++) {
-            values.add(getValue(i, world));
-        }
-        return values;
-    }
-
-    public Location getValue(int index, World world) {
-        Location l = getValue(index);
-        if (l == null || world == null) {
-            return l;
-        }
-        l.setWorld(world);
-        return l;
+    public MaterialMapOption blocks(boolean blocks) {
+        this.blocks = blocks;
+        return this;
     }
 
     @Override
-    public LocationOption getSingleOption() {
-        return new LocationOption();
+    public MaterialOption getSingleOption() {
+        return new MaterialOption().blocks(blocks);
     }
 
     @Override
-    public LocationListOption clone() {
-        return new LocationListOption();
+    public MaterialMapOption clone() {
+        return new MaterialMapOption().blocks(blocks);
     }
 }

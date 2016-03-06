@@ -141,7 +141,7 @@ public abstract class GameComponent {
      * @return {@link OptionCfg} with all the game options.
      * @see Game#getConfig()
      */
-    public OptionCfg getGameOptions() {
+    public OptionCfg gameOptions() {
         return game.getConfig();
     }
 
@@ -151,7 +151,7 @@ public abstract class GameComponent {
      * @return {@link OptionCfg} with all the arena options.
      * @see Arena#getConfig()
      */
-    public OptionCfg getArenaOptions() {
+    public OptionCfg arenaOptions() {
         return getArena().getConfig();
     }
 

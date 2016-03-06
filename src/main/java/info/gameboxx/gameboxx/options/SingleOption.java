@@ -27,39 +27,92 @@ package info.gameboxx.gameboxx.options;
 
 import org.bukkit.entity.Player;
 
+/**
+ * A {@link Option} with a single value.
+ *
+ * @param <O> The object the option parses.
+ * @param <S> The SingleOption class.
+ */
 public abstract class SingleOption<O, S extends SingleOption> extends Option<S> {
 
     protected O value = null;
     protected O defaultValue = null;
 
+
     /**
-     * Reset the error message and the value.
-     * This is called before parsing.
-     * Which means you can use the parse method multiple times for an option with different values.
-     * There should be no need to manually call this.
+     * Get the default value if it's set.
+     *
+     * @return The default value or {@code null} if there is no default.
      */
-    public void reset() {
-        error = "";
-        value = null;
+    public O getDefault() {
+        return defaultValue;
     }
+
+    /**
+     * Change/set the default value.
+     *
+     * @param defaultValue The default value to set. (set to null for no default)
+     * @return this instance
+     */
+    public S def(O defaultValue) {
+        this.defaultValue = defaultValue;
+        return (S)this;
+    }
+
 
 
     /**
      * Get the cached value after parsing it.
-     * If the value is null and there is a default value it will return the default.
-     * <b>Please note that the default value can be null too!</b>
+     * <p/>
+     * If the option doesn't have the {@link OptionFlag#REQUIRED} flag and there is no value it will return the default.
+     * <p/>
+     * If the option has the required flag or if the default is null the return value will be null!
      *
      * @return The parse result value or the default value.
      */
     public O getValue() {
-        return getValueOrDefault();
+        if (value == null && defaultValue != null && getFlag() != OptionFlag.REQUIRED) {
+            return defaultValue;
+        }
+        return value;
+    }
+
+
+    /**
+     * Check whether or not the option has a value.
+     * <p/>
+     * It will check both the parsed value and the default value.
+     * So, even if the parsing failed it will still be true when there is a default value.
+     * <p/>
+     * Use {@link #success()} to check if the parsing was successful.
+     *
+     * @see #getValue()
+     * @return True when there is a value or default value and false if not.
+     */
+    public boolean hasValue() {
+        return getValue() != null;
     }
 
     /**
+     * Check whether or not the parsing was successful.
+     * <p/>
+     * If not, there might still be a default value see {@link #hasValue()}
+     * When false you can use {@link #getError()} to get the error message.
+     *
+     * @return True when there is a non null value.
+     */
+    public boolean success() {
+        return getValue() != null;
+    }
+
+
+
+    /**
      * Get the value with user friendly format for displaying purposes.
+     * <p/>
      * If a option doesn't override this value it will return the same as the {@link #serialize()} output.
      *
-     * @return String with user friendly formatting.
+     * @return String with user friendly formatting. ({@code null} when no value)
      */
     public String getDisplayValue() {
         return serialize();
@@ -67,9 +120,10 @@ public abstract class SingleOption<O, S extends SingleOption> extends Option<S> 
 
     /**
      * Serialize the value to a string so it can be saved.
+     * <p/>
      * The serialized string has the same format as the parse method accepts.
      *
-     * @return Serialized value as string.
+     * @return Serialized value as string. ({@code null} when no value)
      */
     public String serialize() {
         O value = getValue();
@@ -82,66 +136,16 @@ public abstract class SingleOption<O, S extends SingleOption> extends Option<S> 
 
 
     /**
-     * Used by {@link #getValue()} to return the value and if it's null the default value.
-     * <b>Please note that the default value can be null too!</b>
+     * Used by the {@link #parse(Object)} method to validate the object.
+     * <p/>
+     * The object may not be null and must be either a string or the same type as the object O.
      *
-     * @return The value or the default value if it's null.
+     * @param input The object to parse.
+     * @return Whether or not the parsing was successful.
      */
-    public O getValueOrDefault() {
-        if (value == null && defaultValue != null) {
-            return defaultValue;
-        }
-        return value;
-    }
-
-    /**
-     * Get the default value if it's set.
-     *
-     * @return The default value or {@code null} if it's not set.
-     */
-    public O getDefault() {
-        return defaultValue;
-    }
-
-    /**
-     * Change/set the default value.
-     *
-     * @param defaultValue The default value to set. (set to null for no default)
-     * @return The option instance.
-     */
-    public S def(O defaultValue) {
-        this.defaultValue = defaultValue;
-        return (S)this;
-    }
-
-
-
-    /**
-     * Check whether or not the option has a value.
-     * It will check both the parsed value and the default value.
-     * So, even if the parsing failed it will still be true when there is a default value.
-     *
-     * @return True when there is a value or default value and false if not.
-     */
-    public boolean hasValue() {
-        return getValueOrDefault() != null;
-    }
-
-    /**
-     * Check whether or not the parsing was successful.
-     * If not, there might still be a default value see {@link #hasValue()}
-     * In many cases there will be an error when this is false.
-     *
-     * @return True when there is a value and false if not.
-     */
-    public boolean success() {
-        return getValue() != null;
-    }
-
-
-
     protected boolean parseObject(Object input) {
-        reset();
+        error = "";
+        value = null;
         if (input == null) {
             error = "Invalid input! [type=null]";
             return false;
@@ -158,6 +162,17 @@ public abstract class SingleOption<O, S extends SingleOption> extends Option<S> 
     }
 
 
+    /**
+     * Parse the specified object.
+     * <p/>
+     * The object may be a String or an instance of the the object the option can parse.
+     * It uses {@link #parseObject(Object)}.
+     * <p/>
+     * If the object is a string the {@link #parse(String)} will be called.
+     *
+     * @param input The object that needs to be parsed.
+     * @return Whether or not the parsing was successful.
+     */
     public boolean parse(Object input) {
         if (!parseObject(input)) {
             return false;
@@ -168,13 +183,43 @@ public abstract class SingleOption<O, S extends SingleOption> extends Option<S> 
         return parse((String)input);
     }
 
+    /**
+     * Parse the specified string.
+     * <p/>
+     * Calls {@link #parse(Player, String)} with null for the player argument.
+     *
+     * @param input The input string that needs to be parsed.
+     * @return Whether or not the parsing was successful.
+     */
     public boolean parse(String input) {
         return parse(null, input);
     }
 
-    public S cloneData(S option) {
-        return (S)option.def(defaultValue).desc(description).flag(flag);
-    }
-
+    /**
+     * Parse the specified string.
+     * <p/>
+     * Each option has it's own way of parsing the string and most options support multiple formats.
+     * <p/>
+     * The specified player will be used for certain options for certain formats.
+     * For example, the location option you can use @ to get the location of the player.
+     * <p/>
+     * When the parsing returns false you can use {@link #getError()} to get the error message why it failed.
+     *
+     * @param player The player used for parsing player specific syntax. (May be {@code null})
+     * @param input The input string that needs to be parsed.
+     * @return Whether or not the parsing was successful.
+     */
     public abstract boolean parse(Player player, String input);
+
+
+    /**
+     * Used for the {@link #clone()} method to copy data in a new instance.
+     * It will copy the name, description, flag and the default value.
+     *
+     * @param option The new option to clone the data into.
+     * @return The specified option.
+     */
+    protected S cloneData(S option) {
+        return (S)option.def(defaultValue).name(name).desc(description).flag(flag);
+    }
 }
