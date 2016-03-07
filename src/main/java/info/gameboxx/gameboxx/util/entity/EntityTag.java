@@ -28,6 +28,7 @@ package info.gameboxx.gameboxx.util.entity;
 import info.gameboxx.gameboxx.GameBoxx;
 import info.gameboxx.gameboxx.options.SingleOption;
 import info.gameboxx.gameboxx.options.single.*;
+import info.gameboxx.gameboxx.util.Pair;
 import info.gameboxx.gameboxx.util.Parse;
 import org.bukkit.*;
 import org.bukkit.block.BlockFace;
@@ -201,7 +202,7 @@ public class EntityTag {
         EntityTag.register("BOOTSDROP", new DoubleO(), "setBootsDropChance", null, LivingEntity.class);
         EntityTag.register("PICKUP", new BoolO().def(false), "setCanPickupItems", "getCanPickupItems", LivingEntity.class);
         EntityTag.register("REMOVEFAR", new BoolO().def(false), "setRemoveWhenFarAway", "getRemoveWhenFarAway", LivingEntity.class);
-        //EntityTag.register(new EntityOption("LEASH"), "setLeashHolder", "getLeashHolder", LivingEntity.class);
+        EntityTag.register("LEASH", new EntityO(), "setLeashHolder", null, LivingEntity.class);
     
         //Ageable
         EntityTag.register("AGE", new IntO().def(0), "setAge", "getAge", Ageable.class);
@@ -214,10 +215,10 @@ public class EntityTag {
         EntityTag.register("OWNER", new PlayerO(), "setOwner", "getOwner", Tameable.class); //TODO: OfflinePlayerOption?
     
         //Creature
-        //EntityTag.register("TARGET", new EntityOption("TARGET"), "setTarget", Creature.class);
+        EntityTag.register("TARGET", new EntityO(), "setTarget", null, Creature.class);
     
         //Projectile
-        //EntityTag.register("SHOOTER", new EntityOption("SHOOTER"), "setShooter", Projectile.class);
+        EntityTag.register("SHOOTER", new EntityO(), "setShooter", null, Projectile.class);
         EntityTag.register("BOUNCE", new BoolO().def(true), "setBounce", null, Projectile.class);
     
         //Hanging
@@ -231,17 +232,17 @@ public class EntityTag {
         }, Hanging.class);
     
         //Mixed Entities
-        //EntityTag.register("MAINHAND", new ItemOption(), "setItemInMainHand", ArmorStand.class, LivingEntity.class);
-        //EntityTag.register("OFFHAND", new ItemOption(), "setItemInOffHand", ArmorStand.class, LivingEntity.class);
-        //EntityTag.register("BOOTS", new ItemOption(), "setBoots", ArmorStand.class, LivingEntity.class);
-        //EntityTag.register("LEGGINGS", new ItemOption(), "setLeggings", ArmorStand.class, LivingEntity.class);
-        //EntityTag.register("CHESTPLATE", new ItemOption(), "setChestplate", ArmorStand.class, LivingEntity.class);
-        //EntityTag.register("HELMET", new ItemOption(), "setHelmet", ArmorStand.class, LivingEntity.class);
-        // EntityTag.register("ITEM", new ItemOption(), "setItem", Item.class, ItemFrame.class, ThrownPotion.class);
+        EntityTag.register("MAINHAND", new ItemO(), "setItemInMainHand", "getItemInMainHand", ArmorStand.class, LivingEntity.class);
+        EntityTag.register("OFFHAND", new ItemO(), "setItemInOffHand", "getItemInOffHand", ArmorStand.class, LivingEntity.class);
+        EntityTag.register("BOOTS", new ItemO(), "setBoots", "getBoots", ArmorStand.class, LivingEntity.class);
+        EntityTag.register("LEGGINGS", new ItemO(), "setLeggings", "getLeggings", ArmorStand.class, LivingEntity.class);
+        EntityTag.register("CHESTPLATE", new ItemO(), "setChestplate", "getChestplate", ArmorStand.class, LivingEntity.class);
+        EntityTag.register("HELMET", new ItemO(), "setHelmet", "getHelmet", ArmorStand.class, LivingEntity.class);
+        EntityTag.register("ITEM", new ItemO(), "setItem", "getItem", Item.class, ItemFrame.class, ThrownPotion.class);
         EntityTag.register("SITTING", new BoolO().def(false), "setSitting", "isSitting", Ocelot.class, Wolf.class);
         EntityTag.register("ANGRY", new BoolO().def(false), "setAngry", "isAngry", Wolf.class, PigZombie.class);
         EntityTag.register("SADDLE", new BoolO().def(false), "setSaddle", "hasSaddle", Horse.class, Pig.class);
-        //EntityTag.register("SADDLEITEM", new ItemOption(), "setSaddle", Horse.class, Pig.class);
+        EntityTag.register("SADDLEITEM", new ItemO(), "setSaddle", "getSaddle", Horse.class, Pig.class);
         EntityTag.register("COLOR", new StringO().match(Parse.StringArray(DyeColor.values())), new EntityTagCallback() {
             @Override boolean onSet(CommandSender sender, EEntity entity, SingleOption result) {
                 entity.setColor(DyeColor.valueOf(((StringO)result).getValue().toUpperCase()));
@@ -252,7 +253,7 @@ public class EntityTag {
                 return entity.getColor().toString();
             }
         }, Colorable.class, Wolf.class); //TODO: Aliases
-        //EntityTag.register("EFFECT", new PotionOption(), "addEffect", LivingEntity.class, AreaEffectCloud.class);
+        EntityTag.register("EFFECT", new PotionO(), "addEffect", null, LivingEntity.class, AreaEffectCloud.class);
         EntityTag.register("PROFESSION", new StringO().match(Parse.StringArray(Villager.Profession.values())), new EntityTagCallback() {
             @Override boolean onSet(CommandSender sender, EEntity entity, SingleOption result) {
                 entity.setProfession(Villager.Profession.valueOf(((StringO)result).getValue().toUpperCase()));
@@ -291,7 +292,7 @@ public class EntityTag {
         EntityTag.register("USERADIUS", new DoubleO(), "setRadiusOnUse", null, AreaEffectCloud.class);
         EntityTag.register("RADIUSDECAY", new DoubleO(), "setRadiusPerTick", null, AreaEffectCloud.class);
         EntityTag.register("PARTICLE", new IntO(), "setParticle", null, AreaEffectCloud.class);
-        //EntityTag.register("COLOR", new ColorOption(), "setEffectColor", null, AreaEffectCloud.class);
+        EntityTag.register("PARTICLECOLOR", new ColorO(), "setEffectColor", null, AreaEffectCloud.class);
     
         //Minecart
         EntityTag.register("MAXSPEED", new DoubleO().def(0.4), "setMaxSpeed", "getMaxSpeed", Minecart.class);
@@ -320,7 +321,17 @@ public class EntityTag {
         EntityTag.register("PICKUPDELAY", new IntO(), "setPickupDelay", null, Item.class);
 
         //Itemframe
-        EntityTag.register("ROTATION", new StringO().match(Arrays.asList("0", "45", "90", "135", "180", "225", "270", "315", "360")), "setRotation", null, ItemFrame.class);
+        EntityTag.register("ROTATION", new StringO().match(Pair.P("NONE", Arrays.asList("0", "360", "-360")), Pair.P("CLOCKWISE_45", Arrays.asList("45", "-315")),
+                Pair.P("CLOCKWISE", Arrays.asList("90", "-270")), Pair.P("CLOCKWISE_135", Arrays.asList("135", "-225")), Pair.P("FLIPPED", Arrays.asList("180", "-180")),
+                Pair.P("FLIPPED_45", Arrays.asList("225", "-135")), Pair.P("COUNTER_CLOCKWISE", Arrays.asList("270", "-90")),
+                Pair.P("COUNTER_CLOCKWISE_45", Arrays.asList("315", "-45"))),new EntityTagCallback() {
+            @Override boolean onSet(CommandSender sender, EEntity entity, SingleOption result) {
+                entity.setRotation(Rotation.valueOf(((StringO)result).getValue().toUpperCase()));
+                return true;
+            }
+
+            @Override String onGet(EEntity entity) {return null;}
+        }, ItemFrame.class);
 
         //Painting
         EntityTag.register("ART", new StringO().match(Parse.StringArray(Art.values())), new EntityTagCallback() {
@@ -394,7 +405,7 @@ public class EntityTag {
         EntityTag.register("DOMESTICATION", new IntO().def(0), "setDomestication", "getDomestication", Horse.class);
         EntityTag.register("MAXDOMESTICATION", new IntO().def(100), "setMaxDomestication", "getMaxDomestication", Horse.class);
         EntityTag.register("JUMPSTRENGTH", new DoubleO(), "setJumpStrength", "getJumpStrength", Horse.class);
-        //ARMOR = EntityTag.register("ARMOR", new ItemOption(), "setHorseArmor", "getHorseArmor", Horse.class);
+        EntityTag.register("ARMOR", new ItemO(), "setHorseArmor", "getHorseArmor", Horse.class);
 
         //Ocelot
         EntityTag.register("CATTYPE", new StringO().match(Parse.StringArray(Ocelot.Type.values())), new EntityTagCallback() {

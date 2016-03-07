@@ -118,7 +118,7 @@ public class GameBoxxCmd implements CommandExecutor {
 
             String entityString = Str.implode(args, " ", " ", 1, args.length);
 
-            EntityParser parser = new EntityParser(entityString, null, false);
+            EntityParser parser = new EntityParser(entityString, (Player)sender, false);
             if (!parser.isValid()) {
                 Msg.fromString(parser.getError()).send(sender);
             } else {
