@@ -38,6 +38,6 @@ public class VectorLO extends ListOption<Vector, VectorLO, VectorO> {
 
     @Override
     public VectorLO clone() {
-        return new VectorLO();
+        return cloneData(new VectorLO());
     }
 }

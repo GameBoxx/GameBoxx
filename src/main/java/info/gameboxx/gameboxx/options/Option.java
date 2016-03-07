@@ -146,6 +146,17 @@ public abstract class Option<T extends Option> {
     }
 
     /**
+     * Used for the {@link #clone()} method to copy data in a new instance.
+     * It will copy the name, description, flag and the default value.
+     *
+     * @param option The new option to clone the data into.
+     * @return The specified option.
+     */
+    protected T cloneData(T option) {
+        return (T)option.name(name).desc(description).flag(flag);
+    }
+
+    /**
      * Create a new instance of the option.
      * <p/>
      * The name, description, flag and modifiers will be cloned in the new option.

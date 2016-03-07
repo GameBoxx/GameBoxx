@@ -38,6 +38,6 @@ public class ColorMO extends MapOption<Color, ColorMO, ColorO> {
 
     @Override
     public ColorMO clone() {
-        return new ColorMO();
+        return cloneData(new ColorMO());
     }
 }

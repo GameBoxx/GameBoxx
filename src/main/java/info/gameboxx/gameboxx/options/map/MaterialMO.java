@@ -45,6 +45,6 @@ public class MaterialMO extends MapOption<MaterialData, MaterialMO, MaterialO> {
 
     @Override
     public MaterialMO clone() {
-        return new MaterialMO().blocks(blocks);
+        return cloneData(new MaterialMO().blocks(blocks));
     }
 }

@@ -38,6 +38,6 @@ public class PlayerMO extends MapOption<Player, PlayerMO, PlayerO> {
 
     @Override
     public PlayerMO clone() {
-        return new PlayerMO();
+        return cloneData(new PlayerMO());
     }
 }

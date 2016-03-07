@@ -121,6 +121,6 @@ public class StringLO extends ListOption<String, StringLO, StringO> {
 
     @Override
     public StringLO clone() {
-        return new StringLO().minChars(minChars).maxChars(maxChars).match(matchList).match(matchMap).matchRegex(regex, regexFormat);
+        return cloneData(new StringLO().minChars(minChars).maxChars(maxChars).match(matchList).match(matchMap).matchRegex(regex, regexFormat));
     }
 }

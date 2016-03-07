@@ -37,6 +37,6 @@ public class BoolMO extends MapOption<Boolean, BoolMO, BoolO> {
 
     @Override
     public BoolMO clone() {
-        return new BoolMO();
+        return cloneData(new BoolMO());
     }
 }

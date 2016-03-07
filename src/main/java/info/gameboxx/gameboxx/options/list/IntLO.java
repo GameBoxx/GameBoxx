@@ -52,6 +52,6 @@ public class IntLO extends ListOption<Integer, IntLO, IntO> {
 
     @Override
     public IntLO clone() {
-        return new IntLO().min(min).max(max);
+        return cloneData(new IntLO().min(min).max(max));
     }
 }

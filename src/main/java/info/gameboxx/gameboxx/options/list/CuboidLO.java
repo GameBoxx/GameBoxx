@@ -59,6 +59,6 @@ public class CuboidLO extends ListOption<Cuboid, CuboidLO, CuboidO> {
 
     @Override
     public CuboidLO clone() {
-        return new CuboidLO();
+        return cloneData(new CuboidLO());
     }
 }

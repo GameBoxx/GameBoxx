@@ -59,6 +59,6 @@ public class CuboidMO extends MapOption<Cuboid, CuboidMO, CuboidO> {
 
     @Override
     public CuboidMO clone() {
-        return new CuboidMO();
+        return cloneData(new CuboidMO());
     }
 }

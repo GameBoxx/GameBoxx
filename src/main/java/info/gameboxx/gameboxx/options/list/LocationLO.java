@@ -59,6 +59,6 @@ public class LocationLO extends ListOption<Location, LocationLO, LocationO> {
 
     @Override
     public LocationLO clone() {
-        return new LocationLO();
+        return cloneData(new LocationLO());
     }
 }

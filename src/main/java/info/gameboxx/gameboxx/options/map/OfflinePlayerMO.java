@@ -38,6 +38,6 @@ public class OfflinePlayerMO extends MapOption<OfflinePlayer, OfflinePlayerMO, O
 
     @Override
     public OfflinePlayerMO clone() {
-        return new OfflinePlayerMO();
+        return cloneData(new OfflinePlayerMO());
     }
 }

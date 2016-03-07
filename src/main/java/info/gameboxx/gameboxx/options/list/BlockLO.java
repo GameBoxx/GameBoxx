@@ -58,6 +58,6 @@ public class BlockLO extends ListOption<Block, BlockLO, BlockO> {
 
     @Override
     public BlockLO clone() {
-        return new BlockLO();
+        return cloneData(new BlockLO());
     }
 }

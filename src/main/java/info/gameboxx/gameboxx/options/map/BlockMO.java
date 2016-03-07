@@ -57,6 +57,6 @@ public class BlockMO extends MapOption<Block, BlockMO, BlockO> {
 
     @Override
     public BlockMO clone() {
-        return new BlockMO();
+        return cloneData(new BlockMO());
     }
 }

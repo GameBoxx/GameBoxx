@@ -38,6 +38,6 @@ public class VectorMO extends MapOption<Vector, VectorMO, VectorO> {
 
     @Override
     public VectorMO clone() {
-        return new VectorMO();
+        return cloneData(new VectorMO());
     }
 }

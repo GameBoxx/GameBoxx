@@ -38,6 +38,6 @@ public class WorldMO extends MapOption<World, WorldMO, WorldO> {
 
     @Override
     public WorldMO clone() {
-        return new WorldMO();
+        return cloneData(new WorldMO());
     }
 }

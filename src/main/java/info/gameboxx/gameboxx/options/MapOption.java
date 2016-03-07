@@ -558,4 +558,14 @@ public abstract class MapOption<O, M extends MapOption, S extends SingleOption> 
         return (S)getSingleOption().def(getDefault(key)).name(name).desc(description).flag(flag);
     }
 
+    /**
+     * Used for the {@link #clone()} method to copy data in a new instance.
+     * It will copy the name, description, flag and the default value.
+     *
+     * @param option The new option to clone the data into.
+     * @return The specified option.
+     */
+    protected M cloneData(M option) {
+        return (M)super.cloneData(option).def(defaultValue).def(defaultValues).keys(requiredKeys).customKeys(customKeys);
+    }
 }

@@ -38,6 +38,6 @@ public class PlayerLO extends ListOption<Player, PlayerLO, PlayerO> {
 
     @Override
     public PlayerLO clone() {
-        return new PlayerLO();
+        return cloneData(new PlayerLO());
     }
 }

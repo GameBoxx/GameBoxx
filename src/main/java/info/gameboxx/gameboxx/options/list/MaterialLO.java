@@ -45,6 +45,6 @@ public class MaterialLO extends ListOption<MaterialData, MaterialLO, MaterialO> 
 
     @Override
     public MaterialLO clone() {
-        return new MaterialLO().blocks(blocks);
+        return cloneData(new MaterialLO().blocks(blocks));
     }
 }

@@ -38,6 +38,6 @@ public class ColorLO extends ListOption<Color, ColorLO, ColorO> {
 
     @Override
     public ColorLO clone() {
-        return new ColorLO();
+        return cloneData(new ColorLO());
     }
 }

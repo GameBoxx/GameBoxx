@@ -38,6 +38,6 @@ public class OfflinePlayerLO extends ListOption<OfflinePlayer, OfflinePlayerLO, 
 
     @Override
     public OfflinePlayerLO clone() {
-        return new OfflinePlayerLO();
+        return cloneData(new OfflinePlayerLO());
     }
 }

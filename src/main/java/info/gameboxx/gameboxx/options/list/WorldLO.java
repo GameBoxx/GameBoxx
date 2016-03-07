@@ -38,6 +38,6 @@ public class WorldLO extends ListOption<World, WorldLO, WorldO> {
 
     @Override
     public WorldLO clone() {
-        return new WorldLO();
+        return cloneData(new WorldLO());
     }
 }

@@ -50,6 +50,6 @@ public class DoubleLO extends ListOption<Double, DoubleLO, DoubleO> {
 
     @Override
     public DoubleLO clone() {
-        return new DoubleLO().min(min).max(max);
+        return cloneData(new DoubleLO().min(min).max(max));
     }
 }

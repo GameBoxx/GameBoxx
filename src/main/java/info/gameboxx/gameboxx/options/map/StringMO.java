@@ -121,6 +121,6 @@ public class StringMO extends MapOption<String, StringMO, StringO> {
 
     @Override
     public StringMO clone() {
-        return new StringMO().minChars(minChars).maxChars(maxChars).match(matchList).match(matchMap).matchRegex(regex, regexFormat);
+        return cloneData(new StringMO().minChars(minChars).maxChars(maxChars).match(matchList).match(matchMap).matchRegex(regex, regexFormat));
     }
 }

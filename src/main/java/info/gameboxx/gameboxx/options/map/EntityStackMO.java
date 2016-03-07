@@ -51,6 +51,6 @@ public class EntityStackMO extends MapOption<EntityStack, EntityStackMO, EntityS
 
     @Override
     public EntityStackMO clone() {
-        return new EntityStackMO().max(maxEntities).allowStacked(allowStacked);
+        return cloneData(new EntityStackMO().max(maxEntities).allowStacked(allowStacked));
     }
 }

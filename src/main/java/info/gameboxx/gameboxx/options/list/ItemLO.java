@@ -38,6 +38,6 @@ public class ItemLO extends ListOption<EItem, ItemLO, ItemO> {
 
     @Override
     public ItemLO clone() {
-        return new ItemLO();
+        return cloneData(new ItemLO());
     }
 }

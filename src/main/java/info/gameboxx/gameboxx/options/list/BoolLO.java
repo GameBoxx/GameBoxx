@@ -37,6 +37,6 @@ public class BoolLO extends ListOption<Boolean, BoolLO, BoolO> {
 
     @Override
     public BoolLO clone() {
-        return new BoolLO();
+        return cloneData(new BoolLO());
     }
 }

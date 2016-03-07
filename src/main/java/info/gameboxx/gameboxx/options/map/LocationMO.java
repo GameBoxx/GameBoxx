@@ -58,6 +58,6 @@ public class LocationMO extends MapOption<Location, LocationMO, LocationO> {
 
     @Override
     public LocationMO clone() {
-        return new LocationMO();
+        return cloneData(new LocationMO());
     }
 }

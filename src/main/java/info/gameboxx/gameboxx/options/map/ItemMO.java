@@ -38,6 +38,6 @@ public class ItemMO extends MapOption<EItem, ItemMO, ItemO> {
 
     @Override
     public ItemMO clone() {
-        return new ItemMO();
+        return cloneData(new ItemMO());
     }
 }

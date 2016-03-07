@@ -50,6 +50,6 @@ public class DoubleMO extends MapOption<Double, DoubleMO, DoubleO> {
 
     @Override
     public DoubleMO clone() {
-        return new DoubleMO().min(min).max(max);
+        return cloneData(new DoubleMO().min(min).max(max));
     }
 }

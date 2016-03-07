@@ -213,7 +213,6 @@ public abstract class SingleOption<O, S extends SingleOption> extends Option<S> 
      */
     public abstract boolean parse(Player player, String input);
 
-
     /**
      * Used for the {@link #clone()} method to copy data in a new instance.
      * It will copy the name, description, flag and the default value.
@@ -222,6 +221,6 @@ public abstract class SingleOption<O, S extends SingleOption> extends Option<S> 
      * @return The specified option.
      */
     protected S cloneData(S option) {
-        return (S)option.def(defaultValue).name(name).desc(description).flag(flag);
+        return (S)super.cloneData(option).def(defaultValue);
     }
 }

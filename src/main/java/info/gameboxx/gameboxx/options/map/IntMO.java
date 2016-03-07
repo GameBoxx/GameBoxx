@@ -52,6 +52,6 @@ public class IntMO extends MapOption<Integer, IntMO, IntO> {
 
     @Override
     public IntMO clone() {
-        return new IntMO().min(min).max(max);
+        return cloneData( new IntMO().min(min).max(max));
     }
 }

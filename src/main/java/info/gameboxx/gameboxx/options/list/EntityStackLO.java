@@ -51,6 +51,6 @@ public class EntityStackLO extends ListOption<EntityStack, EntityStackLO, Entity
 
     @Override
     public EntityStackLO clone() {
-        return new EntityStackLO().max(maxEntities).allowStacked(allowStacked);
+        return cloneData(new EntityStackLO().max(maxEntities).allowStacked(allowStacked));
     }
 }

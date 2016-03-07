@@ -536,4 +536,15 @@ public abstract class ListOption<O, L extends ListOption, S extends SingleOption
         return (S)getSingleOption().def(getDefault(index)).name(name).desc(description).flag(flag);
     }
 
+    /**
+     * Used for the {@link #clone()} method to copy data in a new instance.
+     * It will copy the name, description, flag and the default value.
+     *
+     * @param option The new option to clone the data into.
+     * @return The specified option.
+     */
+    protected L cloneData(L option) {
+        return (L)super.cloneData(option).def(defaultValue).def(defaultValues).minValues(minValues).maxValues(maxValues);
+    }
+
 }
