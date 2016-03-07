@@ -33,7 +33,7 @@ import org.bukkit.entity.Player;
 /**
  * NMS Utilities for version 1.9 R1
  */
-public class NMSUtil_v1_9_R1 {
+public class NMSUtil_V1_9_R1 {
 
     /**
      * Send a packet to the specified player.
