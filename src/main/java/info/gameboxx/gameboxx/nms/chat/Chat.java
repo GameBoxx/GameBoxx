@@ -25,6 +25,7 @@
 
 package info.gameboxx.gameboxx.nms.chat;
 
+import info.gameboxx.gameboxx.nms.annotation.NMSDependant;
 import org.bukkit.entity.Player;
 
 import java.util.Collection;
@@ -32,6 +33,7 @@ import java.util.Collection;
 /**
  * Send action bar messages and chat messages.
  */
+@NMSDependant(implementationPath = "info.gameboxx.gameboxx.nms.chat")
 public interface Chat {
 
     /**

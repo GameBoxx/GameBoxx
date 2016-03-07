@@ -25,6 +25,7 @@
 
 package info.gameboxx.gameboxx.nms.worldloader;
 
+import info.gameboxx.gameboxx.nms.annotation.NMSDependant;
 import org.bukkit.World;
 import org.bukkit.WorldCreator;
 
@@ -34,6 +35,7 @@ import org.bukkit.WorldCreator;
  *
  * @author Friwi (https://www.spigotmc.org/resources/lib-asyncworldloader.7370/)
  */
+@NMSDependant(implementationPath = "info.gameboxx.gameboxx.nms.worldloader")
 public interface WorldLoader {
 
     /**
