@@ -58,9 +58,8 @@ public class NMS {
             chat = (Chat) loadFromNMS(Chat.class);
             entityUtils = (EntityUtils) loadFromNMS(EntityUtils.class);
 
-        } catch (ArrayIndexOutOfBoundsException | InstantiationException | NoSuchMethodException | InvocationTargetException | IllegalAccessException ignored) {
-        } catch (ClassNotFoundException e) {
-            GameBoxx.get().error("The current version is not supported: " + version + ".\n" + e.getMessage());
+        } catch (ArrayIndexOutOfBoundsException ignored) {
+
         }
     }
 
@@ -96,18 +95,34 @@ public class NMS {
         return instance;
     }
 
-    private <T> Object loadFromNMS(Class<T> dep) throws ClassNotFoundException, IllegalAccessException, InstantiationException {
+    public <T> Object loadFromNMS(Class<T> dep) {
         if (!dep.isAnnotationPresent(NMSDependant.class)) return null;
         NMSDependant nmsDependant = dep.getAnnotation(NMSDependant.class);
-        Class<?> impl = Class.forName(nmsDependant.implementationPath() + "." + dep.getSimpleName() + "_" + version);
-        return impl.newInstance();
+        Class<?> impl = null;
+        try {
+            impl = Class.forName(nmsDependant.implementationPath() + "." + dep.getSimpleName() + "_" + version);
+            return impl.newInstance();
+        } catch (ClassNotFoundException e) {
+            GameBoxx.get().error("The current version is not supported: " + version + ".\n" + e.getMessage());
+        } catch (InstantiationException | IllegalAccessException e) {
+            e.printStackTrace();
+        }
+        return impl;
     }
 
-    private <T> Object loadFromNMS(Class<T> dep, GameBoxx gameBoxx) throws ClassNotFoundException, IllegalAccessException, InstantiationException, NoSuchMethodException, InvocationTargetException {
+    public <T> Object loadFromNMS(Class<T> dep, Object... objects) {
         if (!dep.isAnnotationPresent(NMSDependant.class)) return null;
         NMSDependant nmsDependant = dep.getAnnotation(NMSDependant.class);
-        Class<?> impl = Class.forName(nmsDependant.implementationPath() + "." + dep.getSimpleName() + "_" + version);
-        return impl.getConstructor(GameBoxx.class).newInstance(gameBoxx);
+        Class<?> impl = null;
+        try {
+            impl = Class.forName(nmsDependant.implementationPath() + "." + dep.getSimpleName() + "_" + version);
+            return impl.getConstructor(Object[].class).newInstance(objects);
+        } catch (ClassNotFoundException e) {
+            GameBoxx.get().error("The current version is not supported: " + version + ".\n" + e.getMessage());
+        } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
+            e.printStackTrace();
+        }
+        return impl;
     }
 
 }
