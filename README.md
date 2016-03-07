@@ -1,6 +1,6 @@
 ![alt text](http://gameboxx.info/_media/logo_small.png "Logo Title Text 1")  
 
-<b>GameBoxx</b> is a game API for Minecraft servers using Spigot.  
+**GameBoxx** is a game API for Minecraft servers using Spigot.  
 There are a bunch of games that use this API and more are being created all the time.  
 Most things are customizable and everything is extremely easy to use.
 
@@ -32,3 +32,6 @@ Most things are customizable and everything is extremely easy to use.
 + Holograms API
 + NMS methods for things like titles etc.
 + Many useful utility classes
+
+
+###### More information can be found on our [wiki](http://gameboxx.info/start)
