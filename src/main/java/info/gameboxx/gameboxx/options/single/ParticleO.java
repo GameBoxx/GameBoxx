@@ -34,6 +34,7 @@ import org.bukkit.Particle;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.MaterialData;
+import org.bukkit.util.Vector;
 
 public class ParticleO extends SingleOption<ParticleEffect, ParticleO> {
 
@@ -43,9 +44,7 @@ public class ParticleO extends SingleOption<ParticleEffect, ParticleO> {
 
         Integer amount = 1;
         Double speed = 1d;
-        Double offsetX = 0d;
-        Double offsetY = 0d;
-        Double offsetZ = 0d;
+        Vector offset = new Vector(0,0,0);
         Object data = null;
 
         //TODO: Get type from alias and display aliases.
@@ -55,73 +54,54 @@ public class ParticleO extends SingleOption<ParticleEffect, ParticleO> {
             return false;
         }
 
-        if (split.length > 1) {
-            split = split[1].split(",");
-
-            if (split.length > 0 && !split[0].isEmpty()) {
-                amount = Parse.Int(split[0]);
-                if (amount == null) {
-                    Msg.getString("particle.invalid-amount", Param.P("input", split[0]));
-                    return false;
-                }
-            }
-
-            if (split.length > 1 && !split[1].isEmpty()) {
-                speed = Parse.Double(split[1]);
-                if (speed == null) {
-                    Msg.getString("particle.invalid-speed", Param.P("input", split[1]));
-                    return false;
-                }
-            }
-
-            if (split.length > 2 && !split[2].isEmpty()) {
-                offsetX = Parse.Double(split[2]);
-                if (offsetX == null) {
-                    Msg.getString("particle.invalid-offset", Param.P("input", split[2]), Param.P("axis", "x"));
-                    return false;
-                }
-            }
-
-            if (split.length > 3 && !split[3].isEmpty()) {
-                offsetY = Parse.Double(split[3]);
-                if (offsetY == null) {
-                    Msg.getString("particle.invalid-offset", Param.P("input", split[3]), Param.P("axis", "y"));
-                    return false;
-                }
-            }
-
-            if (split.length > 4 && !split[4].isEmpty()) {
-                offsetZ = Parse.Double(split[4]);
-                if (offsetZ == null) {
-                    Msg.getString("particle.invalid-offset", Param.P("input", split[4]), Param.P("axis", "z"));
-                    return false;
-                }
-            }
-
-            if (split.length > 5 && !split[5].isEmpty()) {
-                if (particle.getDataType().equals(MaterialData.class)) {
-                    MaterialO materialOption = new MaterialO();
-                    if (!materialOption.parse(split[5])) {
-                        error = materialOption.getError();
-                        return false;
-                    }
-                    data = materialOption.getValue();
-                } else if (particle.getDataType().equals(ItemStack.class)) {
-                    ItemO itemOption = new ItemO();
-                    if (!itemOption.parse(split[5])) {
-                        error = itemOption.getError();
-                        return false;
-                    }
-                    data = (ItemStack)itemOption.getValue();
-                }
-                if (data == null) {
-                    error = Msg.getString("particle.invalid-data", Param.P("input", split[5]));
-                    return false;
-                }
+        if (split.length > 1 && !split[1].isEmpty()) {
+            amount = Parse.Int(split[1]);
+            if (amount == null) {
+                Msg.getString("particle.invalid-amount", Param.P("input", split[1]));
+                return false;
             }
         }
 
-        value = new ParticleEffect(particle, amount, offsetX, offsetY, offsetZ, speed, data);
+        if (split.length > 2 && !split[2].isEmpty()) {
+            speed = Parse.Double(split[2]);
+            if (speed == null) {
+                Msg.getString("particle.invalid-speed", Param.P("input", split[2]));
+                return false;
+            }
+        }
+
+        if (split.length > 3 && !split[3].isEmpty()) {
+            VectorO vectorOption = new VectorO();
+            if (!vectorOption.parse(split[3])) {
+                error = vectorOption.getError();
+                return false;
+            }
+            offset = vectorOption.getValue();
+        }
+
+        if (split.length > 4 && !split[4].isEmpty()) {
+            if (particle.getDataType().equals(MaterialData.class)) {
+                MaterialO materialOption = new MaterialO();
+                if (!materialOption.parse(split[4])) {
+                    error = materialOption.getError();
+                    return false;
+                }
+                data = materialOption.getValue();
+            } else if (particle.getDataType().equals(ItemStack.class)) {
+                ItemO itemOption = new ItemO();
+                if (!itemOption.parse(split[4])) {
+                    error = itemOption.getError();
+                    return false;
+                }
+                data = (ItemStack)itemOption.getValue();
+            }
+            if (data == null) {
+                error = Msg.getString("particle.invalid-data", Param.P("input", split[5]));
+                return false;
+            }
+        }
+
+        value = new ParticleEffect(particle, amount, offset.getX(), offset.getY(), offset.getZ(), speed, data);
         return true;
     }
 
