@@ -30,6 +30,7 @@ import info.gameboxx.gameboxx.nms.annotation.NMSDependant;
 import info.gameboxx.gameboxx.nms.chat.Chat;
 import info.gameboxx.gameboxx.nms.entity.EntityUtils;
 import info.gameboxx.gameboxx.nms.worldloader.WorldLoader;
+import org.apache.commons.lang.reflect.ConstructorUtils;
 import org.bukkit.Bukkit;
 
 import java.lang.reflect.InvocationTargetException;
@@ -113,7 +114,7 @@ public class NMS {
         Class<?> impl = null;
         try {
             impl = Class.forName(nmsDependant.implementationPath() + "." + dep.getSimpleName() + "_" + version);
-            return impl.getConstructor(Object[].class).newInstance(objects);
+            return ConstructorUtils.invokeConstructor(impl, objects);
         } catch (ClassNotFoundException e) {
             GameBoxx.get().error("The current version is not supported: " + version + ".\n" + e.getMessage());
         } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
