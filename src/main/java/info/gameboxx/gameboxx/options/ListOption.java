@@ -25,6 +25,8 @@
 
 package info.gameboxx.gameboxx.options;
 
+import info.gameboxx.gameboxx.messages.Msg;
+import info.gameboxx.gameboxx.messages.Param;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
@@ -308,7 +310,7 @@ public abstract class ListOption<O, L extends ListOption, S extends SingleOption
      * @return The error message. (Empty string when there is no error)
      */
     public String getError(int index) {
-        return values.get(index).getError();
+        return values.get(index).getError() + " " + Msg.getString("list.index", Param.P("index", index));
     }
 
 
@@ -387,7 +389,7 @@ public abstract class ListOption<O, L extends ListOption, S extends SingleOption
         updateList();
         if (input == null || input.length == 0) {
             if (minValues > 0) {
-                error = "List must have at least " + minValues + " values!";
+                error = Msg.getString("list.min", Param.P("min", minValues));
                 return false;
             }
             return true;
@@ -436,7 +438,7 @@ public abstract class ListOption<O, L extends ListOption, S extends SingleOption
         updateList();
         if (input == null || input.length == 0) {
             if (minValues > 0) {
-                error = "List must have at least " + minValues + " values!";
+                error = Msg.getString("list.min", Param.P("min", minValues));
                 return false;
             }
             return true;
@@ -460,7 +462,7 @@ public abstract class ListOption<O, L extends ListOption, S extends SingleOption
      */
     public boolean parse(int index, Object input) {
         if (maxValues > 0 && index > maxValues) {
-            error = "List can not have more than " + maxValues + " values!";
+            error = Msg.getString("list.max", Param.P("max", maxValues));
             return false;
         }
         for (int i = values.size(); i <= index; i++) {
@@ -468,7 +470,7 @@ public abstract class ListOption<O, L extends ListOption, S extends SingleOption
         }
         S option = values.get(index);
         if (!option.parse(input)) {
-            error = option.getError() + " [index=" + index + "]";
+            error = getError(index);
             return false;
         }
         return true;
@@ -497,7 +499,7 @@ public abstract class ListOption<O, L extends ListOption, S extends SingleOption
      */
     public boolean parse(Player player, int index, String input) {
         if (maxValues > 0 && index > maxValues) {
-            error = "List can not have more than " + maxValues + " values!";
+            error = Msg.getString("list.max", Param.P("max", maxValues));
             return false;
         }
         for (int i = values.size(); i <= index; i++) {
@@ -505,7 +507,7 @@ public abstract class ListOption<O, L extends ListOption, S extends SingleOption
         }
         S option = values.get(index);
         if (!option.parse(player, input)) {
-            error = option.getError() + " [index=" + index + "]";
+            error = getError(index);
             return false;
         }
         return true;
@@ -532,6 +534,17 @@ public abstract class ListOption<O, L extends ListOption, S extends SingleOption
      */
     public S getSingleOption(int index) {
         return (S)getSingleOption().def(getDefault(index)).name(name).desc(description).flag(flag);
+    }
+
+    /**
+     * Used for the {@link #clone()} method to copy data in a new instance.
+     * It will copy the name, description, flag and the default value.
+     *
+     * @param option The new option to clone the data into.
+     * @return The specified option.
+     */
+    protected L cloneData(L option) {
+        return (L)super.cloneData(option).def(defaultValue).def(defaultValues).minValues(minValues).maxValues(maxValues);
     }
 
 }

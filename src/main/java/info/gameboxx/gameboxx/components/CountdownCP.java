@@ -29,7 +29,7 @@ import info.gameboxx.gameboxx.components.internal.GameComponent;
 import info.gameboxx.gameboxx.game.Game;
 import info.gameboxx.gameboxx.game.GameSession;
 import info.gameboxx.gameboxx.messages.Msg;
-import info.gameboxx.gameboxx.options.single.IntOption;
+import info.gameboxx.gameboxx.options.single.IntO;
 import info.gameboxx.gameboxx.util.SoundEffect;
 import info.gameboxx.gameboxx.util.Str;
 import org.bukkit.Sound;
@@ -56,9 +56,9 @@ public class CountdownCP extends GameComponent {
 
     @Override
     public void registerOptions() {
-        registerGameOption("countdown-time", new IntOption().name("CountdownTime").def(30).min(0).desc(Msg.getString("opt.countdown-time")));
-        registerGameOption("count-interval", new IntOption().name("CountInterval").def(10).min(1).desc(Msg.getString("opt.count-interval")));
-        registerGameOption("count-seconds", new IntOption().name("CountSeconds").def(5).min(0).desc(Msg.getString("opt.count-seconds")));
+        registerGameOption("countdown-time", new IntO().name("CountdownTime").def(30).min(0).desc(Msg.getString("opt.countdown-time")));
+        registerGameOption("count-interval", new IntO().name("CountInterval").def(10).min(1).desc(Msg.getString("opt.count-interval")));
+        registerGameOption("count-seconds", new IntO().name("CountSeconds").def(5).min(0).desc(Msg.getString("opt.count-seconds")));
         //registerGameOption("count-sound", new SoundOption().name("CountSound").def(new SoundEffect(Sound.NOTE_PLING)).desc(Msg.getString("opt.count-sound")));;
     }
 
@@ -93,7 +93,7 @@ public class CountdownCP extends GameComponent {
      * @return countdown-time option value.
      */
     public int getCountdownTime() {
-        return gameOptions().<IntOption>getOption(path("countdown-time")).getValue();
+        return gameOptions().<IntO>getOption(path("countdown-time")).getValue();
     }
 
     /**
@@ -102,7 +102,7 @@ public class CountdownCP extends GameComponent {
      * @return count-interval option value.
      */
     public int getCountInterval() {
-        return gameOptions().<IntOption>getOption(path("count-interval")).getValue();
+        return gameOptions().<IntO>getOption(path("count-interval")).getValue();
     }
 
     /**
@@ -111,7 +111,7 @@ public class CountdownCP extends GameComponent {
      * @return count-seconds option value.
      */
     public int getCountSeconds() {
-        return gameOptions().<IntOption>getOption(path("count-seconds")).getValue();
+        return gameOptions().<IntO>getOption(path("count-seconds")).getValue();
     }
 
     /**

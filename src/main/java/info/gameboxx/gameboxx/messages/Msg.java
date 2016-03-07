@@ -575,9 +575,6 @@ public class Msg {
      */
     public static String getString(String key, Param... params) {
         String msg = messages.get(key);
-        if (params.length == 0) {
-            return msg;
-        }
         if (msg != null) {
             return new Msg(msg).params(params).getRaw();
         } else {

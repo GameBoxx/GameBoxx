@@ -25,6 +25,8 @@
 
 package info.gameboxx.gameboxx.options;
 
+import info.gameboxx.gameboxx.messages.Msg;
+import info.gameboxx.gameboxx.messages.Param;
 import org.bukkit.entity.Player;
 
 /**
@@ -147,7 +149,7 @@ public abstract class SingleOption<O, S extends SingleOption> extends Option<S> 
         error = "";
         value = null;
         if (input == null) {
-            error = "Invalid input! [type=null]";
+            error = Msg.getString("null");
             return false;
         }
         if (!(input instanceof String)) {
@@ -155,7 +157,7 @@ public abstract class SingleOption<O, S extends SingleOption> extends Option<S> 
                 value = (O)input;
                 return true;
             } catch (ClassCastException e) {
-                error = "Invalid input! Must be a string or a proper option value. [type=" + input.getClass().getSimpleName() + "]";
+                error = Msg.getString("unsupported-type", Param.P("type", input.getClass().getSimpleName()));
             }
         }
         return true;
@@ -211,7 +213,6 @@ public abstract class SingleOption<O, S extends SingleOption> extends Option<S> 
      */
     public abstract boolean parse(Player player, String input);
 
-
     /**
      * Used for the {@link #clone()} method to copy data in a new instance.
      * It will copy the name, description, flag and the default value.
@@ -220,6 +221,6 @@ public abstract class SingleOption<O, S extends SingleOption> extends Option<S> 
      * @return The specified option.
      */
     protected S cloneData(S option) {
-        return (S)option.def(defaultValue).name(name).desc(description).flag(flag);
+        return (S)super.cloneData(option).def(defaultValue);
     }
 }

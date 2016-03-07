@@ -49,7 +49,6 @@ public class EntityParser {
 
     private String error = null;
 
-
     /**
      * Parses the given entity string in to an {@link EEntity}.
      * It uses {@link EntityTag}s for parsing the string.
@@ -62,6 +61,23 @@ public class EntityParser {
      * @param ignoreErrors If true it will continue parsing even when there is an error.
      */
     public EntityParser(String string, Player player, boolean ignoreErrors) {
+        this(string, player, ignoreErrors, MAX_AMOUNT, true);
+    }
+
+    /**
+     * Parses the given entity string in to an {@link EEntity}.
+     * It uses {@link EntityTag}s for parsing the string.
+     * <p/>
+     * If ignoreErrors is set to true it will still set the errors but it will try to continue parsing the rest.
+     * It would still fail in some cases for example if there is an invalid entity specified or if there is no input.
+     *
+     * @param string entity string with all entity data from {@link EntityTag}s.
+     * @param player optional player used for parsing (may be {@code null}) will be used for options parsing like @ and such.
+     * @param ignoreErrors If true it will continue parsing even when there is an error.
+     * @param maxAmount The maximum amount that can be set/spawned. (this does not count stacked entities) (set to null to use the default=100)
+     * @param allowStacked If true entities will be stacked and if false entities can't be stacked.
+     */
+    public EntityParser(String string, Player player, boolean ignoreErrors, Integer maxAmount, boolean allowStacked) {
         this.string = string;
         if (string == null || string.isEmpty()) {
             error = "No input...";
@@ -72,6 +88,11 @@ public class EntityParser {
         List<String> entitySections = Str.splitQuotes(string, '>', true);
         if (entitySections.size() < 1) {
             error = "No input...";
+            return;
+        }
+
+        if (!allowStacked && entitySections.size() > 1) {
+            error = "Stacked entities not allowed.";
             return;
         }
 
@@ -86,7 +107,7 @@ public class EntityParser {
                     continue;
                 }
                 if (split[0].equalsIgnoreCase("LOC") || split[0].equalsIgnoreCase("LOCATION")) {
-                    LocationOption locOpt = new LocationOption();
+                    LocationO locOpt = new LocationO();
                     if (locOpt.parse(player, split[1])) {
                         location = locOpt.getValue();
                     } else {
@@ -96,7 +117,7 @@ public class EntityParser {
                         }
                     }
                 } else if (split[0].equalsIgnoreCase("AMT") || split[0].equalsIgnoreCase("AMOUNT")) {
-                    IntOption amtOpt = new IntOption().min(1).max(MAX_AMOUNT);
+                    IntO amtOpt = new IntO().min(1).max(maxAmount == null ? MAX_AMOUNT : maxAmount);
                     if (amtOpt.parse(split[1])) {
                         amount = amtOpt.getValue();
                     } else {
@@ -179,7 +200,7 @@ public class EntityParser {
 
                 //Parse the value for the tag
                 SingleOption option = (SingleOption)tag.getOption().clone();
-                if (option instanceof BoolOption && value.isEmpty()) {
+                if (option instanceof BoolO && value.isEmpty()) {
                     value = "true"; //Allow empty tags for booleans like 'baby' instead of 'baby:true'
                 }
                 if (!option.parse(value)) {
@@ -289,8 +310,8 @@ public class EntityParser {
                             continue;
                         }
                         String val = option.serialize();
-                        if (option instanceof DoubleOption) {
-                            val = ((DoubleOption)option).serialize(2);
+                        if (option instanceof DoubleO) {
+                            val = ((DoubleO)option).serialize(2);
                         }
                         sections.add(tag.getTag().toLowerCase() + ":" + val);
                     } catch (NoSuchMethodException e) {
@@ -306,7 +327,7 @@ public class EntityParser {
             entitySections.add(Str.implode(sections, " "));
         }
 
-        LocationOption location = new LocationOption();
+        LocationO location = new LocationO();
         location.parse(entities.getBottom().getLocation());
 
         this.string = Str.implode(entitySections, " > ") + " loc:" + location.serialize(2);
