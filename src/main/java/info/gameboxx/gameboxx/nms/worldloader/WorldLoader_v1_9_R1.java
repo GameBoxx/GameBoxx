@@ -44,7 +44,7 @@ import java.util.logging.Level;
 /**
  * @author Friwi (https://www.spigotmc.org/resources/lib-asyncworldloader.7370/)
  */
-public class WorldLoader_V1_9_R1 implements info.gameboxx.gameboxx.nms.worldloader.WorldLoader {
+public class WorldLoader_v1_9_R1 implements info.gameboxx.gameboxx.nms.worldloader.WorldLoader {
     //TODO: Recreate this (It's a mess and needs to be updated to 1.9)
 
     private GameBoxx gb;
@@ -55,7 +55,7 @@ public class WorldLoader_V1_9_R1 implements info.gameboxx.gameboxx.nms.worldload
     private Chunk wait = null;
     private ChunkGenerator generator = null;
 
-    public WorldLoader_V1_9_R1(GameBoxx gb) {
+    public WorldLoader_v1_9_R1(GameBoxx gb) {
         this.gb = gb;
     }
 

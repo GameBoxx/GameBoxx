@@ -29,7 +29,7 @@ import net.minecraft.server.v1_9_R1.NBTTagCompound;
 import org.bukkit.craftbukkit.v1_9_R1.entity.CraftEntity;
 import org.bukkit.entity.Entity;
 
-public class EntityUtils_V1_9_R1 implements EntityUtils {
+public class EntityUtils_v1_9_R1 implements EntityUtils {
 
     public void setTag(Entity entity, EntityUtils.Tag tagName, boolean state) {
         net.minecraft.server.v1_9_R1.Entity nmsEntity = ((CraftEntity)entity).getHandle();
