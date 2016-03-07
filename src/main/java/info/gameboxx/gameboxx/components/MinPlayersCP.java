@@ -32,7 +32,7 @@ import info.gameboxx.gameboxx.exceptions.DependencyNotFoundException;
 import info.gameboxx.gameboxx.game.Game;
 import info.gameboxx.gameboxx.game.GameSession;
 import info.gameboxx.gameboxx.messages.Msg;
-import info.gameboxx.gameboxx.options.single.IntOption;
+import info.gameboxx.gameboxx.options.single.IntO;
 import org.bukkit.event.EventHandler;
 
 /**
@@ -53,7 +53,7 @@ public class MinPlayersCP extends GameComponent {
 
     @Override
     public void registerOptions() {
-        registerArenaOption("min-players", new IntOption().name("MinPlayers").def(2).min(1).desc(Msg.getString("opt.min-players")));
+        registerArenaOption("min-players", new IntO().name("MinPlayers").def(2).min(1).desc(Msg.getString("opt.min-players")));
     }
 
     @Override
@@ -67,7 +67,7 @@ public class MinPlayersCP extends GameComponent {
      * @return The minimum player amount required to start.
      */
     public int getMin() {
-        return arenaOptions().<IntOption>getOption(path("min-players")).getValue();
+        return arenaOptions().<IntO>getOption(path("min-players")).getValue();
     }
 
     /**

@@ -31,7 +31,7 @@ import info.gameboxx.gameboxx.components.internal.GameComponent;
 import info.gameboxx.gameboxx.config.internal.OptionCfg;
 import info.gameboxx.gameboxx.exceptions.*;
 import info.gameboxx.gameboxx.options.Option;
-import info.gameboxx.gameboxx.options.single.IntOption;
+import info.gameboxx.gameboxx.options.single.IntO;
 import info.gameboxx.gameboxx.util.Utils;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -287,10 +287,10 @@ public abstract class Game extends ComponentHolder {
      */
     public void registerCoreOptions() {
         //General game options
-        registerGameOption("general.max-sessions", new IntOption().name("MaxSessions").def(-1).min(-1).desc("The maximum amount of sessions that can be created for the game."));
+        registerGameOption("general.max-sessions", new IntO().name("MaxSessions").def(-1).min(-1).desc("The maximum amount of sessions that can be created for the game."));
 
         //General arena options
-        registerArenaOption("general.max-sessions", new IntOption().name("MaxSessions").def(-1).min(-1).desc("The maximum amount of sessions that can be created for the arena"));
+        registerArenaOption("general.max-sessions", new IntO().name("MaxSessions").def(-1).min(-1).desc("The maximum amount of sessions that can be created for the arena"));
 
         //Component options
         for (GameComponent component : getComponents().values()) {

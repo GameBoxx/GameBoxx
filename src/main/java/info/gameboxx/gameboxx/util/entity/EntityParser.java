@@ -86,7 +86,7 @@ public class EntityParser {
                     continue;
                 }
                 if (split[0].equalsIgnoreCase("LOC") || split[0].equalsIgnoreCase("LOCATION")) {
-                    LocationOption locOpt = new LocationOption();
+                    LocationO locOpt = new LocationO();
                     if (locOpt.parse(player, split[1])) {
                         location = locOpt.getValue();
                     } else {
@@ -96,7 +96,7 @@ public class EntityParser {
                         }
                     }
                 } else if (split[0].equalsIgnoreCase("AMT") || split[0].equalsIgnoreCase("AMOUNT")) {
-                    IntOption amtOpt = new IntOption().min(1).max(MAX_AMOUNT);
+                    IntO amtOpt = new IntO().min(1).max(MAX_AMOUNT);
                     if (amtOpt.parse(split[1])) {
                         amount = amtOpt.getValue();
                     } else {
@@ -179,7 +179,7 @@ public class EntityParser {
 
                 //Parse the value for the tag
                 SingleOption option = (SingleOption)tag.getOption().clone();
-                if (option instanceof BoolOption && value.isEmpty()) {
+                if (option instanceof BoolO && value.isEmpty()) {
                     value = "true"; //Allow empty tags for booleans like 'baby' instead of 'baby:true'
                 }
                 if (!option.parse(value)) {
@@ -289,8 +289,8 @@ public class EntityParser {
                             continue;
                         }
                         String val = option.serialize();
-                        if (option instanceof DoubleOption) {
-                            val = ((DoubleOption)option).serialize(2);
+                        if (option instanceof DoubleO) {
+                            val = ((DoubleO)option).serialize(2);
                         }
                         sections.add(tag.getTag().toLowerCase() + ":" + val);
                     } catch (NoSuchMethodException e) {
@@ -306,7 +306,7 @@ public class EntityParser {
             entitySections.add(Str.implode(sections, " "));
         }
 
-        LocationOption location = new LocationOption();
+        LocationO location = new LocationO();
         location.parse(entities.getBottom().getLocation());
 
         this.string = Str.implode(entitySections, " > ") + " loc:" + location.serialize(2);

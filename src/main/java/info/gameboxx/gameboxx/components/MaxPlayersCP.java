@@ -31,9 +31,9 @@ import info.gameboxx.gameboxx.events.PlayerJoinSessionEvent;
 import info.gameboxx.gameboxx.game.Game;
 import info.gameboxx.gameboxx.game.GameSession;
 import info.gameboxx.gameboxx.messages.Msg;
-import info.gameboxx.gameboxx.options.single.BoolOption;
-import info.gameboxx.gameboxx.options.single.IntOption;
-import info.gameboxx.gameboxx.options.single.StringOption;
+import info.gameboxx.gameboxx.options.single.BoolO;
+import info.gameboxx.gameboxx.options.single.IntO;
+import info.gameboxx.gameboxx.options.single.StringO;
 import org.bukkit.event.EventHandler;
 
 /**
@@ -55,11 +55,11 @@ public class MaxPlayersCP extends GameComponent {
     @Override
     public void registerOptions() {
         //TODO: Implement these settings.
-        registerGameOption("countdown", new IntOption().name("Countdown").def(5).min(-1).desc(Msg.getString("opt.countdown")));
-        registerGameOption("permission-bypass", new StringOption().name("PermissionBypass").def("").desc(Msg.getString("opt.permission-bypass")));
-        registerGameOption("auto-spectate", new BoolOption().name("AutoSpectate").def(false).desc(Msg.getString("opt.auto-spectate")));
+        registerGameOption("countdown", new IntO().name("Countdown").def(5).min(-1).desc(Msg.getString("opt.countdown")));
+        registerGameOption("permission-bypass", new StringO().name("PermissionBypass").def("").desc(Msg.getString("opt.permission-bypass")));
+        registerGameOption("auto-spectate", new BoolO().name("AutoSpectate").def(false).desc(Msg.getString("opt.auto-spectate")));
 
-        registerArenaOption("max-players", new IntOption().name("MaxPlayers").def(16).min(1).desc(Msg.getString("opt.max-players")));
+        registerArenaOption("max-players", new IntO().name("MaxPlayers").def(16).min(1).desc(Msg.getString("opt.max-players")));
     }
 
     @Override
@@ -73,7 +73,7 @@ public class MaxPlayersCP extends GameComponent {
      * @return The maximum player amount allowed.
      */
     public int getMax() {
-        return arenaOptions().<IntOption>getOption(path("max-players")).getValue();
+        return arenaOptions().<IntO>getOption(path("max-players")).getValue();
     }
 
     private static class Events extends ComponentListener {
