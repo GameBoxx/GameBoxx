@@ -26,33 +26,20 @@
 package info.gameboxx.gameboxx.options.single;
 
 import info.gameboxx.gameboxx.options.SingleOption;
-import info.gameboxx.gameboxx.util.entity.EntityParser;
-import info.gameboxx.gameboxx.util.entity.EntityStack;
+import info.gameboxx.gameboxx.util.item.EItem;
+import info.gameboxx.gameboxx.util.item.ItemParser;
 import org.bukkit.entity.Player;
 
-public class EntityStackO extends SingleOption<EntityStack, EntityStackO> {
-
-    private Integer maxEntities = null;
-    private boolean allowStacked = true;
-
-    public EntityStackO max(Integer maxEntities) {
-        this.maxEntities = maxEntities;
-        return this;
-    }
-
-    public EntityStackO allowStacked(boolean allowStacked) {
-        this.allowStacked = allowStacked;
-        return this;
-    }
+public class ItemO extends SingleOption<EItem, ItemO> {
 
     @Override
     public boolean parse(Player player, String input) {
-        EntityParser parser = new EntityParser(input, player, false, maxEntities, allowStacked);
-        if (!parser.isValid()) {
+        ItemParser parser = new ItemParser(input, false);
+        if (!parser.isSuccess()) {
             error = parser.getError();
             return false;
         }
-        value = parser.getEntities();
+        value = parser.getItem();
         return true;
     }
 
@@ -61,12 +48,12 @@ public class EntityStackO extends SingleOption<EntityStack, EntityStackO> {
         return serialize(getValue());
     }
 
-    public static String serialize(EntityStack entityStack) {
-        return entityStack == null ? null : new EntityParser(entityStack.getBottom()).getString();
+    public static String serialize(EItem item) {
+        return item == null ? null : new ItemParser(item).getString();
     }
 
     @Override
-    public EntityStackO clone() {
-        return super.cloneData(new EntityStackO().max(maxEntities).allowStacked(allowStacked));
+    public ItemO clone() {
+        return super.cloneData(new ItemO());
     }
 }
