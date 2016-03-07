@@ -25,8 +25,12 @@
 
 package info.gameboxx.gameboxx.options.single;
 
+import info.gameboxx.gameboxx.messages.Msg;
+import info.gameboxx.gameboxx.messages.Param;
 import info.gameboxx.gameboxx.options.SingleOption;
 import info.gameboxx.gameboxx.util.Pair;
+import info.gameboxx.gameboxx.util.Str;
+import info.gameboxx.gameboxx.util.Utils;
 import org.bukkit.entity.Player;
 
 import java.util.*;
@@ -36,7 +40,7 @@ public class StringOption extends SingleOption<String, StringOption> {
     private Integer minChars = null;
     private Integer maxChars = null;
 
-    private String regexError = "";
+    private String regexFormat = null;
     private String regex = null;
 
     private List<String> matchList = null;
@@ -58,9 +62,9 @@ public class StringOption extends SingleOption<String, StringOption> {
         return this;
     }
 
-    public StringOption matchRegex(String regex, String regexError) {
+    public StringOption matchRegex(String regex, String regexFormat) {
         this.regex = regex;
-        this.regexError = regexError;
+        this.regexFormat = regexFormat;
         return this;
     }
 
@@ -107,7 +111,7 @@ public class StringOption extends SingleOption<String, StringOption> {
             for (String str : entry.getValue()) {
                 entry.getValue().set(i++, str.toLowerCase());
             }
-            entry.getKey().toLowerCase();// TODO: 3/3/2016 FIX THIS!!!
+            strings.put(entry.getKey().toLowerCase(), entry.getValue());
         }
         matchMap = strings;
         return this;
@@ -125,7 +129,7 @@ public class StringOption extends SingleOption<String, StringOption> {
     public boolean parse(Player player, String input) {
         if (matchList != null && !matchList.isEmpty()) {
             if (!matchList.contains(input.toLowerCase())) {
-                error = "String doesn't match with a valid option.";
+                error = Msg.getString("string.match-list", Param.P("input", input), Param.P("values", Str.implode(matchList)));
                 return false;
             }
             value = input;
@@ -138,29 +142,42 @@ public class StringOption extends SingleOption<String, StringOption> {
                         return true;
                     }
                 }
-                error = "String doesn't match with a valid option.";
+                error = Msg.getString("string.match-map", Param.P("input", input), Param.P("values", Utils.getAliasesString("string.match-map-entry", matchMap)));
                 return false;
             }
             value = input;
             return true;
         } else {
             if (regex != null && !input.matches(regex)) {
-                error = regexError.isEmpty() ? "String doesn't match custom regex." : regexError;
+                if (regexFormat == null || regexFormat.isEmpty()) {
+                    error = Msg.getString("string.match-regex", Param.P("input", input), Param.P("regex", regex));
+                } else {
+                    error = Msg.getString("string.match-regex-format", Param.P("input", input), Param.P("format", regexFormat));
+                }
                 return false;
             }
 
             if (minChars != null && input.length() < minChars) {
-                error = "String is too short, can't be shorter than " + minChars + " chars.";
+                error = Msg.getString("string.chars-min", Param.P("input", input), Param.P("chars", minChars));
                 return false;
             }
 
             if (maxChars != null && input.length() > maxChars) {
-                error = "String is too long, can't be longer than " + maxChars + " chars.";
+                error = Msg.getString("string.chars-max", Param.P("input", input), Param.P("chars", maxChars));
                 return false;
             }
             value = input;
         }
         return true;
+    }
+
+    @Override
+    public String getDisplayValue() {
+        return display(getValue());
+    }
+
+    public static String display(String val) {
+        return val == null ? null : Msg.getString("string.display", Param.P("val", val));
     }
 
     @Override

@@ -25,6 +25,8 @@
 
 package info.gameboxx.gameboxx.options.single;
 
+import info.gameboxx.gameboxx.messages.Msg;
+import info.gameboxx.gameboxx.messages.Param;
 import info.gameboxx.gameboxx.options.SingleOption;
 import info.gameboxx.gameboxx.util.Str;
 import org.bukkit.Bukkit;
@@ -44,20 +46,24 @@ public class PlayerOption extends SingleOption<Player, PlayerOption> {
 
     @Override
     public boolean parse(Player player, String input) {
-        if (input.startsWith("@")) {
+        if (input.isEmpty() || input.equals("@")) {
             value = player;
             if (value == null) {
-                error = "No player assigned.";
+                error = Msg.getString("player.non-player");
                 return false;
             }
             return true;
+        }
+
+        if (input.startsWith("@")) {
+            input = input.substring(1);
         }
 
         String[] components = input.split("-");
         if (input.length() == 36 && components.length == 5 && !components[0].isEmpty()) {
             value = Bukkit.getPlayer(UUID.fromString(input));
             if (value == null) {
-                error = "No player with the specified UUID.";
+                error = Msg.getString("player.invalid", Param.P("input", input));
                 return false;
             }
         } else {
@@ -74,7 +80,7 @@ public class PlayerOption extends SingleOption<Player, PlayerOption> {
         }
 
         if (value == null) {
-            error = "No player with the specified name.";
+            error = Msg.getString("player.invalid", Param.P("input", input));
             return false;
         }
 
@@ -83,16 +89,20 @@ public class PlayerOption extends SingleOption<Player, PlayerOption> {
 
     @Override
     public String serialize() {
-        return getValue() == null ? null : getValue().getUniqueId().toString();
+        return serialize(getValue());
+    }
+
+    public static String serialize(Player player) {
+        return player == null ? null : player.getUniqueId().toString();
     }
 
     @Override
     public String getDisplayValue() {
-        Player value = getValue();
-        if (value == null) {
-            return null;
-        }
-        return value.getName();
+        return display(getValue());
+    }
+
+    public static String display(Player player) {
+        return player == null ? null : Msg.getString("player.display", Param.P("name", player.getName()), Param.P("uuid", player.getUniqueId()), Param.P("displayname", player.getDisplayName()));
     }
 
     @Override

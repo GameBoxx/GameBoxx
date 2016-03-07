@@ -25,6 +25,8 @@
 
 package info.gameboxx.gameboxx.options.single;
 
+import info.gameboxx.gameboxx.messages.Msg;
+import info.gameboxx.gameboxx.messages.Param;
 import info.gameboxx.gameboxx.options.SingleOption;
 import info.gameboxx.gameboxx.util.Parse;
 import info.gameboxx.gameboxx.util.Utils;
@@ -42,19 +44,24 @@ public class BlockOption extends SingleOption<Block, BlockOption> {
     @Override
     public boolean parse(Player player, String input) {
         //Get block from player location. @[Player name/uuid]
-        if (input.startsWith("@") || input.startsWith("#")) {
+        if (input.startsWith("@") || input.startsWith("#") || input.startsWith("^")) {
             PlayerOption playerOption = new PlayerOption();
             playerOption.def(player);
             playerOption.parse(player, input.substring(1));
             if (!playerOption.hasValue()) {
-                error = playerOption.getError().isEmpty() ? "Invalid player to get the block from." : playerOption.getError();
+                error = playerOption.getError();
                 return false;
             }
             if (input.startsWith("#")) {
+                value = playerOption.getValue().getTargetBlock(Utils.TRANSPARENT_MATERIALS, 128);
+                if (value == null) {
+                    error = Msg.getString("block.no-target");
+                }
+            } else if (input.startsWith("^")) {
                 List<Block> blocks = playerOption.getValue().getLastTwoTargetBlocks(Utils.TRANSPARENT_MATERIALS, 128);
                 Block block = blocks.get(1);
                 if (block.getType() == Material.AIR) {
-                    error = "No target block...";
+                    error = Msg.getString("block.no-target");
                     return false;
                 }
                 value = block.getRelative(blocks.get(1).getFace(blocks.get(0)));
@@ -71,20 +78,26 @@ public class BlockOption extends SingleOption<Block, BlockOption> {
         String[] split = input.split(":");
         if (split.length > 1) {
             String data = split[1];
-            if (data.startsWith("@") || data.startsWith("#")) {
+            if (data.startsWith("@") || data.startsWith("#") || input.startsWith("^")) {
                 //Get block/location from player
                 PlayerOption playerOption = new PlayerOption();
                 playerOption.def(player);
                 playerOption.parse(player, data.substring(1));
                 if (!playerOption.hasValue()) {
-                    error = playerOption.getError().isEmpty() ? "Invalid player to get the world/block from." : playerOption.getError();
+                    error = playerOption.getError();
                     return false;
                 }
                 if (input.startsWith("#")) {
+                    Block b = playerOption.getValue().getTargetBlock(Utils.TRANSPARENT_MATERIALS, 128);
+                    if (b == null) {
+                        error = Msg.getString("block.no-target");
+                    }
+                    location = b.getLocation();
+                } else if (input.startsWith("^")) {
                     List<Block> blocks = playerOption.getValue().getLastTwoTargetBlocks(Utils.TRANSPARENT_MATERIALS, 128);
                     Block block = blocks.get(1);
                     if (block.getType() == Material.AIR) {
-                        error = "No target block...";
+                        error = Msg.getString("block.no-target");
                         return false;
                     }
                     location = block.getRelative(blocks.get(1).getFace(blocks.get(0))).getLocation();
@@ -97,7 +110,7 @@ public class BlockOption extends SingleOption<Block, BlockOption> {
                 worldOption.def(player == null ? null : player.getWorld());
                 worldOption.parse(player, data);
                 if (!worldOption.hasValue()) {
-                    error = worldOption.getError().isEmpty() ? "Invalid world specified." : worldOption.getError();
+                    error = worldOption.getError();
                     return false;
                 }
                 location.setWorld(worldOption.getValue());
@@ -108,12 +121,12 @@ public class BlockOption extends SingleOption<Block, BlockOption> {
         //Get the coords x,y,z[,yaw,pitch]
         String[] coords = split[0].split(",");
         if (coords.length < 3) {
-            error = "Invalid block string must have x,y,z values.";
+            error = Msg.getString("block.missing-xyz", Param.P("input", split[0]));
             return false;
         }
 
         if (location.getWorld() == null) {
-            error = "Invalid block string must specify a world like x,y,z:world.";
+            error = Msg.getString("block.missing-world", Param.P("input", input));
             return false;
         }
 
@@ -133,7 +146,7 @@ public class BlockOption extends SingleOption<Block, BlockOption> {
             //Parse the value.
             Integer val = Parse.Int(value);
             if (val == null && !value.isEmpty()) {
-                error = "The " + mapKeys[i] + " value is not a whole number.";
+                error = Msg.getString("axis-invalid-int", Param.P("input", value), Param.P("axis", mapKeys[i]));
                 return false;
             }
 
@@ -151,7 +164,7 @@ public class BlockOption extends SingleOption<Block, BlockOption> {
         //Convert the location map back to a location.
         value = Location.deserialize(locMap).getBlock();
         if (value == null) {
-            error = "Invalid block string it needs to have a format like x,y,z:world.";
+            error = Msg.getString("block.invalid", Param.P("input", input));
             return false;
         }
         return true;
@@ -167,7 +180,20 @@ public class BlockOption extends SingleOption<Block, BlockOption> {
 
     @Override
     public String serialize() {
-        return getValue() == null ? null : getValue().getX() + "," + getValue().getY() + "," + getValue().getZ() + ":" + getValue().getWorld().getName();
+        return serialize(getValue());
+    }
+
+    public static String serialize(Block block) {
+        return block == null ? null : block.getX() + "," + block.getY() + "," + block.getZ() + ":" + block.getWorld().getName();
+    }
+
+    @Override
+    public String getDisplayValue() {
+        return display(getValue());
+    }
+
+    public static String display(Block block) {
+        return block == null ? null : Msg.getString("block.display", Param.P("x", block.getX()), Param.P("y", block.getY()), Param.P("z", block.getZ()), Param.P("world", block.getWorld()));
     }
 
     @Override

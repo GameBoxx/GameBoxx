@@ -25,6 +25,9 @@
 
 package info.gameboxx.gameboxx.options;
 
+import info.gameboxx.gameboxx.messages.Msg;
+import info.gameboxx.gameboxx.messages.Param;
+import info.gameboxx.gameboxx.util.Str;
 import org.bukkit.entity.Player;
 
 import java.util.*;
@@ -315,9 +318,9 @@ public abstract class MapOption<O, M extends MapOption, S extends SingleOption> 
      */
     public String getError(String key) {
         if (!values.containsKey(key)) {
-            return "Invalid option key.";
+            return Msg.getString("map.invalid-key", Param.P("input", key), Param.P("keys", Str.implode(values.keySet())));
         }
-        return values.get(key).getError();
+        return values.get(key).getError() + " " + Msg.getString("map.key", Param.P("key", key));
     }
 
 
@@ -407,13 +410,13 @@ public abstract class MapOption<O, M extends MapOption, S extends SingleOption> 
         }
         for (String key : input.keySet()) {
             if (!requiredKeys.contains(key) && !customKeys) {
-                error = "Map can not have custom keys.";
+                error = Msg.getString("map.no-custom", Param.P("keys", Str.implode(requiredKeys)));
                 return false;
             }
         }
         for (String key : requiredKeys) {
             if (!input.keySet().contains(key)) {
-                error = "Map must have the key " + key + "!";
+                error = Msg.getString("map.missing-required", Param.P("key", key));
                 return false;
             }
         }
@@ -449,13 +452,13 @@ public abstract class MapOption<O, M extends MapOption, S extends SingleOption> 
         }
         for (String key : input.keySet()) {
             if (!requiredKeys.contains(key) && !customKeys) {
-                error = "Map can not have custom keys.";
+                error = Msg.getString("map.no-custom", Param.P("keys", Str.implode(requiredKeys)));
                 return false;
             }
         }
         for (String key : requiredKeys) {
             if (!input.keySet().contains(key)) {
-                error = "Map must have the key " + key + "!";
+                error = Msg.getString("map.missing-required", Param.P("key", key));
                 return false;
             }
         }
@@ -479,14 +482,14 @@ public abstract class MapOption<O, M extends MapOption, S extends SingleOption> 
      */
     public boolean parse(String key, Object input) {
         if (!customKeys && !requiredKeys.contains(key)) {
-            error = "Map can not have custom keys.";
+            error = Msg.getString("map.no-custom", Param.P("keys", Str.implode(requiredKeys)));
         }
         S option = values.get(key);
         if (option == null) {
             option = values.put(key, getSingleOption(key));
         }
         if (!option.parse(input)) {
-            error = option.getError() + " [key=" + key + "]";
+            error = getError(key);
             return false;
         }
         return true;
@@ -519,14 +522,14 @@ public abstract class MapOption<O, M extends MapOption, S extends SingleOption> 
      */
     public boolean parse(Player player, String key, String input) {
         if (!customKeys && !requiredKeys.contains(key)) {
-            error = "Map can not have custom keys.";
+            error = Msg.getString("map.no-custom", Param.P("keys", Str.implode(requiredKeys)));
         }
         S option = values.get(key);
         if (option == null) {
             option = values.put(key, getSingleOption(key));
         }
         if (!option.parse(player, input)) {
-            error = option.getError() + " [key=" + key + "]";
+            error = getError(key);
             return false;
         }
         return true;

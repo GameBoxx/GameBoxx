@@ -25,6 +25,8 @@
 
 package info.gameboxx.gameboxx.options.single;
 
+import info.gameboxx.gameboxx.messages.Msg;
+import info.gameboxx.gameboxx.messages.Param;
 import info.gameboxx.gameboxx.options.SingleOption;
 import info.gameboxx.gameboxx.util.Numbers;
 import info.gameboxx.gameboxx.util.Parse;
@@ -48,14 +50,14 @@ public class LocationOption extends SingleOption<Location, LocationOption> {
             playerOption.def(player);
             playerOption.parse(player, input.substring(1));
             if (!playerOption.hasValue()) {
-                error = playerOption.getError().isEmpty() ? "Invalid player to get the location from." : playerOption.getError();
+                error = playerOption.getError();
                 return false;
             }
             if (input.startsWith("#")) {
                 List<Block> blocks = playerOption.getValue().getLastTwoTargetBlocks(Utils.TRANSPARENT_MATERIALS, 128);
                 Block block = blocks.get(1);
                 if (block.getType() == Material.AIR) {
-                    error = "No target block...";
+                    error = Msg.getString("location.no-target");
                     return false;
                 }
                 value = block.getRelative(blocks.get(1).getFace(blocks.get(0))).getLocation().add(0.5f, 0.5f, 0.5f);
@@ -78,14 +80,14 @@ public class LocationOption extends SingleOption<Location, LocationOption> {
                 playerOption.def(player);
                 playerOption.parse(player, data.substring(1));
                 if (!playerOption.hasValue()) {
-                    error = playerOption.getError().isEmpty() ? "Invalid player to get the world/location from." : playerOption.getError();
+                    error = playerOption.getError();
                     return false;
                 }
                 if (input.startsWith("#")) {
                     List<Block> blocks = playerOption.getValue().getLastTwoTargetBlocks(Utils.TRANSPARENT_MATERIALS, 128);
                     Block block = blocks.get(1);
                     if (block.getType() == Material.AIR) {
-                        error = "No target block...";
+                        error = Msg.getString("location.no-target");
                         return false;
                     }
                     location = block.getRelative(blocks.get(1).getFace(blocks.get(0))).getLocation().add(0.5f, 0.5f, 0.5f);
@@ -98,7 +100,7 @@ public class LocationOption extends SingleOption<Location, LocationOption> {
                 worldOption.def(player == null ? null : player.getWorld());
                 worldOption.parse(player, data);
                 if (!worldOption.hasValue()) {
-                    error = worldOption.getError().isEmpty() ? "Invalid world specified." : worldOption.getError();
+                    error = worldOption.getError();
                     return false;
                 }
                 location.setWorld(worldOption.getValue());
@@ -109,12 +111,12 @@ public class LocationOption extends SingleOption<Location, LocationOption> {
         //Get the coords x,y,z[,yaw,pitch]
         String[] coords = split[0].split(",");
         if (coords.length < 3) {
-            error = "Invalid location string must have at least x,y,z values.";
+            error = Msg.getString("location.missing-xyz", Param.P("input", split[0]));
             return false;
         }
 
         if (location.getWorld() == null) {
-            error = "Invalid location string must specify a world like x,y,z:world.";
+            error = Msg.getString("location.missing-world", Param.P("input", input));
             return false;
         }
 
@@ -134,7 +136,7 @@ public class LocationOption extends SingleOption<Location, LocationOption> {
             //Parse the value.
             Double val = Parse.Double(value);
             if (val == null && !value.isEmpty()) {
-                error = "The " + mapKeys[i] + " value is not a decimal number.";
+                error = Msg.getString("axis-invalid-double", Param.P("input", value), Param.P("axis", mapKeys[i]));
                 return false;
             }
 
@@ -152,7 +154,7 @@ public class LocationOption extends SingleOption<Location, LocationOption> {
         //Convert the location map back to a location.
         value = Location.deserialize(locMap);
         if (value == null) {
-            error = "Invalid location string it needs to have a format like x,y,z:world.";
+            error = Msg.getString("location.invalid", Param.P("input", input));
             return false;
         }
         return true;
@@ -169,13 +171,40 @@ public class LocationOption extends SingleOption<Location, LocationOption> {
 
     @Override
     public String serialize() {
-        return getValue() == null ? null : getValue().getX() + "," + getValue().getY() + "," + getValue().getZ() + ","
-                + getValue().getYaw() + "," + getValue().getPitch() + ":" + getValue().getWorld().getName();
+        return serialize(getValue());
+    }
+
+    public static String serialize(Location loc) {
+        return loc == null ? null : loc.getX() + "," + loc.getY() + "," + loc.getZ() + "," + loc.getYaw() + "," + loc.getPitch() + ":" +loc.getWorld().getName();
     }
 
     public String serialize(int roundDecimals) {
-        return getValue() == null ? null :Numbers.round(getValue().getX(), roundDecimals) + "," + Numbers.round(getValue().getY(), roundDecimals) + "," + Numbers.round(getValue().getZ(), roundDecimals) +
-                "," + Numbers.round(getValue().getYaw(), roundDecimals) + "," + Numbers.round(getValue().getPitch(), roundDecimals) + ":" + getValue().getWorld().getName();
+        return serialize(getValue(), roundDecimals);
+    }
+
+    public static String serialize(Location loc, int roundDecimals) {
+        return loc == null ? null : Numbers.round(loc.getX(), roundDecimals) + "," + Numbers.round(loc.getY(), roundDecimals) + "," + Numbers.round(loc.getZ(), roundDecimals) + ","
+                + Numbers.round(loc.getYaw(), roundDecimals) + "," + Numbers.round(loc.getPitch(), roundDecimals) + ":" + loc.getWorld().getName();
+    }
+
+    @Override
+    public String getDisplayValue() {
+        return display(getValue());
+    }
+
+    public static String display(Location loc) {
+        return loc == null ? null : Msg.getString("location.display", Param.P("x", loc.getX()), Param.P("y", loc.getY()), Param.P("z", loc.getZ()),
+                Param.P("yaw", loc.getYaw()), Param.P("pitch", loc.getPitch()), Param.P("world", loc.getWorld().getName()));
+    }
+
+    public String getDisplayValue(int roundDecimals) {
+        return display(getValue(), roundDecimals);
+    }
+
+    public static String display(Location loc, int roundDecimals) {
+        return loc == null ? null : Msg.getString("location.display", Param.P("x", Numbers.round(loc.getX(), roundDecimals)), Param.P("y", Numbers.round(loc.getY(), roundDecimals)),
+                Param.P("z", Numbers.round(loc.getZ(), roundDecimals)), Param.P("yaw", Numbers.round(loc.getYaw(), roundDecimals)), Param.P("pitch", Numbers.round(loc.getPitch(), roundDecimals)),
+                Param.P("world", loc.getWorld().getName()));
     }
 
     @Override

@@ -25,6 +25,8 @@
 
 package info.gameboxx.gameboxx.options.single;
 
+import info.gameboxx.gameboxx.messages.Msg;
+import info.gameboxx.gameboxx.messages.Param;
 import info.gameboxx.gameboxx.options.SingleOption;
 import org.bukkit.entity.Player;
 
@@ -53,7 +55,7 @@ public class BoolOption extends SingleOption<Boolean, BoolOption> {
                 value = false;
                 break;
             default:
-                error = "Input string is not a boolean.";
+                error = Msg.getString("boolean.invalid", Param.P("input", input));
                 return false;
         }
         return true;
@@ -62,5 +64,14 @@ public class BoolOption extends SingleOption<Boolean, BoolOption> {
     @Override
     public BoolOption clone() {
         return super.cloneData(new BoolOption());
+    }
+
+    @Override
+    public String getDisplayValue() {
+        return display(getValue());
+    }
+
+    public static String display(Boolean bool) {
+        return bool == null ? null : (bool ? Msg.getString("boolean.display.true") : Msg.getString("boolean.display.false"));
     }
 }

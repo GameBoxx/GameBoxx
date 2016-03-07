@@ -25,6 +25,8 @@
 
 package info.gameboxx.gameboxx.options.single;
 
+import info.gameboxx.gameboxx.messages.Msg;
+import info.gameboxx.gameboxx.messages.Param;
 import info.gameboxx.gameboxx.options.SingleOption;
 import info.gameboxx.gameboxx.util.Parse;
 import org.bukkit.Bukkit;
@@ -45,7 +47,7 @@ public class WorldOption extends SingleOption<World, WorldOption> {
             playerOption.def(player);
             playerOption.parse(player, input.substring(1));
             if (!playerOption.hasValue()) {
-                error = playerOption.getError().isEmpty() ? "Invalid player to get the world from." : playerOption.getError();
+                error = playerOption.getError();
                 return false;
             }
             value = playerOption.getValue().getWorld();
@@ -54,30 +56,35 @@ public class WorldOption extends SingleOption<World, WorldOption> {
 
         if (Parse.Int(input) != null) {
             value = server.getWorlds().size() < Parse.Int(input) ? null : server.getWorlds().get(Parse.Int(input));
-            if (value == null) {
-                error = "No world with the specified ID.";
-                return false;
-            }
         } else if (input.length() == 36 && input.split("-").length == 5) {
             value = server.getWorld(UUID.fromString(input));
-            if (value == null) {
-                error = "No world with the specified UUID.";
-                return false;
-            }
         } else {
             value = server.getWorld(input);
-            if (value == null) {
-                error = "No world with the specified name.";
-                return false;
-            }
         }
 
+        if (value == null) {
+            error = Msg.getString("world.invalid", Param.P("input", input));
+            return false;
+        }
         return true;
     }
 
     @Override
     public String serialize() {
-        return getValue() == null ? null : getValue().getName();
+        return serialize(getValue());
+    }
+
+    public static String serialize(World world) {
+        return world == null ? null : world.getName();
+    }
+
+    @Override
+    public String getDisplayValue() {
+        return display(getValue());
+    }
+
+    public static String display(World world) {
+        return world == null ? null : Msg.getString("world.display", Param.P("name", world.getName()), Param.P("uuid", world.getUID()));
     }
 
     @Override

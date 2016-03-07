@@ -25,27 +25,46 @@
 
 package info.gameboxx.gameboxx.options.single;
 
+import info.gameboxx.gameboxx.messages.Msg;
+import info.gameboxx.gameboxx.messages.Param;
 import info.gameboxx.gameboxx.options.SingleOption;
+import info.gameboxx.gameboxx.util.Numbers;
 import info.gameboxx.gameboxx.util.Parse;
 import info.gameboxx.gameboxx.util.Utils;
+import org.bukkit.Material;
+import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
+
+import java.util.List;
 
 public class VectorOption extends SingleOption<Vector, VectorOption> {
 
     @Override
     public boolean parse(Player player, String input) {
         //Get vector from player location. @[Player name/uuid]
-        if (input.startsWith("@") || input.startsWith("#")) {
+        if (input.startsWith("@") || input.startsWith("#") || input.startsWith("^")) {
             PlayerOption playerOption = new PlayerOption();
             playerOption.def(player);
             playerOption.parse(player, input.substring(1));
             if (!playerOption.hasValue()) {
-                error = playerOption.getError().isEmpty() ? "Invalid player to get the location vector from." : playerOption.getError();
+                error = playerOption.getError();
                 return false;
             }
             if (input.startsWith("#")) {
-                value = playerOption.getValue().getTargetBlock(Utils.TRANSPARENT_MATERIALS, 64).getLocation().toVector();
+                Block target = playerOption.getValue().getTargetBlock(Utils.TRANSPARENT_MATERIALS, 128);
+                if (target == null) {
+                    error = Msg.getString("block.no-target");
+                }
+                value = target.getLocation().toVector();
+            } else if (input.startsWith("^")) {
+                List<Block> blocks = playerOption.getValue().getLastTwoTargetBlocks(Utils.TRANSPARENT_MATERIALS, 128);
+                Block block = blocks.get(1);
+                if (block.getType() == Material.AIR) {
+                    error = Msg.getString("block.no-target");
+                    return false;
+                }
+                value = block.getRelative(blocks.get(1).getFace(blocks.get(0))).getLocation().toVector();
             } else {
                 value = playerOption.getValue().getLocation().toVector();
             }
@@ -57,14 +76,15 @@ public class VectorOption extends SingleOption<Vector, VectorOption> {
         //Get the components x,y,z
         String[] components = input.split(",");
         if (components.length < 3) {
-            error = "Invalid vector string must have at least 1,2,3 values.";
+            error = Msg.getString("vector.invalid", Param.P("input", input));
             return false;
         }
 
 
-        for (int i = 0; i < 3; i++) {
+        String[] axisKeys = new String[] {"x", "y", "z"};
+        for (int i = 0; i < axisKeys.length; i++) {
             if (Parse.Double(components[0]) == null) {
-                error = "Value " + (i + 1) + " for the vector isn't a decimal number.";
+                error = Msg.getString("axis-invalid-double", Param.P("input", value), Param.P("axis", axisKeys[i]));
                 return false;
             }
         }
@@ -75,6 +95,24 @@ public class VectorOption extends SingleOption<Vector, VectorOption> {
 
         value = v;
         return true;
+    }
+
+    @Override
+    public String getDisplayValue() {
+        return display(getValue());
+    }
+
+    public static String display(Vector vector) {
+        return vector == null ? null : Msg.getString("vector.display", Param.P("x", vector.getX()), Param.P("y", vector.getY()), Param.P("z", vector.getZ()));
+    }
+
+    public String getDisplayValue(int roundDecimals) {
+        return display(getValue(), roundDecimals);
+    }
+
+    public static String display(Vector vector, int roundDecimals) {
+        return vector == null ? null : Msg.getString("vector.display", Param.P("x", Numbers.round(vector.getX(), roundDecimals)), Param.P("y", Numbers.round(vector.getY(), roundDecimals)),
+                Param.P("z", Numbers.round(vector.getZ(), roundDecimals)));
     }
 
     @Override

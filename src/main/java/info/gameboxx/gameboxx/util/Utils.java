@@ -300,8 +300,8 @@ public class Utils {
             String name = entry.getKey();
             String aliases = Str.wrapString(Str.implode(entry.getValue()), 50);
 
-            formats.add(format.clone().params(Param.P("name", name), Param.P("key", name), Param.P("display", name),
-                    Param.P("aliases", aliases), Param.P("alias", aliases), Param.P("values", aliases), Param.P("value", aliases)).getRaw());
+            formats.add(format.clone().params(Param.P("name", name), Param.P("key", name), Param.P("display", name), Param.P("value", name),
+                    Param.P("aliases", aliases), Param.P("alias", aliases), Param.P("values", aliases)).getRaw());
         }
         return Str.implode(formats);
     }

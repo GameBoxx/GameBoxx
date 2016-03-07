@@ -25,6 +25,8 @@
 
 package info.gameboxx.gameboxx.options.single;
 
+import info.gameboxx.gameboxx.messages.Msg;
+import info.gameboxx.gameboxx.messages.Param;
 import info.gameboxx.gameboxx.options.SingleOption;
 import info.gameboxx.gameboxx.util.alias.ItemData;
 import info.gameboxx.gameboxx.util.alias.Items;
@@ -48,25 +50,25 @@ public class MaterialOption extends SingleOption<MaterialData, MaterialOption> {
             playerOption.def(player);
             playerOption.parse(player, input.substring(1));
             if (!playerOption.hasValue()) {
-                error = playerOption.getError().isEmpty() ? "Invalid player to get the materialdata from." : playerOption.getError();
+                error = playerOption.getError();
                 return false;
             }
-            if (playerOption.getValue().getItemInHand() == null) {
+            if (playerOption.getValue().getInventory().getItemInMainHand() == null) {
                 value = new MaterialData(Material.AIR);
             } else {
-                value = playerOption.getValue().getItemInHand().getData();
+                value = playerOption.getValue().getInventory().getItemInMainHand().getData();
             }
             return true;
         }
 
         ItemData item = Items.getItem(input);
         if (item == null) {
-            error = "No item found with the specified input.";
+            error = Msg.getString("material.invalid", Param.P("input", input));
             return false;
         }
 
         if (blocks && !item.getType().isBlock()) {
-            error = "Material must be a block.";
+            error = Msg.getString("material.block", Param.P("input", input));
             return false;
         }
 
@@ -76,16 +78,20 @@ public class MaterialOption extends SingleOption<MaterialData, MaterialOption> {
 
     @Override
     public String serialize() {
-        return getValue() == null ? null : getValue().getItemType().toString() + ":" + getValue().getData();
+        return serialize(getValue());
+    }
+
+    public static String serialize(MaterialData material) {
+        return material == null ? null : material.getItemType().toString() + ":" + material.getData();
     }
 
     @Override
     public String getDisplayValue() {
-        MaterialData value = getValue();
-        if (value == null) {
-            return null;
-        }
-        return Items.getName(value);
+        return display(getValue());
+    }
+
+    public static String display(MaterialData material) {
+        return material == null ? null : Msg.getString("material.display", Param.P("material", Items.getName(material)), Param.P("data", material.getData()));
     }
 
     @Override

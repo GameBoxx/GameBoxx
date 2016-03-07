@@ -36,7 +36,7 @@ public class StringMapOption extends MapOption<String, StringMapOption, StringOp
     private Integer minChars = null;
     private Integer maxChars = null;
 
-    private String regexError = "";
+    private String regexFormat = "";
     private String regex = null;
 
     private List<String> matchList = null;
@@ -58,9 +58,9 @@ public class StringMapOption extends MapOption<String, StringMapOption, StringOp
         return this;
     }
 
-    public StringMapOption matchRegex(String regex, String regexError) {
+    public StringMapOption matchRegex(String regex, String regexFormat) {
         this.regex = regex;
-        this.regexError = regexError;
+        this.regexFormat = regexFormat;
         return this;
     }
 
@@ -107,7 +107,7 @@ public class StringMapOption extends MapOption<String, StringMapOption, StringOp
             for (String str : entry.getValue()) {
                 entry.getValue().set(i++, str.toLowerCase());
             }
-            entry.getKey().toLowerCase();// TODO: 3/3/2016 FIX THIS!!
+            strings.put(entry.getKey().toLowerCase(), entry.getValue());
         }
         matchMap = strings;
         return this;
@@ -116,11 +116,11 @@ public class StringMapOption extends MapOption<String, StringMapOption, StringOp
 
     @Override
     public StringOption getSingleOption() {
-        return new StringOption().minChars(minChars).maxChars(maxChars).match(matchList).match(matchMap).matchRegex(regex);
+        return new StringOption().minChars(minChars).maxChars(maxChars).match(matchList).match(matchMap).matchRegex(regex, regexFormat);
     }
 
     @Override
     public StringMapOption clone() {
-        return new StringMapOption().minChars(minChars).maxChars(maxChars).match(matchList).match(matchMap).matchRegex(regex);
+        return new StringMapOption().minChars(minChars).maxChars(maxChars).match(matchList).match(matchMap).matchRegex(regex, regexFormat);
     }
 }

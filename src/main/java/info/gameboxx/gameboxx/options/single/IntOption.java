@@ -25,6 +25,8 @@
 
 package info.gameboxx.gameboxx.options.single;
 
+import info.gameboxx.gameboxx.messages.Msg;
+import info.gameboxx.gameboxx.messages.Param;
 import info.gameboxx.gameboxx.options.SingleOption;
 import org.bukkit.entity.Player;
 
@@ -48,21 +50,30 @@ public class IntOption extends SingleOption<Integer, IntOption> {
         try {
             value = Integer.parseInt(input);
         } catch (Exception e) {
-            error = "Input string is not a number.";
+            error = Msg.getString("integer.invalid", Param.P("input", input));
             return false;
         }
 
         if (min != null && (Integer)value < min) {
-            error = "Number is too low, can't be lower than " + min + ".";
+            error = Msg.getString("number-too-low", Param.P("input", input), Param.P("min", min));
             return false;
         }
 
         if (max != null && (Integer)value > max) {
-            error = "Number is too high, can't be higher than " + max + ".";
+            error = Msg.getString("number-too-high", Param.P("input", input), Param.P("max", max));
             return false;
         }
 
         return true;
+    }
+
+    @Override
+    public String getDisplayValue() {
+        return display(getValue());
+    }
+
+    public static String display(Integer val) {
+        return val == null ? null : Msg.getString("integer.display", Param.P("val", val));
     }
 
     @Override

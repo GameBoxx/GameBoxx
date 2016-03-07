@@ -25,6 +25,8 @@
 
 package info.gameboxx.gameboxx.options.single;
 
+import info.gameboxx.gameboxx.messages.Msg;
+import info.gameboxx.gameboxx.messages.Param;
 import info.gameboxx.gameboxx.options.SingleOption;
 import info.gameboxx.gameboxx.util.Numbers;
 import org.bukkit.entity.Player;
@@ -49,17 +51,17 @@ public class DoubleOption extends SingleOption<Double, DoubleOption> {
         try {
             value = Double.parseDouble(input);
         } catch (Exception e) {
-            error = "Input string is not a number.";
+            error = Msg.getString("double.invalid", Param.P("input", input));
             return false;
         }
 
         if (min != null && (Double)value < min) {
-            error = "Number is too low, can't be lower than " + min + ".";
+            error = Msg.getString("number-too-low", Param.P("input", input), Param.P("min", min));
             return false;
         }
 
         if (max != null && (Double)value > max) {
-            error = "Number is too high, can't be higher than " + max + ".";
+            error = Msg.getString("number-too-high", Param.P("input", input), Param.P("max", max));
             return false;
         }
 
@@ -67,7 +69,24 @@ public class DoubleOption extends SingleOption<Double, DoubleOption> {
     }
 
     public String serialize(int roundDecimals) {
-        return getValue() == null ? null : Double.toString(Numbers.round(getValue(), roundDecimals));
+        return serialize(getValue(), roundDecimals);
+    }
+
+    public static String serialize(Double val, int roundDecimals) {
+        return val == null ? null : Double.toString(Numbers.round(val, roundDecimals));
+    }
+
+    @Override
+    public String getDisplayValue() {
+        return display(getValue());
+    }
+
+    public static String display(Double val) {
+        return val == null ? null : Msg.getString("double.display", Param.P("val", val));
+    }
+
+    public static String display(Double val, int roundDecimals) {
+        return val == null ? null : Msg.getString("double.display", Param.P("val", Numbers.round(val, roundDecimals)));
     }
 
     @Override

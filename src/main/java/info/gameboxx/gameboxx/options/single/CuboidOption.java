@@ -25,9 +25,10 @@
 
 package info.gameboxx.gameboxx.options.single;
 
+import info.gameboxx.gameboxx.messages.Msg;
+import info.gameboxx.gameboxx.messages.Param;
 import info.gameboxx.gameboxx.options.SingleOption;
 import info.gameboxx.gameboxx.util.Parse;
-import info.gameboxx.gameboxx.util.Utils;
 import info.gameboxx.gameboxx.util.cuboid.Cuboid;
 import info.gameboxx.gameboxx.util.cuboid.SelectionManager;
 import org.bukkit.Location;
@@ -46,12 +47,16 @@ public class CuboidOption extends SingleOption<Cuboid, CuboidOption> {
             playerOption.def(player);
             playerOption.parse(player, input.substring(1));
             if (!playerOption.hasValue()) {
-                error = playerOption.getError().isEmpty() ? "Invalid player to get the location from." : playerOption.getError();
+                error = playerOption.getError();
                 return false;
             }
             value = SelectionManager.inst().getSelection(playerOption.getValue());
             if (!hasValue()) {
-                error = "No cuboid selection found for " + playerOption.getValue().getName() + ".";
+                if (playerOption.getValue().equals(player)) {
+                    error = Msg.getString("cuboid.no-selection");
+                } else {
+                    error = Msg.getString("cuboid.no-selection-other", Param.P("player", playerOption.getValue().getName()));
+                }
                 return false;
             }
             return true;
@@ -65,29 +70,24 @@ public class CuboidOption extends SingleOption<Cuboid, CuboidOption> {
         String[] split = input.split(":");
         if (split.length > 1) {
             String data = split[split.length - 1];
-            if (data.startsWith("@") || data.startsWith("#")) {
+            if (data.startsWith("@")) {
                 //Get world/location from player
                 PlayerOption playerOption = new PlayerOption();
                 playerOption.def(player);
                 playerOption.parse(player, data.substring(1));
                 if (!playerOption.hasValue()) {
-                    error = playerOption.getError().isEmpty() ? "Invalid player to get the world/location from." : playerOption.getError();
+                    error = playerOption.getError();
                     return false;
                 }
-                if (input.startsWith("#")) {
-                    pos1 = playerOption.getValue().getTargetBlock(Utils.TRANSPARENT_MATERIALS, 64).getLocation();
-                    pos2 = playerOption.getValue().getTargetBlock(Utils.TRANSPARENT_MATERIALS, 64).getLocation();
-                } else {
-                    pos1 = playerOption.getValue().getLocation();
-                    pos2 = playerOption.getValue().getLocation();
-                }
+                pos1 = playerOption.getValue().getLocation();
+                pos2 = playerOption.getValue().getLocation();
             } else {
                 //Get world.
                 WorldOption worldOption = new WorldOption();
                 worldOption.def(player == null ? null : player.getWorld());
                 worldOption.parse(player, data);
                 if (!worldOption.hasValue()) {
-                    error = worldOption.getError().isEmpty() ? "Invalid world specified." : worldOption.getError();
+                    error = worldOption.getError();
                     return false;
                 }
                 pos1.setWorld(worldOption.getValue());
@@ -96,7 +96,7 @@ public class CuboidOption extends SingleOption<Cuboid, CuboidOption> {
         }
 
         if (pos1.getWorld() == null || pos2.getWorld() == null) {
-            error = "Invalid cuboid string must specify a world like x,y,z:x,y,z:world.";
+            error = Msg.getString("cuboid.missing-world", Param.P("input", input));
             return false;
         }
 
@@ -105,7 +105,7 @@ public class CuboidOption extends SingleOption<Cuboid, CuboidOption> {
             String[] coords = split[i].split(",");
 
             if (coords.length < 3) {
-                error = "Invalid cuboid location string must have at least x,y,z values.";
+                error = Msg.getString("cuboid.missing-coords", Param.P("input", split[i]));
                 return false;
             }
 
@@ -131,7 +131,7 @@ public class CuboidOption extends SingleOption<Cuboid, CuboidOption> {
                 //Parse the value.
                 Integer val = Parse.Int(value);
                 if (val == null && !value.isEmpty()) {
-                    error = "The " + mapKeys[c] + " value is not a whole number.";
+                    error = Msg.getString("axis-invalid-int", Param.P("axis", mapKeys[i]), Param.P("input", value));
                     return false;
                 }
 
@@ -154,7 +154,7 @@ public class CuboidOption extends SingleOption<Cuboid, CuboidOption> {
         }
 
         if (pos1 == null || pos2 == null) {
-            error = "Invalid cuboid string it needs to have a format like x,y,z:x,y,z:world.";
+            error = Msg.getString("cuboid.invalid", Param.P("input", input));
             return false;
         }
 
@@ -165,6 +165,16 @@ public class CuboidOption extends SingleOption<Cuboid, CuboidOption> {
     public Cuboid getValue(World world) {
         getValue().setWorld(world);
         return getValue();
+    }
+
+    @Override
+    public String getDisplayValue() {
+        return display(getValue());
+    }
+
+    public static String display(Cuboid cuboid) {
+        return cuboid == null ? null : Msg.getString("cuboid.display", Param.P("x1", cuboid.getMinX()), Param.P("y1", cuboid.getMinY()), Param.P("z1", cuboid.getMinZ()),
+                Param.P("x2", cuboid.getMaxX()), Param.P("y2", cuboid.getMaxY()), Param.P("z2", cuboid.getMaxZ()), Param.P("world", cuboid.getWorld()));
     }
 
     @Override
