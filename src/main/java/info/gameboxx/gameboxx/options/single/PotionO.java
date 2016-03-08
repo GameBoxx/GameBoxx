@@ -25,10 +25,12 @@
 
 package info.gameboxx.gameboxx.options.single;
 
+import info.gameboxx.gameboxx.aliases.PotionEffects;
 import info.gameboxx.gameboxx.messages.Msg;
 import info.gameboxx.gameboxx.messages.Param;
 import info.gameboxx.gameboxx.options.SingleOption;
 import info.gameboxx.gameboxx.util.Parse;
+import info.gameboxx.gameboxx.util.Utils;
 import org.bukkit.Color;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
@@ -49,10 +51,9 @@ public class PotionO extends SingleOption<PotionEffect, PotionO> {
         Integer amplifier = 0;
         Integer duration = Integer.MAX_VALUE;
 
-        //TODO: Get type from alias and display aliases.
-        PotionEffectType type = PotionEffectType.getByName(split[0]);
+        PotionEffectType type = PotionEffects.get(split[0]);
         if (type == null) {
-            Msg.getString("potion.invalid-type", Param.P("input", split[0]), Param.P("types", Parse.Array(PotionEffectType.values())));
+            Msg.getString("potion.invalid-type", Param.P("input", split[0]), Param.P("types", Utils.getAliasesString("potion.entry", PotionEffects.getAliasMap())));
             return false;
         }
 
