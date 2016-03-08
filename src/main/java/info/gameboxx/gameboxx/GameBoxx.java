@@ -25,6 +25,9 @@
 
 package info.gameboxx.gameboxx;
 
+import info.gameboxx.gameboxx.aliases.Enchantments;
+import info.gameboxx.gameboxx.aliases.PotionEffects;
+import info.gameboxx.gameboxx.aliases.Sounds;
 import info.gameboxx.gameboxx.commands.*;
 import info.gameboxx.gameboxx.config.PluginCfg;
 import info.gameboxx.gameboxx.game.GameManager;
@@ -109,6 +112,11 @@ public class GameBoxx extends JavaPlugin {
 
         registerCommands();
         registerListeners();
+
+        //TODO: Remove this (used for testing)
+        Enchantments.instance();
+        PotionEffects.instance();
+        Sounds.instance();
 
         log("loaded successfully");
     }

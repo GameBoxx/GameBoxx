@@ -41,10 +41,11 @@ public class EntityO extends SingleOption<EEntity, EntityO> {
     @Override
     public boolean parse(Player player, String input) {
 
-        if (input.equals("#") || input.startsWith("@")) {
+        if (input.startsWith("#") || input.startsWith("@")) {
             PlayerO playerOption = new PlayerO();
             playerOption.def(player);
             playerOption.parse(player, input.substring(1));
+
             if (!playerOption.hasValue()) {
                 error = playerOption.getError();
                 return false;
@@ -55,6 +56,9 @@ public class EntityO extends SingleOption<EEntity, EntityO> {
                 List<Entity> near = playerOption.getValue().getNearbyEntities(32, 32, 32);
                 for (Block b : blocks) {
                     for (Entity e : near) {
+                        if (e.equals(playerOption.getValue())) {
+                            continue;
+                        }
                         if (e.getLocation().distance(b.getLocation()) < 2) {
                             value = new EEntity(e);
                             return true;
@@ -70,6 +74,9 @@ public class EntityO extends SingleOption<EEntity, EntityO> {
                 Entity match = null;
                 double shortestDistance = Double.MAX_VALUE;
                 for (Entity e : near) {
+                    if (e.equals(playerOption.getValue())) {
+                        continue;
+                    }
                     double distance = e.getLocation().distanceSquared(playerOption.getValue().getLocation());
                     if (match == null || distance < shortestDistance) {
                         shortestDistance = distance;

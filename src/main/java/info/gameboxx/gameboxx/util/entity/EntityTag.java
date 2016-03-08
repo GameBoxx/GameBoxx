@@ -215,10 +215,10 @@ public class EntityTag {
         EntityTag.register("OWNER", new PlayerO(), "setOwner", "getOwner", Tameable.class); //TODO: OfflinePlayerOption?
     
         //Creature
-        EntityTag.register("TARGET", new EntityO(), "setTarget", null, Creature.class);
+        EntityTag.register("TARGET", new EntityO(), "setTarget", null, Creature.class, ShulkerBullet.class);
     
         //Projectile
-        EntityTag.register("SHOOTER", new EntityO(), "setShooter", null, Projectile.class);
+        EntityTag.register("SHOOTER", new EntityO(), "setShooter", null, Projectile.class, ShulkerBullet.class);
         EntityTag.register("BOUNCE", new BoolO().def(true), "setBounce", null, Projectile.class);
     
         //Hanging
@@ -291,7 +291,14 @@ public class EntityTag {
         EntityTag.register("RADIUS", new DoubleO(), "setRadius", null, AreaEffectCloud.class);
         EntityTag.register("USERADIUS", new DoubleO(), "setRadiusOnUse", null, AreaEffectCloud.class);
         EntityTag.register("RADIUSDECAY", new DoubleO(), "setRadiusPerTick", null, AreaEffectCloud.class);
-        EntityTag.register("PARTICLE", new IntO(), "setParticle", null, AreaEffectCloud.class);
+        EntityTag.register("PARTICLE", new StringO().match(Parse.StringArray(Particle.values())), new EntityTagCallback() {
+            @Override boolean onSet(CommandSender sender, EEntity entity, SingleOption result) {
+                entity.setParticle(Particle.valueOf(((StringO)result).getValue().toUpperCase()));
+                return true;
+            }
+
+            @Override String onGet(EEntity entity) {return null;}
+        }, AreaEffectCloud.class);
         EntityTag.register("PARTICLECOLOR", new ColorO(), "setEffectColor", null, AreaEffectCloud.class);
     
         //Minecart

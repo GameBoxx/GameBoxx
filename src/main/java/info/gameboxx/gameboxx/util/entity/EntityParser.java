@@ -30,7 +30,6 @@ import info.gameboxx.gameboxx.options.SingleOption;
 import info.gameboxx.gameboxx.options.single.*;
 import info.gameboxx.gameboxx.util.Str;
 import org.apache.commons.lang.reflect.MethodUtils;
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
@@ -232,11 +231,11 @@ public class EntityParser {
                         MethodUtils.invokeMethod(entity, tag.setMethod(), option.getValue());
                         success = true;
                     } catch (NoSuchMethodException e) {
-                        error = "No method to apply the tag..";
+                        error = "No method to apply the tag.. [" + e.getMessage() + "]";
                     } catch (IllegalAccessException e) {
-                        error = "Can't access method to apply the tag..";
+                        error = "Can't access method to apply the tag.. [" + e.getMessage() + "]";
                     } catch (InvocationTargetException e) {
-                        error = "Can't invoke method to apply the tag..";
+                        error = "Can't invoke method to apply the tag.. [" + e.getMessage() + "]";
                     }
                     if (!success) {
                         if (!ignoreErrors) {
@@ -277,8 +276,6 @@ public class EntityParser {
         if (entities.getAmount() < 1) {
             return;
         }
-
-        Bukkit.broadcastMessage("Entities: " + entities.getAmount());
 
         List<String> entitySections = new ArrayList<>();
         for (EEntity entity : entities.getEntities()) {

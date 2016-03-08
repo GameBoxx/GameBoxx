@@ -1782,6 +1782,17 @@ public class EEntity {
         return this;
     }
 
+    public EEntity setShooter(EEntity shooter) {
+        if (shooter.bukkit() instanceof ProjectileSource) {
+            if (entity instanceof Projectile) {
+                ((Projectile)entity).setShooter((ProjectileSource)shooter.bukkit());
+            } else if (entity instanceof ShulkerBullet) {
+                ((ShulkerBullet)entity).setShooter((ProjectileSource)shooter.bukkit());
+            }
+        }
+        return this;
+    }
+
     /**
      * Determine if this projectile should bounce or not when it hits.
      * <p/>
@@ -2925,6 +2936,13 @@ public class EEntity {
 
     public EEntity detonate() {
         if (entity instanceof Firework) {
+            ((Firework)entity).detonate();
+        }
+        return this;
+    }
+
+    public EEntity detonate(boolean detonate) {
+        if (entity instanceof Firework && detonate) {
             ((Firework)entity).detonate();
         }
         return this;
