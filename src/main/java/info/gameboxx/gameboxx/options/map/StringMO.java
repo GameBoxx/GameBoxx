@@ -102,14 +102,14 @@ public class StringMO extends MapOption<String, StringMO, StringO> {
         if (strings == null) {
             return this;
         }
+        matchMap = new HashMap<>();
         for (Map.Entry<String, List<String>> entry : strings.entrySet()) {
             int i = 0;
             for (String str : entry.getValue()) {
                 entry.getValue().set(i++, str.toLowerCase());
             }
-            strings.put(entry.getKey().toLowerCase(), entry.getValue());
+            matchMap.put(entry.getKey().toLowerCase(), entry.getValue());
         }
-        matchMap = strings;
         return this;
     }
 
