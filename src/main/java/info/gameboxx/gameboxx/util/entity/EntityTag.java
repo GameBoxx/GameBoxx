@@ -254,14 +254,14 @@ public class EntityTag {
             }
         }, Colorable.class, Wolf.class); //TODO: Aliases
         EntityTag.register("EFFECT", new PotionO(), "addEffect", null, LivingEntity.class, AreaEffectCloud.class);
-        EntityTag.register("PROFESSION", new StringO().match(Parse.StringArray(Villager.Profession.values())), new EntityTagCallback() {
+        EntityTag.register("PROFESSION", new StringO().match(Professions.getAliasMap()), new EntityTagCallback() {
             @Override boolean onSet(CommandSender sender, EEntity entity, SingleOption result) {
-                entity.setProfession(Villager.Profession.valueOf(((StringO)result).getValue().toUpperCase()));
+                entity.setProfession(Professions.get(((StringO)result).getValue()));
                 return true;
             }
     
             @Override String onGet(EEntity entity) {
-                return entity.getProfession() == null ? null : entity.getProfession().toString();
+                return Professions.getName(entity.getProfession());
             }
         }, Villager.class, Zombie.class); //TODO: Aliases
     
