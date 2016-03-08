@@ -137,7 +137,7 @@ public class StringO extends SingleOption<String, StringO> {
         } else if (matchMap != null && !matchMap.isEmpty()) {
             if (!matchMap.containsKey(input.toLowerCase())) {
                 for (Map.Entry<String, List<String>> entry : matchMap.entrySet()) {
-                    if (entry.getValue().contains(input)) {
+                    if (entry.getValue().contains(input.toLowerCase())) {
                         value = entry.getKey();
                         return true;
                     }

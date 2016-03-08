@@ -116,14 +116,23 @@ public abstract class AliasMap<T> {
     }
 
     public String _getName(T key) {
-        return _getDisplayName(key).replace(" ", "");
+        if (key == null) {
+            return null;
+        }
+        return map.get(key) == null ? Str.camelCase(key.toString()) : map.get(key).getName().replace(" ", "");
     }
 
     public String _getDisplayName(T key) {
+        if (key == null) {
+            return null;
+        }
         return map.get(key) == null ? Str.camelCase(key.toString()) : map.get(key).getName();
     }
 
     public List<String> _getAliases(T key) {
+        if (key == null) {
+            return null;
+        }
         return map.get(key) == null ? new ArrayList<>(Arrays.asList(key.toString().toLowerCase().replace("_", ""))) : map.get(key).getAliases();
     }
 
