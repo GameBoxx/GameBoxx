@@ -203,6 +203,7 @@ public class EntityTag {
         EntityTag.register("PICKUP", new BoolO().def(false), "setCanPickupItems", "getCanPickupItems", LivingEntity.class);
         EntityTag.register("REMOVEFAR", new BoolO().def(false), "setRemoveWhenFarAway", "getRemoveWhenFarAway", LivingEntity.class);
         EntityTag.register("LEASH", new EntityO(), "setLeashHolder", null, LivingEntity.class);
+        //TODO: Fix leashes (Maybe also make it so you can create a leash between two locations)
     
         //Ageable
         EntityTag.register("AGE", new IntO().def(0), "setAge", "getAge", Ageable.class);
@@ -212,7 +213,7 @@ public class EntityTag {
     
         //Tamable
         EntityTag.register("TAMED", new BoolO().def(false), "setTamed", "isTamed", Tameable.class);
-        EntityTag.register("OWNER", new PlayerO(), "setOwner", "getOwner", Tameable.class); //TODO: OfflinePlayerOption?
+        EntityTag.register("OWNER", new OfflinePlayerO(), "setOwner", "getOwner", Tameable.class);
     
         //Creature
         EntityTag.register("TARGET", new EntityO(), "setTarget", null, Creature.class, ShulkerBullet.class);
@@ -229,7 +230,7 @@ public class EntityTag {
             }
     
             @Override String onGet(EEntity entity) {return null;}
-        }, Hanging.class);
+        }, Hanging.class); //TODO: Aliases
     
         //Mixed Entities
         EntityTag.register("MAINHAND", new ItemO(), "setItemInMainHand", "getItemInMainHand", ArmorStand.class, LivingEntity.class);
@@ -252,7 +253,7 @@ public class EntityTag {
             @Override String onGet(EEntity entity) {
                 return DyeColors.getName(entity.getColor());
             }
-        }, Colorable.class, Wolf.class); //TODO: Aliases
+        }, Colorable.class, Wolf.class);
         EntityTag.register("EFFECT", new PotionO(), "addEffect", null, LivingEntity.class, AreaEffectCloud.class);
         EntityTag.register("PROFESSION", new StringO().match(Professions.getAliasMap()), new EntityTagCallback() {
             @Override boolean onSet(CommandSender sender, EEntity entity, SingleOption result) {
@@ -263,7 +264,7 @@ public class EntityTag {
             @Override String onGet(EEntity entity) {
                 return Professions.getName(entity.getProfession());
             }
-        }, Villager.class, Zombie.class); //TODO: Aliases
+        }, Villager.class, Zombie.class);
     
         //ArmorStand
         EntityTag.register("POSE", new VectorO().def(new Vector(0, 0, 0)), "setBodyPose", "getBodyPose", ArmorStand.class);
@@ -298,7 +299,7 @@ public class EntityTag {
             }
 
             @Override String onGet(EEntity entity) {return null;}
-        }, AreaEffectCloud.class);
+        }, AreaEffectCloud.class); //TODO: Aliases
         EntityTag.register("PARTICLECOLOR", new ColorO(), "setEffectColor", null, AreaEffectCloud.class);
     
         //Minecart
@@ -322,6 +323,7 @@ public class EntityTag {
 
         //Firework
         EntityTag.register("DETONATE", new BoolO().def(true), "detonate", null, Firework.class);
+        //TODO: Needs firework option
         //EntityTag.register("FIREWORK", new FireworkOption(), "setFireworkMeta", Firework.class);
 
         //Item
@@ -384,7 +386,7 @@ public class EntityTag {
             @Override String onGet(EEntity entity) {
                 return HorseVariants.getName(entity.getHorseVariant());
             }
-        }, Horse.class); //TODO: Aliases
+        }, Horse.class);
         EntityTag.register("HORSECOLOR", new StringO().match(HorseColors.getAliasMap()), new EntityTagCallback() {
             @Override boolean onSet(CommandSender sender, EEntity entity, SingleOption result) {
                 entity.setHorseColor(HorseColors.get(((StringO)result).getValue()));
@@ -394,7 +396,7 @@ public class EntityTag {
             @Override String onGet(EEntity entity) {
                 return HorseColors.getName(entity.getHorseColor());
             }
-        }, Horse.class); //TODO: Aliases
+        }, Horse.class);
         EntityTag.register("HORSESTYLE", new StringO().match(HorseStyles.getAliasMap()), new EntityTagCallback() {
             @Override boolean onSet(CommandSender sender, EEntity entity, SingleOption result) {
                 entity.setHorseStyle(HorseStyles.get(((StringO)result).getValue()));
@@ -404,7 +406,7 @@ public class EntityTag {
             @Override String onGet(EEntity entity) {
                 return HorseStyles.getName(entity.getHorseStyle());
             }
-        }, Horse.class); //TODO: Aliases
+        }, Horse.class);
         EntityTag.register("CHEST", new BoolO().def(false), "setCarryingChest", "isCarryingChest", Horse.class);
         EntityTag.register("DOMESTICATION", new IntO().def(0), "setDomestication", "getDomestication", Horse.class);
         EntityTag.register("MAXDOMESTICATION", new IntO().def(100), "setMaxDomestication", "getMaxDomestication", Horse.class);
@@ -412,28 +414,28 @@ public class EntityTag {
         EntityTag.register("ARMOR", new ItemO(), "setHorseArmor", "getHorseArmor", Horse.class);
 
         //Ocelot
-        EntityTag.register("CATTYPE", new StringO().match(Parse.StringArray(Ocelot.Type.values())), new EntityTagCallback() {
+        EntityTag.register("CATTYPE", new StringO().match(OcelotTypes.getAliasMap()), new EntityTagCallback() {
             @Override boolean onSet(CommandSender sender, EEntity entity, SingleOption result) {
-                entity.setCatType(Ocelot.Type.valueOf(((StringO)result).getValue().toUpperCase()));
+                entity.setCatType(OcelotTypes.get(((StringO)result).getValue()));
                 return true;
             }
 
             @Override String onGet(EEntity entity) {
-                return entity.getCatType().toString();
+                return OcelotTypes.getName(entity.getCatType());
             }
-        }, Ocelot.class); //TODO: Aliases
+        }, Ocelot.class);
 
         //Rabbit
-        EntityTag.register("RABBITTYPE", new StringO().match(Parse.StringArray(Rabbit.Type.values())), new EntityTagCallback() {
+        EntityTag.register("RABBITTYPE", new StringO().match(RabbitTypes.getAliasMap()), new EntityTagCallback() {
             @Override boolean onSet(CommandSender sender, EEntity entity, SingleOption result) {
-                entity.setRabbitType(Rabbit.Type.valueOf(((StringO)result).getValue().toUpperCase()));
+                entity.setRabbitType(RabbitTypes.get(((StringO)result).getValue()));
                 return true;
             }
 
             @Override String onGet(EEntity entity) {
-                return entity.getRabbitType().toString();
+                return RabbitTypes.getName(entity.getRabbitType());
             }
-        }, Rabbit.class); //TODO: Aliases
+        }, Rabbit.class);
 
         //Pigman
         EntityTag.register("ANGER", new IntO().def(0), "setAnger", "getAnger", PigZombie.class);

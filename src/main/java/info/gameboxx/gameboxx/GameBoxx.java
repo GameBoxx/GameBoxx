@@ -122,6 +122,8 @@ public class GameBoxx extends JavaPlugin {
         HorseStyles.instance();
         HorseVariants.instance();
         Professions.instance();
+        RabbitTypes.instance();
+        OcelotTypes.instance();
 
         log("loaded successfully");
     }
