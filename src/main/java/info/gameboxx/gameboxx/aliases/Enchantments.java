@@ -35,7 +35,7 @@ import java.util.Map;
 public class Enchantments extends AliasMap<Enchantment> {
 
     private Enchantments() {
-        super("Enchantments", new File(ALIASES_FOLDER, "Enchantments.yml"), "enchants", "enchant", "ench");
+        super("Enchantments", new File(ALIASES_FOLDER, "Enchantments.yml"), "enchantment", "enchants", "enchant", "ench");
     }
 
     @Override

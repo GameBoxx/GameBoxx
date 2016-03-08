@@ -107,7 +107,7 @@ public abstract class AliasMap<T> {
         map.put(key, new Alias<T>(name, aliasList));
         aliasMap.put(name, aliasList);
         for (String alias : aliasList) {
-            search.put(alias.toLowerCase(), key);
+            search.put(alias.toLowerCase().replace(" ", ""), key);
         }
     }
 
