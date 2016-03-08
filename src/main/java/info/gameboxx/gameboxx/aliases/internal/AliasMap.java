@@ -116,6 +116,10 @@ public abstract class AliasMap<T> {
     }
 
     public String _getName(T key) {
+        return _getDisplayName(key).replace(" ", "");
+    }
+
+    public String _getDisplayName(T key) {
         return map.get(key) == null ? Str.camelCase(key.toString()) : map.get(key).getName();
     }
 

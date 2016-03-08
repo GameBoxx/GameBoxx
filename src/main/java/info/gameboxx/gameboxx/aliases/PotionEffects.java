@@ -82,6 +82,10 @@ public class PotionEffects extends AliasMap<PotionEffectType> {
         return instance()._getName(key);
     }
 
+    public static String getDisplayName(PotionEffectType key) {
+        return instance()._getDisplayName(key);
+    }
+
     public static List<String> getAliases(PotionEffectType key) {
         return instance()._getAliases(key);
     }

@@ -493,6 +493,10 @@ public class Sounds extends AliasMap<Sound> {
         return instance()._getName(key);
     }
 
+    public static String getDisplayName(Sound key) {
+        return instance()._getDisplayName(key);
+    }
+
     public static List<String> getAliases(Sound key) {
         return instance()._getAliases(key);
     }

@@ -122,6 +122,10 @@ public class EntityTypes extends AliasMap<EntityType> {
         return instance()._getName(key);
     }
 
+    public static String getDisplayName(EntityType key) {
+        return instance()._getDisplayName(key);
+    }
+
     public static List<String> getAliases(EntityType key) {
         return instance()._getAliases(key);
     }

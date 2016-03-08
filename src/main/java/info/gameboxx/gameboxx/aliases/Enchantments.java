@@ -82,6 +82,10 @@ public class Enchantments extends AliasMap<Enchantment> {
         return instance()._getName(key);
     }
 
+    public static String getDisplayName(Enchantment key) {
+        return instance()._getDisplayName(key);
+    }
+
     public static List<String> getAliases(Enchantment key) {
         return instance()._getAliases(key);
     }
