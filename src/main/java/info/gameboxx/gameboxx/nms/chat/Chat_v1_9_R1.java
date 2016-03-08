@@ -25,14 +25,14 @@
 
 package info.gameboxx.gameboxx.nms.chat;
 
-import info.gameboxx.gameboxx.nms.util.NMSUtil_v1_9_R1;
+import info.gameboxx.gameboxx.nms.util.NMSUtil_V1_9_R1;
 import net.minecraft.server.v1_9_R1.PacketPlayOutChat;
 import org.bukkit.entity.Player;
 import org.json.simple.JSONValue;
 
 import java.util.Collection;
 
-public class Chat_v1_9_R1 implements Chat {
+public class Chat_V1_9_R1 implements Chat {
 
     @Override
     public Chat send(String message, Player player) {
@@ -40,8 +40,8 @@ public class Chat_v1_9_R1 implements Chat {
             player.sendMessage(message);
             return this;
         }
-        PacketPlayOutChat chatPacket = new PacketPlayOutChat(NMSUtil_v1_9_R1.serializeChat(message), (byte)0);
-        NMSUtil_v1_9_R1.sendPacket(player, chatPacket);
+        PacketPlayOutChat chatPacket = new PacketPlayOutChat(NMSUtil_V1_9_R1.serializeChat(message), (byte)0);
+        NMSUtil_V1_9_R1.sendPacket(player, chatPacket);
         return this;
     }
 
@@ -49,14 +49,14 @@ public class Chat_v1_9_R1 implements Chat {
     public Chat send(String message, Player... players) {
         PacketPlayOutChat packet = null;
         if (message.startsWith("{") || message.startsWith("[")) {
-            packet = new PacketPlayOutChat(NMSUtil_v1_9_R1.serializeChat(message), (byte)0);
+            packet = new PacketPlayOutChat(NMSUtil_V1_9_R1.serializeChat(message), (byte)0);
         }
 
         for (Player player : players) {
             if (packet == null) {
                 player.sendMessage(message);
             } else {
-                NMSUtil_v1_9_R1.sendPacket(player, packet);
+                NMSUtil_V1_9_R1.sendPacket(player, packet);
             }
         }
         return this;
@@ -66,14 +66,14 @@ public class Chat_v1_9_R1 implements Chat {
     public Chat send(String message, Collection<? extends Player> players) {
         PacketPlayOutChat packet = null;
         if (message.startsWith("{") || message.startsWith("[")) {
-            packet = new PacketPlayOutChat(NMSUtil_v1_9_R1.serializeChat(message), (byte)0);
+            packet = new PacketPlayOutChat(NMSUtil_V1_9_R1.serializeChat(message), (byte)0);
         }
 
         for (Player player : players) {
             if (packet == null) {
                 player.sendMessage(message);
             } else {
-                NMSUtil_v1_9_R1.sendPacket(player, packet);
+                NMSUtil_V1_9_R1.sendPacket(player, packet);
             }
         }
         return this;
@@ -84,8 +84,8 @@ public class Chat_v1_9_R1 implements Chat {
         if (!message.startsWith("{") && !message.startsWith("[")) {
             message = "{\"text\":\"" + JSONValue.escape(message) + "\"}";
         }
-        PacketPlayOutChat packet = new PacketPlayOutChat(NMSUtil_v1_9_R1.serializeChat(message), (byte)2);
-        NMSUtil_v1_9_R1.sendPacket(player, packet);
+        PacketPlayOutChat packet = new PacketPlayOutChat(NMSUtil_V1_9_R1.serializeChat(message), (byte)2);
+        NMSUtil_V1_9_R1.sendPacket(player, packet);
         return this;
     }
 
@@ -94,10 +94,10 @@ public class Chat_v1_9_R1 implements Chat {
         if (!message.startsWith("{") && !message.startsWith("[")) {
             message = "{\"text\":\"" + JSONValue.escape(message) + "\"}";
         }
-        PacketPlayOutChat packet = new PacketPlayOutChat(NMSUtil_v1_9_R1.serializeChat(message), (byte)2);
+        PacketPlayOutChat packet = new PacketPlayOutChat(NMSUtil_V1_9_R1.serializeChat(message), (byte)2);
 
         for (Player player : players) {
-            NMSUtil_v1_9_R1.sendPacket(player, packet);
+            NMSUtil_V1_9_R1.sendPacket(player, packet);
         }
         return this;
     }
@@ -107,10 +107,10 @@ public class Chat_v1_9_R1 implements Chat {
         if (!message.startsWith("{") && !message.startsWith("[")) {
             message = "{\"text\":\"" + JSONValue.escape(message) + "\"}";
         }
-        PacketPlayOutChat packet = new PacketPlayOutChat(NMSUtil_v1_9_R1.serializeChat(message), (byte)2);
+        PacketPlayOutChat packet = new PacketPlayOutChat(NMSUtil_V1_9_R1.serializeChat(message), (byte)2);
 
         for (Player player : players) {
-            NMSUtil_v1_9_R1.sendPacket(player, packet);
+            NMSUtil_V1_9_R1.sendPacket(player, packet);
         }
         return this;
     }
