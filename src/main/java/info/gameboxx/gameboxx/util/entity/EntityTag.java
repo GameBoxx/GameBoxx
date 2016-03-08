@@ -31,7 +31,6 @@ import info.gameboxx.gameboxx.options.SingleOption;
 import info.gameboxx.gameboxx.options.single.*;
 import info.gameboxx.gameboxx.util.Parse;
 import org.bukkit.*;
-import org.bukkit.block.BlockFace;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.*;
 import org.bukkit.entity.minecart.CommandMinecart;
@@ -223,14 +222,14 @@ public class EntityTag {
         EntityTag.register("BOUNCE", new BoolO().def(true), "setBounce", null, Projectile.class);
     
         //Hanging
-        EntityTag.register("DIR", new StringO().match(Arrays.asList("north", "east", "south", "west", "up", "down")), new EntityTagCallback() {
+        EntityTag.register("DIR", new StringO().match(Directions.getAliasMap(Directions.Type.SIX_SELF)), new EntityTagCallback() {
             @Override boolean onSet(CommandSender sender, EEntity entity, SingleOption result) {
-                entity.setFacingDirection(BlockFace.valueOf(((StringO)result).getValue().toUpperCase()), true);
+                entity.setFacingDirection(Directions.get(((StringO)result).getValue()), true);
                 return true;
             }
     
             @Override String onGet(EEntity entity) {return null;}
-        }, Hanging.class); //TODO: Aliases
+        }, Hanging.class);
     
         //Mixed Entities
         EntityTag.register("MAINHAND", new ItemO(), "setItemInMainHand", "getItemInMainHand", ArmorStand.class, LivingEntity.class);

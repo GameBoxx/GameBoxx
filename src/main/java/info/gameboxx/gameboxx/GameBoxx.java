@@ -124,6 +124,7 @@ public class GameBoxx extends JavaPlugin {
         Professions.instance();
         RabbitTypes.instance();
         OcelotTypes.instance();
+        Directions.instance();
 
         log("loaded successfully");
     }
