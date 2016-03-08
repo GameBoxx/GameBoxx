@@ -26,6 +26,7 @@
 package info.gameboxx.gameboxx.util.entity;
 
 import info.gameboxx.gameboxx.GameBoxx;
+import info.gameboxx.gameboxx.aliases.DyeColors;
 import info.gameboxx.gameboxx.options.SingleOption;
 import info.gameboxx.gameboxx.options.single.*;
 import info.gameboxx.gameboxx.util.Pair;
@@ -243,14 +244,14 @@ public class EntityTag {
         EntityTag.register("ANGRY", new BoolO().def(false), "setAngry", "isAngry", Wolf.class, PigZombie.class);
         EntityTag.register("SADDLE", new BoolO().def(false), "setSaddle", "hasSaddle", Horse.class, Pig.class);
         EntityTag.register("SADDLEITEM", new ItemO(), "setSaddle", "getSaddle", Horse.class, Pig.class);
-        EntityTag.register("COLOR", new StringO().match(Parse.StringArray(DyeColor.values())), new EntityTagCallback() {
+        EntityTag.register("COLOR", new StringO().match(DyeColors.getAliasMap()), new EntityTagCallback() {
             @Override boolean onSet(CommandSender sender, EEntity entity, SingleOption result) {
-                entity.setColor(DyeColor.valueOf(((StringO)result).getValue().toUpperCase()));
+                entity.setColor(DyeColors.get(((StringO)result).getValue().toUpperCase()));
                 return true;
             }
     
             @Override String onGet(EEntity entity) {
-                return entity.getColor().toString();
+                return DyeColors.getName(entity.getColor());
             }
         }, Colorable.class, Wolf.class); //TODO: Aliases
         EntityTag.register("EFFECT", new PotionO(), "addEffect", null, LivingEntity.class, AreaEffectCloud.class);
