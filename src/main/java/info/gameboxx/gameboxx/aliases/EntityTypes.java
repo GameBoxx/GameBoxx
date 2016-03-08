@@ -100,7 +100,7 @@ public class EntityTypes extends AliasMap<EntityType> {
         add(EntityType.OCELOT, "Ocelot", "Cat");
         add(EntityType.IRON_GOLEM, "Iron Golem", "Golem", "Villager Golem");
         add(EntityType.HORSE, "Horse");
-        add(EntityType.RABBIT, "Rabbit");
+        add(EntityType.RABBIT, "Rabbit", "Bunny");
         add(EntityType.VILLAGER, "Villager");
         add(EntityType.ENDER_CRYSTAL, "Ender Crystal", "Crystal", "ECrystal", "EnderC", "End Crystal", "EndC");
         add(EntityType.SPLASH_POTION, "Splash Potion", "Thrown Potion", "Potion", "Splash", "Splash Pot", "Thrown Pot", "Pot");

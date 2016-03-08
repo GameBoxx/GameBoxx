@@ -27,7 +27,7 @@ package info.gameboxx.gameboxx.util;
 
 import info.gameboxx.gameboxx.messages.Msg;
 import info.gameboxx.gameboxx.messages.Param;
-import info.gameboxx.gameboxx.util.alias.Items;
+import info.gameboxx.gameboxx.aliases.items.Items;
 import info.gameboxx.gameboxx.util.item.EItem;
 import info.gameboxx.gameboxx.util.item.ItemParser;
 import org.bukkit.*;

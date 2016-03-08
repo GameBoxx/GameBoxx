@@ -27,8 +27,8 @@ package info.gameboxx.gameboxx.util.item;
 
 import info.gameboxx.gameboxx.util.Parse;
 import info.gameboxx.gameboxx.util.Str;
-import info.gameboxx.gameboxx.util.alias.ItemData;
-import info.gameboxx.gameboxx.util.alias.Items;
+import info.gameboxx.gameboxx.aliases.items.ItemData;
+import info.gameboxx.gameboxx.aliases.items.Items;
 import org.bukkit.*;
 import org.bukkit.block.banner.Pattern;
 import org.bukkit.block.banner.PatternType;

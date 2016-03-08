@@ -23,7 +23,7 @@
  THE SOFTWARE.
  */
 
-package info.gameboxx.gameboxx.util.alias;
+package info.gameboxx.gameboxx.aliases.items;
 
 import org.bukkit.Material;
 
