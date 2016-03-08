@@ -25,11 +25,13 @@
 
 package info.gameboxx.gameboxx.options.single;
 
+import info.gameboxx.gameboxx.aliases.Enchantments;
 import info.gameboxx.gameboxx.messages.Msg;
 import info.gameboxx.gameboxx.messages.Param;
 import info.gameboxx.gameboxx.options.SingleOption;
 import info.gameboxx.gameboxx.util.Enchant;
 import info.gameboxx.gameboxx.util.Parse;
+import info.gameboxx.gameboxx.util.Utils;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 
@@ -47,10 +49,9 @@ public class EnchantO extends SingleOption<Enchant, EnchantO> {
         String[] split = input.split(":");
         Integer level = 0;
 
-        //TODO: Get type from alias and display aliases.
-        Enchantment enchant = Enchantment.getByName(split[0]);
+        Enchantment enchant = Enchantments.get(split[0]);
         if (enchant == null) {
-            Msg.getString("enchant.invalid-type", Param.P("input", split[0]), Param.P("types", Parse.Array(Enchantment.values())));
+            Msg.getString("enchant.invalid-type", Param.P("input", split[0]), Param.P("types", Utils.getAliasesString("enchant.entry", Enchantments.getAliasMap())));
             return false;
         }
 
