@@ -26,6 +26,7 @@
 package info.gameboxx.gameboxx.util.entity;
 
 import info.gameboxx.gameboxx.GameBoxx;
+import info.gameboxx.gameboxx.aliases.EntityTypes;
 import info.gameboxx.gameboxx.options.SingleOption;
 import info.gameboxx.gameboxx.options.single.*;
 import info.gameboxx.gameboxx.util.Str;
@@ -149,8 +150,7 @@ public class EntityParser {
 
                 //Get entity from first section
                 if (i == 0) {
-                    //TODO: Get entity from alias.
-                    EntityType type = EntityType.valueOf(section);
+                    EntityType type = EntityTypes.get(section);
                     if (type == null) {
                         error = "Invalid entity...";
                         return;
@@ -281,7 +281,7 @@ public class EntityParser {
         for (EEntity entity : entities.getEntities()) {
             List<String> sections = new ArrayList<>();
 
-            sections.add(entity.getType().toString());
+            sections.add(EntityTypes.getName(entity.getType()));
             for (EntityTag tag : EntityTag.getTags(entity.getType())) {
                 if (tag.hasCallback()) {
                     String result = tag.getCallback().onGet(entity);
