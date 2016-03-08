@@ -27,9 +27,9 @@ package info.gameboxx.gameboxx.util.entity;
 
 import info.gameboxx.gameboxx.GameBoxx;
 import info.gameboxx.gameboxx.aliases.DyeColors;
+import info.gameboxx.gameboxx.aliases.Rotations;
 import info.gameboxx.gameboxx.options.SingleOption;
 import info.gameboxx.gameboxx.options.single.*;
-import info.gameboxx.gameboxx.util.Pair;
 import info.gameboxx.gameboxx.util.Parse;
 import org.bukkit.*;
 import org.bukkit.block.BlockFace;
@@ -246,7 +246,7 @@ public class EntityTag {
         EntityTag.register("SADDLEITEM", new ItemO(), "setSaddle", "getSaddle", Horse.class, Pig.class);
         EntityTag.register("COLOR", new StringO().match(DyeColors.getAliasMap()), new EntityTagCallback() {
             @Override boolean onSet(CommandSender sender, EEntity entity, SingleOption result) {
-                entity.setColor(DyeColors.get(((StringO)result).getValue().toUpperCase()));
+                entity.setColor(DyeColors.get(((StringO)result).getValue()));
                 return true;
             }
     
@@ -329,12 +329,9 @@ public class EntityTag {
         EntityTag.register("PICKUPDELAY", new IntO(), "setPickupDelay", null, Item.class);
 
         //Itemframe
-        EntityTag.register("ROTATION", new StringO().match(Pair.P("NONE", Arrays.asList("0", "360", "-360")), Pair.P("CLOCKWISE_45", Arrays.asList("45", "-315")),
-                Pair.P("CLOCKWISE", Arrays.asList("90", "-270")), Pair.P("CLOCKWISE_135", Arrays.asList("135", "-225")), Pair.P("FLIPPED", Arrays.asList("180", "-180")),
-                Pair.P("FLIPPED_45", Arrays.asList("225", "-135")), Pair.P("COUNTER_CLOCKWISE", Arrays.asList("270", "-90")),
-                Pair.P("COUNTER_CLOCKWISE_45", Arrays.asList("315", "-45"))),new EntityTagCallback() {
+        EntityTag.register("ROTATION", new StringO().match(Rotations.getAliasMap()),new EntityTagCallback() {
             @Override boolean onSet(CommandSender sender, EEntity entity, SingleOption result) {
-                entity.setRotation(Rotation.valueOf(((StringO)result).getValue().toUpperCase()));
+                entity.setRotation(Rotations.get(((StringO)result).getValue()));
                 return true;
             }
 
