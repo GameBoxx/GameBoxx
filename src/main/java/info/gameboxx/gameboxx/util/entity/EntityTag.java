@@ -26,8 +26,7 @@
 package info.gameboxx.gameboxx.util.entity;
 
 import info.gameboxx.gameboxx.GameBoxx;
-import info.gameboxx.gameboxx.aliases.DyeColors;
-import info.gameboxx.gameboxx.aliases.Rotations;
+import info.gameboxx.gameboxx.aliases.*;
 import info.gameboxx.gameboxx.options.SingleOption;
 import info.gameboxx.gameboxx.options.single.*;
 import info.gameboxx.gameboxx.util.Parse;
@@ -376,34 +375,34 @@ public class EntityTag {
         EntityTag.register("ELDER", new BoolO().def(false), "setElder", "isElder", Guardian.class);
 
         //Horse
-        EntityTag.register("HORSEVARIANT", new StringO().def("HORSE").match(Parse.StringArray(Horse.Variant.values())), new EntityTagCallback() {
+        EntityTag.register("HORSEVARIANT", new StringO().def("HORSE").match(HorseVariants.getAliasMap()), new EntityTagCallback() {
             @Override boolean onSet(CommandSender sender, EEntity entity, SingleOption result) {
-                entity.setHorseVariant(Horse.Variant.valueOf(((StringO)result).getValue().toUpperCase()));
+                entity.setHorseVariant(HorseVariants.get(((StringO)result).getValue()));
                 return true;
             }
 
             @Override String onGet(EEntity entity) {
-                return entity.getHorseVariant().toString();
+                return HorseVariants.getName(entity.getHorseVariant());
             }
         }, Horse.class); //TODO: Aliases
-        EntityTag.register("HORSECOLOR", new StringO().match(Parse.StringArray(Horse.Color.values())), new EntityTagCallback() {
+        EntityTag.register("HORSECOLOR", new StringO().match(HorseColors.getAliasMap()), new EntityTagCallback() {
             @Override boolean onSet(CommandSender sender, EEntity entity, SingleOption result) {
-                entity.setHorseColor(Horse.Color.valueOf(((StringO)result).getValue().toUpperCase()));
+                entity.setHorseColor(HorseColors.get(((StringO)result).getValue()));
                 return true;
             }
 
             @Override String onGet(EEntity entity) {
-                return entity.getHorseColor().toString();
+                return HorseColors.getName(entity.getHorseColor());
             }
         }, Horse.class); //TODO: Aliases
-        EntityTag.register("HORSESTYLE", new StringO().match(Parse.StringArray(Horse.Style.values())), new EntityTagCallback() {
+        EntityTag.register("HORSESTYLE", new StringO().match(HorseStyles.getAliasMap()), new EntityTagCallback() {
             @Override boolean onSet(CommandSender sender, EEntity entity, SingleOption result) {
-                entity.setHorseStyle(Horse.Style.valueOf(((StringO)result).getValue().toUpperCase()));
+                entity.setHorseStyle(HorseStyles.get(((StringO)result).getValue()));
                 return true;
             }
 
             @Override String onGet(EEntity entity) {
-                return entity.getHorseStyle().toString();
+                return HorseStyles.getName(entity.getHorseStyle());
             }
         }, Horse.class); //TODO: Aliases
         EntityTag.register("CHEST", new BoolO().def(false), "setCarryingChest", "isCarryingChest", Horse.class);

@@ -25,9 +25,7 @@
 
 package info.gameboxx.gameboxx;
 
-import info.gameboxx.gameboxx.aliases.Enchantments;
-import info.gameboxx.gameboxx.aliases.PotionEffects;
-import info.gameboxx.gameboxx.aliases.Sounds;
+import info.gameboxx.gameboxx.aliases.*;
 import info.gameboxx.gameboxx.commands.*;
 import info.gameboxx.gameboxx.config.PluginCfg;
 import info.gameboxx.gameboxx.game.GameManager;
@@ -115,8 +113,14 @@ public class GameBoxx extends JavaPlugin {
 
         //TODO: Remove this (used for testing)
         Enchantments.instance();
-        PotionEffects.instance();
+        PotionEffects.instance();;
+        EntityTypes.instance();
         Sounds.instance();
+        DyeColors.instance();
+        Rotations.instance();
+        HorseColors.instance();
+        HorseStyles.instance();
+        HorseVariants.instance();
 
         log("loaded successfully");
     }
