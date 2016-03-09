@@ -25,6 +25,7 @@
 
 package info.gameboxx.gameboxx;
 
+import com.zaxxer.hikari.HikariDataSource;
 import info.gameboxx.gameboxx.aliases.*;
 import info.gameboxx.gameboxx.commands.*;
 import info.gameboxx.gameboxx.config.PluginCfg;
@@ -66,6 +67,7 @@ public class GameBoxx extends JavaPlugin {
     private PluginCfg cfg;
 
     private final Logger log = Logger.getLogger("GameBoxx");
+    private final HikariDataSource hikariDataSource = new HikariDataSource();
 
     @Override
     public void onDisable() {
@@ -80,7 +82,7 @@ public class GameBoxx extends JavaPlugin {
 
         if (!NMS.get().isCompatible()) {
             error("Failed to load GameBoxx because your server version isn't supported!");
-            error("This version of GameBoxx supports the following server versions: " + Parse.Array(NMSVersion.values()));
+            error("This version of GameBoxx supports the following server versions: " + Parse.Array((Object[]) NMSVersion.values()));
             error("Your server version: " + NMS.get().getVersionString());
             getPluginLoader().disablePlugin(this);
             return;
@@ -100,6 +102,7 @@ public class GameBoxx extends JavaPlugin {
         }
         loadMessages();
         loadPoints();
+        loadHikari();
 
         EntityTag.registerDefaults();
 
@@ -113,7 +116,8 @@ public class GameBoxx extends JavaPlugin {
 
         //TODO: Remove this (used for testing)
         Enchantments.instance();
-        PotionEffects.instance();;
+        PotionEffects.instance();
+
         EntityTypes.instance();
         Sounds.instance();
         DyeColors.instance();
@@ -167,13 +171,30 @@ public class GameBoxx extends JavaPlugin {
     private boolean loadEconomy() {
         Plugin vaultPlugin = getServer().getPluginManager().getPlugin("Vault");
         if (vaultPlugin != null) {
-            vault = (Vault)vaultPlugin;
+            vault = (Vault) vaultPlugin;
             RegisteredServiceProvider<Economy> economyProvider = getServer().getServicesManager().getRegistration(net.milkbowl.vault.economy.Economy.class);
             if (economyProvider != null) {
                 economy = economyProvider.getProvider();
             }
         }
         return economy != null;
+    }
+
+    private void loadHikari() {
+        String server = getConfig().getString("Database.Server");
+        String port = getConfig().getString("Database.Port");
+        String databaseName = getConfig().getString("Database.Name");
+        String username = getConfig().getString("Database.Auth.Username");
+        String password = getConfig().getString("Database.Auth.Password");
+
+        hikariDataSource.setMaximumPoolSize(10);
+        hikariDataSource.setDataSourceClassName("com.mysql.jdbc.jdbc2.optional.MysqlDataSource");
+        hikariDataSource.addDataSourceProperty("serverName", server);
+        hikariDataSource.addDataSourceProperty("port", port);
+        hikariDataSource.addDataSourceProperty("databaseName", databaseName);
+        hikariDataSource.addDataSourceProperty("user", username);
+        hikariDataSource.addDataSourceProperty("password", password);
+
     }
 
     public void log(Object msg) {
