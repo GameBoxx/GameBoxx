@@ -43,6 +43,7 @@ import info.gameboxx.gameboxx.util.Parse;
 import info.gameboxx.gameboxx.util.cuboid.Cuboid;
 import info.gameboxx.gameboxx.util.cuboid.SelectionManager;
 import info.gameboxx.gameboxx.util.entity.EntityTag;
+import info.gameboxx.gameboxx.util.item.GlowEnchant;
 import net.milkbowl.vault.Vault;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.plugin.Plugin;
@@ -71,6 +72,7 @@ public class GameBoxx extends JavaPlugin {
 
     @Override
     public void onDisable() {
+        GlowEnchant.unregister();
         instance = null;
         log("disabled");
     }
