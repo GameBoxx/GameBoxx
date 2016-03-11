@@ -291,14 +291,14 @@ public class EntityTag {
         EntityTag.register("RADIUS", new DoubleO(), "setRadius", null, AreaEffectCloud.class);
         EntityTag.register("USERADIUS", new DoubleO(), "setRadiusOnUse", null, AreaEffectCloud.class);
         EntityTag.register("RADIUSDECAY", new DoubleO(), "setRadiusPerTick", null, AreaEffectCloud.class);
-        EntityTag.register("PARTICLE", new StringO().match(Parse.StringArray(Particle.values())), new EntityTagCallback() {
+        EntityTag.register("PARTICLE", new StringO().match(Particles.getAliasMap()), new EntityTagCallback() {
             @Override boolean onSet(CommandSender sender, EEntity entity, SingleOption result) {
-                entity.setParticle(Particle.valueOf(((StringO)result).getValue().toUpperCase()));
+                entity.setParticle(Particles.get(((StringO)result).getValue()));
                 return true;
             }
 
             @Override String onGet(EEntity entity) {return null;}
-        }, AreaEffectCloud.class); //TODO: Aliases
+        }, AreaEffectCloud.class);
         EntityTag.register("PARTICLECOLOR", new ColorO(), "setEffectColor", null, AreaEffectCloud.class);
     
         //Minecart

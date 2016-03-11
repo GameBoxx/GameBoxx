@@ -25,11 +25,13 @@
 
 package info.gameboxx.gameboxx.options.single;
 
+import info.gameboxx.gameboxx.aliases.Particles;
 import info.gameboxx.gameboxx.messages.Msg;
 import info.gameboxx.gameboxx.messages.Param;
 import info.gameboxx.gameboxx.options.SingleOption;
 import info.gameboxx.gameboxx.util.Parse;
 import info.gameboxx.gameboxx.util.ParticleEffect;
+import info.gameboxx.gameboxx.util.Utils;
 import org.bukkit.Particle;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -47,10 +49,9 @@ public class ParticleO extends SingleOption<ParticleEffect, ParticleO> {
         Vector offset = new Vector(0,0,0);
         Object data = null;
 
-        //TODO: Get type from alias and display aliases.
-        Particle particle = Particle.valueOf(split[0].toUpperCase());
+        Particle particle = Particles.get(split[0]);
         if (particle == null) {
-            Msg.getString("particle.invalid-type", Param.P("input", split[0]), Param.P("types", Parse.Array(Particle.values())));
+            Msg.getString("particle.invalid-type", Param.P("input", split[0]), Param.P("types", Utils.getAliasesString("particle.entry", Particles.getAliasMap())));
             return false;
         }
 
