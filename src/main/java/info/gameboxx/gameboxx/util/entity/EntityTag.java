@@ -29,8 +29,7 @@ import info.gameboxx.gameboxx.GameBoxx;
 import info.gameboxx.gameboxx.aliases.*;
 import info.gameboxx.gameboxx.options.SingleOption;
 import info.gameboxx.gameboxx.options.single.*;
-import info.gameboxx.gameboxx.util.Parse;
-import org.bukkit.*;
+import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.*;
 import org.bukkit.entity.minecart.CommandMinecart;
@@ -176,14 +175,6 @@ public class EntityTag {
     
             @Override String onGet(EEntity entity) {return null;}
         }, Entity.class);
-        EntityTag.register("PLAYEFFECT", new StringO().match(Parse.StringArray(EntityEffect.values())), new EntityTagCallback() {
-            @Override boolean onSet(CommandSender sender, EEntity entity, SingleOption result) {
-                entity.playEffect(EntityEffect.valueOf(((StringO)result).getValue().toUpperCase()));
-                return true;
-            }
-    
-            @Override String onGet(EEntity entity) {return null;}
-        }, Entity.class); //TODO: Aliases
     
         //Damagable
         EntityTag.register("MAXHEALTH", new DoubleO(), "setMaxHealth", "getMaxHealth", Damageable.class);
