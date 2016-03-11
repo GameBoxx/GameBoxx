@@ -30,6 +30,8 @@ import net.minecraft.server.v1_9_R1.Packet;
 import org.bukkit.craftbukkit.v1_9_R1.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 
+import java.util.Collection;
+
 /**
  * NMS Utilities for version 1.9 R1
  */
@@ -42,18 +44,42 @@ public class NMSUtil_V1_9_R1 {
      * @param packet The {@link Packet} to send.
      */
     public static void sendPacket(Player player, Packet packet) {
-        ((CraftPlayer)player).getHandle().playerConnection.sendPacket(packet);
+        ((CraftPlayer) player).getHandle().playerConnection.sendPacket(packet);
     }
 
     /**
      * Send multiple packets to the specified player.
      *
-     * @param player The player to send the packets to.
+     * @param player  The player to send the packets to.
      * @param packets One or more {@link Packet}s to send.
      */
     public static void sendPackets(Player player, Packet... packets) {
         for (Packet packet : packets) {
-            ((CraftPlayer)player).getHandle().playerConnection.sendPacket(packet);
+            ((CraftPlayer) player).getHandle().playerConnection.sendPacket(packet);
+        }
+    }
+
+    /**
+     * Sends a packet to the specified players.
+     *
+     * @param players {@link Collection<Player>} that the packet will be sent to.
+     * @param packet The {@link Packet} to send.
+     */
+    public static void sendPacket(Collection<Player> players, Packet packet) {
+        for (Player player : players) {
+            sendPacket(player, packet);
+        }
+    }
+
+    /**
+     * Sends multiple packets to the specified players.
+     *
+     * @param players {@link Collection<Player>} that the packet will be sent to.
+     * @param packets One or more {@link Packet}s to send.
+     */
+    public static void sendPackets(Collection<Player> players, Packet... packets) {
+        for (Player player : players) {
+            sendPackets(player, packets);
         }
     }
 

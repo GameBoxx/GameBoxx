@@ -26,7 +26,9 @@
 package info.gameboxx.gameboxx.listeners;
 
 import info.gameboxx.gameboxx.GameBoxx;
+import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerJoinEvent;
 
 public class MainListener implements Listener {
 
@@ -36,5 +38,9 @@ public class MainListener implements Listener {
         this.gb = gb;
     }
 
+    @EventHandler
+    public void on(PlayerJoinEvent event) {
+
+    }
 
 }
