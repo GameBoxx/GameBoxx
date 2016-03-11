@@ -59,6 +59,7 @@ public class UserManager {
         name = name.trim();
         if (usersByName.containsKey(name)) {
             usersByName.remove(name);
+            usersById.remove(getUser(name).getUuid());
         }
     }
 
@@ -70,6 +71,7 @@ public class UserManager {
     public void unregister(UUID uuid) {
         if (usersById.containsKey(uuid)) {
             usersById.remove(uuid);
+            usersByName.remove(getUser(uuid).getName());
         }
     }
 

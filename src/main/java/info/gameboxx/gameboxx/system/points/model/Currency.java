@@ -32,6 +32,7 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.File;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -50,8 +51,8 @@ public class Currency {
         return forName.get(name);
     }
 
-    public static Iterator<Currency> iterator() {
-        return forName.values().iterator();
+    public static Currency[] values() {
+        return forName.values().toArray(new Currency[forName.values().size()]);
     }
 
     private String name;

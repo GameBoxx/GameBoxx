@@ -26,9 +26,14 @@
 package info.gameboxx.gameboxx.listeners;
 
 import info.gameboxx.gameboxx.GameBoxx;
+import info.gameboxx.gameboxx.system.points.concurrent.Loader;
+import info.gameboxx.gameboxx.system.points.concurrent.Saver;
+import info.gameboxx.gameboxx.system.points.model.Currency;
+import info.gameboxx.gameboxx.user.User;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 
 public class MainListener implements Listener {
 
@@ -40,7 +45,19 @@ public class MainListener implements Listener {
 
     @EventHandler
     public void on(PlayerJoinEvent event) {
+        User user = new User(event.getPlayer());
+        gb.getUM().register(user);
+        for (Currency currency : Currency.values()) {
+            new Loader(user, currency).runTaskAsynchronously(gb);
+        }
+    }
 
+    @EventHandler
+    public void on(PlayerQuitEvent event) {
+        User user = gb.getUM().getUser(event.getPlayer().getUniqueId());
+        for (Currency currency : Currency.values()) {
+            new Saver(user, currency).runTaskAsynchronously(gb);
+        }
     }
 
 }

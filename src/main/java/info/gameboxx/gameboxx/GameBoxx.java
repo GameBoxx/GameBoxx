@@ -49,6 +49,9 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.logging.Logger;
 
 public class GameBoxx extends JavaPlugin {
@@ -195,6 +198,25 @@ public class GameBoxx extends JavaPlugin {
         hikariDataSource.addDataSourceProperty("user", username);
         hikariDataSource.addDataSourceProperty("password", password);
 
+        Connection connection = null;
+        try {
+            connection = hikariDataSource.getConnection();
+            for (Currency currency : Currency.values()) {
+                PreparedStatement preparedStatement = connection.prepareStatement("CREATE TABLE IF NOT EXISTS '" + currency.getName().toLowerCase() + "' ('uuid' VARCHAR(36) NOT NULL , 'name' VARCHAR(16) NOT NULL , 'amount' DOUBLE(12) NOT NULL , PRIMARY KEY ('uuid'))");
+                preparedStatement.execute();
+                preparedStatement.close();
+            }
+        } catch (SQLException e) {
+            error("Could not create the required SQL tables!");
+        } finally {
+            if (connection != null) {
+                try {
+                    connection.close();
+                } catch (SQLException e) {
+                    error("Could not close connection!");
+                }
+            }
+        }
     }
 
     public void log(Object msg) {
@@ -270,4 +292,7 @@ public class GameBoxx extends JavaPlugin {
         return cfg;
     }
 
+    public HikariDataSource getHikariDataSource() {
+        return hikariDataSource;
+    }
 }
