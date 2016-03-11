@@ -339,16 +339,16 @@ public class EntityTag {
         }, ItemFrame.class);
 
         //Painting
-        EntityTag.register("ART", new StringO().match(Parse.StringArray(Art.values())), new EntityTagCallback() {
+        EntityTag.register("ART", new StringO().match(Paintings.getAliasMap()), new EntityTagCallback() {
             @Override boolean onSet(CommandSender sender, EEntity entity, SingleOption result) {
-                entity.setArt(Art.valueOf(((StringO)result).getValue().toUpperCase()));
+                entity.setArt(Paintings.get(((StringO)result).getValue()));
                 return true;
             }
 
             @Override String onGet(EEntity entity) {
-                return entity.getArt().toString();
+                return Paintings.getName(entity.getArt());
             }
-        }, Painting.class); //TODO: Aliases
+        }, Painting.class);
 
         //FishHook
         EntityTag.register("BITECHANCE", new DoubleO(), "setBiteChance", null, FishHook.class);
