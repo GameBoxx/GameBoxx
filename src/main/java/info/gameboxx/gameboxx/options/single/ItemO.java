@@ -34,8 +34,8 @@ public class ItemO extends SingleOption<EItem, ItemO> {
 
     @Override
     public boolean parse(Player player, String input) {
-        ItemParser parser = new ItemParser(input, false);
-        if (!parser.isSuccess()) {
+        ItemParser parser = new ItemParser(input, player, false);
+        if (!parser.isValid()) {
             error = parser.getError();
             return false;
         }

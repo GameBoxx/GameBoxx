@@ -46,7 +46,7 @@ public class SelectionManager {
 
     private static SelectionManager instance;
     private SelectionListener listener;
-    private EItem basicWand = new EItem(Material.STONE_AXE, 1, (short)0).makeGlowing(true).addAllFlags(true).setName("&6&lSelection Wand");
+    private EItem basicWand = new EItem(Material.STONE_AXE, 1, (short)0).setGlowing(true).addAllFlags(true).setName("&6&lSelection Wand");
 
     Map<UUID, SelectionData> selections = new HashMap<UUID, SelectionData>();
     SelectionData globalSelection = new SelectionData();
