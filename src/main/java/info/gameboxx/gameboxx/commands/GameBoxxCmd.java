@@ -27,6 +27,7 @@ package info.gameboxx.gameboxx.commands;
 
 import info.gameboxx.gameboxx.GameBoxx;
 import info.gameboxx.gameboxx.messages.*;
+import info.gameboxx.gameboxx.options.single.ItemO;
 import info.gameboxx.gameboxx.util.Str;
 import info.gameboxx.gameboxx.util.entity.EntityParser;
 import org.bukkit.command.Command;
@@ -124,6 +125,26 @@ public class GameBoxxCmd implements CommandExecutor {
             } else {
                 sender.sendMessage("Spawned!");
             }
+            return true;
+        }
+
+        //Item
+        if (args[0].equalsIgnoreCase("item") || args[0].equalsIgnoreCase("i")) {
+            if (!(sender instanceof Player)) {
+                Msg.get("player-only").send(sender);
+                return true;
+            }
+            Player player = (Player)sender;
+
+            String itemString = Str.implode(args, " ", " ", 1, args.length);
+
+            ItemO itemO = new ItemO();
+            if (!itemO.parse(player, itemString)) {
+                Msg.fromString(itemO.getError()).send(player);
+                return true;
+            }
+            player.getInventory().addItem(itemO.getValue());
+            player.sendMessage("Item given!");
             return true;
         }
 
