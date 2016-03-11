@@ -26,39 +26,39 @@
 package info.gameboxx.gameboxx.aliases;
 
 import info.gameboxx.gameboxx.aliases.internal.AliasMap;
-import org.bukkit.Difficulty;
+import org.bukkit.GameMode;
 
 import java.io.File;
 import java.util.List;
 import java.util.Map;
 
-public class Difficulties extends AliasMap<Difficulty> {
+public class GameModes extends AliasMap<GameMode> {
 
-    private Difficulties() {
-        super("Difficulties", new File(ALIASES_FOLDER, "WorldData.yml"), "difficulty", "diff");
+    private GameModes() {
+        super("GameModes", new File(ALIASES_FOLDER, "PlayerData.yml"), "gamemode", "modes", "mode");
     }
 
     @Override
     public void onLoad() {
-        add(Difficulty.PEACEFUL, "Peaceful", "0", "P", "Pe");
-        add(Difficulty.EASY, "Easy", "1", "E", "Ez", "Es");
-        add(Difficulty.NORMAL, "Normal", "2", "N", "No", "Norm", "Default", "Def");
-        add(Difficulty.HARD, "Hard", "3", "H", "Ha");
+        add(GameMode.CREATIVE, "Creative", "1", "Crea", "Cre", "C");
+        add(GameMode.SURVIVAL, "Survival", "0", "Survive", "Sur", "S");
+        add(GameMode.ADVENTURE, "Adventure", "2", "Advent", "Adv", "A");
+        add(GameMode.SPECTATOR, "Spectator", "3", "Spectate", "Spec", "SP");
     }
 
-    public static Difficulty get(String string) {
+    public static GameMode get(String string) {
         return instance()._get(string);
     }
 
-    public static String getName(Difficulty key) {
+    public static String getName(GameMode key) {
         return instance()._getName(key);
     }
 
-    public static String getDisplayName(Difficulty key) {
+    public static String getDisplayName(GameMode key) {
         return instance()._getDisplayName(key);
     }
 
-    public static List<String> getAliases(Difficulty key) {
+    public static List<String> getAliases(GameMode key) {
         return instance()._getAliases(key);
     }
 
@@ -66,10 +66,10 @@ public class Difficulties extends AliasMap<Difficulty> {
         return instance()._getAliasMap();
     }
 
-    public static Difficulties instance() {
-        if (getMap(Difficulties.class) == null) {
-            aliasMaps.put(Difficulties.class, new Difficulties());
+    public static GameModes instance() {
+        if (getMap(GameModes.class) == null) {
+            aliasMaps.put(GameModes.class, new GameModes());
         }
-        return (Difficulties)getMap(Difficulties.class);
+        return (GameModes)getMap(GameModes.class);
     }
 }
