@@ -25,6 +25,8 @@
 
 package info.gameboxx.gameboxx.util;
 
+import info.gameboxx.gameboxx.aliases.Environments;
+import info.gameboxx.gameboxx.aliases.WorldTypes;
 import info.gameboxx.gameboxx.messages.Msg;
 import info.gameboxx.gameboxx.messages.Param;
 import info.gameboxx.gameboxx.aliases.items.Items;
@@ -157,23 +159,9 @@ public class Utils {
                 String val = arg[1].toLowerCase();
 
                 if (key.equals("environment") || key.equals("env") || key.equals("e")) {
-                    if (val.equals("default") || val.equals("normal")) {
-                        worldCreator.environment(World.Environment.NORMAL);
-                    } else if (val.equals("nether") || val.equals("hell")) {
-                        worldCreator.environment(World.Environment.NETHER);
-                    } else if (val.equals("end") || val.equals("theend")) {
-                        worldCreator.environment(World.Environment.THE_END);
-                    }
+                    worldCreator.environment(Environments.get(val));
                 } else if (key.equals("worldtype") || key.equals("type") || key.equals("t") || key.equals("wt")) {
-                    if (val.equals("default") || val.equals("normal")) {
-                        worldCreator.type(WorldType.NORMAL);
-                    } else if (val.equals("amplified") || val.equals("hills") || val.equals("mountains")) {
-                        worldCreator.type(WorldType.AMPLIFIED);
-                    } else if (val.equals("flat") || val.equals("creative")) {
-                        worldCreator.type(WorldType.FLAT);
-                    } else if (val.equals("largebiomes") || val.equals("bigbiomes") || val.equals("extremebiomes") || val.equals("bb") || val.equals("lb") || val.equals("eb")) {
-                        worldCreator.type(WorldType.LARGE_BIOMES);
-                    }
+                    worldCreator.type(WorldTypes.get(val));
                 } else if (key.equals("generator") || key.equals("gen") || key.equals("g")) {
                     worldCreator.generator(arg[1]);
                 } else if (key.equals("settings") || key.equals("set") || key.equals("s")) {
