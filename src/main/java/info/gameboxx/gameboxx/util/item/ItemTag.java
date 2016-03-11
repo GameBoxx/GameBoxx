@@ -141,10 +141,12 @@ public class ItemTag {
         }
         BY_NAME.put(key, tag);
 
-        for (String alias : tag.getAliases()) {
-            alias = alias.toUpperCase().replace("_", "").replace(" ", "");
-            if (!BY_NAME.containsKey(alias)) {
-                BY_NAME.put(alias, tag);
+        if (tag.getAliases() != null) {
+            for (String alias : tag.getAliases()) {
+                alias = alias.toUpperCase().replace("_", "").replace(" ", "");
+                if (!BY_NAME.containsKey(alias)) {
+                    BY_NAME.put(alias, tag);
+                }
             }
         }
         return tag;
