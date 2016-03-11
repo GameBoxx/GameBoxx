@@ -107,8 +107,9 @@ public class GameBoxx extends JavaPlugin {
         }
         loadMessages();
         loadPoints();
-        loadHikari();
-
+        if (cfg.sql) {
+            loadHikari();
+        }
         EntityTag.registerDefaults();
 
         um = new UserManager();
@@ -186,19 +187,13 @@ public class GameBoxx extends JavaPlugin {
     }
 
     private void loadHikari() {
-        String server = getConfig().getString("Database.Server");
-        String port = getConfig().getString("Database.Port");
-        String databaseName = getConfig().getString("Database.Name");
-        String username = getConfig().getString("Database.Auth.Username");
-        String password = getConfig().getString("Database.Auth.Password");
-
         hikariDataSource.setMaximumPoolSize(10);
         hikariDataSource.setDataSourceClassName("com.mysql.jdbc.jdbc2.optional.MysqlDataSource");
-        hikariDataSource.addDataSourceProperty("serverName", server);
-        hikariDataSource.addDataSourceProperty("port", port);
-        hikariDataSource.addDataSourceProperty("databaseName", databaseName);
-        hikariDataSource.addDataSourceProperty("user", username);
-        hikariDataSource.addDataSourceProperty("password", password);
+        hikariDataSource.addDataSourceProperty("serverName", cfg.database__server);
+        hikariDataSource.addDataSourceProperty("port", cfg.database__port);
+        hikariDataSource.addDataSourceProperty("databaseName", cfg.database__databaseName);
+        hikariDataSource.addDataSourceProperty("user", cfg.database__username);
+        hikariDataSource.addDataSourceProperty("password", cfg.database__password);
 
         Connection connection = null;
         try {

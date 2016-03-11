@@ -31,6 +31,13 @@ public class PluginCfg extends EasyConfig {
 
     public String language = "en";
     public String defaultWorld = "world";
+    public String database__server = "localhost";
+    public String database__port = "3306";
+    public String database__databaseName = "default";
+    public String database__username = "root";
+    public String database__password = "password";
+    public boolean sql = false;
+
     public int saveDelay__arena = 5000;
 
     public PluginCfg(String fileName) {

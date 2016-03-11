@@ -45,18 +45,22 @@ public class MainListener implements Listener {
 
     @EventHandler
     public void on(PlayerJoinEvent event) {
-        User user = new User(event.getPlayer());
-        gb.getUM().register(user);
-        for (Currency currency : Currency.values()) {
-            new Loader(user, currency).runTaskAsynchronously(gb);
+        if (gb.getCfg().sql) {
+            User user = new User(event.getPlayer());
+            gb.getUM().register(user);
+            for (Currency currency : Currency.values()) {
+                new Loader(user, currency).runTaskAsynchronously(gb);
+            }
         }
     }
 
     @EventHandler
     public void on(PlayerQuitEvent event) {
-        User user = gb.getUM().getUser(event.getPlayer().getUniqueId());
-        for (Currency currency : Currency.values()) {
-            new Saver(user, currency).runTaskAsynchronously(gb);
+        if (gb.getCfg().sql) {
+            User user = gb.getUM().getUser(event.getPlayer().getUniqueId());
+            for (Currency currency : Currency.values()) {
+                new Saver(user, currency).runTaskAsynchronously(gb);
+            }
         }
     }
 
