@@ -42,15 +42,17 @@ public class ItemTag {
     private static Map<String, ItemTag> BY_NAME = new HashMap<>();
 
     private final String tag;
+    private final String[] aliases;
     private final SingleOption option;
     private final ItemTagCallback callback;
     private final String setMethod;
     private final String getMethod;
     private final Class<? extends ItemMeta>[] metaClasses;
 
-    private ItemTag(String tag, SingleOption option, String setMethod, String getMethod, Class... metaClasses) {
+    private ItemTag(String tag, String[] aliases, SingleOption option, String setMethod, String getMethod, Class... metaClasses) {
         this.tag = tag;
         option.name(tag);
+        this.aliases = aliases;
         this.option = option;
         this.callback = null;
         this.setMethod = setMethod;
@@ -58,9 +60,10 @@ public class ItemTag {
         this.metaClasses = metaClasses;
     }
 
-    private ItemTag(String tag, SingleOption option, ItemTagCallback callback, Class... metaClasses) {
+    private ItemTag(String tag, String[] aliases, SingleOption option, ItemTagCallback callback, Class... metaClasses) {
         this.tag = tag;
         option.name(tag);
+        this.aliases = aliases;
         this.option = option;
         this.callback = callback;
         this.setMethod = null;
@@ -71,6 +74,10 @@ public class ItemTag {
 
     public String getTag() {
         return tag;
+    }
+
+    public String[] getAliases() {
+        return aliases;
     }
 
     public Class<? extends ItemMeta>[] getMeta() {
@@ -119,12 +126,12 @@ public class ItemTag {
     }
 
 
-    public static ItemTag register(String tag, SingleOption option, ItemTagCallback executeCallback, Class... entities) {
-        return register(new ItemTag(tag, option, executeCallback, entities));
+    public static ItemTag register(String tag, String[] aliases, SingleOption option, ItemTagCallback executeCallback, Class... entities) {
+        return register(new ItemTag(tag, aliases, option, executeCallback, entities));
     }
 
-    private static ItemTag register(String tag, SingleOption option, String setMethod, String getMethod, Class... entities) {
-        return register(new ItemTag(tag, option, setMethod, getMethod, entities));
+    private static ItemTag register(String tag, String[] aliases, SingleOption option, String setMethod, String getMethod, Class... entities) {
+        return register(new ItemTag(tag, aliases, option, setMethod, getMethod, entities));
     }
 
     private static ItemTag register(ItemTag tag) {
@@ -133,6 +140,13 @@ public class ItemTag {
             throw new IllegalArgumentException("There is already an ItemTag registered with the name '" + key + "'!");
         }
         BY_NAME.put(key, tag);
+
+        for (String alias : tag.getAliases()) {
+            alias = alias.toUpperCase().replace("_", "").replace(" ", "");
+            if (!BY_NAME.containsKey(alias)) {
+                BY_NAME.put(alias, tag);
+            }
+        }
         return tag;
     }
 
@@ -140,9 +154,9 @@ public class ItemTag {
     public static void registerDefaults() {
 
         //All items
-        ItemTag.register("NAME", new StringO(), "setName", "getName", ItemMeta.class);
-        ItemTag.register("LORE", new StringO(), "setLore", "getLore", ItemMeta.class);
-        ItemTag.register("ENCHANT", new EnchantO(), new ItemTagCallback() {
+        ItemTag.register("NAME", new String[] {"DISPLAYNAME"}, new StringO(), "setName", "getName", ItemMeta.class);
+        ItemTag.register("LORE", new String[] {"DESCRIPTION", "DESC"}, new StringO(), "setLore", "getLore", ItemMeta.class);
+        ItemTag.register("ENCHANT", new String[] {"ENCHANTMENT", "ENCH", "E"}, new EnchantO(), new ItemTagCallback() {
             @Override boolean onSet(CommandSender sender, EItem item, SingleOption result) {
                 item.addEnchant(((EnchantO)result).getValue());
                 return true;
@@ -158,14 +172,14 @@ public class ItemTag {
         }, ItemMeta.class);
 
         //Leather Color
-        ItemTag.register("COLOR", new ColorO(), "setColor", "getColor", LeatherArmorMeta.class);
+        ItemTag.register("COLOR", new String[] {"CLR", "LEATHER"}, new ColorO(), "setColor", "getColor", LeatherArmorMeta.class);
 
         //Skull
-        ItemTag.register("OWNER", new StringO(), "setSkull", "getSkull", SkullMeta.class);
+        ItemTag.register("OWNER", new String[] {"SKULL", "PLAYER"}, new StringO(), "setSkull", "getSkull", SkullMeta.class);
         //TODO: Skull texture
 
         //Banners
-        ItemTag.register("BASE", new StringO().match(DyeColors.getAliasMap()), new ItemTagCallback() {
+        ItemTag.register("BASE", new String[] {"BASECOLOR"}, new StringO().match(DyeColors.getAliasMap()), new ItemTagCallback() {
             @Override boolean onSet(CommandSender sender, EItem item, SingleOption result) {
                 item.setBaseColor(DyeColors.get(((StringO)result).getValue()));
                 return true;
@@ -175,7 +189,8 @@ public class ItemTag {
                 return DyeColors.getName(item.getBaseColor());
             }
         }, BannerMeta.class);
-        ItemTag.register("PATTERN", new MultiO(":", "{pattern}:{dyecolor}", new StringO().match(BannerPatterns.getAliasMap()), new StringO().match(DyeColors.getAliasMap())), new ItemTagCallback() {
+        ItemTag.register("PATTERN", new String[] {"PAT", "P"}, new MultiO(":", "{pattern}:{dyecolor}",
+                new StringO().match(BannerPatterns.getAliasMap()), new StringO().match(DyeColors.getAliasMap())), new ItemTagCallback() {
             @Override boolean onSet(CommandSender sender, EItem item, SingleOption result) {
                 item.addPattern(BannerPatterns.get((String)((MultiO)result).getValue()[0].getValue()), DyeColors.get((String)((MultiO)result).getValue()[1].getValue()));
                 return true;
@@ -200,7 +215,7 @@ public class ItemTag {
 
 
         //Custom
-        ItemTag.register("GLOW", new BoolO().def(false), "setGlowing", "isGlowing", ItemMeta.class);
+        ItemTag.register("GLOW", new String[] {"GLOWING"}, new BoolO().def(false), "setGlowing", "isGlowing", ItemMeta.class);
 
     }
 }
