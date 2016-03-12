@@ -451,4 +451,45 @@ public class Parse {
         return Color.fromRGB(Math.min(Math.max(red, 0), 255), Math.min(Math.max(green, 0), 255), Math.min(Math.max(blue, 0), 255));
     }
 
+    /**
+     * Get a {@link Color} from HSL values.
+     * The HSL colors should have a range from 0-255 just like RGB.
+     *
+     * @param hue The hue value from 0-255
+     * @param saturation The saturation value from 0-255
+     * @param lightness  The lightness value from 0-255
+     * @return {@link Color} that was created from the HSL values.
+     */
+    public static Color HSLColor(int hue, int saturation, int lightness) {
+        float r, g, b;
+        float h = (float)hue / 255;
+        float s = (float)saturation / 255;
+        float l = (float)lightness / 255;
+
+        if (s == 0f) {
+            r = g = b = l;
+        } else {
+            float q = l < 0.5 ? l * (1 + s) : l + s - l * s;
+            float p = 2 * l - q;
+            r = hueToRgb(p, q, h + 1f/3f);
+            g = hueToRgb(p, q, h);
+            b = hueToRgb(p, q, h - 1f/3f);
+        }
+
+        return Color.fromRGB((int)(r * 255), (int)(g * 255), (int)(b * 255));
+    }
+
+    private static float hueToRgb(float p, float q, float t) {
+        if (t < 0f)
+            t += 1f;
+        if (t > 1f)
+            t -= 1f;
+        if (t < 1f/6f)
+            return p + (q - p) * 6f * t;
+        if (t < 1f/2f)
+            return q;
+        if (t < 2f/3f)
+            return p + (q - p) * (2f/3f - t) * 6f;
+        return p;
+    }
 }

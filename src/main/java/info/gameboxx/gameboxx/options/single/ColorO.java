@@ -29,6 +29,7 @@ import info.gameboxx.gameboxx.messages.Msg;
 import info.gameboxx.gameboxx.messages.Param;
 import info.gameboxx.gameboxx.options.SingleOption;
 import info.gameboxx.gameboxx.util.Parse;
+import info.gameboxx.gameboxx.util.Random;
 import org.bukkit.Color;
 import org.bukkit.entity.Player;
 
@@ -60,16 +61,32 @@ public class ColorO extends SingleOption<Color, ColorO> {
 
     @Override
     public boolean parse(Player player, String input) {
+        //Truly random
+        if (input.equals("**")) {
+            value = Color.fromRGB(Random.Int(255), Random.Int(255), Random.Int(255));
+        }
+
+        //Saturated/Bright random
+        if (input.equals("*")) {
+            value = Parse.HSLColor(Random.Int(255),Random.Int(150, 255), Random.Int(120, 160));
+        }
+
         if (input.startsWith("#")) {
             input = input.substring(1);
+        }
+
+        boolean hsb = false;
+        if (input.startsWith("^")) {
+            input = input.substring(1);
+            hsb = true;
         }
 
         String[] split = input.split(",");
         if (split.length > 2) {
             Map<String, Integer> clrs = new HashMap<>();
-            clrs.put("red", Parse.Int(split[0]));
-            clrs.put("green", Parse.Int(split[1]));
-            clrs.put("blue", Parse.Int(split[2]));
+            clrs.put("red", getColorValue(split[0]));
+            clrs.put("green", getColorValue(split[1]));
+            clrs.put("blue", getColorValue(split[2]));
             for (Map.Entry<String, Integer> clr : clrs.entrySet()) {
                 if (clr.getValue() == null) {
                     error = Msg.getString("color.not-number", Param.P("input", input), Param.P("color", clr.getKey()));
@@ -79,7 +96,11 @@ public class ColorO extends SingleOption<Color, ColorO> {
                     error = Msg.getString("color.minmax", Param.P("input", clr.getValue()), Param.P("color", clr.getKey()));
                 }
             }
-            value = Color.fromRGB(clrs.get("red"), clrs.get("green"), clrs.get("blue"));
+            if (hsb) {
+                value = Parse.HSLColor(clrs.get("red"), clrs.get("green"), clrs.get("blue"));
+            } else {
+                value = Color.fromRGB(clrs.get("red"), clrs.get("green"), clrs.get("blue"));
+            }
         } else if (input.matches("[0-9A-Fa-f]+")) {
             value = Color.fromRGB(Integer.parseInt(input, 16));
         } else if (PRESETS.containsKey(input.toLowerCase())) {
@@ -91,6 +112,20 @@ public class ColorO extends SingleOption<Color, ColorO> {
             return false;
         }
         return true;
+    }
+
+    private Integer getColorValue(String input) {
+        String[] split = input.split("-");
+        if (split.length > 1) {
+            Integer val1 = Parse.Int(split[0]);
+            Integer val2 = Parse.Int(split[1]);
+            if (val1 == null || val2 == null) {
+                return null;
+            }
+            return Random.Int(Math.min(val1, val2), Math.max(val1, val2));
+        } else {
+            return Parse.Int(input);
+        }
     }
 
     @Override
