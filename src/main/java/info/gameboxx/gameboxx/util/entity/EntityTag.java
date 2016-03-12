@@ -33,6 +33,7 @@ import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.*;
 import org.bukkit.entity.minecart.CommandMinecart;
+import org.bukkit.inventory.meta.FireworkMeta;
 import org.bukkit.material.Colorable;
 import org.bukkit.material.MaterialData;
 import org.bukkit.metadata.FixedMetadataValue;
@@ -334,8 +335,16 @@ public class EntityTag {
 
         //Firework
         EntityTag.register("DETONATE", new String[] {"DET"}, new BoolO().def(true), "detonate", null, Firework.class);
-        //TODO: Needs firework option
-        //EntityTag.register("FIREWORK", new String[] {"FW", "FEFFECT"}, new FireworkOption(), "setFireworkMeta", Firework.class);
+        EntityTag.register("FIREWORK", new String[] {"FW", "FEFFECT", "FIREWORKMETA", "FMETA", "FWEFFECT", "FWMETA"}, new FireworkO(), new EntityTagCallback() {
+            @Override boolean onSet(CommandSender sender, EEntity entity, SingleOption result) {
+                FireworkMeta meta = entity.getFireworkMeta();
+                meta.addEffect(((FireworkO)result).getValue());
+                entity.setFireworkMeta(meta);
+                return true;
+            }
+
+            @Override String onGet(EEntity entity) {return null;}
+        }, Firework.class);
 
         //Item
         EntityTag.register("PICKUPDELAY", new String[] {"PDELAY", "DELAY", "PICKUPD"}, new IntO(), "setPickupDelay", null, Item.class);

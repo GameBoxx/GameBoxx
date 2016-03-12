@@ -30,6 +30,7 @@ import info.gameboxx.gameboxx.aliases.DyeColors;
 import info.gameboxx.gameboxx.aliases.Enchantments;
 import info.gameboxx.gameboxx.options.SingleOption;
 import info.gameboxx.gameboxx.options.single.*;
+import org.bukkit.FireworkEffect;
 import org.bukkit.block.banner.Pattern;
 import org.bukkit.command.CommandSender;
 import org.bukkit.enchantments.Enchantment;
@@ -208,6 +209,21 @@ public class ItemTag {
         }, BannerMeta.class);
 
         //Firework
+        ItemTag.register("EFFECT", new String[] {"FIREWORK", "FW", "FWEFFECT", "FEFFECT", "FE"}, new FireworkO(), new ItemTagCallback() {
+            @Override boolean onSet(CommandSender sender, EItem item, SingleOption result) {
+                item.addEffect(((FireworkO)result).getValue());
+                return true;
+            }
+
+            @Override String onGet(EItem item) {
+                String result = "";
+                for (FireworkEffect effect : item.getEffects()) {
+                    result += "effect:" + FireworkO.serialize(effect);
+                }
+                return result.substring(7);
+            }
+        }, FireworkMeta.class, FireworkEffectMeta.class);
+        ItemTag.register("POWER", new String[] {"PWR", "POW"}, new IntO(), "setPower", "getPower", FireworkMeta.class);
 
 
         //Potions
