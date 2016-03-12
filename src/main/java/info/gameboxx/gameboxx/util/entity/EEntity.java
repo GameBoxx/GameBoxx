@@ -1243,23 +1243,37 @@ public class EEntity {
 
 
     //region Equipment
-    public double getItemInHandDropChance() {
+    public double getItemInMainHandDropChance() {
         if (entity instanceof LivingEntity) {
-            return ((LivingEntity)entity).getEquipment().getItemInHandDropChance();
+            return ((LivingEntity)entity).getEquipment().getItemInMainHandDropChance();
         }
         return 0f;
     }
 
-    public EEntity setItemInHandDropChance(double chance) {
+    public EEntity setItemInMainHandDropChance(double chance) {
         if (entity instanceof LivingEntity) {
-            ((LivingEntity)entity).getEquipment().setItemInHandDropChance((float)chance);
+            ((LivingEntity)entity).getEquipment().setItemInMainHandDropChance((float)chance);
+        }
+        return this;
+    }
+
+    public double getItemInOffHandDropChance() {
+        if (entity instanceof LivingEntity) {
+            return ((LivingEntity)entity).getEquipment().getItemInOffHandDropChance();
+        }
+        return 0f;
+    }
+
+    public EEntity setItemInOffHandDropChance(double chance) {
+        if (entity instanceof LivingEntity) {
+            ((LivingEntity)entity).getEquipment().setItemInOffHandDropChance((float)chance);
         }
         return this;
     }
 
     public double getHelmetDropChance() {
         if (entity instanceof LivingEntity) {
-            return ((LivingEntity)entity).getEquipment().getItemInHandDropChance();
+            return ((LivingEntity)entity).getEquipment().getHelmetDropChance();
         }
         return 0f;
     }

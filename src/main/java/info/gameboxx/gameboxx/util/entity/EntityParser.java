@@ -85,7 +85,7 @@ public class EntityParser {
         }
 
         //Split the string by > for stacked entities. (> within quotes will be ignored)
-        List<String> entitySections = Str.splitQuotes(string, '>', true);
+        List<String> entitySections = Str.splitIgnoreQuoted(string, '>', true);
         if (entitySections.size() < 1) {
             error = "No input...";
             return;
@@ -153,10 +153,11 @@ public class EntityParser {
                     EntityType type = EntityTypes.get(section);
                     if (type == null) {
                         error = "Invalid entity...";
+                        stack.killAll();
                         return;
                     }
                     entity = new EEntity(type, location);
-                    if (entity == null) {
+                    if (entity == null || entity.bukkit() == null) {
                         error = "Can't spawn entity...";
                         stack.killAll();
                         return;
@@ -175,7 +176,7 @@ public class EntityParser {
                 //Try to parse EntityTag
                 EntityTag tag = EntityTag.fromString(key);
                 if (tag == null) {
-                    error = "Invalid tag...";
+                    error = "Invalid entity tag... '" + key + "'='" + value + "'";
                     if (!ignoreErrors) {
                         entity.remove();
                         stack.killAll();

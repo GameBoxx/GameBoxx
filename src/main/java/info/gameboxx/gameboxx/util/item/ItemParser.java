@@ -92,7 +92,7 @@ public class ItemParser {
             //Try to parse ItemTag
             ItemTag tag = ItemTag.fromString(key);
             if (tag == null) {
-                error = "Invalid tag...";
+                error = "Invalid item tag... '" + key + "':'" + value + "'";
                 if (!ignoreErrors) {
                     return;
                 }

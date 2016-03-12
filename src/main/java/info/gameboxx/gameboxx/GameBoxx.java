@@ -26,7 +26,6 @@
 package info.gameboxx.gameboxx;
 
 import com.zaxxer.hikari.HikariDataSource;
-import info.gameboxx.gameboxx.aliases.*;
 import info.gameboxx.gameboxx.commands.*;
 import info.gameboxx.gameboxx.config.PluginCfg;
 import info.gameboxx.gameboxx.game.GameManager;
@@ -44,6 +43,7 @@ import info.gameboxx.gameboxx.util.cuboid.Cuboid;
 import info.gameboxx.gameboxx.util.cuboid.SelectionManager;
 import info.gameboxx.gameboxx.util.entity.EntityTag;
 import info.gameboxx.gameboxx.util.item.GlowEnchant;
+import info.gameboxx.gameboxx.util.item.ItemTag;
 import net.milkbowl.vault.Vault;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.plugin.Plugin;
@@ -106,10 +106,13 @@ public class GameBoxx extends JavaPlugin {
             log("Using " + language.getName() + " [" + language.getID() + "] as language!");
         }
         loadMessages();
+
         loadPoints();
         if (cfg.sql) {
             loadHikari();
         }
+
+        ItemTag.registerDefaults();
         EntityTag.registerDefaults();
 
         um = new UserManager();
@@ -119,22 +122,6 @@ public class GameBoxx extends JavaPlugin {
 
         registerCommands();
         registerListeners();
-
-        //TODO: Remove this (used for testing)
-        Enchantments.instance();
-        PotionEffects.instance();
-
-        EntityTypes.instance();
-        Sounds.instance();
-        DyeColors.instance();
-        Rotations.instance();
-        HorseColors.instance();
-        HorseStyles.instance();
-        HorseVariants.instance();
-        Professions.instance();
-        RabbitTypes.instance();
-        OcelotTypes.instance();
-        Directions.instance();
 
         log("loaded successfully");
     }

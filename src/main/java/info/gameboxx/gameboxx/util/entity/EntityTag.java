@@ -201,7 +201,8 @@ public class EntityTag {
         EntityTag.register("MAXNODMGTICKS", new String[] {"MAXNODAMAGE", "MAXNODMG", "MNODMGTICKS", "MNODMG"}, new IntO().def(20), "setMaximumNoDamageTicks", "getMaximumNoDamageTicks", LivingEntity.class);
         EntityTag.register("MAXAIR", new String[] {"MAXOXYGEN", "MAXOXY", "MAIR", "MOXYGEN", "MOXY"}, new IntO().def(300), "setMaximumAir", "getMaximumAir", LivingEntity.class);
         EntityTag.register("NODMGTICKS", new String[] {"NODMG", "NODAMAGETICKS"}, new IntO().def(0), "setNoDamageTicks", "getNoDamageTicks", LivingEntity.class);
-        EntityTag.register("HANDDROP", new String[] {"HANDD", "HANDDROPCHANCE", "HANDDC", "HANDC"}, new DoubleO(), "setItemInHandDropChance", null, LivingEntity.class);
+        EntityTag.register("MAINHANDDROP", new String[] {"MAINHANDD", "MAINHANDDROPCHANCE", "MAINHANDDC", "MAINHANDC"}, new DoubleO(), "setItemInMainHandDropChance", null, LivingEntity.class);
+        EntityTag.register("OFFHANDDROP", new String[] {"OFFHANDD", "OFFHANDDROPCHANCE", "OFFHANDDC", "OFFHANDC"}, new DoubleO(), "setItemInOffHandDropChance", null, LivingEntity.class);
         EntityTag.register("HELMETDROP", new String[] {"HELMETD", "HELMETDROPCHANCE", "HELMETDC", "HELMETC",
                 "HELMDROP", "HELMD", "HELMDROPCHANCE", "HELMDC", "HELMC"}, new DoubleO(), "setHelmetDropChance", null, LivingEntity.class);
         EntityTag.register("CHESTPLATEDROP", new String[] {"CHESTPLATED", "CHESTPLATEDROPCHANCE", "CHESTPLATEDC", "CHESTPLATEC",
