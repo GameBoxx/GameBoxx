@@ -34,7 +34,7 @@ import info.gameboxx.gameboxx.util.Parse;
 import info.gameboxx.gameboxx.util.Str;
 import org.apache.commons.lang.reflect.MethodUtils;
 import org.bukkit.Material;
-import org.bukkit.entity.Player;
+import org.bukkit.command.CommandSender;
 import org.bukkit.inventory.ItemStack;
 
 import java.lang.reflect.InvocationTargetException;
@@ -54,7 +54,7 @@ public class ItemParser {
      * @param string String with item format.
      * @param ignoreErrors If this is true it will continue parsing even if there are non breaking errors.
      */
-    public ItemParser(String string, Player player, boolean ignoreErrors) {
+    public ItemParser(String string, CommandSender sender, boolean ignoreErrors) {
         this.string = string;
         if (string == null || string.isEmpty()) {
             error = "No input...";
@@ -113,7 +113,7 @@ public class ItemParser {
             if (option instanceof BoolO && value.isEmpty()) {
                 value = "true"; //Allow empty tags for booleans like 'glow' instead of 'glow:true'
             }
-            if (!option.parse(value)) {
+            if (!option.parse(sender, value)) {
                 error = option.getError();
                 if (!ignoreErrors) {
                     return;
@@ -123,7 +123,7 @@ public class ItemParser {
 
             //Apply the tag to the item
             if (tag.hasCallback()) {
-                if (!tag.getCallback().onSet(player, item, option)) {
+                if (!tag.getCallback().onSet(sender, item, option)) {
                     error = "Failed to apply the tag..";
                     if (!ignoreErrors) {
                         return;

@@ -27,7 +27,7 @@ package info.gameboxx.gameboxx.options;
 
 import info.gameboxx.gameboxx.messages.Msg;
 import info.gameboxx.gameboxx.messages.Param;
-import org.bukkit.entity.Player;
+import org.bukkit.command.CommandSender;
 
 /**
  * A {@link Option} with a single value.
@@ -188,7 +188,7 @@ public abstract class SingleOption<O, S extends SingleOption> extends Option<S> 
     /**
      * Parse the specified string.
      * <p/>
-     * Calls {@link #parse(Player, String)} with null for the player argument.
+     * Calls {@link #parse(CommandSender, String)} with null for the CommandSender argument.
      *
      * @param input The input string that needs to be parsed.
      * @return Whether or not the parsing was successful.
@@ -202,16 +202,17 @@ public abstract class SingleOption<O, S extends SingleOption> extends Option<S> 
      * <p/>
      * Each option has it's own way of parsing the string and most options support multiple formats.
      * <p/>
-     * The specified player will be used for certain options for certain formats.
-     * For example, the location option you can use @ to get the location of the player.
+     * The specified sender will be used for certain options for certain formats.
+     * For example, the location option you can use @ to get the location of the sender.
+     * This would only work if the sender has a location like a player or commandblock.
      * <p/>
      * When the parsing returns false you can use {@link #getError()} to get the error message why it failed.
      *
-     * @param player The player used for parsing player specific syntax. (May be {@code null})
+     * @param sender The CommandSender used for parsing sender/player specific syntax. (May be {@code null})
      * @param input The input string that needs to be parsed.
      * @return Whether or not the parsing was successful.
      */
-    public abstract boolean parse(Player player, String input);
+    public abstract boolean parse(CommandSender sender, String input);
 
     /**
      * Used for the {@link #clone()} method to copy data in a new instance.

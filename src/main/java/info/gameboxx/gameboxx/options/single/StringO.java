@@ -31,7 +31,7 @@ import info.gameboxx.gameboxx.options.SingleOption;
 import info.gameboxx.gameboxx.util.Pair;
 import info.gameboxx.gameboxx.util.Str;
 import info.gameboxx.gameboxx.util.Utils;
-import org.bukkit.entity.Player;
+import org.bukkit.command.CommandSender;
 
 import java.util.*;
 
@@ -126,7 +126,7 @@ public class StringO extends SingleOption<String, StringO> {
     }
 
     @Override
-    public boolean parse(Player player, String input) {
+    public boolean parse(CommandSender sender, String input) {
         if (matchList != null && !matchList.isEmpty()) {
             if (!matchList.contains(input.toLowerCase())) {
                 error = Msg.getString("string.match-list", Param.P("input", input), Param.P("values", Str.implode(matchList)));

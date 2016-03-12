@@ -25,13 +25,13 @@
 
 package info.gameboxx.gameboxx.options.single;
 
+import info.gameboxx.gameboxx.aliases.items.ItemData;
+import info.gameboxx.gameboxx.aliases.items.Items;
 import info.gameboxx.gameboxx.messages.Msg;
 import info.gameboxx.gameboxx.messages.Param;
 import info.gameboxx.gameboxx.options.SingleOption;
-import info.gameboxx.gameboxx.aliases.items.ItemData;
-import info.gameboxx.gameboxx.aliases.items.Items;
 import org.bukkit.Material;
-import org.bukkit.entity.Player;
+import org.bukkit.command.CommandSender;
 import org.bukkit.material.MaterialData;
 
 public class MaterialO extends SingleOption<MaterialData, MaterialO> {
@@ -44,11 +44,10 @@ public class MaterialO extends SingleOption<MaterialData, MaterialO> {
     }
 
     @Override
-    public boolean parse(Player player, String input) {
+    public boolean parse(CommandSender sender, String input) {
         if (input.startsWith("@")) {
             PlayerO playerOption = new PlayerO();
-            playerOption.def(player);
-            playerOption.parse(player, input.substring(1));
+            playerOption.parse(sender, input.substring(1));
             if (!playerOption.hasValue()) {
                 error = playerOption.getError();
                 return false;

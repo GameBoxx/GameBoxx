@@ -27,7 +27,7 @@ package info.gameboxx.gameboxx.options;
 
 import info.gameboxx.gameboxx.messages.Msg;
 import info.gameboxx.gameboxx.messages.Param;
-import org.bukkit.entity.Player;
+import org.bukkit.command.CommandSender;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -409,7 +409,7 @@ public abstract class ListOption<O, L extends ListOption, S extends SingleOption
      * Previous values will be cleared and the list option will be fully reset.
      * If the list has a {@link #minValues(int)} set you must specify that amount of strings to be parsed at least.
      *
-     * @see SingleOption#parse(Player, String)
+     * @see SingleOption#parse(CommandSender, String)
      * @param ignoreErrors When set to true it will continue and try to parse all the strings even if it failed parsing.
      *                     The error will still be set so you can still use {@link #getError()} or {@link #getError(int)}
      * @param input The input strings that needs to be parsed.
@@ -425,14 +425,14 @@ public abstract class ListOption<O, L extends ListOption, S extends SingleOption
      * Previous values will be cleared and the list option will be fully reset.
      * If the list has a {@link #minValues(int)} set you must specify that amount of strings to be parsed at least.
      *
-     * @see SingleOption#parse(Player, String)
+     * @see SingleOption#parse(CommandSender, String)
      * @param ignoreErrors When set to true it will continue and try to parse all the strings even if it failed parsing.
      *                     The error will still be set so you can still use {@link #getError()} or {@link #getError(int)}
-     * @param player The player used for parsing player specific syntax. (May be {@code null})
+     * @param sender The CommandSender used for parsing sender/player specific syntax. (May be {@code null})
      * @param input The input strings that needs to be parsed.
      * @return Whether or not the parsing was successful. (will return true with ignoreErrors true even when it wasn't successfull!)
      */
-    public boolean parse(boolean ignoreErrors, Player player, String... input) {
+    public boolean parse(boolean ignoreErrors, CommandSender sender, String... input) {
         error = "";
         values.clear();
         updateList();
@@ -445,7 +445,7 @@ public abstract class ListOption<O, L extends ListOption, S extends SingleOption
         }
 
         for (int i = 0; i < input.length; i++) {
-            if (!parse(player, i, input[i]) && !ignoreErrors) {
+            if (!parse(sender, i, input[i]) && !ignoreErrors) {
                 return false;
             }
         }
@@ -491,13 +491,13 @@ public abstract class ListOption<O, L extends ListOption, S extends SingleOption
     /**
      * Parse the specified string for the option at the specified index.
      *
-     * @see SingleOption#parse(Player, String)
-     * @param player The player used for parsing player specific syntax. (May be {@code null})
+     * @see SingleOption#parse(CommandSender, String)
+     * @param sender The CommandSender used for parsing sender/player specific syntax. (May be {@code null})
      * @param index The index of the option in the list to parse the string with.
      * @param input The input string that needs to be parsed.
      * @return Whether or not the parsing was successful.
      */
-    public boolean parse(Player player, int index, String input) {
+    public boolean parse(CommandSender sender, int index, String input) {
         if (maxValues > 0 && index > maxValues) {
             error = Msg.getString("list.max", Param.P("max", maxValues));
             return false;
@@ -506,7 +506,7 @@ public abstract class ListOption<O, L extends ListOption, S extends SingleOption
             values.add(getSingleOption(i));
         }
         S option = values.get(index);
-        if (!option.parse(player, input)) {
+        if (!option.parse(sender, input)) {
             error = getError(index);
             return false;
         }

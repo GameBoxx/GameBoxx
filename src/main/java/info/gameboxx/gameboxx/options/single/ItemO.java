@@ -28,13 +28,13 @@ package info.gameboxx.gameboxx.options.single;
 import info.gameboxx.gameboxx.options.SingleOption;
 import info.gameboxx.gameboxx.util.item.EItem;
 import info.gameboxx.gameboxx.util.item.ItemParser;
-import org.bukkit.entity.Player;
+import org.bukkit.command.CommandSender;
 
 public class ItemO extends SingleOption<EItem, ItemO> {
 
     @Override
-    public boolean parse(Player player, String input) {
-        ItemParser parser = new ItemParser(input, player, false);
+    public boolean parse(CommandSender sender, String input) {
+        ItemParser parser = new ItemParser(input, sender, false);
         if (!parser.isValid()) {
             error = parser.getError();
             return false;

@@ -29,24 +29,31 @@ import info.gameboxx.gameboxx.messages.Msg;
 import info.gameboxx.gameboxx.messages.Param;
 import info.gameboxx.gameboxx.options.SingleOption;
 import info.gameboxx.gameboxx.util.Parse;
-import org.bukkit.Bukkit;
-import org.bukkit.Server;
-import org.bukkit.World;
-import org.bukkit.entity.Player;
+import info.gameboxx.gameboxx.util.Utils;
+import org.bukkit.*;
+import org.bukkit.command.CommandSender;
 
 import java.util.UUID;
 
 public class WorldO extends SingleOption<World, WorldO> {
 
     @Override
-    public boolean parse(Player player, String input) {
+    public boolean parse(CommandSender sender, String input) {
         Server server = Bukkit.getServer();
+
+        if (input.isEmpty() || input.equals("@")) {
+            Location location = Utils.getLocation(sender);
+            if (location == null) {
+                error = Msg.getString("selector-console-player", Param.P("type", input));
+                return false;
+            }
+            value = location.getWorld();
+            return true;
+        }
 
         if (input.startsWith("@")) {
             PlayerO playerOption = new PlayerO();
-            playerOption.def(player);
-            playerOption.parse(player, input.substring(1));
-            if (!playerOption.hasValue()) {
+            if (!playerOption.parse(sender, input.substring(1))) {
                 error = playerOption.getError();
                 return false;
             }

@@ -28,7 +28,7 @@ package info.gameboxx.gameboxx.options;
 import info.gameboxx.gameboxx.messages.Msg;
 import info.gameboxx.gameboxx.messages.Param;
 import info.gameboxx.gameboxx.util.Str;
-import org.bukkit.entity.Player;
+import org.bukkit.command.CommandSender;
 
 import java.util.*;
 
@@ -436,14 +436,14 @@ public abstract class MapOption<O, M extends MapOption, S extends SingleOption> 
      * If the map has a {@link #keys(List)} set you must specify all those required keys.
      * If the map has {@link #customKeys(boolean)} set to false the specified value keys may only be the ones from the required keys.
      *
-     * @see SingleOption#parse(Player, String)
+     * @see SingleOption#parse(CommandSender, String)
      * @param ignoreErrors When set to true it will continue and try to parse all the strings even if it failed parsing.
      *                     The error will still be set so you can still use {@link #getError()} or {@link #getError(String)}
-     * @param player The player used for parsing player specific syntax. (May be {@code null})
+     * @param sender The CommandSender used for parsing sender/player specific syntax. (May be {@code null})
      * @param input The input strings that needs to be parsed.
      * @return Whether or not the parsing was successful.
      */
-    public boolean parse(boolean ignoreErrors, Player player, Map<String, String> input) {
+    public boolean parse(boolean ignoreErrors, CommandSender sender, Map<String, String> input) {
         error = "";
         values.clear();
         updateMap();
@@ -463,7 +463,7 @@ public abstract class MapOption<O, M extends MapOption, S extends SingleOption> 
             }
         }
         for (Map.Entry<String, String> entry : input.entrySet()) {
-            if (!parse(player, entry.getKey(), entry.getValue()) && !ignoreErrors) {
+            if (!parse(sender, entry.getKey(), entry.getValue()) && !ignoreErrors) {
                 return false;
             }
         }
@@ -514,13 +514,13 @@ public abstract class MapOption<O, M extends MapOption, S extends SingleOption> 
      * <p/>
      * If the map has {@link #customKeys(boolean)} set to false the specified key may only be the ones from the required keys.
      *
-     * @see SingleOption#parse(Player, String)
-     * @param player The player used for parsing player specific syntax. (May be {@code null})
+     * @see SingleOption#parse(CommandSender, String)
+     * @param sender The CommandSender used for parsing sender/player specific syntax. (May be {@code null})
      * @param key The key of the option in the map to parse the string with.
      * @param input The input string that needs to be parsed.
      * @return Whether or not the parsing was successful.
      */
-    public boolean parse(Player player, String key, String input) {
+    public boolean parse(CommandSender sender, String key, String input) {
         if (!customKeys && !requiredKeys.contains(key)) {
             error = Msg.getString("map.no-custom", Param.P("keys", Str.implode(requiredKeys)));
         }
@@ -528,7 +528,7 @@ public abstract class MapOption<O, M extends MapOption, S extends SingleOption> 
         if (option == null) {
             option = values.put(key, getSingleOption(key));
         }
-        if (!option.parse(player, input)) {
+        if (!option.parse(sender, input)) {
             error = getError(key);
             return false;
         }

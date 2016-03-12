@@ -28,7 +28,7 @@ package info.gameboxx.gameboxx.options.single;
 import info.gameboxx.gameboxx.options.SingleOption;
 import info.gameboxx.gameboxx.util.entity.EntityParser;
 import info.gameboxx.gameboxx.util.entity.EntityStack;
-import org.bukkit.entity.Player;
+import org.bukkit.command.CommandSender;
 
 public class EntityStackO extends SingleOption<EntityStack, EntityStackO> {
 
@@ -46,8 +46,8 @@ public class EntityStackO extends SingleOption<EntityStack, EntityStackO> {
     }
 
     @Override
-    public boolean parse(Player player, String input) {
-        EntityParser parser = new EntityParser(input, player, false, maxEntities, allowStacked);
+    public boolean parse(CommandSender sender, String input) {
+        EntityParser parser = new EntityParser(input, sender, false, maxEntities, allowStacked);
         if (!parser.isValid()) {
             error = parser.getError();
             return false;

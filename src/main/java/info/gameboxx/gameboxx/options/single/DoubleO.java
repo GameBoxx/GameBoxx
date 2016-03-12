@@ -29,7 +29,7 @@ import info.gameboxx.gameboxx.messages.Msg;
 import info.gameboxx.gameboxx.messages.Param;
 import info.gameboxx.gameboxx.options.SingleOption;
 import info.gameboxx.gameboxx.util.Numbers;
-import org.bukkit.entity.Player;
+import org.bukkit.command.CommandSender;
 
 public class DoubleO extends SingleOption<Double, DoubleO> {
 
@@ -47,7 +47,7 @@ public class DoubleO extends SingleOption<Double, DoubleO> {
     }
 
     @Override
-    public boolean parse(Player player, String input) {
+    public boolean parse(CommandSender sender, String input) {
         try {
             value = Double.parseDouble(input);
         } catch (Exception e) {

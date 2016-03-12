@@ -34,14 +34,14 @@ import info.gameboxx.gameboxx.util.Random;
 import info.gameboxx.gameboxx.util.Str;
 import org.bukkit.Color;
 import org.bukkit.FireworkEffect;
-import org.bukkit.entity.Player;
+import org.bukkit.command.CommandSender;
 
 import java.util.List;
 
 public class FireworkO extends SingleOption<FireworkEffect, FireworkO> {
 
     @Override
-    public boolean parse(Player player, String input) {
+    public boolean parse(CommandSender sender, String input) {
         FireworkEffect.Builder builder = FireworkEffect.builder();
         String[] split = input.split(":");
 
@@ -66,7 +66,7 @@ public class FireworkO extends SingleOption<FireworkEffect, FireworkO> {
             String[] splitColors = split[1].split(";");
             for (String colorString : splitColors) {
                 ColorO color = new ColorO();
-                if (!color.parse(player, colorString)) {
+                if (!color.parse(sender, colorString)) {
                     error = color.getError();
                     return false;
                 }
@@ -78,7 +78,7 @@ public class FireworkO extends SingleOption<FireworkEffect, FireworkO> {
             String[] splitColors = split[2].split(";");
             for (String colorString : splitColors) {
                 ColorO color = new ColorO();
-                if (!color.parse(player, colorString)) {
+                if (!color.parse(sender, colorString)) {
                     error = color.getError();
                     return false;
                 }
@@ -88,7 +88,7 @@ public class FireworkO extends SingleOption<FireworkEffect, FireworkO> {
 
         if (split.length > 3 && !split[3].isEmpty()) {
             BoolO bool = new BoolO();
-            if (!bool.parse(player, split[3])) {
+            if (!bool.parse(sender, split[3])) {
                 error = bool.getError();
                 return false;
             }
@@ -97,7 +97,7 @@ public class FireworkO extends SingleOption<FireworkEffect, FireworkO> {
 
         if (split.length > 4 && !split[4].isEmpty()) {
             BoolO bool = new BoolO();
-            if (!bool.parse(player, split[4])) {
+            if (!bool.parse(sender, split[4])) {
                 error = bool.getError();
                 return false;
             }

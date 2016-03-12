@@ -33,8 +33,6 @@ import info.gameboxx.gameboxx.util.entity.EntityParser;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 
 public class GameBoxxCmd implements CommandExecutor {
@@ -114,7 +112,7 @@ public class GameBoxxCmd implements CommandExecutor {
         if (args[0].equalsIgnoreCase("summon") || args[0].equalsIgnoreCase("spawnmob") || args[0].equalsIgnoreCase("entity")) {
             String entityString = Str.implode(args, " ", " ", 1, args.length);
 
-            EntityParser parser = new EntityParser(entityString, sender instanceof Player ? (Player)sender : null, false);
+            EntityParser parser = new EntityParser(entityString, sender, false);
             if (!parser.isValid()) {
                 Msg.fromString(parser.getError()).send(sender);
             } else {
@@ -142,20 +140,6 @@ public class GameBoxxCmd implements CommandExecutor {
             player.sendMessage("Item given!");
             return true;
         }
-
-        if (args[0].equalsIgnoreCase("test")) {
-            if (!(sender instanceof Player)) {
-                Msg.get("player-only").send(sender);
-                return true;
-            }
-            Player player = (Player)sender;
-            Entity entity = player.getWorld().spawnEntity(player.getLocation(), EntityType.BAT);
-            entity.setPassenger(player);
-
-            return true;
-        }
-
-
 
         Msg.get("gameboxx.help", Param.P("cmd", label)).send(sender);
         return true;

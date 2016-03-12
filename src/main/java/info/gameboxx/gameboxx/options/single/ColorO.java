@@ -31,7 +31,7 @@ import info.gameboxx.gameboxx.options.SingleOption;
 import info.gameboxx.gameboxx.util.Parse;
 import info.gameboxx.gameboxx.util.Random;
 import org.bukkit.Color;
-import org.bukkit.entity.Player;
+import org.bukkit.command.CommandSender;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -60,7 +60,7 @@ public class ColorO extends SingleOption<Color, ColorO> {
     }
 
     @Override
-    public boolean parse(Player player, String input) {
+    public boolean parse(CommandSender sender, String input) {
         //Truly random
         if (input.equals("**")) {
             value = Color.fromRGB(Random.Int(255), Random.Int(255), Random.Int(255));

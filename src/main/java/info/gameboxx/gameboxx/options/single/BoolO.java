@@ -28,12 +28,12 @@ package info.gameboxx.gameboxx.options.single;
 import info.gameboxx.gameboxx.messages.Msg;
 import info.gameboxx.gameboxx.messages.Param;
 import info.gameboxx.gameboxx.options.SingleOption;
-import org.bukkit.entity.Player;
+import org.bukkit.command.CommandSender;
 
 public class BoolO extends SingleOption<Boolean, BoolO> {
 
     @Override
-    public boolean parse(Player player, String input) {
+    public boolean parse(CommandSender sender, String input) {
         input = input.toLowerCase();
         switch (input) {
             case "true":

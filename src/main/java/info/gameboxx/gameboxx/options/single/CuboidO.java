@@ -29,30 +29,30 @@ import info.gameboxx.gameboxx.messages.Msg;
 import info.gameboxx.gameboxx.messages.Param;
 import info.gameboxx.gameboxx.options.SingleOption;
 import info.gameboxx.gameboxx.util.Parse;
+import info.gameboxx.gameboxx.util.Utils;
 import info.gameboxx.gameboxx.util.cuboid.Cuboid;
 import info.gameboxx.gameboxx.util.cuboid.SelectionManager;
 import org.bukkit.Location;
 import org.bukkit.World;
-import org.bukkit.entity.Player;
+import org.bukkit.command.CommandSender;
 
 import java.util.Map;
 
 public class CuboidO extends SingleOption<Cuboid, CuboidO> {
 
     @Override
-    public boolean parse(Player player, String input) {
+    public boolean parse(CommandSender sender, String input) {
         //Get cuboid from player. @[Player name/uuid]
         if (input.startsWith("@")) {
             PlayerO playerOption = new PlayerO();
-            playerOption.def(player);
-            playerOption.parse(player, input.substring(1));
+            playerOption.parse(sender, input.substring(1));
             if (!playerOption.hasValue()) {
                 error = playerOption.getError();
                 return false;
             }
             value = SelectionManager.inst().getSelection(playerOption.getValue());
             if (!hasValue()) {
-                if (playerOption.getValue().equals(player)) {
+                if (playerOption.getValue().equals(sender)) {
                     error = Msg.getString("cuboid.no-selection");
                 } else {
                     error = Msg.getString("cuboid.no-selection-other", Param.P("player", playerOption.getValue().getName()));
@@ -70,11 +70,18 @@ public class CuboidO extends SingleOption<Cuboid, CuboidO> {
         String[] split = input.split(":");
         if (split.length > 1) {
             String data = split[split.length - 1];
-            if (data.startsWith("@")) {
+
+            if (data.equals("@")) {
+                pos1 = Utils.getLocation(sender);
+                if (pos1 == null) {
+                    error = Msg.getString("selector-console-player", Param.P("type", data));
+                    return false;
+                }
+                pos2 = pos1.clone();
+            } else if (data.startsWith("@")) {
                 //Get world/location from player
                 PlayerO playerOption = new PlayerO();
-                playerOption.def(player);
-                playerOption.parse(player, data.substring(1));
+                playerOption.parse(sender, data.substring(1));
                 if (!playerOption.hasValue()) {
                     error = playerOption.getError();
                     return false;
@@ -84,8 +91,7 @@ public class CuboidO extends SingleOption<Cuboid, CuboidO> {
             } else {
                 //Get world.
                 WorldO worldOption = new WorldO();
-                worldOption.def(player == null ? null : player.getWorld());
-                worldOption.parse(player, data);
+                worldOption.parse(sender, data);
                 if (!worldOption.hasValue()) {
                     error = worldOption.getError();
                     return false;

@@ -28,7 +28,7 @@ package info.gameboxx.gameboxx.options.single;
 import info.gameboxx.gameboxx.messages.Msg;
 import info.gameboxx.gameboxx.messages.Param;
 import info.gameboxx.gameboxx.options.SingleOption;
-import org.bukkit.entity.Player;
+import org.bukkit.command.CommandSender;
 
 public class IntO extends SingleOption<Integer, IntO> {
 
@@ -46,7 +46,7 @@ public class IntO extends SingleOption<Integer, IntO> {
     }
 
     @Override
-    public boolean parse(Player player, String input) {
+    public boolean parse(CommandSender sender, String input) {
         try {
             value = Integer.parseInt(input);
         } catch (Exception e) {

@@ -30,47 +30,13 @@ import info.gameboxx.gameboxx.messages.Param;
 import info.gameboxx.gameboxx.options.SingleOption;
 import info.gameboxx.gameboxx.util.Numbers;
 import info.gameboxx.gameboxx.util.Parse;
-import info.gameboxx.gameboxx.util.Utils;
-import org.bukkit.Material;
-import org.bukkit.block.Block;
-import org.bukkit.entity.Player;
+import org.bukkit.command.CommandSender;
 import org.bukkit.util.Vector;
-
-import java.util.List;
 
 public class VectorO extends SingleOption<Vector, VectorO> {
 
     @Override
-    public boolean parse(Player player, String input) {
-        //Get vector from player location. @[Player name/uuid]
-        if (input.startsWith("@") || input.startsWith("#") || input.startsWith("^")) {
-            PlayerO playerOption = new PlayerO();
-            playerOption.def(player);
-            playerOption.parse(player, input.substring(1));
-            if (!playerOption.hasValue()) {
-                error = playerOption.getError();
-                return false;
-            }
-            if (input.startsWith("#")) {
-                Block target = playerOption.getValue().getTargetBlock(Utils.TRANSPARENT_MATERIALS, 128);
-                if (target == null) {
-                    error = Msg.getString("block.no-target");
-                }
-                value = target.getLocation().toVector();
-            } else if (input.startsWith("^")) {
-                List<Block> blocks = playerOption.getValue().getLastTwoTargetBlocks(Utils.TRANSPARENT_MATERIALS, 128);
-                Block block = blocks.get(1);
-                if (block.getType() == Material.AIR) {
-                    error = Msg.getString("block.no-target");
-                    return false;
-                }
-                value = block.getRelative(blocks.get(1).getFace(blocks.get(0))).getLocation().toVector();
-            } else {
-                value = playerOption.getValue().getLocation().toVector();
-            }
-            return true;
-        }
-
+    public boolean parse(CommandSender sender, String input) {
         Vector v = new Vector(0, 0, 0);
 
         //Get the components x,y,z
@@ -79,7 +45,6 @@ public class VectorO extends SingleOption<Vector, VectorO> {
             error = Msg.getString("vector.invalid", Param.P("input", input));
             return false;
         }
-
 
         String[] axisKeys = new String[] {"x", "y", "z"};
         for (int i = 0; i < axisKeys.length; i++) {

@@ -32,9 +32,9 @@ import info.gameboxx.gameboxx.options.single.*;
 import info.gameboxx.gameboxx.util.Str;
 import org.apache.commons.lang.reflect.MethodUtils;
 import org.bukkit.Location;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
-import org.bukkit.entity.Player;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
@@ -57,11 +57,11 @@ public class EntityParser {
      * It would still fail in some cases for example if there is an invalid entity specified or if there is no input.
      *
      * @param string entity string with all entity data from {@link EntityTag}s.
-     * @param player optional player used for parsing (may be {@code null}) will be used for options parsing like @ and such.
+     * @param sender optional sender used for parsing (may be {@code null}) will be used for options parsing like @ and such.
      * @param ignoreErrors If true it will continue parsing even when there is an error.
      */
-    public EntityParser(String string, Player player, boolean ignoreErrors) {
-        this(string, player, ignoreErrors, MAX_AMOUNT, true);
+    public EntityParser(String string, CommandSender sender, boolean ignoreErrors) {
+        this(string, sender, ignoreErrors, MAX_AMOUNT, true);
     }
 
     /**
@@ -72,12 +72,12 @@ public class EntityParser {
      * It would still fail in some cases for example if there is an invalid entity specified or if there is no input.
      *
      * @param string entity string with all entity data from {@link EntityTag}s.
-     * @param player optional player used for parsing (may be {@code null}) will be used for options parsing like @ and such.
+     * @param sender optional sender used for parsing (may be {@code null}) will be used for options parsing like @ and such.
      * @param ignoreErrors If true it will continue parsing even when there is an error.
      * @param maxAmount The maximum amount that can be set/spawned. (this does not count stacked entities) (set to null to use the default=100)
      * @param allowStacked If true entities will be stacked and if false entities can't be stacked.
      */
-    public EntityParser(String string, Player player, boolean ignoreErrors, Integer maxAmount, boolean allowStacked) {
+    public EntityParser(String string, CommandSender sender, boolean ignoreErrors, Integer maxAmount, boolean allowStacked) {
         this.string = string;
         if (string == null || string.isEmpty()) {
             error = "No input...";
@@ -108,7 +108,7 @@ public class EntityParser {
                 }
                 if (split[0].equalsIgnoreCase("LOC") || split[0].equalsIgnoreCase("LOCATION")) {
                     LocationO locOpt = new LocationO();
-                    if (locOpt.parse(player, split[1])) {
+                    if (locOpt.parse(sender, split[1])) {
                         location = locOpt.getValue();
                     } else {
                         error = locOpt.getError();
@@ -203,7 +203,7 @@ public class EntityParser {
                 if (option instanceof BoolO && value.isEmpty()) {
                     value = "true"; //Allow empty tags for booleans like 'baby' instead of 'baby:true'
                 }
-                if (!option.parse(value)) {
+                if (!option.parse(sender, value)) {
                     error = option.getError();
                     if (!ignoreErrors) {
                         entity.remove();
@@ -216,7 +216,7 @@ public class EntityParser {
 
                 //Apply the tag to the entity
                 if (tag.hasCallback()) {
-                    if (!tag.getCallback().onSet(player, entity, option)) {
+                    if (!tag.getCallback().onSet(sender, entity, option)) {
                         error = "Failed to apply the tag..";
                         if (!ignoreErrors) {
                             entity.remove();

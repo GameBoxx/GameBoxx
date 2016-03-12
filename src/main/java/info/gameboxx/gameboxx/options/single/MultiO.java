@@ -28,7 +28,7 @@ package info.gameboxx.gameboxx.options.single;
 import info.gameboxx.gameboxx.messages.Msg;
 import info.gameboxx.gameboxx.messages.Param;
 import info.gameboxx.gameboxx.options.SingleOption;
-import org.bukkit.entity.Player;
+import org.bukkit.command.CommandSender;
 
 public class MultiO extends SingleOption<SingleOption[], MultiO> {
 
@@ -43,7 +43,7 @@ public class MultiO extends SingleOption<SingleOption[], MultiO> {
     }
 
     @Override
-    public boolean parse(Player player, String input) {
+    public boolean parse(CommandSender sender, String input) {
         error = "";
         value = null;
 
@@ -54,7 +54,7 @@ public class MultiO extends SingleOption<SingleOption[], MultiO> {
         }
 
         for (int i = 0; i < options.length; i++) {
-            if (!options[i].parse(player, split[i])) {
+            if (!options[i].parse(sender, split[i])) {
                 error = options[i].getError();
                 return false;
             }

@@ -34,6 +34,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import java.util.List;
@@ -42,12 +43,26 @@ import java.util.Map;
 public class BlockO extends SingleOption<Block, BlockO> {
 
     @Override
-    public boolean parse(Player player, String input) {
+    public boolean parse(CommandSender sender, String input) {
+        //Get block from sender.
+        if (input.isEmpty() || input.equals("@")) {
+            Location loc = Utils.getLocation(sender);
+            if (loc == null) {
+                error = Msg.getString("selector-console-player", Param.P("type", input));
+                return false;
+            }
+            value = loc.getBlock();
+            return true;
+        }
+        if ((input.equals("#") || input.equals("^")) && !(sender instanceof Player)) {
+            error = Msg.getString("selector-console-player", Param.P("type", input));
+            return false;
+        }
+
         //Get block from player location. @[Player name/uuid]
         if (input.startsWith("@") || input.startsWith("#") || input.startsWith("^")) {
             PlayerO playerOption = new PlayerO();
-            playerOption.def(player);
-            playerOption.parse(player, input.substring(1));
+            playerOption.parse(sender, input.substring(1));
             if (!playerOption.hasValue()) {
                 error = playerOption.getError();
                 return false;
@@ -78,11 +93,19 @@ public class BlockO extends SingleOption<Block, BlockO> {
         String[] split = input.split(":");
         if (split.length > 1) {
             String data = split[1];
-            if (data.startsWith("@") || data.startsWith("#") || input.startsWith("^")) {
+            if (data.equals("@")) {
+                location = Utils.getLocation(sender);
+                if (location == null) {
+                    error = Msg.getString("selector-console-player", Param.P("type", data));
+                    return false;
+                }
+            } else if ((data.equals("#") || data.equals("^")) && !(sender instanceof Player)) {
+                error = Msg.getString("selector-console-player", Param.P("type", data));
+                return false;
+            } else if (data.startsWith("@") || data.startsWith("#") || input.startsWith("^")) {
                 //Get block/location from player
                 PlayerO playerOption = new PlayerO();
-                playerOption.def(player);
-                playerOption.parse(player, data.substring(1));
+                playerOption.parse(sender, data.substring(1));
                 if (!playerOption.hasValue()) {
                     error = playerOption.getError();
                     return false;
@@ -107,8 +130,7 @@ public class BlockO extends SingleOption<Block, BlockO> {
             } else {
                 //Get world.
                 WorldO worldOption = new WorldO();
-                worldOption.def(player == null ? null : player.getWorld());
-                worldOption.parse(player, data);
+                worldOption.parse(sender, data);
                 if (!worldOption.hasValue()) {
                     error = worldOption.getError();
                     return false;

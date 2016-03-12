@@ -27,14 +27,17 @@ package info.gameboxx.gameboxx.util;
 
 import info.gameboxx.gameboxx.aliases.Environments;
 import info.gameboxx.gameboxx.aliases.WorldTypes;
+import info.gameboxx.gameboxx.aliases.items.Items;
 import info.gameboxx.gameboxx.messages.Msg;
 import info.gameboxx.gameboxx.messages.Param;
-import info.gameboxx.gameboxx.aliases.items.Items;
 import info.gameboxx.gameboxx.util.item.EItem;
 import info.gameboxx.gameboxx.util.item.ItemParser;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
+import org.bukkit.command.BlockCommandSender;
+import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.MaterialData;
@@ -292,5 +295,14 @@ public class Utils {
                     Param.P("aliases", aliases), Param.P("alias", aliases), Param.P("values", aliases)).getRaw());
         }
         return Str.implode(formats);
+    }
+
+    public static Location getLocation(CommandSender sender) {
+        if (sender instanceof Entity) {
+            return ((Entity)sender).getLocation();
+        } else if (sender instanceof BlockCommandSender) {
+            return ((BlockCommandSender)sender).getBlock().getLocation().add(0.5f, 0.5f, 0.5f);
+        }
+        return null;
     }
 }

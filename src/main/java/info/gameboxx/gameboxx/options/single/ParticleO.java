@@ -33,7 +33,7 @@ import info.gameboxx.gameboxx.util.Parse;
 import info.gameboxx.gameboxx.util.ParticleEffect;
 import info.gameboxx.gameboxx.util.Utils;
 import org.bukkit.Particle;
-import org.bukkit.entity.Player;
+import org.bukkit.command.CommandSender;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.MaterialData;
 import org.bukkit.util.Vector;
@@ -41,7 +41,7 @@ import org.bukkit.util.Vector;
 public class ParticleO extends SingleOption<ParticleEffect, ParticleO> {
 
     @Override
-    public boolean parse(Player player, String input) {
+    public boolean parse(CommandSender sender, String input) {
         String[] split = input.split(":");
 
         Integer amount = 1;

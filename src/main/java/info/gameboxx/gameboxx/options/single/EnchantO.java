@@ -32,8 +32,8 @@ import info.gameboxx.gameboxx.options.SingleOption;
 import info.gameboxx.gameboxx.util.Enchant;
 import info.gameboxx.gameboxx.util.Parse;
 import info.gameboxx.gameboxx.util.Utils;
+import org.bukkit.command.CommandSender;
 import org.bukkit.enchantments.Enchantment;
-import org.bukkit.entity.Player;
 
 public class EnchantO extends SingleOption<Enchant, EnchantO> {
 
@@ -45,7 +45,7 @@ public class EnchantO extends SingleOption<Enchant, EnchantO> {
     }
 
     @Override
-    public boolean parse(Player player, String input) {
+    public boolean parse(CommandSender sender, String input) {
         String[] split = input.split(":");
         Integer level = 0;
 

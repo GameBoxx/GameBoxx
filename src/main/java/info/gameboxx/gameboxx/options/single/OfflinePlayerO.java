@@ -30,7 +30,7 @@ import info.gameboxx.gameboxx.messages.Param;
 import info.gameboxx.gameboxx.options.SingleOption;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
-import org.bukkit.entity.Player;
+import org.bukkit.command.CommandSender;
 
 import java.util.UUID;
 
@@ -45,9 +45,9 @@ public class OfflinePlayerO extends SingleOption<OfflinePlayer, OfflinePlayerO> 
     }
 
     @Override
-    public boolean parse(Player player, String input) {
+    public boolean parse(CommandSender sender, String input) {
         if (input.isEmpty() || input.equals("@")) {
-            value = player;
+            value = (sender != null && sender instanceof OfflinePlayer) ? (OfflinePlayer)sender : null;
             if (value == null) {
                 error = Msg.getString("offline-player.non-player");
                 return false;

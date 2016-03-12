@@ -31,20 +31,19 @@ import info.gameboxx.gameboxx.util.Utils;
 import info.gameboxx.gameboxx.util.entity.EEntity;
 import info.gameboxx.gameboxx.util.entity.EntityParser;
 import org.bukkit.block.Block;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Entity;
-import org.bukkit.entity.Player;
 
 import java.util.List;
 
 public class EntityO extends SingleOption<EEntity, EntityO> {
 
     @Override
-    public boolean parse(Player player, String input) {
+    public boolean parse(CommandSender sender, String input) {
 
         if (input.startsWith("#") || input.startsWith("@")) {
             PlayerO playerOption = new PlayerO();
-            playerOption.def(player);
-            playerOption.parse(player, input.substring(1));
+            playerOption.parse(sender, input.substring(1));
 
             if (!playerOption.hasValue()) {
                 error = playerOption.getError();
