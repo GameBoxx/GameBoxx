@@ -30,6 +30,7 @@ import info.gameboxx.gameboxx.messages.Msg;
 import info.gameboxx.gameboxx.messages.Param;
 import info.gameboxx.gameboxx.options.SingleOption;
 import info.gameboxx.gameboxx.options.list.ColorLO;
+import info.gameboxx.gameboxx.util.Random;
 import info.gameboxx.gameboxx.util.Str;
 import org.bukkit.Color;
 import org.bukkit.FireworkEffect;
@@ -45,7 +46,12 @@ public class FireworkO extends SingleOption<FireworkEffect, FireworkO> {
         String[] split = input.split(":");
 
         if (split.length > 0 && !split[0].isEmpty()) {
-            FireworkEffect.Type type = FireworkEffects.get(split[0]);
+            FireworkEffect.Type type;
+            if (split[0].equalsIgnoreCase("*")) {
+                type = Random.Item(FireworkEffect.Type.values());
+            } else {
+                type = FireworkEffects.get(split[0]);
+            }
             if (type == null) {
                 error = "Invalid type..";
                 return false;

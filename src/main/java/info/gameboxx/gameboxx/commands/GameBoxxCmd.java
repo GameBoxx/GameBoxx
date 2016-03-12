@@ -112,14 +112,9 @@ public class GameBoxxCmd implements CommandExecutor {
 
         //Summon
         if (args[0].equalsIgnoreCase("summon") || args[0].equalsIgnoreCase("spawnmob") || args[0].equalsIgnoreCase("entity")) {
-            if (!(sender instanceof Player)) {
-                Msg.get("player-only").send(sender);
-                return true;
-            }
-
             String entityString = Str.implode(args, " ", " ", 1, args.length);
 
-            EntityParser parser = new EntityParser(entityString, (Player)sender, false);
+            EntityParser parser = new EntityParser(entityString, sender instanceof Player ? (Player)sender : null, false);
             if (!parser.isValid()) {
                 Msg.fromString(parser.getError()).send(sender);
             } else {
