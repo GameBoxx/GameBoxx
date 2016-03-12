@@ -37,6 +37,7 @@ import org.bukkit.inventory.meta.FireworkMeta;
 import org.bukkit.material.Colorable;
 import org.bukkit.material.MaterialData;
 import org.bukkit.metadata.FixedMetadataValue;
+import org.bukkit.potion.PotionData;
 import org.bukkit.util.Vector;
 
 import java.util.*;
@@ -266,7 +267,15 @@ public class EntityTag {
                 return DyeColors.getName(entity.getColor());
             }
         }, Colorable.class, Wolf.class);
-        EntityTag.register("EFFECT", new String[] {"POTION", "EFF", "E"}, new PotionO(), "addEffect", null, LivingEntity.class, AreaEffectCloud.class);
+        EntityTag.register("POTION", new String[] {"POT", "POTIONTYPE", "POTTYPE", "PTYPE"}, new StringO().match(PotionTypes.getAliasMap()), new EntityTagCallback() {
+            @Override boolean onSet(CommandSender sender, EEntity entity, SingleOption result) {
+                entity.setBasePotionData(new PotionData(PotionTypes.get(((StringO)result).getValue())));
+                return true;
+            }
+
+            @Override String onGet(EEntity entity) {return null;}
+        }, TippedArrow.class, AreaEffectCloud.class);
+        EntityTag.register("EFFECT", new String[] {"EFF", "E"}, new PotionO(), "addEffect", null, LivingEntity.class, AreaEffectCloud.class, ThrownPotion.class, TippedArrow.class);
         EntityTag.register("PROFESSION", new String[] {"PROF", "VILLAGER"}, new StringO().match(Professions.getAliasMap()), new EntityTagCallback() {
             @Override boolean onSet(CommandSender sender, EEntity entity, SingleOption result) {
                 entity.setProfession(Professions.get(((StringO)result).getValue()));

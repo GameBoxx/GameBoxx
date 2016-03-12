@@ -865,6 +865,8 @@ public class Items {
         //Potions
         register("Glass Bottle", Material.GLASS_BOTTLE, (short)0, "emptypot", "emptybottle", "bottle", "potionbottle", "emptypotion");
         register("Water Bottle", Material.POTION, (short)0, "wbottle", "potion", "pot", "filledbottle");
+        register("Splash Potion", Material.SPLASH_POTION, (short)0, "splashpot", "spotion", "spot");
+        register("Lingering Potion", Material.LINGERING_POTION, (short)0, "lingeringpot", "lpotion", "lpot");
         register("Awkward Potion", Material.POTION, (short)16, "awkwardpot", "awkwardp", "apotion", "apot", "awkpotion", "awkpot", "awkp");
         register("Thick Potion", Material.POTION, (short)32, "thickpot", "thickp", "tpotion", "tpot");
         register("Mundane Potion (Extended);", Material.POTION, (short)64, "extendedmundanepotion", "emundanepot", "emundanep", "empotion", "empot", "emundpotion", "emundpot", "emundp", "mundanepote",

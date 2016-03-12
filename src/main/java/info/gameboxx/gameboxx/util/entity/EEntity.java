@@ -46,8 +46,7 @@ import org.bukkit.material.Colorable;
 import org.bukkit.material.MaterialData;
 import org.bukkit.metadata.MetadataValue;
 import org.bukkit.plugin.Plugin;
-import org.bukkit.potion.PotionEffect;
-import org.bukkit.potion.PotionEffectType;
+import org.bukkit.potion.*;
 import org.bukkit.projectiles.ProjectileSource;
 import org.bukkit.util.EulerAngle;
 import org.bukkit.util.Vector;
@@ -2068,7 +2067,9 @@ public class EEntity {
         } else if (entity instanceof ItemFrame) {
             ((ItemFrame)entity).setItem(stack);
         } else if (entity instanceof ThrownPotion) {
-            ((ThrownPotion)entity).setItem(stack);
+            if (stack.getType() == Material.SPLASH_POTION || stack.getType() == Material.LINGERING_POTION) {
+                ((ThrownPotion)entity).setItem(stack);
+            }
         }
         return this;
     }
@@ -2083,7 +2084,7 @@ public class EEntity {
      * <p/>
      * Only one potion effect can be present for a given {@link PotionEffectType}.
      * <p/>
-     * <b>Entities: </b> {@link LivingEntity}, {@link AreaEffectCloud}
+     * <b>Entities: </b> {@link LivingEntity}, {@link AreaEffectCloud}, {@link TippedArrow}
      *
      * @param effect PotionEffect to be added
      * @return this instance
@@ -2092,7 +2093,9 @@ public class EEntity {
         if (entity instanceof LivingEntity) {
             ((LivingEntity)entity).addPotionEffect(effect);
         } else if (entity instanceof AreaEffectCloud) {
-            ((AreaEffectCloud)entity).addEffect(effect);
+            ((AreaEffectCloud)entity).addCustomEffect(effect, true);
+        } else if (entity instanceof TippedArrow) {
+            ((TippedArrow)entity).addCustomEffect(effect, true);
         }
         return this;
     }
@@ -2102,7 +2105,7 @@ public class EEntity {
      * <p/>
      * Only one potion effect can be present for a given {@link PotionEffectType}.
      * <p/>
-     * <b>Entities: </b> {@link LivingEntity}, {@link AreaEffectCloud}
+     * <b>Entities: </b> {@link LivingEntity}, {@link AreaEffectCloud}, {@link TippedArrow}
      *
      * @param effect PotionEffect to be added
      * @param force whether conflicting effects should be removed/overwritten
@@ -2112,7 +2115,9 @@ public class EEntity {
         if (entity instanceof LivingEntity) {
             ((LivingEntity)entity).addPotionEffect(effect, force);
         } else if (entity instanceof AreaEffectCloud) {
-            ((AreaEffectCloud)entity).addEffect(effect);
+            ((AreaEffectCloud)entity).addCustomEffect(effect, force);
+        } else if (entity instanceof TippedArrow) {
+            ((TippedArrow)entity).addCustomEffect(effect, force);
         }
         return this;
     }
@@ -2120,7 +2125,7 @@ public class EEntity {
     /**
      * Attempts to add all of the given {@link PotionEffect} to the living entity.
      * <p/>
-     * <b>Entities: </b> {@link LivingEntity}, {@link AreaEffectCloud}
+     * <b>Entities: </b> {@link LivingEntity}, {@link AreaEffectCloud}, {@link TippedArrow}
      *
      * @param effects the effects to add
      * @return this instance
@@ -2130,7 +2135,11 @@ public class EEntity {
             ((LivingEntity)entity).addPotionEffects(effects);
         } else if (entity instanceof AreaEffectCloud) {
             for (PotionEffect effect : effects) {
-                ((AreaEffectCloud)entity).addEffect(effect);
+                ((AreaEffectCloud)entity).addCustomEffect(effect, true);
+            }
+        } else if (entity instanceof TippedArrow) {
+            for (PotionEffect effect : effects) {
+                ((TippedArrow)entity).addCustomEffect(effect, true);
             }
         }
         return this;
@@ -2139,7 +2148,7 @@ public class EEntity {
     /**
      * Attempts to add all of the given {@link PotionEffect} to the living entity.
      * <p/>
-     * <b>Entities: </b> {@link LivingEntity}, {@link AreaEffectCloud}
+     * <b>Entities: </b> {@link LivingEntity}, {@link AreaEffectCloud}, {@link TippedArrow}
      *
      * @param effects the effects to add
      * @return this instance
@@ -2149,7 +2158,15 @@ public class EEntity {
             ((LivingEntity)entity).getActivePotionEffects().clear();
             ((LivingEntity)entity).addPotionEffects(effects);
         } else if (entity instanceof AreaEffectCloud) {
-            ((AreaEffectCloud)entity).setEffects((List<PotionEffect>)effects);
+            ((AreaEffectCloud)entity).clearCustomEffects();
+            for (PotionEffect effect : effects) {
+                ((AreaEffectCloud)entity).addCustomEffect(effect, true);
+            }
+        } else if (entity instanceof TippedArrow) {
+            ((TippedArrow)entity).clearCustomEffects();
+            for (PotionEffect effect : effects) {
+                ((TippedArrow)entity).addCustomEffect(effect, true);
+            }
         }
         return this;
     }
@@ -2157,20 +2174,18 @@ public class EEntity {
     /**
      * Returns whether the living entity already has an existing effect of the given {@link PotionEffectType} applied to it.
      * <p/>
-     * <b>Entities: </b> {@link LivingEntity}, {@link AreaEffectCloud}
+     * <b>Entities: </b> {@link LivingEntity}, {@link AreaEffectCloud}, {@link TippedArrow}
      *
      * @param type the potion type to check
      * @return whether the living entity has this potion effect active on them
      */
     public Boolean hasEffect(PotionEffectType type) {
         if (entity instanceof LivingEntity) {
-            ((LivingEntity)entity).hasPotionEffect(type);
+            return ((LivingEntity)entity).hasPotionEffect(type);
         } else if (entity instanceof AreaEffectCloud) {
-            for (PotionEffect effect : ((AreaEffectCloud)entity).getEffects()) {
-                if (effect.getType() == type) {
-                    return true;
-                }
-            }
+            return ((AreaEffectCloud)entity).hasCustomEffect(type);
+        } else if (entity instanceof TippedArrow) {
+            return ((TippedArrow)entity).hasCustomEffect(type);
         }
         return false;
     }
@@ -2178,7 +2193,7 @@ public class EEntity {
     /**
      * Removes any effects present of the given {@link PotionEffectType}.
      * <p/>
-     * <b>Entities: </b> {@link LivingEntity}, {@link AreaEffectCloud}
+     * <b>Entities: </b> {@link LivingEntity}, {@link AreaEffectCloud}, {@link TippedArrow}
      *
      * @param type the potion type to remove
      * @return this instance
@@ -2187,12 +2202,9 @@ public class EEntity {
         if (entity instanceof LivingEntity) {
             ((LivingEntity)entity).removePotionEffect(type);
         } else if (entity instanceof AreaEffectCloud) {
-            List<PotionEffect> acitveEffects = new ArrayList<>(((AreaEffectCloud)entity).getEffects());
-            for (PotionEffect effect : acitveEffects) {
-                if (effect.getType() == type) {
-                    ((AreaEffectCloud)entity).getEffects().remove(effect);
-                }
-            }
+            ((AreaEffectCloud)entity).clearCustomEffects();
+        } else if (entity instanceof TippedArrow) {
+            ((TippedArrow)entity).clearCustomEffects();
         }
         return this;
     }
@@ -2200,19 +2212,48 @@ public class EEntity {
     /**
      * Returns all currently active {@link PotionEffect}s on the living entity.
      * <p/>
-     * <b>Entities: </b> {@link LivingEntity}, {@link AreaEffectCloud}, {@link ThrownPotion}
+     * <b>Entities: </b> {@link LivingEntity}, {@link AreaEffectCloud}, {@link ThrownPotion}, {@link TippedArrow}
      *
      * @return a collection of {@link PotionEffect}s
      */
     public Collection<PotionEffect> getEffects() {
         if (entity instanceof LivingEntity) {
-            ((LivingEntity)entity).getActivePotionEffects();
+            return ((LivingEntity)entity).getActivePotionEffects();
         } else if (entity instanceof AreaEffectCloud) {
-            ((AreaEffectCloud)entity).getEffects();
+            return ((AreaEffectCloud)entity).getCustomEffects();
         } else if (entity instanceof ThrownPotion) {
             return ((ThrownPotion)entity).getEffects();
+        } else if (entity instanceof TippedArrow) {
+            return ((TippedArrow)entity).getCustomEffects();
         }
         return new ArrayList<>();
+    }
+
+    public EEntity setBasePotionData(PotionData data) {
+        if (entity instanceof AreaEffectCloud) {
+            ((AreaEffectCloud)entity).setBasePotionData(data);
+        } else if (entity instanceof TippedArrow) {
+            ((TippedArrow)entity).setBasePotionData(data);
+        }
+        return this;
+    }
+
+    public EEntity setBasePotionData(PotionType type) {
+        if (entity instanceof AreaEffectCloud) {
+            ((AreaEffectCloud)entity).setBasePotionData(new PotionData(type, type.isExtendable(), type.isUpgradeable()));
+        } else if (entity instanceof TippedArrow) {
+            ((TippedArrow)entity).setBasePotionData(new PotionData(type, type.isExtendable(), type.isUpgradeable()));
+        }
+        return this;
+    }
+
+    public PotionData getBasePotionData() {
+        if (entity instanceof AreaEffectCloud) {
+            return ((AreaEffectCloud)entity).getBasePotionData();
+        } else if (entity instanceof TippedArrow) {
+            return ((TippedArrow)entity).getBasePotionData();
+        }
+        return null;
     }
     //endregion
 

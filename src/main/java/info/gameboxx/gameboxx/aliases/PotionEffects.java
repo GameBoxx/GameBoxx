@@ -35,7 +35,7 @@ import java.util.Map;
 public class PotionEffects extends AliasMap<PotionEffectType> {
 
     private PotionEffects() {
-        super("PotionEffects", new File(ALIASES_FOLDER, "PotionEffects.yml"), "potioneffect", "potions", "peffects", "poteffects");
+        super("PotionEffects", new File(ALIASES_FOLDER, "PotionEffects.yml"), "potioneffect", "peffects", "poteffects");
     }
 
     @Override

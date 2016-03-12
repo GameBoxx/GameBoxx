@@ -104,6 +104,7 @@ public class EntityTypes extends AliasMap<EntityType> {
         add(EntityType.VILLAGER, "Villager");
         add(EntityType.ENDER_CRYSTAL, "Ender Crystal", "Crystal", "ECrystal", "EnderC", "End Crystal", "EndC");
         add(EntityType.SPLASH_POTION, "Splash Potion", "Thrown Potion", "Potion", "Splash", "Splash Pot", "Thrown Pot", "Pot");
+        add(EntityType.LINGERING_POTION, "Lingering Potion", "Linger Potion", "LPotion", "Lingering", "Linger", "Lingering Pot", "Linger Pot", "LPot");
         add(EntityType.AREA_EFFECT_CLOUD, "Area Effect Cloud", "Area Effect", "Area Cloud", "Potion Cloud", "PotionC", "AEC", "Effect Cloud", "EffectC");
         add(EntityType.EGG, "Egg");
         add(EntityType.FISHING_HOOK, "Fishing Hook", "Fishing Bobber", "Fish Hook", "Fish Bobber", "Fish");

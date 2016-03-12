@@ -36,8 +36,8 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.*;
+import org.bukkit.potion.PotionData;
 import org.bukkit.potion.PotionEffect;
-import org.bukkit.potion.PotionEffectType;
 
 import java.util.*;
 
@@ -410,13 +410,25 @@ public class EItem extends ItemStack {
     // #################### POTIONS #####################
     // ##################################################
 
-    public EItem setMainEffect(PotionEffectType effect) {
+    public EItem setBasePotionData(PotionData data) {
         ItemMeta meta = getMeta();
         if (meta instanceof PotionMeta) {
-            ((PotionMeta)meta).setMainEffect(effect);
+            ((PotionMeta)meta).setBasePotionData(data);
             setItemMeta(meta);
         }
         return this;
+    }
+
+    public PotionData getBasePotionData() {
+        ItemMeta meta = getMeta();
+        if (meta instanceof PotionMeta) {
+            return ((PotionMeta)meta).getBasePotionData();
+        }
+        return null;
+    }
+
+    public EItem addEffect(PotionEffect effect) {
+        return addEffect(effect, true);
     }
 
     public EItem addEffect(PotionEffect effect, Boolean overwrite) {

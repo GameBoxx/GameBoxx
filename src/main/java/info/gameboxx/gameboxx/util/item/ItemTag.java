@@ -25,9 +25,7 @@
 
 package info.gameboxx.gameboxx.util.item;
 
-import info.gameboxx.gameboxx.aliases.BannerPatterns;
-import info.gameboxx.gameboxx.aliases.DyeColors;
-import info.gameboxx.gameboxx.aliases.Enchantments;
+import info.gameboxx.gameboxx.aliases.*;
 import info.gameboxx.gameboxx.options.SingleOption;
 import info.gameboxx.gameboxx.options.single.*;
 import org.bukkit.FireworkEffect;
@@ -35,6 +33,7 @@ import org.bukkit.block.banner.Pattern;
 import org.bukkit.command.CommandSender;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.meta.*;
+import org.bukkit.potion.PotionData;
 
 import java.util.*;
 
@@ -209,7 +208,7 @@ public class ItemTag {
         }, BannerMeta.class);
 
         //Firework
-        ItemTag.register("EFFECT", new String[] {"FIREWORK", "FW", "FWEFFECT", "FEFFECT", "FE"}, new FireworkO(), new ItemTagCallback() {
+        ItemTag.register("FEFFECT", new String[] {"FIREWORK", "FW", "FWEFFECT", "FE", "FWE"}, new FireworkO(), new ItemTagCallback() {
             @Override boolean onSet(CommandSender sender, EItem item, SingleOption result) {
                 item.addEffect(((FireworkO)result).getValue());
                 return true;
@@ -227,6 +226,16 @@ public class ItemTag {
 
 
         //Potions
+        //TODO: Implement the getter methods.
+        ItemTag.register("POTION", new String[] {"POT", "POTIONTYPE", "POTTYPE", "PTYPE"}, new StringO().match(PotionTypes.getAliasMap()), new ItemTagCallback() {
+            @Override boolean onSet(CommandSender sender, EItem item, SingleOption result) {
+                item.setBasePotionData(new PotionData(PotionTypes.get(((StringO)result).getValue())));
+                return true;
+            }
+
+            @Override String onGet(EItem item) {return null;}
+        }, PotionMeta.class);
+        ItemTag.register("PEFFECT", new String[] {"POTIONE", "PE", "POTEFFECT", "POTE"}, new PotionO(), "addEffect", null, PotionMeta.class);
 
 
         //Books
