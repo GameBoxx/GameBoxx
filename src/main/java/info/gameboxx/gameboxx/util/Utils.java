@@ -289,12 +289,12 @@ public class Utils {
         List<String> formats = new ArrayList<>();
         for (Map.Entry<String, List<String>> entry : values.entrySet()) {
             String name = entry.getKey();
-            String aliases = Str.wrapString(Str.implode(entry.getValue()), 50);
+            String aliases = Str.wrapString("&7" + Str.implode(entry.getValue(), "&8, &7"), 50);
 
             formats.add(format.clone().params(Param.P("name", name), Param.P("key", name), Param.P("display", name), Param.P("value", name),
                     Param.P("aliases", aliases), Param.P("alias", aliases), Param.P("values", aliases)).getRaw());
         }
-        return Str.implode(formats);
+        return Str.implode(formats, "&8, &r");
     }
 
     public static Location getLocation(CommandSender sender) {

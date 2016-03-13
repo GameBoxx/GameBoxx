@@ -70,8 +70,8 @@ public class PotionEffects extends AliasMap<PotionEffectType> {
     }
 
     @Override
-    public String getCfgKey(PotionEffectType key, String type) {
-        return name + "." + key.getName() + "." + type;
+    public String getKey(PotionEffectType key) {
+        return key.getName();
     }
 
     public static PotionEffectType get(String string) {

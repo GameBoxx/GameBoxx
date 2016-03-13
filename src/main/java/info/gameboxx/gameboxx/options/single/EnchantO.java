@@ -51,18 +51,18 @@ public class EnchantO extends SingleOption<Enchant, EnchantO> {
 
         Enchantment enchant = Enchantments.get(split[0]);
         if (enchant == null) {
-            Msg.getString("enchant.invalid-type", Param.P("input", split[0]), Param.P("types", Utils.getAliasesString("enchant.entry", Enchantments.getAliasMap())));
+            error = Msg.getString("enchant.invalid-type", Param.P("input", split[0]), Param.P("types", Utils.getAliasesString("enchant.entry", Enchantments.getAliasMap())));
             return false;
         }
 
         if (split.length > 1) {
             level = Parse.Int(split[1]);
             if (level == null) {
-                Msg.getString("enchant.invalid-level", Param.P("input", split[0]));
+                error = Msg.getString("enchant.invalid-level", Param.P("input", split[0]));
                 return false;
             }
             if (!ignoreMax && level > enchant.getMaxLevel()) {
-                Msg.getString("enchant.level-too-high", Param.P("input", split[0]), Param.P("max", enchant.getMaxLevel()));
+                error = Msg.getString("enchant.level-too-high", Param.P("input", split[0]), Param.P("max", enchant.getMaxLevel()));
                 return false;
             }
         }

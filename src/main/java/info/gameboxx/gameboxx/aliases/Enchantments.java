@@ -70,8 +70,8 @@ public class Enchantments extends AliasMap<Enchantment> {
     }
 
     @Override
-    public String getCfgKey(Enchantment key, String type) {
-        return name + "." + key.getName() + "." + type;
+    public String getKey(Enchantment key) {
+        return key.getName();
     }
 
     public static Enchantment get(String string) {

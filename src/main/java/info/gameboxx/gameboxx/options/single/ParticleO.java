@@ -51,14 +51,14 @@ public class ParticleO extends SingleOption<ParticleEffect, ParticleO> {
 
         Particle particle = Particles.get(split[0]);
         if (particle == null) {
-            Msg.getString("particle.invalid-type", Param.P("input", split[0]), Param.P("types", Utils.getAliasesString("particle.entry", Particles.getAliasMap())));
+            error = Msg.getString("particle.invalid-type", Param.P("input", split[0]), Param.P("types", Utils.getAliasesString("particle.entry", Particles.getAliasMap())));
             return false;
         }
 
         if (split.length > 1 && !split[1].isEmpty()) {
             amount = Parse.Int(split[1]);
             if (amount == null) {
-                Msg.getString("particle.invalid-amount", Param.P("input", split[1]));
+                error = Msg.getString("particle.invalid-amount", Param.P("input", split[1]));
                 return false;
             }
         }
@@ -66,7 +66,7 @@ public class ParticleO extends SingleOption<ParticleEffect, ParticleO> {
         if (split.length > 2 && !split[2].isEmpty()) {
             speed = Parse.Double(split[2]);
             if (speed == null) {
-                Msg.getString("particle.invalid-speed", Param.P("input", split[2]));
+                error = Msg.getString("particle.invalid-speed", Param.P("input", split[2]));
                 return false;
             }
         }

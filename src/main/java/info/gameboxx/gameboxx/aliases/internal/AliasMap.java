@@ -82,8 +82,12 @@ public abstract class AliasMap<T> {
 
     public abstract void onLoad();
 
+    public String getKey(T key) {
+        return key.toString();
+    }
+
     public String getCfgKey(T key, String type) {
-        return name + "." + key.toString() + "." + type;
+        return name + "." + getKey(key) + "." + type;
     }
 
     public void add(T key, String name, String... aliases) {
@@ -101,8 +105,14 @@ public abstract class AliasMap<T> {
             config.set(getCfgKey(key, "aliases"), aliases);
             aliasList.addAll(Arrays.asList(aliases));
         }
-        aliasList.add(name.toLowerCase().replace(" ", "").replace("_", ""));
-        aliasList.add(key.toString().toLowerCase().replace("_", ""));
+        String nameAlias = name.toLowerCase().replace(" ", "").replace("_", "");
+        if (!aliasList.contains(nameAlias)) {
+            aliasList.add(nameAlias);
+        }
+        String keyAlias = getKey(key).toLowerCase().replace("_", "");
+        if (!aliasList.contains(keyAlias)) {
+            aliasList.add(keyAlias);
+        }
 
         map.put(key, new Alias<T>(name, aliasList));
         aliasMap.put(name, aliasList);

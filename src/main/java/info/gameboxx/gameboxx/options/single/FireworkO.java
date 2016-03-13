@@ -54,14 +54,14 @@ public class FireworkO extends SingleOption<FireworkEffect, FireworkO> {
                 type = FireworkEffects.get(split[0]);
             }
             if (type == null) {
-                Msg.getString("firework.invalid-type", Param.P("input", split[0]), Param.P("types", Utils.getAliasesString("firework.entry", FireworkEffects.getAliasMap())));
+                error = Msg.getString("firework.invalid-type", Param.P("input", split[0]), Param.P("types", Utils.getAliasesString("firework.entry", FireworkEffects.getAliasMap())));
                 return false;
             }
             builder.with(type);
         }
 
         if (split.length < 2 || split[1].isEmpty()) {
-            Msg.getString("firework.no-color");
+            error = Msg.getString("firework.no-color");
             return false;
         } else {
             String[] splitColors = split[1].split(";");

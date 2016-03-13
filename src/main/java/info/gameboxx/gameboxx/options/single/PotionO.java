@@ -53,7 +53,7 @@ public class PotionO extends SingleOption<PotionEffect, PotionO> {
 
         PotionEffectType type = PotionEffects.get(split[0]);
         if (type == null) {
-            Msg.getString("potion.invalid-type", Param.P("input", split[0]), Param.P("types", Utils.getAliasesString("potion.entry", PotionEffects.getAliasMap())));
+            error = Msg.getString("potion.invalid-type", Param.P("input", split[0]), Param.P("types", Utils.getAliasesString("potion.entry", PotionEffects.getAliasMap())));
             return false;
         }
 
@@ -63,7 +63,7 @@ public class PotionO extends SingleOption<PotionEffect, PotionO> {
             if (split.length > 0 && !split[0].isEmpty()) {
                 amplifier = Parse.Int(split[0]);
                 if (amplifier == null) {
-                    Msg.getString("potion.invalid-amplifier", Param.P("input", split[0]));
+                    error = Msg.getString("potion.invalid-amplifier", Param.P("input", split[0]));
                     return false;
                 }
             }
@@ -71,7 +71,7 @@ public class PotionO extends SingleOption<PotionEffect, PotionO> {
             if (split.length > 1 && !split[1].isEmpty()) {
                 duration = Parse.Int(split[1]);
                 if (duration == null) {
-                    Msg.getString("potion.invalid-duration", Param.P("input", split[1]));
+                    error = Msg.getString("potion.invalid-duration", Param.P("input", split[1]));
                     return false;
                 }
                 if (duration < 0) {
