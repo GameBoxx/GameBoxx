@@ -133,7 +133,7 @@ public class Items {
         //Get item from string
         if (matchLookup.containsKey(search)) {
             ItemData match = itemLookup.get(matchLookup.get(search));
-            return getItem(match.getType(), data);
+            return getItem(match.getType(), match.getData() > 0 ? match.getData() : data);
         }
 
         //No match
