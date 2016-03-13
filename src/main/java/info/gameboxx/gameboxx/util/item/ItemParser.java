@@ -77,7 +77,7 @@ public class ItemParser {
                     error = Msg.getString("itemparser.invalid-item", Param.P("input", section));
                     return;
                 }
-                this.item = new EItem(item.getType(), 1, item.getData());
+                this.item = new EItem(item.getType(), item.getData());
                 continue;
             }
 
@@ -96,7 +96,7 @@ public class ItemParser {
             ItemTag tag = ItemTag.fromString(key);
             if (tag == null) {
                 error = Msg.getString("parser.invalid-tag", Param.P("tag", key), Param.P("value", value), Param.P("type", Msg.getString("itemparser.type")),
-                        Param.P("tags", Utils.getAliasesString("parser.tag-entry", ItemTag.getTagsMap(item.getMeta()))));
+                        Param.P("tags", Utils.getAliasesString("parser.tag-entry", ItemTag.getTagsMap(item.getItemMeta()))));
                 if (!ignoreErrors) {
                     return;
                 }
@@ -104,9 +104,9 @@ public class ItemParser {
             }
 
             //Make sure the item tag can be used for the meta of the item.
-            if (!ItemTag.getTags(item.getMeta()).contains(tag)) {
+            if (!ItemTag.getTags(item.getItemMeta()).contains(tag)) {
                 error = Msg.getString("parser.unusable-tag", Param.P("tag", key), Param.P("type", Msg.getString("itemparser.type")),
-                        Param.P("tags", Utils.getAliasesString("parser.tag-entry", ItemTag.getTagsMap(item.getMeta()))));
+                        Param.P("tags", Utils.getAliasesString("parser.tag-entry", ItemTag.getTagsMap(item.getItemMeta()))));
                 System.out.println(Msg.fromString(error).get());
                 if (!ignoreErrors) {
                     return;
@@ -187,11 +187,14 @@ public class ItemParser {
             sections.add(Integer.toString(item.getAmount()));
         }
 
-        for (ItemTag tag : ItemTag.getTags(item.getMeta())) {
+        for (ItemTag tag : ItemTag.getTags(item.getItemMeta())) {
             if (tag.hasCallback()) {
                 String result = tag.getCallback().onGet(item);
                 if (result == null || result.isEmpty()) {
                     continue;
+                }
+                if (!result.toLowerCase().contains(tag.getTag().toLowerCase() + ":")) {
+                    result = escape(result);
                 }
                 sections.add(tag.getTag().toLowerCase() + ":" + result);
             } else {
@@ -211,7 +214,7 @@ public class ItemParser {
                     if (option.getValue().equals(option.getDefault())) {
                         continue;
                     }
-                    sections.add(tag.getTag().toLowerCase() + ":" + option.serialize());
+                    sections.add(tag.getTag().toLowerCase() + ":" + escape(option.serialize()));
                 } catch (NoSuchMethodException e) {
                     e.printStackTrace();
                 } catch (IllegalAccessException e) {
@@ -223,6 +226,17 @@ public class ItemParser {
         }
 
         this.string = Str.implode(sections, " ");
+    }
+
+    public static String escape(String value) {
+        if (value.contains(" ") || value.contains("\"") || value.contains("'")) {
+            if (value.contains("'")) {
+                value = "\"" + value + "\"";
+            } else {
+                value = "'" + value + "'";
+            }
+        }
+        return value;
     }
 
 
