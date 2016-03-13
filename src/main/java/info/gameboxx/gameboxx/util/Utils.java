@@ -30,8 +30,10 @@ import info.gameboxx.gameboxx.aliases.WorldTypes;
 import info.gameboxx.gameboxx.aliases.items.Items;
 import info.gameboxx.gameboxx.messages.Msg;
 import info.gameboxx.gameboxx.messages.Param;
+import info.gameboxx.gameboxx.nms.item.ItemUtils;
 import info.gameboxx.gameboxx.util.item.EItem;
 import info.gameboxx.gameboxx.util.item.ItemParser;
+import org.apache.commons.codec.binary.Base64;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -40,6 +42,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.material.MaterialData;
 
 import java.io.File;
@@ -304,5 +307,31 @@ public class Utils {
             return ((BlockCommandSender)sender).getBlock().getLocation().add(0.5f, 0.5f, 0.5f);
         }
         return null;
+    }
+
+    /**
+     * Get a Byte[] array with the texture skull url
+     * The input string can be a textures.minecraft.net link, the code from the link only or a Base64 encoded string.
+     * http://heads.freshcoal.com/maincollection.php
+     * </p>
+     * Used by {@link ItemUtils#setSkullTexture(SkullMeta, String)}
+     */
+    public static byte[] getSkullTexture(String input) {
+        if (input.endsWith("=")) {
+            //Encoded texture.
+            //eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvOTU1ZDYxMWE4NzhlODIxMjMxNzQ5YjI5NjU3MDhjYWQ5NDI2NTA2NzJkYjA5ZTI2ODQ3YTg4ZTJmYWMyOTQ2In19fQ==
+            return input.getBytes();
+        } else {
+            if (input.contains("/")) {
+                //Whole texture url from textures.minecraft.net
+                //http://textures.minecraft.net/texture/955d611a878e821231749b2965708cad942650672db09e26847a88e2fac2946
+                String[] split = input.split("/");
+                input = split[split.length-1];
+            }
+            //Texture code split from the url.
+            //955d611a878e821231749b2965708cad942650672db09e26847a88e2fac2946
+            input = "http://textures.minecraft.net/texture/" + input;
+            return Base64.encodeBase64(String.format("{\"textures\":{\"SKIN\":{\"url\":\"%s\"}}}", input).getBytes());
+        }
     }
 }

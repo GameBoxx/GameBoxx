@@ -29,6 +29,7 @@ import info.gameboxx.gameboxx.GameBoxx;
 import info.gameboxx.gameboxx.nms.annotation.NMSDependant;
 import info.gameboxx.gameboxx.nms.chat.Chat;
 import info.gameboxx.gameboxx.nms.entity.EntityUtils;
+import info.gameboxx.gameboxx.nms.item.ItemUtils;
 import info.gameboxx.gameboxx.nms.worldloader.WorldLoader;
 import org.apache.commons.lang.reflect.ConstructorUtils;
 import org.bukkit.Bukkit;
@@ -44,6 +45,7 @@ public class NMS {
     private WorldLoader worldLoader;
     private Chat chat;
     private EntityUtils entityUtils;
+    private ItemUtils itemUtils;
 
     private NMS() {
         try {
@@ -55,10 +57,9 @@ public class NMS {
             worldLoader = (WorldLoader) loadFromNMS(WorldLoader.class, gb);
             chat = (Chat) loadFromNMS(Chat.class);
             entityUtils = (EntityUtils) loadFromNMS(EntityUtils.class);
+            itemUtils = (ItemUtils)loadFromNMS(ItemUtils.class);
 
-        } catch (ArrayIndexOutOfBoundsException ignored) {
-
-        }
+        } catch (ArrayIndexOutOfBoundsException ignored) {}
     }
 
     public WorldLoader getWorldLoader() {
@@ -71,6 +72,10 @@ public class NMS {
 
     public EntityUtils getEntityUtils() {
         return entityUtils;
+    }
+
+    public ItemUtils getItemUtils() {
+        return itemUtils;
     }
 
 
