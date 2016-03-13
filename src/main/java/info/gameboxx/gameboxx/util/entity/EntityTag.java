@@ -184,13 +184,13 @@ public class EntityTag {
         //TODO: Attributes
     
         //All entities
-        EntityTag.register("VELOCITY", new String[] {"VEL"}, new VectorO(), "setVelocity", null, Entity.class);
-        EntityTag.register("FALLDISTANCE", new String[] {"FALL", "FALLD", "FDISTANCE", "FD"}, new IntO(), "setFallDistance", null, Entity.class);
-        EntityTag.register("FIRETICKS", new String[] {"FTICKS", "FIRET", "FT"}, new IntO().def(-1), "setFireTicks", "getFireTicks", Entity.class);
-        EntityTag.register("LIVED", new String[] {"TICKSLIVED", "TLIVED", "TL"}, new IntO(), "setTicksLived", null, Entity.class);
-        EntityTag.register("NAME", new String[] {"DISPLAYNAME", "DN", "CUSTOMNAME", "CNAME", "DNAME", "CN"}, new StringO(), "setCustomName", "getCustomName", Entity.class);
-        EntityTag.register("NAMEVISIBLE", new String[] {"NAMEV", "NVISIBLE", "NAMEVIS", "NVIS"}, new BoolO().def(false), "setCustomNameVisible", "isCustomNameVisible", Entity.class);
-        EntityTag.register("META", null, new StringO().matchRegex("([^:]*?):([^:]*?)", "String must have the syntax key:value"), new EntityTagCallback() {
+        EntityTag.register("Velocity", new String[] {"Vel"}, new VectorO(), "setVelocity", null, Entity.class);
+        EntityTag.register("FallDistance", new String[] {"Fall", "FallD", "FDistance", "FD"}, new IntO(), "setFallDistance", null, Entity.class);
+        EntityTag.register("FireTicks", new String[] {"FTicks", "FireT", "FT"}, new IntO().def(-1), "setFireTicks", "getFireTicks", Entity.class);
+        EntityTag.register("Lived", new String[] {"TicksLived", "TLived", "TL"}, new IntO(), "setTicksLived", null, Entity.class);
+        EntityTag.register("Name", new String[] {"DisplayName", "DN", "CustomName", "CName", "DName", "CN"}, new StringO(), "setCustomName", "getCustomName", Entity.class);
+        EntityTag.register("NameVisible", new String[] {"NameV", "NVisible", "NameVis", "NVis"}, new BoolO().def(false), "setCustomNameVisible", "isCustomNameVisible", Entity.class);
+        EntityTag.register("Meta", null, new StringO().matchRegex("([^:]*?):([^:]*?)", "key:value"), new EntityTagCallback() {
             @Override boolean onSet(CommandSender sender, EEntity entity, SingleOption result) {
                 String[] split = ((StringO)result).getValue().split(":");
                 if (split.length < 2) {
@@ -204,48 +204,50 @@ public class EntityTag {
         }, Entity.class);
 
         //Damagable
-        EntityTag.register("MAXHEALTH", new String[] {"MAXHP", "MHEALTH", "MHP"}, new DoubleO(), "setMaxHealth", "getMaxHealth", Damageable.class);
-        EntityTag.register("HEALTH", new String[] {"HP"}, new DoubleO(), "setHealth", "getHealth", Damageable.class);
+        EntityTag.register("MaxHealth", new String[] {"MaxHP", "MHealth", "MHP"}, new DoubleO(), "setMaxHealth", "getMaxHealth", Damageable.class);
+        EntityTag.register("Health", new String[] {"HP"}, new DoubleO(), "setHealth", "getHealth", Damageable.class);
 
         //Living
-        EntityTag.register("AIR", new String[] {"OXYGEN", "OXY"}, new IntO().def(300), "setRemainingAir", "getRemainingAir", LivingEntity.class);
-        EntityTag.register("MAXNODMGTICKS", new String[] {"MAXNODAMAGE", "MAXNODMG", "MNODMGTICKS", "MNODMG"}, new IntO().def(20), "setMaximumNoDamageTicks", "getMaximumNoDamageTicks", LivingEntity.class);
-        EntityTag.register("MAXAIR", new String[] {"MAXOXYGEN", "MAXOXY", "MAIR", "MOXYGEN", "MOXY"}, new IntO().def(300), "setMaximumAir", "getMaximumAir", LivingEntity.class);
-        EntityTag.register("NODMGTICKS", new String[] {"NODMG", "NODAMAGETICKS"}, new IntO().def(0), "setNoDamageTicks", "getNoDamageTicks", LivingEntity.class);
-        EntityTag.register("MAINHANDDROP", new String[] {"MAINHANDD", "MAINHANDDROPCHANCE", "MAINHANDDC", "MAINHANDC"}, new DoubleO(), "setItemInMainHandDropChance", null, LivingEntity.class);
-        EntityTag.register("OFFHANDDROP", new String[] {"OFFHANDD", "OFFHANDDROPCHANCE", "OFFHANDDC", "OFFHANDC"}, new DoubleO(), "setItemInOffHandDropChance", null, LivingEntity.class);
-        EntityTag.register("HELMETDROP", new String[] {"HELMETD", "HELMETDROPCHANCE", "HELMETDC", "HELMETC",
-                "HELMDROP", "HELMD", "HELMDROPCHANCE", "HELMDC", "HELMC"}, new DoubleO(), "setHelmetDropChance", null, LivingEntity.class);
-        EntityTag.register("CHESTPLATEDROP", new String[] {"CHESTPLATED", "CHESTPLATEDROPCHANCE", "CHESTPLATEDC", "CHESTPLATEC",
-                "CHESTDROP", "CHESTD", "CHESTDROPCHANCE", "CHESTDC", "CHESTC"}, new DoubleO(), "setChestplateDropChance", null, LivingEntity.class);
-        EntityTag.register("LEGGINGSDROP", new String[] {"LEGGINGSD", "LEGGINGSDROPCHANCE", "LEGGINGSDC", "LEGGINGSC",
-                "LEGDROP", "LEGD", "LEGDROPCHANCE", "LEGDC", "LEGC"}, new DoubleO(), "setLeggingsDropChance", null, LivingEntity.class);
-        EntityTag.register("BOOTSDROP", new String[] {"BOOTSD", "BOOTSDROPCHANCE", "BOOTSDC", "BOOTSC",
-                "BOOTDROP", "BOOTD", "BOOTDROPCHANCE", "BOOTDC", "BOOTC"}, new DoubleO(), "setBootsDropChance", null, LivingEntity.class);
-        EntityTag.register("PICKUP", new String[] {"ITEMPICKUP", "CANPICKUP", "IPICKUP", "CPICKUP"}, new BoolO().def(false), "setCanPickupItems", "getCanPickupItems", LivingEntity.class);
-        EntityTag.register("REMOVEFAR", new String[] {"REMOVEFARAWAY"}, new BoolO().def(false), "setRemoveWhenFarAway", "getRemoveWhenFarAway", LivingEntity.class);
-        EntityTag.register("LEASHHOLDER", new String[] {"LEASH"}, new EntityO(), "setLeashHolder", null, LivingEntity.class);
+        EntityTag.register("Air", new String[] {"Oxygen", "Oxy"}, new IntO().def(300), "setRemainingAir", "getRemainingAir", LivingEntity.class);
+        EntityTag.register("MaxAir", new String[] {"MaxOxygen", "MaxOxy", "MAir", "MOxygen", "MOxy"}, new IntO().def(300), "setMaximumAir", "getMaximumAir", LivingEntity.class);
+        EntityTag.register("NoDmgTicks", new String[] {"NoDmg", "NoDamageTicks"}, new IntO().def(0), "setNoDamageTicks", "getNoDamageTicks", LivingEntity.class);
+        EntityTag.register("MaxNoDmgTicks", new String[] {"MaxNoDamage", "MaxNoDmg", "MNoDmgTicks", "MNoDmg"}, new IntO().def(20), "setMaximumNoDamageTicks", "getMaximumNoDamageTicks", LivingEntity.class);
+        EntityTag.register("MainHandDrop", new String[] {"MainHandD", "MainHandDropChance", "MainHandDC", "MainHandC", "MHandD", "MHandDC", "MHandC", "MainHD", "MainHDC", "MainHC", "MHandDrop"},
+                new DoubleO(), "setItemInMainHandDropChance", null, LivingEntity.class);
+        EntityTag.register("OffHandDrop", new String[] {"OffHandD", "OffHandDropChance", "OffHandDC", "OffHandC", "OHandD", "OHandDC", "OHandC", "OffHD", "OffHDC", "OffHC", "OHandDrop"},
+                new DoubleO(), "setItemInOffHandDropChance", null, LivingEntity.class);
+        EntityTag.register("HelmetDrop", new String[] {"HelmetD", "HelmetDropChance", "HelmetDC", "HelmetC",
+                "HelmDrop", "HelmD", "HelmetDropChance", "HelmDC", "HelmC"}, new DoubleO(), "setHelmetDropChance", null, LivingEntity.class);
+        EntityTag.register("ChestplateDrop", new String[] {"ChestplateD", "ChestplateDropChance", "ChestplateDC", "ChestplateC",
+                "ChestDrop", "ChestD", "ChestDropChance", "ChestDC", "ChestC"}, new DoubleO(), "setChestplateDropChance", null, LivingEntity.class);
+        EntityTag.register("LeggingsDrop", new String[] {"LeggingsD", "LeggingsDropChance", "LEggingsDC", "LeggingsC",
+                "LegDrop", "LegD", "LegDropChance", "LegDC", "LegC"}, new DoubleO(), "setLeggingsDropChance", null, LivingEntity.class);
+        EntityTag.register("BootsDrop", new String[] {"BootsD", "BootsDropChance", "BootsDC", "BootsC",
+                "BootDrop", "BootD", "BootDropChance", "BootDC", "BootC"}, new DoubleO(), "setBootsDropChance", null, LivingEntity.class);
+        EntityTag.register("Pickup", new String[] {"ItemPickup", "CanPickup", "IPickup", "CPickup"}, new BoolO().def(false), "setCanPickupItems", "getCanPickupItems", LivingEntity.class);
+        EntityTag.register("RemoveFar", new String[] {"RemoveFarAway"}, new BoolO().def(false), "setRemoveWhenFarAway", "getRemoveWhenFarAway", LivingEntity.class);
+        EntityTag.register("LeashHolder", new String[] {"Leash"}, new EntityO(), "setLeashHolder", null, LivingEntity.class);
         //TODO: Fix leashes (Maybe also make it so you can create a leash between two locations)
 
         //Ageable
-        EntityTag.register("AGE", null, new IntO().def(0), "setAge", "getAge", Ageable.class);
-        EntityTag.register("AGELOCK", new String[] {"AGEL"}, new BoolO().def(false), "setAgeLock", "getAgeLock", Ageable.class);
-        EntityTag.register("BABY", null, new BoolO().def(false), "setBaby", "isBaby", Ageable.class, Zombie.class);
-        EntityTag.register("CANBREED", new String[] {"BREED"}, new BoolO().def(true), "setBreed", "canBreed", Ageable.class);
+        EntityTag.register("Age", null, new IntO().def(0), "setAge", "getAge", Ageable.class);
+        EntityTag.register("Agelock", new String[] {"AgeL"}, new BoolO().def(false), "setAgeLock", "getAgeLock", Ageable.class);
+        EntityTag.register("Baby", null, new BoolO().def(false), "setBaby", "isBaby", Ageable.class, Zombie.class);
+        EntityTag.register("CanBreed", new String[] {"Breed"}, new BoolO().def(true), "setBreed", "canBreed", Ageable.class);
 
         //Tamable
-        EntityTag.register("TAMED", new String[] {"TAME"}, new BoolO().def(false), "setTamed", "isTamed", Tameable.class);
-        EntityTag.register("OWNER", null, new OfflinePlayerO(), "setOwner", "getOwner", Tameable.class);
+        EntityTag.register("Tamed", new String[] {"Tame"}, new BoolO().def(false), "setTamed", "isTamed", Tameable.class);
+        EntityTag.register("Owner", null, new OfflinePlayerO(), "setOwner", "getOwner", Tameable.class);
 
         //Creature
-        EntityTag.register("TARGET", null, new EntityO(), "setTarget", null, Creature.class, ShulkerBullet.class);
+        EntityTag.register("Target", null, new EntityO(), "setTarget", null, Creature.class, ShulkerBullet.class);
 
         //Projectile
-        EntityTag.register("SHOOTER", null, new EntityO(), "setShooter", null, Projectile.class, ShulkerBullet.class);
-        EntityTag.register("BOUNCE", null, new BoolO().def(true), "setBounce", null, Projectile.class);
+        EntityTag.register("Shooter", null, new EntityO(), "setShooter", null, Projectile.class, ShulkerBullet.class);
+        EntityTag.register("Bounce", null, new BoolO().def(true), "setBounce", null, Projectile.class);
 
         //Hanging
-        EntityTag.register("DIR", null, new StringO().match(Directions.getAliasMap(Directions.Type.SIX_SELF)), new EntityTagCallback() {
+        EntityTag.register("Dir", null, new StringO().match(Directions.getAliasMap(Directions.Type.SIX_SELF)), new EntityTagCallback() {
             @Override boolean onSet(CommandSender sender, EEntity entity, SingleOption result) {
                 entity.setFacingDirection(Directions.get(((StringO)result).getValue()), true);
                 return true;
@@ -255,18 +257,18 @@ public class EntityTag {
         }, Hanging.class);
 
         //Mixed Entities
-        EntityTag.register("MAINHAND", new String[] {"MHAND", "HAND"}, new ItemO(), "setItemInMainHand", "getItemInMainHand", ArmorStand.class, LivingEntity.class);
-        EntityTag.register("OFFHAND", new String[] {"OHAND"}, new ItemO(), "setItemInOffHand", "getItemInOffHand", ArmorStand.class, LivingEntity.class);
-        EntityTag.register("BOOTS", new String[] {"BOOT"}, new ItemO(), "setBoots", "getBoots", ArmorStand.class, LivingEntity.class);
-        EntityTag.register("LEGGINGS", new String[] {"LEGGING", "LEG"}, new ItemO(), "setLeggings", "getLeggings", ArmorStand.class, LivingEntity.class);
-        EntityTag.register("CHESTPLATE", new String[] {"CPLATE", "CHESTP"}, new ItemO(), "setChestplate", "getChestplate", ArmorStand.class, LivingEntity.class);
-        EntityTag.register("HELMET", new String[] {"HELM"}, new ItemO(), "setHelmet", "getHelmet", ArmorStand.class, LivingEntity.class);
-        EntityTag.register("ITEM", null, new ItemO(), "setItem", "getItem", Item.class, ItemFrame.class, ThrownPotion.class);
-        EntityTag.register("SITTING", new String[] {"SIT"}, new BoolO().def(false), "setSitting", "isSitting", Ocelot.class, Wolf.class);
-        EntityTag.register("ANGRY", null, new BoolO().def(false), "setAngry", "isAngry", Wolf.class, PigZombie.class);
-        EntityTag.register("SADDLE", null, new BoolO().def(false), "setSaddle", "hasSaddle", Horse.class, Pig.class);
-        EntityTag.register("SADDLEITEM", new String[] {"SADDLEI"}, new ItemO(), "setSaddle", "getSaddle", Horse.class, Pig.class);
-        EntityTag.register("COLOR", new String[] {"CLR", "DYECOLOR", "DYECLR"}, new StringO().match(DyeColors.getAliasMap()), new EntityTagCallback() {
+        EntityTag.register("MainHand", new String[] {"MHand", "Hand", "MainH"}, new ItemO(), "setItemInMainHand", "getItemInMainHand", ArmorStand.class, LivingEntity.class);
+        EntityTag.register("OffHand", new String[] {"OHand", "OffH"}, new ItemO(), "setItemInOffHand", "getItemInOffHand", ArmorStand.class, LivingEntity.class);
+        EntityTag.register("Boots", new String[] {"Boot"}, new ItemO(), "setBoots", "getBoots", ArmorStand.class, LivingEntity.class);
+        EntityTag.register("Leggings", new String[] {"Legging", "Leg"}, new ItemO(), "setLeggings", "getLeggings", ArmorStand.class, LivingEntity.class);
+        EntityTag.register("Chestplate", new String[] {"CPlate", "ChestP"}, new ItemO(), "setChestplate", "getChestplate", ArmorStand.class, LivingEntity.class);
+        EntityTag.register("Helmet", new String[] {"Helm"}, new ItemO(), "setHelmet", "getHelmet", ArmorStand.class, LivingEntity.class);
+        EntityTag.register("Item", null, new ItemO(), "setItem", "getItem", Item.class, ItemFrame.class, ThrownPotion.class);
+        EntityTag.register("Sitting", new String[] {"Sit"}, new BoolO().def(false), "setSitting", "isSitting", Ocelot.class, Wolf.class);
+        EntityTag.register("Angry", null, new BoolO().def(false), "setAngry", "isAngry", Wolf.class, PigZombie.class);
+        EntityTag.register("Saddle", null, new BoolO().def(false), "setSaddle", "hasSaddle", Horse.class, Pig.class);
+        EntityTag.register("SaddleItem", new String[] {"SaddleI"}, new ItemO(), "setSaddle", "getSaddle", Horse.class, Pig.class);
+        EntityTag.register("Color", new String[] {"Clr", "DyeColor", "DyeClr"}, new StringO().match(DyeColors.getAliasMap()), new EntityTagCallback() {
             @Override boolean onSet(CommandSender sender, EEntity entity, SingleOption result) {
                 entity.setColor(DyeColors.get(((StringO)result).getValue()));
                 return true;
@@ -276,7 +278,7 @@ public class EntityTag {
                 return DyeColors.getName(entity.getColor());
             }
         }, Colorable.class, Wolf.class);
-        EntityTag.register("POTION", new String[] {"POT", "POTIONTYPE", "POTTYPE", "PTYPE"}, new StringO().match(PotionTypes.getAliasMap()), new EntityTagCallback() {
+        EntityTag.register("Potion", new String[] {"Pot", "PotionType", "PotType", "PType", "PotT", "PotionT", "PT"}, new StringO().match(PotionTypes.getAliasMap()), new EntityTagCallback() {
             @Override boolean onSet(CommandSender sender, EEntity entity, SingleOption result) {
                 entity.setBasePotionData(new PotionData(PotionTypes.get(((StringO)result).getValue())));
                 return true;
@@ -284,8 +286,9 @@ public class EntityTag {
 
             @Override String onGet(EEntity entity) {return null;}
         }, TippedArrow.class, AreaEffectCloud.class);
-        EntityTag.register("EFFECT", new String[] {"EFF", "E"}, new PotionO(), "addEffect", null, LivingEntity.class, AreaEffectCloud.class, ThrownPotion.class, TippedArrow.class);
-        EntityTag.register("PROFESSION", new String[] {"PROF", "VILLAGER"}, new StringO().match(Professions.getAliasMap()), new EntityTagCallback() {
+        EntityTag.register("Effect", new String[] {"Eff", "E", "PEffect", "PotionEffect", "PotEffect", "PotionE", "PotE", "PE"},
+                new PotionO(), "addEffect", null, LivingEntity.class, AreaEffectCloud.class, ThrownPotion.class, TippedArrow.class);
+        EntityTag.register("Profession", new String[] {"Prof", "Villager"}, new StringO().match(Professions.getAliasMap()), new EntityTagCallback() {
             @Override boolean onSet(CommandSender sender, EEntity entity, SingleOption result) {
                 entity.setProfession(Professions.get(((StringO)result).getValue()));
                 return true;
@@ -297,32 +300,32 @@ public class EntityTag {
         }, Villager.class, Zombie.class);
 
         //ArmorStand
-        EntityTag.register("POSE", new String[] {"BODYPOSE", "BPOSE"}, new VectorO().def(new Vector(0, 0, 0)), "setBodyPose", "getBodyPose", ArmorStand.class);
-        EntityTag.register("HEAD", new String[] {"HEADPOSE", "HPOSE"}, new VectorO().def(new Vector(0, 0, 0)), "setHeadPose", "getHeadPose", ArmorStand.class);
-        EntityTag.register("LARM", new String[] {"LEFTARM", "LEFTARMPOSE", "LARMPOSE"}, new VectorO().def(new Vector(0, 0, 0)), "setLeftArmPose", "getLeftArmPose", ArmorStand.class);
-        EntityTag.register("RARM", new String[] {"RIGHTARM", "RIGHTARMPOSE", "RARMPOSE"}, new VectorO().def(new Vector(0, 0, 0)), "setRightArmPose", "getRightArmPose", ArmorStand.class);
-        EntityTag.register("LLEG", new String[] {"LEFTLEG", "LEFTLEGPOSE", "LLEGPOSE"}, new VectorO().def(new Vector(0, 0, 0)), "setLeftLegPose", "getLeftLegPose", ArmorStand.class);
-        EntityTag.register("RLEG", new String[] {"RIGHTLEG", "RIGHTLEGPOSE", "RLEGPOSE"}, new VectorO().def(new Vector(0, 0, 0)), "setRightLegPose", "getRightLegPose", ArmorStand.class);
-        EntityTag.register("BASEPLATE", new String[] {"PLATE"}, new BoolO().def(true), "setBasePlate", "hasBasePlate", ArmorStand.class);
-        EntityTag.register("GRAVITY", new String[] {"GRAV"}, new BoolO().def(true), "setGravity", "hasGravity", ArmorStand.class);
-        EntityTag.register("VISIBLE", new String[] {"VIS"}, new BoolO().def(true), "setVisible", "isVisible", ArmorStand.class);
-        EntityTag.register("ARMS", new String[] {"ARM"}, new BoolO().def(false), "setArms", "hasArms", ArmorStand.class);
-        EntityTag.register("SMALL", null, new BoolO().def(false), "setSmall", "isSmall", ArmorStand.class);
-        EntityTag.register("MARKER", null, new BoolO().def(false), "setMarker", "isMarker", ArmorStand.class);
+        EntityTag.register("Pose", new String[] {"BodyPose", "BPose"}, new VectorO().def(new Vector(0, 0, 0)), "setBodyPose", "getBodyPose", ArmorStand.class);
+        EntityTag.register("Head", new String[] {"HeadPose", "HPose"}, new VectorO().def(new Vector(0, 0, 0)), "setHeadPose", "getHeadPose", ArmorStand.class);
+        EntityTag.register("LArm", new String[] {"LeftArm", "LeftArmPose", "LArmPose"}, new VectorO().def(new Vector(0, 0, 0)), "setLeftArmPose", "getLeftArmPose", ArmorStand.class);
+        EntityTag.register("RArm", new String[] {"RightArm", "RightArmPose", "RArmPose"}, new VectorO().def(new Vector(0, 0, 0)), "setRightArmPose", "getRightArmPose", ArmorStand.class);
+        EntityTag.register("LLeg", new String[] {"LeftLeg", "LeftLegPose", "LLegPose"}, new VectorO().def(new Vector(0, 0, 0)), "setLeftLegPose", "getLeftLegPose", ArmorStand.class);
+        EntityTag.register("RLeg", new String[] {"RightLeg", "RightLegPose", "RLegPose"}, new VectorO().def(new Vector(0, 0, 0)), "setRightLegPose", "getRightLegPose", ArmorStand.class);
+        EntityTag.register("Baseplate", new String[] {"Plate"}, new BoolO().def(true), "setBasePlate", "hasBasePlate", ArmorStand.class);
+        EntityTag.register("Gravity", new String[] {"Grav"}, new BoolO().def(true), "setGravity", "hasGravity", ArmorStand.class);
+        EntityTag.register("Visible", new String[] {"Vis"}, new BoolO().def(true), "setVisible", "isVisible", ArmorStand.class);
+        EntityTag.register("Arms", new String[] {"Arm"}, new BoolO().def(false), "setArms", "hasArms", ArmorStand.class);
+        EntityTag.register("Small", null, new BoolO().def(false), "setSmall", "isSmall", ArmorStand.class);
+        EntityTag.register("Marker", null, new BoolO().def(false), "setMarker", "isMarker", ArmorStand.class);
 
         //Arrow
-        EntityTag.register("KNOCKBACK", new String[] {"KNOCKB", "KBACK"}, new IntO(), "setKnockbackStrength", "getKnockbackStrength", Arrow.class);
-        EntityTag.register("CRITICAL", new String[] {"CRIT"}, new BoolO(), "setCritical", null, Arrow.class);
+        EntityTag.register("Knockback", new String[] {"KnockB", "KBack"}, new IntO(), "setKnockbackStrength", "getKnockbackStrength", Arrow.class);
+        EntityTag.register("Critical", new String[] {"Crit"}, new BoolO(), "setCritical", null, Arrow.class);
 
         //AreaEffectCloud
-        EntityTag.register("DURATION", new String[] {"DUR"}, new IntO(), "setDuration", null, AreaEffectCloud.class);
-        EntityTag.register("WAITTIME", new String[] {"WAIT", "WAITDELAY", "STARTDELAY"}, new IntO(), "setWaitTime", null, AreaEffectCloud.class);
-        EntityTag.register("DELAYTICKS", new String[] {"DELAYT", "REAPPLICATEDELAY", "USEDELAY", "COOLDOWN", "CD"}, new IntO(), "setReapplicationDelay", null, AreaEffectCloud.class);
-        EntityTag.register("USETICKS", new String[] {"USEDURATION", "USET"}, new IntO(), "setDurationOnUse", null, AreaEffectCloud.class);
-        EntityTag.register("RADIUS", new String[] {"RAD"}, new DoubleO(), "setRadius", null, AreaEffectCloud.class);
-        EntityTag.register("USERADIUS", new String[] {"USER"}, new DoubleO(), "setRadiusOnUse", null, AreaEffectCloud.class);
-        EntityTag.register("RADIUSDECAY", new String[] {"DECAYR", "DECAY", "RADIUSPERTICK", "RADDECAY", "RADPERTICK"}, new DoubleO(), "setRadiusPerTick", null, AreaEffectCloud.class);
-        EntityTag.register("PARTICLE", null, new StringO().match(Particles.getAliasMap()), new EntityTagCallback() {
+        EntityTag.register("Duration", new String[] {"Dur"}, new IntO(), "setDuration", null, AreaEffectCloud.class);
+        EntityTag.register("WaitTime", new String[] {"Wait", "WaitDelay", "StartDelay"}, new IntO(), "setWaitTime", null, AreaEffectCloud.class);
+        EntityTag.register("DelayTicks", new String[] {"DelayT", "ReapplicationDelay", "UseDelay", "Cooldown", "CD"}, new IntO(), "setReapplicationDelay", null, AreaEffectCloud.class);
+        EntityTag.register("UseTicks", new String[] {"UseDuration", "UseT"}, new IntO(), "setDurationOnUse", null, AreaEffectCloud.class);
+        EntityTag.register("Radius", new String[] {"Rad"}, new DoubleO(), "setRadius", null, AreaEffectCloud.class);
+        EntityTag.register("UseRadius", new String[] {"UseR"}, new DoubleO(), "setRadiusOnUse", null, AreaEffectCloud.class);
+        EntityTag.register("RadiusDecay", new String[] {"DecayR", "Decay", "RadiusPerTick", "RadDecay", "RadPerTick"}, new DoubleO(), "setRadiusPerTick", null, AreaEffectCloud.class);
+        EntityTag.register("Particle", null, new StringO().match(Particles.getAliasMap()), new EntityTagCallback() {
             @Override boolean onSet(CommandSender sender, EEntity entity, SingleOption result) {
                 entity.setParticle(Particles.get(((StringO)result).getValue()));
                 return true;
@@ -330,30 +333,30 @@ public class EntityTag {
 
             @Override String onGet(EEntity entity) {return null;}
         }, AreaEffectCloud.class);
-        EntityTag.register("PARTICLECOLOR", new String[] {"PCOLOR", "PARTICLEC"}, new ColorO(), "setEffectColor", null, AreaEffectCloud.class);
+        EntityTag.register("ParticleColor", new String[] {"PColor", "ParticleC"}, new ColorO(), "setEffectColor", null, AreaEffectCloud.class);
 
         //Minecart
-        EntityTag.register("MAXSPEED", new String[] {"MSPEED"}, new DoubleO().def(0.4), "setMaxSpeed", "getMaxSpeed", Minecart.class);
-        EntityTag.register("SLOWEMPTY", new String[] {"SLOWWHENEMPTY", "SLOWDECEL", "DECEL", "DECELERATE"}, new BoolO().def(true), "setSlowWhenEmpty", "isSlowWhenEmpty", Minecart.class);
-        EntityTag.register("FLYVELOCITY", new String[] {"FLYVEL", "FVELOCITY", "FVEL"}, new VectorO().def(new Vector(0.95, 0.95, 0.95)), "setFlyingVelocityMod", "getFlyingVelocityMod", Minecart.class);
-        EntityTag.register("DERAILVELOCITY", new String[] {"DERAILVEL", "DVELOCITY", "DVEL"}, new VectorO().def(new Vector(0.5, 0.5, 0.5)), "setDerailedVelocityMod", "getDerailedVelocityMod", Minecart.class);
-        EntityTag.register("DISPLAYBLOCK", new String[] {"DBLOCK"}, new MaterialO().blocks(true).def(new MaterialData(Material.AIR)), "setDisplayBlock", "getDisplayBlock", Minecart.class);
-        EntityTag.register("BLOCKOFFSET", new String[] {"BOFFSET"}, new IntO().def(6), "setDisplayBlockOffset", "getDisplayBlockOffset", Minecart.class);
+        EntityTag.register("MaxSpeed", new String[] {"MSpeed"}, new DoubleO().def(0.4), "setMaxSpeed", "getMaxSpeed", Minecart.class);
+        EntityTag.register("SlowEmpty", new String[] {"SlowWhenEmpty", "SlowDecel", "Decel", "Decelerate"}, new BoolO().def(true), "setSlowWhenEmpty", "isSlowWhenEmpty", Minecart.class);
+        EntityTag.register("FlyVelocity", new String[] {"FlyVel", "FlyVelocity", "FVel"}, new VectorO().def(new Vector(0.95, 0.95, 0.95)), "setFlyingVelocityMod", "getFlyingVelocityMod", Minecart.class);
+        EntityTag.register("DerailVelocity", new String[] {"DerailVel", "DVelocity", "DVel"}, new VectorO().def(new Vector(0.5, 0.5, 0.5)), "setDerailedVelocityMod", "getDerailedVelocityMod", Minecart.class);
+        EntityTag.register("DisplayBlock", new String[] {"DBlock"}, new MaterialO().blocks(true).def(new MaterialData(Material.AIR)), "setDisplayBlock", "getDisplayBlock", Minecart.class);
+        EntityTag.register("BlockOffset", new String[] {"BOffset"}, new IntO().def(6), "setDisplayBlockOffset", "getDisplayBlockOffset", Minecart.class);
 
         //Cmdblock minecart
-        EntityTag.register("CMD", new String[] {"COMMAND"}, new StringO(), "setCommand", "getCommand", CommandMinecart.class);
-        EntityTag.register("SENDER", new String[] {"CMDSENDER", "COMMANDSENDER"}, new StringO(), "setName", "getTag", CommandMinecart.class);
+        EntityTag.register("Cmd", new String[] {"Command"}, new StringO(), "setCommand", "getCommand", CommandMinecart.class);
+        EntityTag.register("Sender", new String[] {"CmdSender", "CommandSender"}, new StringO(), "setName", "getTag", CommandMinecart.class);
 
         //Experience
-        EntityTag.register("EXP", new String[] {"EXPERIENCE", "XP"}, new IntO(), "setExperience", null, ExperienceOrb.class);
+        EntityTag.register("Exp", new String[] {"Experience", "XP"}, new IntO(), "setExperience", null, ExperienceOrb.class);
 
         //Falling block
-        EntityTag.register("DROPITEM", null, new BoolO().def(true), "setDropItem", null, FallingBlock.class);
-        EntityTag.register("HURTENTITIES", new String[] {"HURT"}, new BoolO().def(true), "setHurtEntities", null, FallingBlock.class);
+        EntityTag.register("DropItem", null, new BoolO().def(true), "setDropItem", null, FallingBlock.class);
+        EntityTag.register("HurtEntities", new String[] {"Hurt"}, new BoolO().def(true), "setHurtEntities", null, FallingBlock.class);
 
         //Firework
-        EntityTag.register("DETONATE", new String[] {"DET"}, new BoolO().def(true), "detonate", null, Firework.class);
-        EntityTag.register("FIREWORK", new String[] {"FW", "FEFFECT", "FIREWORKMETA", "FMETA", "FWEFFECT", "FWMETA"}, new FireworkO(), new EntityTagCallback() {
+        EntityTag.register("Detonate", new String[] {"Det"}, new BoolO().def(true), "detonate", null, Firework.class);
+        EntityTag.register("Firework", new String[] {"FW", "FEffect", "FireworkMeta", "FMeta", "FWEffect", "FWMeta"}, new FireworkO(), new EntityTagCallback() {
             @Override boolean onSet(CommandSender sender, EEntity entity, SingleOption result) {
                 FireworkMeta meta = entity.getFireworkMeta();
                 meta.addEffect(((FireworkO)result).getValue());
@@ -365,10 +368,10 @@ public class EntityTag {
         }, Firework.class);
 
         //Item
-        EntityTag.register("PICKUPDELAY", new String[] {"PDELAY", "DELAY", "PICKUPD"}, new IntO(), "setPickupDelay", null, Item.class);
+        EntityTag.register("PickupDelay", new String[] {"PDelay", "Delay", "PickupD"}, new IntO(), "setPickupDelay", null, Item.class);
 
         //Itemframe
-        EntityTag.register("ROTATION", new String[] {"ROT"}, new StringO().match(Rotations.getAliasMap()),new EntityTagCallback() {
+        EntityTag.register("Rotation", new String[] {"Rot"}, new StringO().match(Rotations.getAliasMap()),new EntityTagCallback() {
             @Override boolean onSet(CommandSender sender, EEntity entity, SingleOption result) {
                 entity.setRotation(Rotations.get(((StringO)result).getValue()));
                 return true;
@@ -378,7 +381,7 @@ public class EntityTag {
         }, ItemFrame.class);
 
         //Painting
-        EntityTag.register("ART", new String[] {"PAINTING", "PAINT", "CAVAS", "MOTIVE"}, new StringO().match(Paintings.getAliasMap()), new EntityTagCallback() {
+        EntityTag.register("Art", new String[] {"Painting", "Paint", "Canvas", "Motive"}, new StringO().match(Paintings.getAliasMap()), new EntityTagCallback() {
             @Override boolean onSet(CommandSender sender, EEntity entity, SingleOption result) {
                 entity.setArt(Paintings.get(((StringO)result).getValue()));
                 return true;
@@ -390,32 +393,33 @@ public class EntityTag {
         }, Painting.class);
 
         //FishHook
-        EntityTag.register("BITECHANCE", new String[] {"BITE", "BITEC", "BCHANCE"}, new DoubleO(), "setBiteChance", null, FishHook.class);
+        EntityTag.register("BiteChance", new String[] {"Bite", "BiteC", "BChance"}, new DoubleO(), "setBiteChance", null, FishHook.class);
 
         //Primed TnT
-        EntityTag.register("FUSETICKS", new String[] {"FUSET", "FUSE"}, new IntO(), "setFuseTicks", null, TNTPrimed.class);
+        EntityTag.register("FuseTicks", new String[] {"FuseT", "Fuse"}, new IntO(), "setFuseTicks", null, TNTPrimed.class);
 
         //Explosive
-        EntityTag.register("YIELD", new String[] {"EXPLOSIONSIZE", "EXPLOSIONRADIUS", "EXPLODESIZE", "EXPLODERADIUS", "EXPLOSIONS", "EXPLOSIONR"}, new DoubleO(), "setYield", null, Explosive.class);
-        EntityTag.register("FIRE", new String[] {"EXPLODEFIRE", "EXPLOSIONFIRE"}, new BoolO().def(true), "setIsIncendiary", null, Explosive.class);
+        EntityTag.register("Yield", new String[] {"ExplosionSize", "ExplosionRadius", "ExplodeSize", "ExplodeRadius", "ExplosionS", "ExplosionR"}, new DoubleO(), "setYield", null, Explosive.class);
+        EntityTag.register("FIRE", new String[] {"ExplodeFire", "ExplosionFire"}, new BoolO().def(true), "setIsIncendiary", null, Explosive.class);
 
         //Witherskull
-        EntityTag.register("CHARGED", new String[] {"CHARGE"}, new BoolO().def(true), "setCharged", "isCharged", WitherSkull.class);
+        EntityTag.register("Charged", new String[] {"Charge"}, new BoolO().def(true), "setCharged", "isCharged", WitherSkull.class);
 
         //Bat
-        EntityTag.register("AWAKE", null, new BoolO().def(true), "setAwake", "isAwake", Bat.class);
+        EntityTag.register("Awake", null, new BoolO().def(true), "setAwake", "isAwake", Bat.class);
 
         //Creeper
-        EntityTag.register("POWERED", new String[] {"LIGHTNING"}, new BoolO().def(true), "setPowered", "isPowered", Creeper.class);
+        EntityTag.register("Powered", new String[] {"Lightning"}, new BoolO().def(true), "setPowered", "isPowered", Creeper.class);
 
         //Enderman
-        EntityTag.register("holding", new String[] {"HOLD", "CARYING", "CARY"}, new MaterialO(), "setCarriedMaterial", "getCarriedMaterial", Enderman.class); //TODO: Block modifier
+        EntityTag.register("Holding", new String[] {"Hold", "Carrying", "Cary"}, new MaterialO(), "setCarriedMaterial", "getCarriedMaterial", Enderman.class); //TODO: Block modifier
 
         //Guardian
-        EntityTag.register("ELDER", new String[] {"ELDAR"}, new BoolO().def(false), "setElder", "isElder", Guardian.class);
+        EntityTag.register("Elder", new String[] {"Eldar"}, new BoolO().def(false), "setElder", "isElder", Guardian.class);
 
         //Horse
-        EntityTag.register("HORSEVARIANT", new String[] {"HVARIANT", "VARIANT", "HORSEV", "HORSETYPE", "HTYPE", "HORSET"}, new StringO().def("HORSE").match(HorseVariants.getAliasMap()), new EntityTagCallback() {
+        EntityTag.register("HorseVariant", new String[] {"HVariant", "Variant", "HorseV", "HorseType", "HType", "HorseT"},
+                new StringO().def("HORSE").match(HorseVariants.getAliasMap()), new EntityTagCallback() {
             @Override boolean onSet(CommandSender sender, EEntity entity, SingleOption result) {
                 entity.setHorseVariant(HorseVariants.get(((StringO)result).getValue()));
                 return true;
@@ -425,7 +429,7 @@ public class EntityTag {
                 return HorseVariants.getName(entity.getHorseVariant());
             }
         }, Horse.class);
-        EntityTag.register("HORSECOLOR", new String[] {"HCOLOR", "HORSEC"}, new StringO().match(HorseColors.getAliasMap()), new EntityTagCallback() {
+        EntityTag.register("HorseColor", new String[] {"HColor", "HorseC"}, new StringO().match(HorseColors.getAliasMap()), new EntityTagCallback() {
             @Override boolean onSet(CommandSender sender, EEntity entity, SingleOption result) {
                 entity.setHorseColor(HorseColors.get(((StringO)result).getValue()));
                 return true;
@@ -435,7 +439,7 @@ public class EntityTag {
                 return HorseColors.getName(entity.getHorseColor());
             }
         }, Horse.class);
-        EntityTag.register("HORSESTYLE", new String[] {"HSTYLE", "HORSES"}, new StringO().match(HorseStyles.getAliasMap()), new EntityTagCallback() {
+        EntityTag.register("HorseStyle", new String[] {"HStyle", "HorseS", "HorsePattern", "HorseP", "HPattern"}, new StringO().match(HorseStyles.getAliasMap()), new EntityTagCallback() {
             @Override boolean onSet(CommandSender sender, EEntity entity, SingleOption result) {
                 entity.setHorseStyle(HorseStyles.get(((StringO)result).getValue()));
                 return true;
@@ -445,15 +449,15 @@ public class EntityTag {
                 return HorseStyles.getName(entity.getHorseStyle());
             }
         }, Horse.class);
-        EntityTag.register("CARYINGCHEST", new String[] {"CHEST"}, new BoolO().def(false), "setCarryingChest", "isCarryingChest", Horse.class);
-        EntityTag.register("DOMESTICATION", new String[] {"DOMESTICATE", "DOMEST", "DOM"}, new IntO().def(0), "setDomestication", "getDomestication", Horse.class);
-        EntityTag.register("MAXDOMESTICATION", new String[] {"MAXDOMESTICATE", "MAXDOMEST", "MAXDOM", "MDOMESTICATION", "MDOMESTICATE", "MDOMEST", "MDOM"},
+        EntityTag.register("CaryingChest", new String[] {"Chest"}, new BoolO().def(false), "setCarryingChest", "isCarryingChest", Horse.class);
+        EntityTag.register("Domestication", new String[] {"Domesticate", "Domest", "Dom"}, new IntO().def(0), "setDomestication", "getDomestication", Horse.class);
+        EntityTag.register("MaxDomestication", new String[] {"MaxDomesticate", "MaxDomest", "MaxDom", "MDomestication", "MDomesticate", "MDomest", "MDom"},
                 new IntO().def(100), "setMaxDomestication", "getMaxDomestication", Horse.class);
-        EntityTag.register("JUMPSTRENGTH", new String[] {"JUMPSTR", "JUMP", "JSTRENGTH", "JUMPS", "JSTR"}, new DoubleO(), "setJumpStrength", "getJumpStrength", Horse.class);
-        EntityTag.register("ARMOR", new String[] {"HORSEARMOR", "HARMOR", "HORSEA"}, new ItemO(), "setHorseArmor", "getHorseArmor", Horse.class);
+        EntityTag.register("JumpStrength", new String[] {"JumpStr", "Jump", "JStrength", "JumpS", "JSTr"}, new DoubleO(), "setJumpStrength", "getJumpStrength", Horse.class);
+        EntityTag.register("Armor", new String[] {"HorseArmor", "HArmor", "HorseA"}, new ItemO(), "setHorseArmor", "getHorseArmor", Horse.class);
 
         //Ocelot
-        EntityTag.register("CATTYPE", new String[] {"OCELOTTYPE", "CATT", "OCELOTT", "CATVARIANT", "OCELOTVARIANT", "CATV", "OCELOTV"},
+        EntityTag.register("CatType", new String[] {"OcelotType", "CatT", "OcelotT", "CatVariant", "OcelotVariant", "CatV", "OcelotV"},
                 new StringO().match(OcelotTypes.getAliasMap()), new EntityTagCallback() {
             @Override boolean onSet(CommandSender sender, EEntity entity, SingleOption result) {
                 entity.setCatType(OcelotTypes.get(((StringO)result).getValue()));
@@ -466,7 +470,7 @@ public class EntityTag {
         }, Ocelot.class);
 
         //Rabbit
-        EntityTag.register("RABBITTYPE", new String[] {"BUNNYTYPE", "BUNNYT", "RABBITT", "BUNNYVARIANT", "RABBITVARIANT", "BUNNYV", "RABBITV"},
+        EntityTag.register("RabbitType", new String[] {"BunnyType", "BunnyT", "RabbitT", "BunnyVariant", "RabbitVariant", "BunnyV", "RabbitV"},
                 new StringO().match(RabbitTypes.getAliasMap()), new EntityTagCallback() {
             @Override boolean onSet(CommandSender sender, EEntity entity, SingleOption result) {
                 entity.setRabbitType(RabbitTypes.get(((StringO)result).getValue()));
@@ -479,24 +483,24 @@ public class EntityTag {
         }, Rabbit.class);
 
         //Pigman
-        EntityTag.register("ANGER", new String[] {"ANGERLEVEL"}, new IntO().def(0), "setAnger", "getAnger", PigZombie.class);
+        EntityTag.register("Anger", new String[] {"AngerLevel"}, new IntO().def(0), "setAnger", "getAnger", PigZombie.class);
 
         //Sheep
-        EntityTag.register("SHEARED", new String[] {"SHEAR"}, new BoolO().def(false), "setSheared", "isSheared", Sheep.class);
+        EntityTag.register("Sheared", new String[] {"Shear"}, new BoolO().def(false), "setSheared", "isSheared", Sheep.class);
 
         //Skeleton
-        EntityTag.register("WITHER", new String[] {"WITHERSKELETON", "WSKELETON", "WITHERS", "WITHERSKELI", "WSKELI"}, new BoolO().def(false), "setWitherSkeleton", "isWitherSkeleton", Skeleton.class);
+        EntityTag.register("Wither", new String[] {"WitherSkeleton", "WSkeleton", "Withers", "WitherSkeli", "WSkeli"}, new BoolO().def(false), "setWitherSkeleton", "isWitherSkeleton", Skeleton.class);
 
         //Slime
-        EntityTag.register("SIZE", new String[] {"SLIMESIZE"}, new IntO(), "setSize", "getSize", Slime.class);
+        EntityTag.register("Size", new String[] {"SlimeSize"}, new IntO(), "setSize", "getSize", Slime.class);
 
         //IronGolem
-        EntityTag.register("PLAYERCREATED", new String[] {"PCREATED", "CREATED", "PLAYERC"}, new BoolO().def(false), "setPlayerCreated", "isPlayerCreated", IronGolem.class);
+        EntityTag.register("PlayerCreated", new String[] {"PCreated", "Created", "PlayerC"}, new BoolO().def(false), "setPlayerCreated", "isPlayerCreated", IronGolem.class);
 
         //Tags
-        EntityTag.register("NOAI", new String[] {"REMOVEAI"}, new BoolO().def(false), "setNoAI", "hasNoAI", Entity.class);
-        EntityTag.register("INVULNERABLE", new String[] {"GODMODE", "GOD", "INVUL"}, new BoolO().def(false), "setInvulnerable", "isInvulnerable", Entity.class);
-        EntityTag.register("SILENT", new String[] {"NOSOUND", "REMOVESOUND"}, new BoolO().def(false), "setSilent", "isSilent", Entity.class);
-        EntityTag.register("PERSISTENT", new String[] {"PERSIST"}, new BoolO().def(false), "setPersistent", "isPersistent", Entity.class);
+        EntityTag.register("NoAI", new String[] {"RemoveAI"}, new BoolO().def(false), "setNoAI", "hasNoAI", Entity.class);
+        EntityTag.register("Invulnerable", new String[] {"GodMode", "God", "Invul"}, new BoolO().def(false), "setInvulnerable", "isInvulnerable", Entity.class);
+        EntityTag.register("Silent", new String[] {"NoSound", "RemoveSound"}, new BoolO().def(false), "setSilent", "isSilent", Entity.class);
+        EntityTag.register("Persistent", new String[] {"Persist"}, new BoolO().def(false), "setPersistent", "isPersistent", Entity.class);
     }
 }
