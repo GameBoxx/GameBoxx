@@ -28,9 +28,7 @@ package info.gameboxx.gameboxx.util;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.WordUtils;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 import java.util.regex.Pattern;
 
 /**
@@ -56,6 +54,34 @@ public class Str {
     }
 
     /**
+     * Integrate ChatColor in multiple strings based on color codes.
+     * This replaces codes like &amp;a&amp;l with §a§l
+     *
+     * @param strings The strings to apply color to.
+     * @return formatted strings
+     */
+    public static String[] color(String... strings) {
+        for (int i = 0; i < strings.length; i++) {
+            strings[i] = COLOR.matcher(strings[i]).replaceAll("§$1");
+        }
+        return strings;
+    }
+
+    /**
+     * Integrate ChatColor in multiple strings based on color codes.
+     * This replaces codes like &amp;a&amp;l with §a§l
+     *
+     * @param strings The strings to apply color to.
+     * @return formatted strings
+     */
+    public static List<String> color(List<String> strings) {
+        for (int i = 0; i < strings.size(); i++) {
+            strings.set(i, COLOR.matcher(strings.get(i)).replaceAll("§$1"));
+        }
+        return strings;
+    }
+
+    /**
      * Remove all color and put regular colors as the formatting codes like &amp;1.
      *
      * @param str The string to remove color from.
@@ -63,6 +89,32 @@ public class Str {
      */
     public static String replaceColor(String str) {
         return COLOR_REPLACE.matcher(str).replaceAll("&$1");
+    }
+
+    /**
+     * Remove all color and put regular colors as the formatting codes like &amp;1.
+     *
+     * @param strings The strings to remove color from.
+     * @return formatted strings
+     */
+    public static String[] replaceColor(String... strings) {
+        for (int i = 0; i < strings.length; i++) {
+            strings[i] = COLOR_REPLACE.matcher(strings[i]).replaceAll("&$1");
+        }
+        return strings;
+    }
+
+    /**
+     * Remove all color and put regular colors as the formatting codes like &amp;1.
+     *
+     * @param strings The strings to remove color from.
+     * @return formatted strings
+     */
+    public static List<String> replaceColor(List<String> strings) {
+        for (int i = 0; i < strings.size(); i++) {
+            strings.set(i, COLOR_REPLACE.matcher(strings.get(i)).replaceAll("&$1"));
+        }
+        return strings;
     }
 
     /**
@@ -74,6 +126,34 @@ public class Str {
      */
     public static String stripColor(String str) {
         return COLOR_STRIP.matcher(str).replaceAll("");
+    }
+
+    /**
+     * Strips all coloring from the specified strings.
+     * For example a string like: '&amp;a&amp;ltest' becomes 'test' and '§a&ltest' becomes 'test'.
+     *
+     * @param strings The strings to remove color from.
+     * @return Strings without any colors and without any color codes.
+     */
+    public static String[] stripColor(String... strings) {
+        for (int i = 0; i < strings.length; i++) {
+            strings[i] = COLOR_STRIP.matcher(strings[i]).replaceAll("");
+        }
+        return strings;
+    }
+
+    /**
+     * Strips all coloring from the specified strings.
+     * For example a string like: '&amp;a&amp;ltest' becomes 'test' and '§a&ltest' becomes 'test'.
+     *
+     * @param strings The strings to remove color from.
+     * @return Strings without any colors and without any color codes.
+     */
+    public static List<String> stripColor(List<String> strings) {
+        for (int i = 0; i < strings.size(); i++) {
+            strings.set(i, COLOR_STRIP.matcher(strings.get(i)).replaceAll(""));
+        }
+        return strings;
     }
 
 
@@ -254,6 +334,37 @@ public class Str {
         return result.substring(0, result.length() - lastGlue.length());
     }
 
+
+    /**
+     * Split the specified string(s) by new lines.
+     * <p/>
+     * For example [Line1, Line2\nLine3, Line4] would become [Line1, Line2, Line3, Line4]
+     *
+     * @param strings The string(s) that need to be split.
+     * @return List with strings split.
+     */
+    public static List<String> splitLines(String... strings) {
+        return splitLines(Arrays.asList(strings));
+    }
+
+    /**
+     * Split the specified list of strings by new lines.
+     * <p/>
+     * For example [Line1, Line2\nLine3, Line4] would become [Line1, Line2, Line3, Line4]
+     *
+     * @param strings The list of strings that need to be split.
+     * @return List with strings split.
+     */
+    public static List<String> splitLines(List<String> strings) {
+        List<String> splitList = new ArrayList<>();
+        for (String string : strings) {
+            String[] split = string.split("\\\\n|\\r?\\n");
+            for (String str : split) {
+                splitList.add(str);
+            }
+        }
+        return splitList;
+    }
 
 
     /**
