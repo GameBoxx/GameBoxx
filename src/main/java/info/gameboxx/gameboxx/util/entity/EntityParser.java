@@ -27,9 +27,12 @@ package info.gameboxx.gameboxx.util.entity;
 
 import info.gameboxx.gameboxx.GameBoxx;
 import info.gameboxx.gameboxx.aliases.EntityTypes;
+import info.gameboxx.gameboxx.messages.Msg;
+import info.gameboxx.gameboxx.messages.Param;
 import info.gameboxx.gameboxx.options.SingleOption;
 import info.gameboxx.gameboxx.options.single.*;
 import info.gameboxx.gameboxx.util.Str;
+import info.gameboxx.gameboxx.util.Utils;
 import org.apache.commons.lang.reflect.MethodUtils;
 import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
@@ -80,19 +83,19 @@ public class EntityParser {
     public EntityParser(String string, CommandSender sender, boolean ignoreErrors, Integer maxAmount, boolean allowStacked) {
         this.string = string;
         if (string == null || string.isEmpty()) {
-            error = "No input...";
+            error = Msg.getString("entityparser.no-input");
             return;
         }
 
         //Split the string by > for stacked entities. (> within quotes will be ignored)
         List<String> entitySections = Str.splitIgnoreQuoted(string, '>', true);
         if (entitySections.size() < 1) {
-            error = "No input...";
+            error = Msg.getString("entityparser.no-input");
             return;
         }
 
         if (!allowStacked && entitySections.size() > 1) {
-            error = "Stacked entities not allowed.";
+            error = Msg.getString("entityparser.cant-stack");
             return;
         }
 
@@ -131,7 +134,7 @@ public class EntityParser {
         }
 
         if (location == null) {
-            error = "No location...";
+            error = Msg.getString("entityparser.no-location");
             return;
         }
 
@@ -152,13 +155,13 @@ public class EntityParser {
                 if (i == 0) {
                     EntityType type = EntityTypes.get(section);
                     if (type == null) {
-                        error = "Invalid entity...";
+                        error = Msg.getString("entityparser.invalid-entity", Param.P("input", section), Param.P("entities", Utils.getAliasesString("entityparser.entities.entry", EntityTypes.getAliasMap())));
                         stack.killAll();
                         return;
                     }
                     entity = new EEntity(type, location);
                     if (entity == null || entity.bukkit() == null) {
-                        error = "Can't spawn entity...";
+                        error = Msg.getString("entityparser.cant-spawn");
                         stack.killAll();
                         return;
                     }
@@ -176,7 +179,8 @@ public class EntityParser {
                 //Try to parse EntityTag
                 EntityTag tag = EntityTag.fromString(key);
                 if (tag == null) {
-                    error = "Invalid entity tag... '" + key + "'='" + value + "'";
+                    error = Msg.getString("parser.invalid-tag", Param.P("tag", key), Param.P("type", Msg.getString("entityparser.type")),
+                            Param.P("tags", Utils.getAliasesString("parser.tag-entry", EntityTag.getTagsMap(entity.getType()))));
                     if (!ignoreErrors) {
                         entity.remove();
                         stack.killAll();
@@ -188,7 +192,8 @@ public class EntityParser {
 
                 //Make sure the entity tag can be used for the entity.
                 if (!EntityTag.getTags(entity.getType()).contains(tag)) {
-                    error = "Tag can't be used for entity...";
+                    error = Msg.getString("parser.unusable-tag", Param.P("tag", key), Param.P("type", Msg.getString("entityparser.type")),
+                            Param.P("tags", Utils.getAliasesString("parser.tag-entry", EntityTag.getTagsMap(entity.getType()))));
                     if (!ignoreErrors) {
                         entity.remove();
                         stack.killAll();
@@ -217,7 +222,7 @@ public class EntityParser {
                 //Apply the tag to the entity
                 if (tag.hasCallback()) {
                     if (!tag.getCallback().onSet(sender, entity, option)) {
-                        error = "Failed to apply the tag..";
+                        error = Msg.getString("parser.tag-fail", Param.P("tag", key), Param.P("value", value));
                         if (!ignoreErrors) {
                             entity.remove();
                             stack.killAll();
@@ -232,11 +237,14 @@ public class EntityParser {
                         MethodUtils.invokeMethod(entity, tag.setMethod(), option.getValue());
                         success = true;
                     } catch (NoSuchMethodException e) {
-                        error = "No method to apply the tag.. [" + e.getMessage() + "]";
+                        error = Msg.getString("parser.missing-method", Param.P("tag", key), Param.P("value", value),
+                                Param.P("method", tag.setMethod() + "(" + option.getValue().getClass().getSimpleName() + ")"));
                     } catch (IllegalAccessException e) {
-                        error = "Can't access method to apply the tag.. [" + e.getMessage() + "]";
+                        error = Msg.getString("parser.inaccessible-method", Param.P("tag", key), Param.P("value", value),
+                                Param.P("method", tag.setMethod() + "(" + option.getValue().getClass().getSimpleName() + ")"));
                     } catch (InvocationTargetException e) {
-                        error = "Can't invoke method to apply the tag.. [" + e.getMessage() + "]";
+                        error = Msg.getString("parser.non-invokable-method", Param.P("tag", key), Param.P("value", value),
+                                Param.P("method", tag.setMethod() + "(" + option.getValue().getClass().getSimpleName() + ")"));
                     }
                     if (!success) {
                         if (!ignoreErrors) {

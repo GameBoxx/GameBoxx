@@ -60,7 +60,7 @@ public class ItemParser {
     public ItemParser(String string, CommandSender sender, boolean ignoreErrors) {
         this.string = string;
         if (string == null || string.isEmpty()) {
-            error = Msg.getString("item.no-input");
+            error = Msg.getString("itemparser.no-input");
             return;
         }
 
@@ -74,7 +74,7 @@ public class ItemParser {
             if (i == 0) {
                 ItemData item = Items.getItem(section);
                 if (item == null) {
-                    error = Msg.getString("item.invalid-item", Param.P("input", section));
+                    error = Msg.getString("itemparser.invalid-item", Param.P("input", section));
                     return;
                 }
                 this.item = new EItem(item.getType(), 1, item.getData());
@@ -95,7 +95,8 @@ public class ItemParser {
             //Try to parse ItemTag
             ItemTag tag = ItemTag.fromString(key);
             if (tag == null) {
-                error = Msg.getString("item.invalid-tag", Param.P("tag", key), Param.P("value", value), Param.P("tags", Utils.getAliasesString("item.tag-entry", ItemTag.getTagsMap(item.getMeta()))));
+                error = Msg.getString("parser.invalid-tag", Param.P("tag", key), Param.P("value", value), Param.P("type", Msg.getString("itemparser.type")),
+                        Param.P("tags", Utils.getAliasesString("parser.tag-entry", ItemTag.getTagsMap(item.getMeta()))));
                 if (!ignoreErrors) {
                     return;
                 }
@@ -104,7 +105,8 @@ public class ItemParser {
 
             //Make sure the item tag can be used for the meta of the item.
             if (!ItemTag.getTags(item.getMeta()).contains(tag)) {
-                error = Msg.getString("item.unusable-tag", Param.P("tag", key), Param.P("tags", Utils.getAliasesString("item.tag-entry", ItemTag.getTagsMap(item.getMeta()))));
+                error = Msg.getString("parser.unusable-tag", Param.P("tag", key), Param.P("type", Msg.getString("itemparser.type")),
+                        Param.P("tags", Utils.getAliasesString("parser.tag-entry", ItemTag.getTagsMap(item.getMeta()))));
                 System.out.println(Msg.fromString(error).get());
                 if (!ignoreErrors) {
                     return;
@@ -128,7 +130,7 @@ public class ItemParser {
             //Apply the tag to the item
             if (tag.hasCallback()) {
                 if (!tag.getCallback().onSet(sender, item, option)) {
-                    error = Msg.getString("item.tag-fail", Param.P("tag", key), Param.P("value", value));
+                    error = Msg.getString("parser.tag-fail", Param.P("tag", key), Param.P("value", value));
                     if (!ignoreErrors) {
                         return;
                     }
@@ -140,13 +142,13 @@ public class ItemParser {
                     MethodUtils.invokeMethod(item, tag.setMethod(), option.getValue());
                     success = true;
                 } catch (NoSuchMethodException e) {
-                    error = Msg.getString("item.missing-method", Param.P("tag", key), Param.P("value", value),
+                    error = Msg.getString("parser.missing-method", Param.P("tag", key), Param.P("value", value),
                             Param.P("method", tag.setMethod() + "(" + option.getValue().getClass().getSimpleName() + ")"));
                 } catch (IllegalAccessException e) {
-                    error = Msg.getString("item.inaccessible-method", Param.P("tag", key), Param.P("value", value),
+                    error = Msg.getString("parser.inaccessible-method", Param.P("tag", key), Param.P("value", value),
                             Param.P("method", tag.setMethod() + "(" + option.getValue().getClass().getSimpleName() + ")"));
                 } catch (InvocationTargetException e) {
-                    error = Msg.getString("item.non-invokable-method", Param.P("tag", key), Param.P("value", value),
+                    error = Msg.getString("parser.non-invokable-method", Param.P("tag", key), Param.P("value", value),
                             Param.P("method", tag.setMethod() + "(" + option.getValue().getClass().getSimpleName() + ")"));
                 }
                 if (!success && !ignoreErrors) {

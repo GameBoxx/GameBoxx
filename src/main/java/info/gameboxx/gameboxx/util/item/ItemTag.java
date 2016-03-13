@@ -129,7 +129,7 @@ public class ItemTag {
         Map<String, List<String>> tagMap = new HashMap<>();
         Collection<ItemTag> tagList = meta == null ? values() : getTags(meta);
         for (ItemTag tag : tagList) {
-            tagMap.put(tag.getTag(), Arrays.asList(tag.getAliases()));
+            tagMap.put(tag.getTag(), tag.getAliases() == null || tag.getAliases().length < 1 ? new ArrayList<String>() : Arrays.asList(tag.getAliases()));
         }
         return tagMap;
     }
