@@ -29,11 +29,14 @@ import info.gameboxx.gameboxx.aliases.*;
 import info.gameboxx.gameboxx.options.SingleOption;
 import info.gameboxx.gameboxx.options.single.*;
 import org.bukkit.FireworkEffect;
+import org.bukkit.Material;
 import org.bukkit.block.banner.Pattern;
 import org.bukkit.command.CommandSender;
 import org.bukkit.enchantments.Enchantment;
+import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.meta.*;
 import org.bukkit.potion.PotionData;
+import org.bukkit.potion.PotionEffect;
 
 import java.util.*;
 
@@ -114,7 +117,9 @@ public class ItemTag {
         for (ItemTag tag : ItemTag.values()) {
             for (Class<? extends ItemMeta> clazz : tag.getMeta()) {
                 if (clazz.isAssignableFrom(meta.getClass())) {
-                    tags.add(tag);
+                    if (!tags.contains(tag)) {
+                        tags.add(tag);
+                    }
                 }
             }
         }
@@ -165,11 +170,11 @@ public class ItemTag {
     public static void registerDefaults() {
 
         //All items
-        ItemTag.register("Name", new String[] {"DisplayName", "DName"}, new StringO(), "setName", "getName", ItemMeta.class);
-        ItemTag.register("Lore", new String[] {"Description", "Desc"}, new StringO(), "setLore", "getLore", ItemMeta.class);
+        ItemTag.register("Name", new String[] {"DisplayName", "DName"}, new StringO(), "setName", "getDisplayName", ItemMeta.class);
+        ItemTag.register("Lore", new String[] {"Description", "Desc"}, new StringO().def(""), "setLore", "getLoreString", ItemMeta.class);
         ItemTag.register("Enchant", new String[] {"Enchantment", "Ench", "E"}, new EnchantO(), new ItemTagCallback() {
             @Override boolean onSet(CommandSender sender, EItem item, SingleOption result) {
-                item.addEnchant(((EnchantO)result).getValue());
+                item.enchant(((EnchantO)result).getValue());
                 return true;
             }
 
@@ -178,16 +183,16 @@ public class ItemTag {
                 for (Map.Entry<Enchantment, Integer> entry : item.getEnchantments().entrySet()) {
                     result += "enchant:" + Enchantments.getName(entry.getKey()) + ":" + entry.getValue();
                 }
-                return result.substring(8);
+                return result.length() >= 8 ? result.substring(8) : "";
             }
-        }, ItemMeta.class);
+        }, ItemMeta.class, EnchantmentStorageMeta.class);
 
         //Leather Color
         ItemTag.register("Color", new String[] {"Clr", "Leather", "LColor", "LClr"}, new ColorO(), "setColor", "getColor", LeatherArmorMeta.class);
 
         //Skull
-        ItemTag.register("Owner", new String[] {"Skull", "Player"}, new StringO(), "setSkull", "getSkull", SkullMeta.class);
-        //TODO: Skull texture
+        ItemTag.register("Owner", new String[] {"Skull", "Player"}, new StringO().maxChars(16), "setOwner", "getOwner", SkullMeta.class);
+        ItemTag.register("Texture", new String[] {"Tex", "SkullTexture", "SkullT", "SkullTex", "Skin", "SkullURL"}, new StringO(), "setTexture", "getTexture", SkullMeta.class);
 
         //Banners
         ItemTag.register("Base", new String[] {"BaseColor", "BaseClr", "BColor", "BClr", "BC"}, new StringO().match(DyeColors.getAliasMap()), new ItemTagCallback() {
@@ -212,7 +217,7 @@ public class ItemTag {
                 for (Pattern pattern : item.getPatterns()) {
                     result += "pattern:" + BannerPatterns.getName(pattern.getPattern()) + ":" + DyeColors.getName(pattern.getColor());
                 }
-                return result.substring(8);
+                return result.length() >= 8 ? result.substring(8) : "";
             }
         }, BannerMeta.class);
 
@@ -224,31 +229,86 @@ public class ItemTag {
             }
 
             @Override String onGet(EItem item) {
-                String result = "";
-                for (FireworkEffect effect : item.getEffects()) {
-                    result += "effect:" + FireworkO.serialize(effect);
+                if (item.getType() == Material.FIREWORK_CHARGE) {
+                    return FireworkO.serialize(item.getEffect());
+                } else {
+                    String result = "";
+                    for (FireworkEffect effect : item.getEffects()) {
+                        result += "feffect:" + FireworkO.serialize(effect);
+                    }
+                    return result.length() >= 8 ? result.substring(8) : "";
                 }
-                return result.substring(7);
             }
         }, FireworkMeta.class, FireworkEffectMeta.class);
         ItemTag.register("Power", new String[] {"Pwr", "Pow"}, new IntO(), "setPower", "getPower", FireworkMeta.class);
 
-
         //Potions
-        //TODO: Implement the getter methods.
         ItemTag.register("Potion", new String[] {"Pot", "PotionType", "PotType", "PType"}, new StringO().match(PotionTypes.getAliasMap()), new ItemTagCallback() {
             @Override boolean onSet(CommandSender sender, EItem item, SingleOption result) {
-                item.setBasePotionData(new PotionData(PotionTypes.get(((StringO)result).getValue())));
+                item.setPotion(new PotionData(PotionTypes.get(((StringO)result).getValue())));
+                return true;
+            }
+
+            @Override String onGet(EItem item) {
+                return PotionTypes.getName(item.getPotion().getType());
+            }
+        }, PotionMeta.class);
+        ItemTag.register("PEffect", new String[] {"PotionE", "PE", "PotEffect", "PotE"}, new PotionO(), new ItemTagCallback() {
+            @Override boolean onSet(CommandSender sender, EItem item, SingleOption result) {
+                item.addPotionEffect(((PotionO)result).getValue());
+                return true;
+            }
+
+            @Override String onGet(EItem item) {
+                String result = "";
+                for (PotionEffect effect : item.getPotionEffects()) {
+                    result += "peffect:" + PotionO.serialize(effect);
+                }
+                return result.length() >= 8 ? result.substring(8) : "";
+            }
+        }, PotionMeta.class);
+
+        //Books
+        ItemTag.register("Author", new String[] {"BookAuthor", "Auth", "AU"}, new StringO(), "setAuthor", "getAuthor", BookMeta.class);
+        ItemTag.register("Title", new String[] {"BookTitle", "Tit"}, new StringO(), "setTitle", "getTitle", BookMeta.class);
+        ItemTag.register("Content", new String[] {"BookContent", "Cont", "CT", "Pages", "Page", "PA"}, new StringO(), new ItemTagCallback() {
+            @Override boolean onSet(CommandSender sender, EItem item, SingleOption result) {
+                item.setContent(((StringO)result).getValue());
+                return true;
+            }
+
+            @Override String onGet(EItem item) {
+                return item.getContent();
+            }
+        }, BookMeta.class);
+
+        //Flags
+        ItemTag.register("Flag", new String[] {"ItemFlag", "IFlag", "ItemF", "F", "HideFlag", "HFlag", "HideF", "Hide"}, new StringO().match(ItemFlags.getAliasMap()), new ItemTagCallback() {
+            @Override boolean onSet(CommandSender sender, EItem item, SingleOption result) {
+                item.addItemFlags(ItemFlags.get(((StringO)result).getValue()));
+                return true;
+            }
+
+            @Override String onGet(EItem item) {
+                String result = "";
+                for (ItemFlag flag : item.getItemFlags()) {
+                    result += "flag:" + ItemFlags.getName(flag);
+                }
+                return result.length() >= 5 ? result.substring(5) : "";
+            }
+        }, ItemMeta.class);
+        ItemTag.register("AllFlags", new String[] {"AllItemFlags", "AllIFlags", "AllItemF", "AllF", "AllHideFlags", "AllHFlags", "AllHideF", "HideAll"}, new BoolO().def(false), new ItemTagCallback() {
+            @Override boolean onSet(CommandSender sender, EItem item, SingleOption result) {
+                if (((BoolO)result).getValue()) {
+                    item.addItemFlags();
+                } else {
+                    item.removeItemFlags();
+                }
                 return true;
             }
 
             @Override String onGet(EItem item) {return null;}
-        }, PotionMeta.class);
-        ItemTag.register("PEffect", new String[] {"PotionE", "PE", "PotEffect", "PotE"}, new PotionO(), "addEffect", null, PotionMeta.class);
-
-
-        //Books
-
+        }, ItemMeta.class);
 
         //Custom
         ItemTag.register("Glow", new String[] {"Glowing"}, new BoolO().def(false), "setGlowing", "isGlowing", ItemMeta.class);
