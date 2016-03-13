@@ -86,7 +86,7 @@ public class EnchantO extends SingleOption<Enchant, EnchantO> {
     }
 
     public static String display(Enchant enchant) {
-        return enchant == null ? null : Msg.getString("enchant.display", Param.P("type", enchant.getType().toString()), Param.P("level", enchant.getLevel()));
+        return enchant == null ? null : Msg.getString("enchant.display", Param.P("type", Enchantments.getDisplayName(enchant.getType())), Param.P("level", enchant.getLevel()));
     }
 
     @Override

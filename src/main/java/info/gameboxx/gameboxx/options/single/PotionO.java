@@ -108,7 +108,8 @@ public class PotionO extends SingleOption<PotionEffect, PotionO> {
     }
 
     public static String display(PotionEffect potion) {
-        return potion == null ? null : Msg.getString("potion.display", Param.P("type", potion.getType().toString()), Param.P("amplifier", potion.getAmplifier()), Param.P("duration", potion.getDuration()));
+        return potion == null ? null : Msg.getString("potion.display", Param.P("type", PotionEffects.getDisplayName(potion.getType())),
+                Param.P("amplifier", potion.getAmplifier()), Param.P("duration", potion.getDuration()));
     }
 
     @Override

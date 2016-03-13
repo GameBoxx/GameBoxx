@@ -32,6 +32,7 @@ import info.gameboxx.gameboxx.options.SingleOption;
 import info.gameboxx.gameboxx.options.list.ColorLO;
 import info.gameboxx.gameboxx.util.Random;
 import info.gameboxx.gameboxx.util.Str;
+import info.gameboxx.gameboxx.util.Utils;
 import org.bukkit.Color;
 import org.bukkit.FireworkEffect;
 import org.bukkit.command.CommandSender;
@@ -53,14 +54,14 @@ public class FireworkO extends SingleOption<FireworkEffect, FireworkO> {
                 type = FireworkEffects.get(split[0]);
             }
             if (type == null) {
-                error = "Invalid type..";
+                Msg.getString("firework.invalid-type", Param.P("input", split[0]), Param.P("types", Utils.getAliasesString("firework.entry", FireworkEffects.getAliasMap())));
                 return false;
             }
             builder.with(type);
         }
 
         if (split.length < 2 || split[1].isEmpty()) {
-            error = "Must specify color";
+            Msg.getString("firework.no-color");
             return false;
         } else {
             String[] splitColors = split[1].split(";");
@@ -124,7 +125,7 @@ public class FireworkO extends SingleOption<FireworkEffect, FireworkO> {
     }
 
     public static String display(FireworkEffect effect) {
-        return effect == null ? null : Msg.getString("firework.display", Param.P("type", FireworkEffects.getName(effect.getType())), Param.P("colors", getColorsString(effect.getColors(), false)),
+        return effect == null ? null : Msg.getString("firework.display", Param.P("type", FireworkEffects.getDisplayName(effect.getType())), Param.P("colors", getColorsString(effect.getColors(), false)),
                 Param.P("fadecolors", getColorsString(effect.getFadeColors(), false)), Param.P("trail", effect.hasTrail()), Param.P("flicker", effect.hasFlicker()));
     }
 
