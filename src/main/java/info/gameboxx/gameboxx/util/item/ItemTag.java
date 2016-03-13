@@ -165,9 +165,9 @@ public class ItemTag {
     public static void registerDefaults() {
 
         //All items
-        ItemTag.register("NAME", new String[] {"DISPLAYNAME"}, new StringO(), "setName", "getName", ItemMeta.class);
-        ItemTag.register("LORE", new String[] {"DESCRIPTION", "DESC"}, new StringO(), "setLore", "getLore", ItemMeta.class);
-        ItemTag.register("ENCHANT", new String[] {"ENCHANTMENT", "ENCH", "E"}, new EnchantO(), new ItemTagCallback() {
+        ItemTag.register("Name", new String[] {"DisplayName", "DName"}, new StringO(), "setName", "getName", ItemMeta.class);
+        ItemTag.register("Lore", new String[] {"Description", "Desc"}, new StringO(), "setLore", "getLore", ItemMeta.class);
+        ItemTag.register("Enchant", new String[] {"Enchantment", "Ench", "E"}, new EnchantO(), new ItemTagCallback() {
             @Override boolean onSet(CommandSender sender, EItem item, SingleOption result) {
                 item.addEnchant(((EnchantO)result).getValue());
                 return true;
@@ -183,14 +183,14 @@ public class ItemTag {
         }, ItemMeta.class);
 
         //Leather Color
-        ItemTag.register("COLOR", new String[] {"CLR", "LEATHER"}, new ColorO(), "setColor", "getColor", LeatherArmorMeta.class);
+        ItemTag.register("Color", new String[] {"Clr", "Leather", "LColor", "LClr"}, new ColorO(), "setColor", "getColor", LeatherArmorMeta.class);
 
         //Skull
-        ItemTag.register("OWNER", new String[] {"SKULL", "PLAYER"}, new StringO(), "setSkull", "getSkull", SkullMeta.class);
+        ItemTag.register("Owner", new String[] {"Skull", "Player"}, new StringO(), "setSkull", "getSkull", SkullMeta.class);
         //TODO: Skull texture
 
         //Banners
-        ItemTag.register("BASE", new String[] {"BASECOLOR"}, new StringO().match(DyeColors.getAliasMap()), new ItemTagCallback() {
+        ItemTag.register("Base", new String[] {"BaseColor", "BaseClr", "BColor", "BClr", "BC"}, new StringO().match(DyeColors.getAliasMap()), new ItemTagCallback() {
             @Override boolean onSet(CommandSender sender, EItem item, SingleOption result) {
                 item.setBaseColor(DyeColors.get(((StringO)result).getValue()));
                 return true;
@@ -200,7 +200,7 @@ public class ItemTag {
                 return DyeColors.getName(item.getBaseColor());
             }
         }, BannerMeta.class);
-        ItemTag.register("PATTERN", new String[] {"PAT", "P"}, new MultiO(":", "{pattern}:{dyecolor}",
+        ItemTag.register("Pattern", new String[] {"Pat", "P"}, new MultiO(":", "{pattern}:{dyecolor}",
                 new StringO().match(BannerPatterns.getAliasMap()), new StringO().match(DyeColors.getAliasMap())), new ItemTagCallback() {
             @Override boolean onSet(CommandSender sender, EItem item, SingleOption result) {
                 item.addPattern(BannerPatterns.get((String)((MultiO)result).getValue()[0].getValue()), DyeColors.get((String)((MultiO)result).getValue()[1].getValue()));
@@ -217,7 +217,7 @@ public class ItemTag {
         }, BannerMeta.class);
 
         //Firework
-        ItemTag.register("FEFFECT", new String[] {"FIREWORK", "FW", "FWEFFECT", "FE", "FWE"}, new FireworkO(), new ItemTagCallback() {
+        ItemTag.register("FEffect", new String[] {"Firework", "FW", "FWEffect", "FE", "FWE"}, new FireworkO(), new ItemTagCallback() {
             @Override boolean onSet(CommandSender sender, EItem item, SingleOption result) {
                 item.addEffect(((FireworkO)result).getValue());
                 return true;
@@ -231,12 +231,12 @@ public class ItemTag {
                 return result.substring(7);
             }
         }, FireworkMeta.class, FireworkEffectMeta.class);
-        ItemTag.register("POWER", new String[] {"PWR", "POW"}, new IntO(), "setPower", "getPower", FireworkMeta.class);
+        ItemTag.register("Power", new String[] {"Pwr", "Pow"}, new IntO(), "setPower", "getPower", FireworkMeta.class);
 
 
         //Potions
         //TODO: Implement the getter methods.
-        ItemTag.register("POTION", new String[] {"POT", "POTIONTYPE", "POTTYPE", "PTYPE"}, new StringO().match(PotionTypes.getAliasMap()), new ItemTagCallback() {
+        ItemTag.register("Potion", new String[] {"Pot", "PotionType", "PotType", "PType"}, new StringO().match(PotionTypes.getAliasMap()), new ItemTagCallback() {
             @Override boolean onSet(CommandSender sender, EItem item, SingleOption result) {
                 item.setBasePotionData(new PotionData(PotionTypes.get(((StringO)result).getValue())));
                 return true;
@@ -244,14 +244,14 @@ public class ItemTag {
 
             @Override String onGet(EItem item) {return null;}
         }, PotionMeta.class);
-        ItemTag.register("PEFFECT", new String[] {"POTIONE", "PE", "POTEFFECT", "POTE"}, new PotionO(), "addEffect", null, PotionMeta.class);
+        ItemTag.register("PEffect", new String[] {"PotionE", "PE", "PotEffect", "PotE"}, new PotionO(), "addEffect", null, PotionMeta.class);
 
 
         //Books
 
 
         //Custom
-        ItemTag.register("GLOW", new String[] {"GLOWING"}, new BoolO().def(false), "setGlowing", "isGlowing", ItemMeta.class);
+        ItemTag.register("Glow", new String[] {"Glowing"}, new BoolO().def(false), "setGlowing", "isGlowing", ItemMeta.class);
 
     }
 }
