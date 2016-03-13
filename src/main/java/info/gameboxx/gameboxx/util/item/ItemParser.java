@@ -28,10 +28,13 @@ package info.gameboxx.gameboxx.util.item;
 import info.gameboxx.gameboxx.GameBoxx;
 import info.gameboxx.gameboxx.aliases.items.ItemData;
 import info.gameboxx.gameboxx.aliases.items.Items;
+import info.gameboxx.gameboxx.messages.Msg;
+import info.gameboxx.gameboxx.messages.Param;
 import info.gameboxx.gameboxx.options.SingleOption;
 import info.gameboxx.gameboxx.options.single.BoolO;
 import info.gameboxx.gameboxx.util.Parse;
 import info.gameboxx.gameboxx.util.Str;
+import info.gameboxx.gameboxx.util.Utils;
 import org.apache.commons.lang.reflect.MethodUtils;
 import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
@@ -57,7 +60,7 @@ public class ItemParser {
     public ItemParser(String string, CommandSender sender, boolean ignoreErrors) {
         this.string = string;
         if (string == null || string.isEmpty()) {
-            error = "No input...";
+            error = Msg.getString("item.no-input");
             return;
         }
 
@@ -71,7 +74,7 @@ public class ItemParser {
             if (i == 0) {
                 ItemData item = Items.getItem(section);
                 if (item == null) {
-                    error = "Invalid item...";
+                    error = Msg.getString("item.invalid-item", Param.P("input", section));
                     return;
                 }
                 this.item = new EItem(item.getType(), 1, item.getData());
@@ -92,7 +95,7 @@ public class ItemParser {
             //Try to parse ItemTag
             ItemTag tag = ItemTag.fromString(key);
             if (tag == null) {
-                error = "Invalid item tag... '" + key + "':'" + value + "'";
+                error = Msg.getString("item.invalid-tag", Param.P("tag", key), Param.P("value", value), Param.P("tags", Utils.getAliasesString("item.tag-entry", ItemTag.getTagsMap(item.getMeta()))));
                 if (!ignoreErrors) {
                     return;
                 }
@@ -101,7 +104,8 @@ public class ItemParser {
 
             //Make sure the item tag can be used for the meta of the item.
             if (!ItemTag.getTags(item.getMeta()).contains(tag)) {
-                error = "Tag can't be used for item...";
+                error = Msg.getString("item.unusable-tag", Param.P("tag", key), Param.P("tags", Utils.getAliasesString("item.tag-entry", ItemTag.getTagsMap(item.getMeta()))));
+                System.out.println(Msg.fromString(error).get());
                 if (!ignoreErrors) {
                     return;
                 }
@@ -124,7 +128,7 @@ public class ItemParser {
             //Apply the tag to the item
             if (tag.hasCallback()) {
                 if (!tag.getCallback().onSet(sender, item, option)) {
-                    error = "Failed to apply the tag..";
+                    error = Msg.getString("item.tag-fail", Param.P("tag", key), Param.P("value", value));
                     if (!ignoreErrors) {
                         return;
                     }
@@ -136,11 +140,14 @@ public class ItemParser {
                     MethodUtils.invokeMethod(item, tag.setMethod(), option.getValue());
                     success = true;
                 } catch (NoSuchMethodException e) {
-                    error = "No method to apply the tag.. [" + e.getMessage() + "]";
+                    error = Msg.getString("item.missing-method", Param.P("tag", key), Param.P("value", value),
+                            Param.P("method", tag.setMethod() + "(" + option.getValue().getClass().getSimpleName() + ")"));
                 } catch (IllegalAccessException e) {
-                    error = "Can't access method to apply the tag.. [" + e.getMessage() + "]";
+                    error = Msg.getString("item.inaccessible-method", Param.P("tag", key), Param.P("value", value),
+                            Param.P("method", tag.setMethod() + "(" + option.getValue().getClass().getSimpleName() + ")"));
                 } catch (InvocationTargetException e) {
-                    error = "Can't invoke method to apply the tag.. [" + e.getMessage() + "]";
+                    error = Msg.getString("item.non-invokable-method", Param.P("tag", key), Param.P("value", value),
+                            Param.P("method", tag.setMethod() + "(" + option.getValue().getClass().getSimpleName() + ")"));
                 }
                 if (!success && !ignoreErrors) {
                     return;

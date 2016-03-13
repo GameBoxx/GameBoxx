@@ -123,6 +123,15 @@ public class EntityTag {
         return BY_NAME.values();
     }
 
+    public static Map<String, List<String>> getTagsMap(EntityType type) {
+        Map<String, List<String>> tagMap = new HashMap<>();
+        Collection<EntityTag> tagList = type == null ? values() : getTags(type);
+        for (EntityTag tag : tagList) {
+            tagMap.put(tag.getTag(), Arrays.asList(tag.getAliases()));
+        }
+        return tagMap;
+    }
+
 
     public static EntityTag register(String tag, String[] aliases, SingleOption option, EntityTagCallback executeCallback, Class... entities) {
         return register(new EntityTag(tag, aliases, option, executeCallback, entities));

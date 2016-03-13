@@ -125,6 +125,15 @@ public class ItemTag {
         return BY_NAME.values();
     }
 
+    public static Map<String, List<String>> getTagsMap(ItemMeta meta) {
+        Map<String, List<String>> tagMap = new HashMap<>();
+        Collection<ItemTag> tagList = meta == null ? values() : getTags(meta);
+        for (ItemTag tag : tagList) {
+            tagMap.put(tag.getTag(), Arrays.asList(tag.getAliases()));
+        }
+        return tagMap;
+    }
+
 
     public static ItemTag register(String tag, String[] aliases, SingleOption option, ItemTagCallback executeCallback, Class... entities) {
         return register(new ItemTag(tag, aliases, option, executeCallback, entities));

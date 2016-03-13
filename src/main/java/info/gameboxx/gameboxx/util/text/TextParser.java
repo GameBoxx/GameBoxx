@@ -26,6 +26,7 @@
 package info.gameboxx.gameboxx.util.text;
 
 import info.gameboxx.gameboxx.util.Pair;
+import info.gameboxx.gameboxx.util.Str;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONValue;
 import org.json.simple.parser.JSONParser;
@@ -66,7 +67,6 @@ public class TextParser {
     public TextParser(String text) {
         this.text = text;
 
-        //StringBuilder JSON = new StringBuilder();
         Map<Integer, Pair<Integer, String>> parsedSections = new HashMap<>();
 
         //Parse all the actions by replacing the syntax regex match.
@@ -146,7 +146,7 @@ public class TextParser {
      */
     public static String getJsonText(String text) {
         //When the text doesn't have color codes we just return the text as JSON but without any formatting.
-        if (!text.contains("§")) {
+        if (!text.contains("§") || Str.stripColor(text).trim().isEmpty()) {
             return "\"text\":\"" + JSONValue.escape(text) + "\"";
         }
 
@@ -234,7 +234,7 @@ public class TextParser {
     private String getJsonComponent(TextAction action, String value, String display) {
         if (action == TextAction.HOVER) {
             //Just a hover text message.
-            return getJsonText(display) + ",\"hoverEvent\": {\"action\": \"show_text\",\"value\": {" + getJsonText(value) + "}}";
+            return getJsonText(display) + ",\"hoverEvent\": {\"action\": \"show_text\",\"value\": {\"text\": \"\",\"extra\": [{" + getJsonText(value) + "}]}}";
         } else {
             //Check for inherited hover message like <<cmd||[[hover||text]]>> it will then display text, on hover display hover and on click run the command cmd.
             Pattern p = Pattern.compile(TextAction.HOVER.getRegex(), Pattern.DOTALL);
