@@ -77,7 +77,7 @@ public class EnchantO extends SingleOption<Enchant, EnchantO> {
     }
 
     public static String serialize(Enchant enchant) {
-        return enchant == null ? null : enchant.getType().toString() + ":" + enchant.getLevel();
+        return enchant == null ? null : Enchantments.getName(enchant.getType()) + ":" + enchant.getLevel();
     }
 
     @Override

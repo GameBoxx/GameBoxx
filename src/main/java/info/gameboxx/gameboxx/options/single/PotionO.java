@@ -99,7 +99,8 @@ public class PotionO extends SingleOption<PotionEffect, PotionO> {
     }
 
     public static String serialize(PotionEffect potion) {
-        return potion == null ? null : (potion.isAmbient() ? "!" : "") + potion.getType().toString() + ":" + potion.getAmplifier() + "." + potion.getDuration() + "." + ColorO.serialize(potion.getColor());
+        return potion == null ? null : (potion.isAmbient() ? "!" : "") + PotionEffects.getName(potion.getType()) + ":" +
+                potion.getAmplifier() + "." + potion.getDuration() + (potion.getColor() == null ? "" : "." + ColorO.serialize(potion.getColor()));
     }
 
     @Override
