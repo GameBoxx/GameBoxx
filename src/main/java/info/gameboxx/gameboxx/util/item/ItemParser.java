@@ -182,7 +182,7 @@ public class ItemParser {
 
         List<String> sections = new ArrayList<>();
 
-        sections.add(Items.getName(item.getData()));
+        sections.add(Items.getName(item.getData()).replaceAll(" ", ""));
         if (item.getAmount() > 1) {
             sections.add(Integer.toString(item.getAmount()));
         }
