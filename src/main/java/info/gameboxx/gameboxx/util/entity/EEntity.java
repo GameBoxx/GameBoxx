@@ -66,6 +66,7 @@ import java.util.*;
  * It will just throw NPE's and other exceptions when using invalid input.
  * <p/>
  * Most of the javadoc comments are copied from the Bukkit/Spigot javadocs.
+ * Not all the methods have javadoc comments but the implementation is pretty much the same as the methods in the Bukkit API.
  */
 public class EEntity {
 
