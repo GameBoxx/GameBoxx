@@ -26,6 +26,7 @@
 package info.gameboxx.gameboxx.system.points.model;
 
 
+import info.gameboxx.gameboxx.user.User;
 import org.bukkit.entity.Player;
 
 public interface Applicable<T> {
@@ -33,5 +34,7 @@ public interface Applicable<T> {
     void apply(T t);
 
     interface PlayerApplicable extends Applicable<Player> {}
+
+    interface UserApplicable extends Applicable<User> {}
 
 }

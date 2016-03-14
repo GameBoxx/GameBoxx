@@ -26,28 +26,22 @@
 package info.gameboxx.gameboxx.system.points.cost;
 
 import info.gameboxx.gameboxx.system.points.model.Cost;
-import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
+import info.gameboxx.gameboxx.user.User;
 
 
 public class ItemCost extends Cost {
 
     public ItemCost(double amount) {
-        super(amount);
+        super("item", amount);
     }
 
     @Override
-    public void parse(CommandSender commandSender, String input) {
-
-    }
-
-    @Override
-    public boolean canAfford(Player player) {
+    public boolean canAfford(User user) {
         return false;
     }
 
     @Override
-    public void apply(Player player) {
+    public void apply(User user) {
 
     }
 }
