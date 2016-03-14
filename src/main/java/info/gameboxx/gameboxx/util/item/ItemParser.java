@@ -194,7 +194,9 @@ public class ItemParser {
                     continue;
                 }
                 if (!result.toLowerCase().contains(tag.getTag().toLowerCase() + ":")) {
-                    result = escape(result);
+                    result = Str.escapeWords(Str.escapeQuotes(result));
+                } else {
+                    result = Str.escapeQuotes(result);
                 }
                 sections.add(tag.getTag().toLowerCase() + ":" + result);
             } else {
@@ -214,7 +216,7 @@ public class ItemParser {
                     if (option.getValue().equals(option.getDefault())) {
                         continue;
                     }
-                    sections.add(tag.getTag().toLowerCase() + ":" + escape(option.serialize()));
+                    sections.add(tag.getTag().toLowerCase() + ":" + Str.escapeWords(Str.escapeQuotes(option.serialize())));
                 } catch (NoSuchMethodException e) {
                     e.printStackTrace();
                 } catch (IllegalAccessException e) {
@@ -226,17 +228,6 @@ public class ItemParser {
         }
 
         this.string = Str.implode(sections, " ");
-    }
-
-    public static String escape(String value) {
-        if (value.contains(" ") || value.contains("\"") || value.contains("'")) {
-            if (value.contains("'")) {
-                value = "\"" + value + "\"";
-            } else {
-                value = "'" + value + "'";
-            }
-        }
-        return value;
     }
 
 

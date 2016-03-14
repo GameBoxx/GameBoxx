@@ -409,7 +409,24 @@ public class Str {
 
         StringBuilder section = new StringBuilder();
         char quote = 0;
+        boolean escape = false;
         for (char ch : chars) {
+            if (ch == '\\') {
+                escape = true;
+                continue;
+            }
+            if (escape) {
+                escape = false;
+                if (ch == 34 || ch == 39 || ch == split) {
+                    if (keepQuotes) {
+                        section.append("\\");
+                    }
+                    section.append(ch);
+                    continue;
+                } else {
+                    section.append("\\");
+                }
+            }
             if (ch == split && quote == 0) {
                 //Start new section for split char when not quoted.
                 String ss = section.toString();
@@ -473,7 +490,24 @@ public class Str {
 
         StringBuilder section = new StringBuilder();
         char quote = 0;
+        boolean escape = false;
         for (char ch : chars) {
+            if (ch == '\\') {
+                escape = true;
+                continue;
+            }
+            if (escape) {
+                escape = false;
+                if (ch == 34 || ch == 39 || ch == split) {
+                    if (keepQuotes) {
+                        section.append("\\");
+                    }
+                    section.append(ch);
+                    continue;
+                } else {
+                    section.append("\\");
+                }
+            }
             if (ch == split && quote == 0) {
                 //Start new section for split char when not quoted.
                 String ss = section.toString();
@@ -512,6 +546,36 @@ public class Str {
         }
 
         return sections;
+    }
+
+    /**
+     * Put single or double quotes around the specified string if it contains spaces.
+     * <p/>
+     * If the string has double quotes single quotes will be used to surround it otherwise double quotes.
+     * If the string doesn't have spaces it won't be escaped.
+     *
+     * @param value The string that needs to be escaped.
+     * @return The specified string with quotes around it if it has spaces.
+     */
+    public static String escapeWords(String value) {
+        if (value.contains(" ")) {
+            if (!value.contains("'")) {
+                value = "'" + value + "'";
+            } else {
+                value = "\"" + value + "\"";
+            }
+        }
+        return value;
+    }
+
+    public static String escapeQuotes(String value) {
+        if (value.contains("'")) {
+            value = value.replaceAll("'", "\\\\'");
+        }
+        if (value.contains("\"")) {
+            value = value.replaceAll("\"", "\\\\\"");
+        }
+        return value;
     }
 
 }

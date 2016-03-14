@@ -297,6 +297,11 @@ public class EntityParser {
                     if (result == null || result.isEmpty()) {
                         continue;
                     }
+                    if (!result.toLowerCase().contains(tag.getTag().toLowerCase() + ":")) {
+                        result = Str.escapeWords(Str.escapeQuotes(result));
+                    } else {
+                        result = Str.escapeQuotes(result);
+                    }
                     sections.add(tag.getTag().toLowerCase() + ":" + result);
                 } else {
                     if (tag.getMethod() == null || tag.getMethod().isEmpty() || tag.getMethod().equalsIgnoreCase("null")) {
@@ -319,6 +324,7 @@ public class EntityParser {
                         if (option instanceof DoubleO) {
                             val = ((DoubleO)option).serialize(2);
                         }
+                        val = Str.escapeWords(Str.escapeQuotes(val));
                         sections.add(tag.getTag().toLowerCase() + ":" + val);
                     } catch (NoSuchMethodException e) {
                         e.printStackTrace();

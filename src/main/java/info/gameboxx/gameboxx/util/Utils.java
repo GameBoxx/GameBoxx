@@ -334,4 +334,5 @@ public class Utils {
             return Base64.encodeBase64(String.format("{\"textures\":{\"SKIN\":{\"url\":\"%s\"}}}", input).getBytes());
         }
     }
+
 }
