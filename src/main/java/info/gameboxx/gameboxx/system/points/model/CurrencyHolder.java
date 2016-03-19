@@ -28,11 +28,11 @@ package info.gameboxx.gameboxx.system.points.model;
 
 public interface CurrencyHolder {
 
-    void give(String currency, double amount);
+    void giveCurrency(String currency, double amount);
 
-    double get(String currency);
+    double getCurrency(String currency);
 
-    void take(String currency, double amount);
+    void takeCurrency(String currency, double amount);
 
-    void set(String currency, double amount);
+    void setCurrency(String currency, double amount);
 }

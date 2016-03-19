@@ -26,34 +26,51 @@
 package info.gameboxx.gameboxx.system.points.model;
 
 
+import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
+import info.gameboxx.gameboxx.user.User;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import java.math.BigDecimal;
+import java.util.Map;
 import java.util.Set;
 
-public abstract class Cost implements Applicable.PlayerApplicable {
+public abstract class Cost implements Applicable.UserApplicable {
 
-    private static final Set<Cost> costRegistration = Sets.newHashSet();
+    private static final Map<String, Cost> costRegistration = Maps.newHashMap();
     private final BigDecimal bigDecimal;
 
-    public Cost(double amount) {
-        costRegistration.add(this);
+    public Cost(String id, double amount) {
+        costRegistration.put(id, this);
         bigDecimal = BigDecimal.valueOf(amount);
     }
 
-    public Cost(BigDecimal bigDecimal) {
-        costRegistration.add(this);
+    public Cost(String id, BigDecimal bigDecimal) {
+        costRegistration.put(id, this);
         this.bigDecimal = bigDecimal;
+    }
+
+    public static Cost build(String input) {
+        /*PLACEHOLDER*/
+        return new Cost("", 0) {
+            @Override
+            public boolean canAfford(User user) {
+                return false;
+            }
+
+            @Override
+            public void apply(User user) {
+
+            }
+        };
+        /*PLACEHOLDER*/
     }
 
     public double getCost() {
         return bigDecimal.doubleValue();
     }
 
-    public abstract void parse(CommandSender commandSender, String input);
-
-    public abstract boolean canAfford(Player player);
+    public abstract boolean canAfford(User user);
 
 }

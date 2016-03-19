@@ -27,13 +27,11 @@ package info.gameboxx.gameboxx.user;
 
 
 import com.google.common.collect.Maps;
-import com.google.common.collect.Sets;
 import info.gameboxx.gameboxx.GameBoxx;
 import info.gameboxx.gameboxx.components.PlayersCP;
 import info.gameboxx.gameboxx.game.Arena;
 import info.gameboxx.gameboxx.game.Game;
 import info.gameboxx.gameboxx.game.GameSession;
-import info.gameboxx.gameboxx.system.points.model.Currency;
 import info.gameboxx.gameboxx.system.points.model.CurrencyHolder;
 import info.gameboxx.gameboxx.util.Numbers;
 import info.gameboxx.gameboxx.util.Random;
@@ -43,7 +41,6 @@ import org.bukkit.entity.Player;
 
 import java.util.Collections;
 import java.util.Map;
-import java.util.Set;
 import java.util.UUID;
 
 public class User implements CurrencyHolder {
@@ -147,22 +144,22 @@ public class User implements CurrencyHolder {
     }
 
     @Override
-    public void give(String currency, double amount) {
+    public void giveCurrency(String currency, double amount) {
         GameBoxx.get().getCM().give(this, currency, amount);
     }
 
     @Override
-    public double get(String currency) {
+    public double getCurrency(String currency) {
         return GameBoxx.get().getCM().get(this, currency);
     }
 
     @Override
-    public void take(String currency, double amount) {
+    public void takeCurrency(String currency, double amount) {
         GameBoxx.get().getCM().take(this, currency, amount);
     }
 
     @Override
-    public void set(String currency, double amount) {
+    public void setCurrency(String currency, double amount) {
         GameBoxx.get().getCM().set(this, currency, amount);
     }
 

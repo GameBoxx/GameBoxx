@@ -27,27 +27,24 @@ package info.gameboxx.gameboxx.system.points.cost;
 
 
 import info.gameboxx.gameboxx.system.points.model.Cost;
-import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
+import info.gameboxx.gameboxx.user.User;
 
 public class PointCost extends Cost {
 
-    public PointCost(double amount) {
-        super(amount);
+    private String currency;
+
+    public PointCost(String currency, double amount) {
+        super("points", amount);
+        this.currency = currency;
     }
 
     @Override
-    public void parse(CommandSender commandSender, String input) {
-
+    public boolean canAfford(User user) {
+        return user.getCurrency(currency) >= getCost();
     }
 
     @Override
-    public boolean canAfford(Player player) {
-        return false;
-    }
-
-    @Override
-    public void apply(Player player) {
-
+    public void apply(User user) {
+        user.takeCurrency(currency, getCost());
     }
 }
