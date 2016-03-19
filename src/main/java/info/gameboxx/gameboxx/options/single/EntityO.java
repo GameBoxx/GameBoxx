@@ -106,6 +106,11 @@ public class EntityO extends SingleOption<EEntity, EntityO> {
     }
 
     @Override
+    public String getTypeName() {
+        return "Entity";
+    }
+
+    @Override
     public EntityO clone() {
         return super.cloneData(new EntityO());
     }

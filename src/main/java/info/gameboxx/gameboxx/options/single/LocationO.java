@@ -229,6 +229,11 @@ public class LocationO extends SingleOption<Location, LocationO> {
     }
 
     @Override
+    public String getTypeName() {
+        return "Location";
+    }
+
+    @Override
     public LocationO clone() {
         return super.cloneData(new LocationO());
     }

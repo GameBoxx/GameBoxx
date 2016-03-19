@@ -66,6 +66,11 @@ public class EntityStackO extends SingleOption<EntityStack, EntityStackO> {
     }
 
     @Override
+    public String getTypeName() {
+        return "EntityStack";
+    }
+
+    @Override
     public EntityStackO clone() {
         return super.cloneData(new EntityStackO().max(maxEntities).allowStacked(allowStacked));
     }

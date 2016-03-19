@@ -81,6 +81,11 @@ public class VectorO extends SingleOption<Vector, VectorO> {
     }
 
     @Override
+    public String getTypeName() {
+        return "Vector";
+    }
+
+    @Override
     public VectorO clone() {
         return super.cloneData(new VectorO());
     }

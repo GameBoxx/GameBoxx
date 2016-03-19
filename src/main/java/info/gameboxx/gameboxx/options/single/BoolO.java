@@ -71,6 +71,11 @@ public class BoolO extends SingleOption<Boolean, BoolO> {
         return display(getValue());
     }
 
+    @Override
+    public String getTypeName() {
+        return "Boolean";
+    }
+
     public static String display(Boolean bool) {
         return bool == null ? null : (bool ? Msg.getString("boolean.display.true") : Msg.getString("boolean.display.false"));
     }

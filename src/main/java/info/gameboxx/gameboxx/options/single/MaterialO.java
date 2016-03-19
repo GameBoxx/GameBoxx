@@ -94,6 +94,11 @@ public class MaterialO extends SingleOption<MaterialData, MaterialO> {
     }
 
     @Override
+    public String getTypeName() {
+        return "Material";
+    }
+
+    @Override
     public MaterialO clone() {
         return super.cloneData(new MaterialO());
     }

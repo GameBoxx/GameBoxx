@@ -97,6 +97,11 @@ public class OfflinePlayerO extends SingleOption<OfflinePlayer, OfflinePlayerO> 
     }
 
     @Override
+    public String getTypeName() {
+        return "OfflinePlayer";
+    }
+
+    @Override
     public OfflinePlayerO clone() {
         return super.cloneData(new OfflinePlayerO());
     }

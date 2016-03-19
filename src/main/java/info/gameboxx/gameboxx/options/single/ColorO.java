@@ -147,6 +147,11 @@ public class ColorO extends SingleOption<Color, ColorO> {
     }
 
     @Override
+    public String getTypeName() {
+        return "Color";
+    }
+
+    @Override
     public ColorO clone() {
         return super.cloneData(new ColorO());
     }

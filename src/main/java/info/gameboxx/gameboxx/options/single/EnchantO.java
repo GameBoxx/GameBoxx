@@ -90,6 +90,11 @@ public class EnchantO extends SingleOption<Enchant, EnchantO> {
     }
 
     @Override
+    public String getTypeName() {
+        return "Enchantment";
+    }
+
+    @Override
     public EnchantO clone() {
         return super.cloneData(new EnchantO().ignoreMax(ignoreMax));
     }

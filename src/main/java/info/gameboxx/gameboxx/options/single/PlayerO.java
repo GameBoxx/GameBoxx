@@ -107,6 +107,11 @@ public class PlayerO extends SingleOption<Player, PlayerO> {
     }
 
     @Override
+    public String getTypeName() {
+        return "Player";
+    }
+
+    @Override
     public PlayerO clone() {
         return super.cloneData(new PlayerO());
     }

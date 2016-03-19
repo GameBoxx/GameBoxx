@@ -90,6 +90,11 @@ public class DoubleO extends SingleOption<Double, DoubleO> {
     }
 
     @Override
+    public String getTypeName() {
+        return "Double";
+    }
+
+    @Override
     public DoubleO clone() {
         return super.cloneData(new DoubleO().min(min).max(max));
     }

@@ -136,6 +136,11 @@ public class FireworkO extends SingleOption<FireworkEffect, FireworkO> {
     }
 
     @Override
+    public String getTypeName() {
+        return "Firework";
+    }
+
+    @Override
     public FireworkO clone() {
         return super.cloneData(new FireworkO());
     }

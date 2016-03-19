@@ -95,6 +95,11 @@ public class WorldO extends SingleOption<World, WorldO> {
     }
 
     @Override
+    public String getTypeName() {
+        return "World";
+    }
+
+    @Override
     public WorldO clone() {
         return super.cloneData(new WorldO());
     }

@@ -53,6 +53,11 @@ public class ItemO extends SingleOption<EItem, ItemO> {
     }
 
     @Override
+    public String getTypeName() {
+        return "Item";
+    }
+
+    @Override
     public ItemO clone() {
         return super.cloneData(new ItemO());
     }

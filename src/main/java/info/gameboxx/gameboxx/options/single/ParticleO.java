@@ -125,6 +125,11 @@ public class ParticleO extends SingleOption<ParticleEffect, ParticleO> {
     }
 
     @Override
+    public String getTypeName() {
+        return "Particle";
+    }
+
+    @Override
     public ParticleO clone() {
         return super.cloneData(new ParticleO());
     }

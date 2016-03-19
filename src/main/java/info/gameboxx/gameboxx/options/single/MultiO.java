@@ -81,6 +81,11 @@ public class MultiO extends SingleOption<SingleOption[], MultiO> {
     }
 
     @Override
+    public String getTypeName() {
+        return "Multi";
+    }
+
+    @Override
     public MultiO clone() {
         return super.cloneData(new MultiO(splitString, format, options));
     }

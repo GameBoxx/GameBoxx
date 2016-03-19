@@ -114,6 +114,11 @@ public class PotionO extends SingleOption<PotionEffect, PotionO> {
     }
 
     @Override
+    public String getTypeName() {
+        return "Potion";
+    }
+
+    @Override
     public PotionO clone() {
         return super.cloneData(new PotionO());
     }

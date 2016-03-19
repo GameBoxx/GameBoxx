@@ -135,6 +135,13 @@ public abstract class SingleOption<O, S extends SingleOption> extends Option<S> 
         return value.toString();
     }
 
+    /**
+     * Get the type name for the option like Boolean, Player etc.
+     *
+     * @return String with the name of the option type.
+     */
+    public abstract String getTypeName();
+
 
 
     /**

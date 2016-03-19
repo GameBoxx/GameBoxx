@@ -77,6 +77,11 @@ public class IntO extends SingleOption<Integer, IntO> {
     }
 
     @Override
+    public String getTypeName() {
+        return "Integer";
+    }
+
+    @Override
     public IntO clone() {
         return super.cloneData(new IntO().min(min).max(max));
     }

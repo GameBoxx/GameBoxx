@@ -46,6 +46,8 @@ public class StringO extends SingleOption<String, StringO> {
     private List<String> matchList = null;
     private Map<String, List<String>> matchMap = null;
 
+    private String typeName = "String";
+
     public StringO minChars(Integer minChars) {
         this.minChars = minChars;
         return this;
@@ -54,6 +56,11 @@ public class StringO extends SingleOption<String, StringO> {
     public StringO maxChars(Integer maxChars) {
         this.maxChars = maxChars;
         return this;
+    }
+
+
+    public void setTypeName(String typeName) {
+        this.typeName = typeName;
     }
 
 
@@ -178,6 +185,11 @@ public class StringO extends SingleOption<String, StringO> {
 
     public static String display(String val) {
         return val == null ? null : Msg.getString("string.display", Param.P("val", val));
+    }
+
+    @Override
+    public String getTypeName() {
+        return typeName;
     }
 
     @Override

@@ -219,6 +219,11 @@ public class BlockO extends SingleOption<Block, BlockO> {
     }
 
     @Override
+    public String getTypeName() {
+        return "Block";
+    }
+
+    @Override
     public BlockO clone() {
         return super.cloneData(new BlockO());
     }

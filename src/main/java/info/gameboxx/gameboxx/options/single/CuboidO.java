@@ -184,6 +184,11 @@ public class CuboidO extends SingleOption<Cuboid, CuboidO> {
     }
 
     @Override
+    public String getTypeName() {
+        return "Cuboid";
+    }
+
+    @Override
     public CuboidO clone() {
         return super.cloneData(new CuboidO());
     }
