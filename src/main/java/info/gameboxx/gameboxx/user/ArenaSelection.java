@@ -23,7 +23,7 @@
  THE SOFTWARE.
  */
 
-package info.gameboxx.gameboxx.commands;
+package info.gameboxx.gameboxx.user;
 
 import info.gameboxx.gameboxx.GameBoxx;
 import info.gameboxx.gameboxx.game.Arena;

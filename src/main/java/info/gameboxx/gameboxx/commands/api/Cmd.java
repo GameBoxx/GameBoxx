@@ -25,6 +25,7 @@
 
 package info.gameboxx.gameboxx.commands.api;
 
+import info.gameboxx.gameboxx.GameBoxx;
 import info.gameboxx.gameboxx.commands.api.data.Argument;
 import info.gameboxx.gameboxx.commands.api.data.Flag;
 import info.gameboxx.gameboxx.commands.api.data.Modifier;
@@ -427,6 +428,15 @@ public abstract class Cmd extends BukkitCommand {
      */
     public Plugin getPlugin() {
         return plugin;
+    }
+
+    /**
+     * Get the {@link GameBoxx} instance.
+     *
+     * @return {@link GameBoxx} instance.
+     */
+    public GameBoxx getGB() {
+        return GameBoxx.get();
     }
 
 

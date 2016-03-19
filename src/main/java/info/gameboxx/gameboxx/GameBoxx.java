@@ -28,6 +28,9 @@ package info.gameboxx.gameboxx;
 import com.zaxxer.hikari.HikariDataSource;
 import info.gameboxx.gameboxx.commands.*;
 import info.gameboxx.gameboxx.commands.api.CmdRegistration;
+import info.gameboxx.gameboxx.commands.api.exception.CmdAlreadyRegisteredException;
+import info.gameboxx.gameboxx.commands.test.GiveCmd;
+import info.gameboxx.gameboxx.commands.test.SummonCmd;
 import info.gameboxx.gameboxx.config.PluginCfg;
 import info.gameboxx.gameboxx.game.GameManager;
 import info.gameboxx.gameboxx.listeners.MainListener;
@@ -51,6 +54,7 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.io.File;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -129,21 +133,22 @@ public class GameBoxx extends JavaPlugin {
     }
 
     private void registerCommands() {
-        /*
+        File configFile = new File(getDataFolder(), "commands.yml");
         try {
-            File configFile = new File(getDataFolder(), "commands.yml");
-            CmdRegistration.register(this, new ExpCmd(configFile));
-            CmdRegistration.register(this, new HealCmd(configFile));
-            CmdRegistration.register(this, new TestCmd(configFile));
+            CmdRegistration.register(this, new GameBoxxCmd(configFile));
+
+            CmdRegistration.register(this, new SelectCmd(configFile));
+            CmdRegistration.register(this, new SetupCmd(configFile));
+            CmdRegistration.register(this, new WandCmd(configFile));
+
+            CmdRegistration.register(this, new PlayCmd(configFile));
+
+            CmdRegistration.register(this, new GiveCmd(configFile));
+            CmdRegistration.register(this, new SummonCmd(configFile));
         } catch (CmdAlreadyRegisteredException e) {
             e.printStackTrace();
         }
-        */
-        getCommand("gameboxx").setExecutor(new GameBoxxCmd(this));
-        getCommand("play").setExecutor(new PlayCmd(this));
-        getCommand("select").setExecutor(new SelectCmd(this));
         getCommand("arena").setExecutor(new ArenaCmd(this));
-        getCommand("setup").setExecutor(new SetupCmd(this));
         getCommand("option").setExecutor(new OptionCmd(this));
     }
 

@@ -26,45 +26,54 @@
 package info.gameboxx.gameboxx.commands;
 
 import info.gameboxx.gameboxx.GameBoxx;
-import info.gameboxx.gameboxx.commands.api.BaseCmd;
-import info.gameboxx.gameboxx.commands.api.CmdRegistration;
+import info.gameboxx.gameboxx.commands.api.*;
+import info.gameboxx.gameboxx.commands.api.data.Argument;
+import info.gameboxx.gameboxx.commands.api.parse.SubCmdO;
 import info.gameboxx.gameboxx.messages.*;
-import info.gameboxx.gameboxx.options.single.ItemO;
+import info.gameboxx.gameboxx.options.single.StringO;
 import info.gameboxx.gameboxx.util.Str;
-import info.gameboxx.gameboxx.util.entity.EntityParser;
-import info.gameboxx.gameboxx.util.item.ItemParser;
-import org.bukkit.Bukkit;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
-import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 
+import java.io.File;
 import java.util.Set;
 
-public class GameBoxxCmd implements CommandExecutor {
+public class GameBoxxCmd extends BaseCmd {
 
-    private final GameBoxx gb;
+    public GameBoxxCmd(File file) {
+        super("gameboxx", new String[] {"gamebox", "gb", "gboxx", "gbox"}, "Main GameBoxx command.", file);
 
-    public GameBoxxCmd(GameBoxx gb) {
-        this.gb = gb;
+        addArgument("action", "A sub command.", Argument.Requirement.REQUIRED, new SubCmdO(new Info(this), new Reload(this), new Lang(this)));
     }
 
     @Override
-    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        if (args.length < 1 || args[0].equalsIgnoreCase("help")) {
-            Msg.get("gameboxx.help", Param.P("cmd", label)).send(sender);
-            return true;
+    public void onCommand(CmdData data) {}
+
+
+    public class Info extends SubCmd<GameBoxxCmd> {
+        private Info(GameBoxxCmd gameBoxxCmd) {
+            super(gameBoxxCmd, "info", new String[] {"plugin", "details", "detail"}, "Display plugin information.");
         }
 
-        //Reload
-        if (args[0].equalsIgnoreCase("reload")) {
-            if (!sender.hasPermission("gameboxx.cmd.reload")) {
-                Msg.get("no-permission", Param.P("node", "gameboxx.cmd.reload")).send(sender);
-                return true;
-            }
+        @Override
+        public void onCommand(CmdData data) {
+            data.getSender().sendMessage(Str.color("&8===== &4&lGameBoxx &8=====\n" +
+                    "&6&lAuthors&8&l: &a" + Str.implode(getGB().getDescription().getAuthors(), ", ", " & ") + "\n" +
+                    "&6&lVersion&8&l: &a" + getGB().getDescription().getVersion() + "\n" +
+                    "&6&lSpigot URL&8&l: &9https://www.spigotmc.org/resources/{placeholder}\n" +
+                    "&6&lWebsite URL&8&l: &9&lhttp://gameboxx.info"));
+        }
+    }
 
-            gb.getCfg().load();
-            gb.setupLanguage();
+
+    public class Reload extends SubCmd<GameBoxxCmd> {
+        private Reload(GameBoxxCmd gameBoxxCmd) {
+            super(gameBoxxCmd, "reload", new String[] {"load"}, "Reload all the configuration files including messages and such.", "gameboxx.cmd.reload");
+        }
+
+        @Override
+        public void onCommand(CmdData data) {
+            getGB().getCfg().load();
+
+            getGB().setupLanguage();
             for (MessageConfig cfg : MessageConfig.getConfigs()) {
                 cfg.loadFull();
             }
@@ -76,124 +85,36 @@ public class GameBoxxCmd implements CommandExecutor {
                 }
             }
 
+            Msg.get("gameboxx.reloaded", Param.P("type", "all")).send(data.getSender());
+        }
+    }
 
-            Msg.get("gameboxx.reloaded", Param.P("type", "all")).send(sender);
-            return true;
+
+    public class Lang extends SubCmd<GameBoxxCmd> {
+        private Lang(GameBoxxCmd gameBoxxCmd) {
+            super(gameBoxxCmd, "language", new String[] {"lang", "locale"}, "Get or set the language used for messages.", "gameboxx.cmd.language");
+
+            addArgument("language", "The language name to set.", "gameboxx.cmd.language.set", Argument.Requirement.OPTIONAL, new StringO().match(Language.getAliases()));
         }
 
-        //Language
-        if (args[0].equalsIgnoreCase("language") || args[0].equalsIgnoreCase("lang")) {
-            if (!sender.hasPermission("gameboxx.cmd.language")) {
-                Msg.get("no-permission", Param.P("node", "gameboxx.cmd.language")).send(sender);
-                return true;
+        @Override
+        public void onCommand(CmdData data) {
+            if (data.hasArg("language")) {
+                Language lang = Language.find((String)data.getArg("language"));
+
+                getGB().getCfg().language = lang.getID();
+                getGB().getCfg().save();
+                getGB().setupLanguage();
+
+                for (MessageConfig config : MessageConfig.getConfigs()) {
+                    config.loadFull();
+                }
+
+                Msg.get("gameboxx.language.set", Param.P("language", lang.getName())).send(data.getSender());
+                return;
             }
 
-            if (args.length < 2) {
-                Msg.get("gameboxx.language.get", Param.P("language", gb.getLanguage().getName()), Param.P("cmd", label)).send(sender);
-                return true;
-            }
-
-            Language lang = Language.find(args[1]);
-            if (lang == null) {
-                Msg.get("gameboxx.language.invalid", Param.P("input", args[1]), Param.P("languages", Str.implode(Language.getNames()))).send(sender);
-                return true;
-            }
-
-            gb.getCfg().language = lang.getID();
-            gb.getCfg().save();
-            gb.setupLanguage();
-
-            for (MessageConfig config : MessageConfig.getConfigs()) {
-                config.loadFull();
-            }
-
-            Msg.get("gameboxx.language.set", Param.P("language", lang.getName())).send(sender);
-            return true;
+            Msg.get("gameboxx.language.get", Param.P("language", getGB().getLanguage().getName())).send(data.getSender());
         }
-
-        //Info
-        if (args[0].equalsIgnoreCase("info") || args[0].equalsIgnoreCase("plugin") || args[0].equalsIgnoreCase("version")) {
-            sender.sendMessage(Str.color("&8===== &4&lGameBoxx &8=====\n" +
-                    "&6&lAuthors&8&l: &a" + Str.implode(gb.getDescription().getAuthors(), ", ", " & ") + "\n" +
-                    "&6&lVersion&8&l: &a" + gb.getDescription().getVersion() + "\n" +
-                    "&6&lSpigot URL&8&l: &9https://www.spigotmc.org/resources/{placeholder}\n" +
-                    "&6&lWebsite URL&8&l: &9&lhttp://gameboxx.info"));
-            return true;
-        }
-
-
-        //Summon
-        if (args[0].equalsIgnoreCase("summon") || args[0].equalsIgnoreCase("spawnmob") || args[0].equalsIgnoreCase("entity")) {
-            String entityString = Str.implode(args, " ", " ", 1, args.length);
-
-            EntityParser parser = new EntityParser(entityString, sender, false);
-            if (!parser.isValid()) {
-                Msg.fromString(parser.getError()).send(sender);
-            } else {
-                sender.sendMessage("Spawned!");
-            }
-            return true;
-        }
-
-        //Item
-        if (args[0].equalsIgnoreCase("item") || args[0].equalsIgnoreCase("i")) {
-            if (!(sender instanceof Player)) {
-                Msg.get("player-only").send(sender);
-                return true;
-            }
-            Player player = (Player)sender;
-
-            String itemString = Str.implode(args, " ", " ", 1, args.length);
-
-            ItemO itemO = new ItemO();
-            if (!itemO.parse(player, itemString)) {
-                Msg.fromString(itemO.getError()).send(player);
-                return true;
-            }
-            player.getInventory().addItem(itemO.getValue());
-            player.sendMessage("Item given!");
-            return true;
-        }
-
-        //Item
-        if (args[0].equalsIgnoreCase("give")) {
-            if (args.length < 2) {
-                sender.sendMessage("Specify a player.");
-                return true;
-            }
-            Player player = Bukkit.getPlayer(args[1]);
-            if (player == null) {
-                sender.sendMessage("Invalid player");
-                return true;
-            }
-
-            String itemString = Str.implode(args, " ", " ", 2, args.length);
-
-            ItemO itemO = new ItemO();
-            if (!itemO.parse(player, itemString)) {
-                Msg.fromString(itemO.getError()).send(sender);
-                return true;
-            }
-            player.getInventory().addItem(itemO.getValue());
-            sender.sendMessage("Item given!");
-            return true;
-        }
-
-        if (args[0].equalsIgnoreCase("test")) {
-            if (!(sender instanceof Player)) {
-                Msg.get("player-only").send(sender);
-                return true;
-            }
-            Player player = (Player)sender;
-
-            ItemParser parser = new ItemParser(player.getInventory().getItemInMainHand());
-            String itemStr = Str.replaceColor(parser.getString());
-            player.sendMessage(itemStr);
-            System.out.println(itemStr);
-            return true;
-        }
-
-        Msg.get("gameboxx.help", Param.P("cmd", label)).send(sender);
-        return true;
     }
 }

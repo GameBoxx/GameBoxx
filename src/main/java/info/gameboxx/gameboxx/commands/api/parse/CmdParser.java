@@ -51,6 +51,18 @@ public class CmdParser {
         String argStr = Str.implode(args, " ");
         argsToParse = Str.splitQuotes(argStr, ' ', true);
 
+        //Remove quotes at start and end from arguments.
+        for (int i = 0; i < argsToParse.size(); i++) {
+            String arg = argsToParse.get(i);
+            if (arg.startsWith("'") || arg.startsWith("\"") || arg.startsWith("\\\"")) {
+                arg = arg.substring(1);
+            }
+            if (arg.endsWith("'") || arg.endsWith("\"") || arg.endsWith("\\\"")) {
+                arg = arg.substring(0, arg.length()-1);
+            }
+            argsToParse.set(i, arg);
+        }
+
         //Create CmdData and set base cmd as executor
         data = new CmdData(sender, args);
         executor = baseCmd;

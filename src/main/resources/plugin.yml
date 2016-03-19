@@ -6,21 +6,9 @@ author: ${project.author}
 authors: ${project.authors}
 softdepend: [Vault]
 commands:
-  gameboxx:
-    description: Main GameBoxx Command!
-    aliases: [gamebox, gb]
-  play:
-    description: Play a game.
-    aliases: [join, p, j]
-  select:
-    description: Select an arena to use for all other commands.
-    aliases: [sel,selectarena, sela, arenaselect, arenasel]
   arena:
     description: Arena management.
     aliases: [ar, arenas]
-  setup:
-    description: Arena setup.
-    aliases: [setuparena, arenasetup, as, sa, arenas, sarena, set]
   option:
     description: Arena setup options.
     aliases: [set, setoption, options, arenaoption, ao, opt]

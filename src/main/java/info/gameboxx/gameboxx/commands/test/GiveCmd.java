@@ -23,21 +23,36 @@
  THE SOFTWARE.
  */
 
-package info.gameboxx.gameboxx.commands;
+package info.gameboxx.gameboxx.commands.test;
 
 import info.gameboxx.gameboxx.commands.api.BaseCmd;
 import info.gameboxx.gameboxx.commands.api.CmdData;
+import info.gameboxx.gameboxx.commands.api.data.Argument;
+import info.gameboxx.gameboxx.options.single.IntO;
+import info.gameboxx.gameboxx.options.single.ItemO;
+import info.gameboxx.gameboxx.options.single.PlayerO;
+import info.gameboxx.gameboxx.util.ItemUtil;
+import info.gameboxx.gameboxx.util.item.EItem;
 
 import java.io.File;
 
-public class PlayCmd extends BaseCmd {
+public class GiveCmd extends BaseCmd {
 
-    public PlayCmd(File file) {
-        super("play", new String[] {"join"}, "Play a game!", "gameboxx.cmd.play", file);
+    public GiveCmd(File file) {
+        super("give", new String[] {"item", "i"}, "Play a game!", "gameboxx.cmd.give", file);
+
+        addArgument("player", "The player to give the item to", "gameboxx.cmd.give.others", Argument.Requirement.REQUIRED_NON_PLAYER, new PlayerO());
+        addArgument("item", "The full item string which may contain meta and such.", Argument.Requirement.REQUIRED, new ItemO());
+
+        addModifier("slot", "The slot to put the item in.", new IntO().min(0).max(39));
+
+        addFlag("dropfull", "Drop items on the ground if they don't fit?");
+        addFlag("unstack", "Unstack items if they exceed the max stack size?");
     }
 
     @Override
     public void onCommand(CmdData data) {
-        //TODO: Implement
+        ItemUtil.add(data.getPlayer("player").getInventory(), (EItem)data.getArg("item"), data.hasMod("slot") ? (int)data.getMod("slot") : -1, data.hasFlag("dropFull"), data.hasFlag("unstack"));
+        data.getSender().sendMessage("Item given!");
     }
 }

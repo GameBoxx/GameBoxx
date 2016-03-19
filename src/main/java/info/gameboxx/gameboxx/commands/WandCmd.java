@@ -28,40 +28,23 @@ package info.gameboxx.gameboxx.commands;
 import info.gameboxx.gameboxx.commands.api.BaseCmd;
 import info.gameboxx.gameboxx.commands.api.CmdData;
 import info.gameboxx.gameboxx.commands.api.data.Argument;
-import info.gameboxx.gameboxx.game.Arena;
-import info.gameboxx.gameboxx.game.Game;
 import info.gameboxx.gameboxx.messages.Msg;
-import info.gameboxx.gameboxx.messages.Param;
-import info.gameboxx.gameboxx.options.single.StringO;
-import info.gameboxx.gameboxx.user.ArenaSelection;
-import info.gameboxx.gameboxx.util.Str;
+import info.gameboxx.gameboxx.options.single.PlayerO;
+import info.gameboxx.gameboxx.util.ItemUtil;
 
 import java.io.File;
 
-public class SelectCmd extends BaseCmd {
+public class WandCmd extends BaseCmd {
 
-    public SelectCmd(File configFile) {
-        super("select", new String[] {"sel"}, "Select an game/arena for editing and such.", "gameboxx.cmd.select", configFile);
+    public WandCmd(File file) {
+        super("wand", new String[] {"selectionwand", "selwand", "swand"}, "Give the cuboid selection wand.", "gameboxx.cmd.wand", file);
 
-        addArgument("game", "The game name to select.", Argument.Requirement.REQUIRED, new StringO());
-        addArgument("arena", "The arena name to select from the game.", Argument.Requirement.REQUIRED, new StringO());
+        addArgument("player", "A player to give the wand to.", Argument.Requirement.REQUIRED_NON_PLAYER, new PlayerO());
     }
 
     @Override
     public void onCommand(CmdData data) {
-        Game game = getGB().getGM().getGame((String)data.getArg("game"));
-        if (game == null) {
-            Msg.get("game.invalid", Param.P("input", data.getArg("game")), Param.P("games", Str.implode(getGB().getGM().getGameNames()))).send(data.getSender());
-            return;
-        }
-
-        Arena arena = game.getArena((String)data.getArg("arena"));
-        if (arena == null) {
-            Msg.get("arena.invalid", Param.P("input", data.getArg("arena")), Param.P("game", game.getName()), Param.P("arenas", Str.implode(game.getArenaNames()))).send(data.getSender());
-            return;
-        }
-
-        ArenaSelection.setSel(data.getSender(), arena);
-        Msg.get("select.selected", Param.P("arena", arena.getName()), Param.P("game", game.getName())).send(data.getSender());
+        ItemUtil.add(data.getPlayer("player").getInventory(), getGB().getSM().getWand(), true);
+        Msg.get("wand.given").send(data.getSender());
     }
 }

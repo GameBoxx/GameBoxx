@@ -30,6 +30,7 @@ import info.gameboxx.gameboxx.game.Arena;
 import info.gameboxx.gameboxx.messages.Msg;
 import info.gameboxx.gameboxx.messages.Param;
 import info.gameboxx.gameboxx.options.*;
+import info.gameboxx.gameboxx.user.ArenaSelection;
 import info.gameboxx.gameboxx.util.Parse;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;

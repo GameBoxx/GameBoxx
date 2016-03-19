@@ -33,6 +33,7 @@ import info.gameboxx.gameboxx.game.Game;
 import info.gameboxx.gameboxx.messages.Msg;
 import info.gameboxx.gameboxx.messages.Param;
 import info.gameboxx.gameboxx.nms.NMS;
+import info.gameboxx.gameboxx.user.ArenaSelection;
 import info.gameboxx.gameboxx.util.Str;
 import info.gameboxx.gameboxx.util.Utils;
 import org.apache.commons.io.FileUtils;

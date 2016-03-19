@@ -23,21 +23,25 @@
  THE SOFTWARE.
  */
 
-package info.gameboxx.gameboxx.commands;
+package info.gameboxx.gameboxx.commands.test;
 
 import info.gameboxx.gameboxx.commands.api.BaseCmd;
 import info.gameboxx.gameboxx.commands.api.CmdData;
+import info.gameboxx.gameboxx.commands.api.data.Argument;
+import info.gameboxx.gameboxx.options.single.EntityStackO;
 
 import java.io.File;
 
-public class PlayCmd extends BaseCmd {
+public class SummonCmd extends BaseCmd {
 
-    public PlayCmd(File file) {
-        super("play", new String[] {"join"}, "Play a game!", "gameboxx.cmd.play", file);
+    public SummonCmd(File file) {
+        super("summon", new String[] {"spawnmob", "smob", "spawnentity", "sentity"}, "Summon an entity.", "gameboxx.cmd.summon", file);
+
+        addArgument("entity", "The full entity string which may contain meta and such.", Argument.Requirement.REQUIRED, new EntityStackO());
     }
 
     @Override
     public void onCommand(CmdData data) {
-        //TODO: Implement
+        data.getSender().sendMessage("Entity spawned!");
     }
 }

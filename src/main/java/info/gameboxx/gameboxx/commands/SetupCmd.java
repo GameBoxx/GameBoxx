@@ -25,43 +25,20 @@
 
 package info.gameboxx.gameboxx.commands;
 
-import info.gameboxx.gameboxx.GameBoxx;
-import info.gameboxx.gameboxx.messages.Msg;
-import info.gameboxx.gameboxx.messages.Param;
-import info.gameboxx.gameboxx.util.ItemUtil;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
-import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
+import info.gameboxx.gameboxx.commands.api.BaseCmd;
+import info.gameboxx.gameboxx.commands.api.CmdData;
 
-public class SetupCmd implements CommandExecutor {
+import java.io.File;
 
-    private final GameBoxx gb;
+public class SetupCmd extends BaseCmd {
 
-    public SetupCmd(GameBoxx gb) {
-        this.gb = gb;
+    public SetupCmd(File file) {
+        super("setup", new String[] {"arenasetup", "asetup", "aset"}, "View the arena setup status.", "gameboxx.cmd.setup", file);
+
     }
 
     @Override
-    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-
-        //Wand
-        if (args[0].equalsIgnoreCase("wand") || args[0].equalsIgnoreCase("w")) {
-            if (!(sender instanceof Player)) {
-                Msg.get("player-only").send(sender);
-                return true;
-            }
-            if (!sender.hasPermission("gameboxx.cmd.wand")) {
-                Msg.get("no-permission", Param.P("node", "gameboxx.cmd.wand")).send(sender);
-                return true;
-            }
-
-            ItemUtil.add(((Player)sender).getInventory(), gb.getSM().getWand(), true, true);
-            Msg.get("wand.given").send(sender);
-            return true;
-        }
-
-
-        return true;
+    public void onCommand(CmdData data) {
+        //TODO: Implement
     }
 }
