@@ -25,8 +25,7 @@
 
 package info.gameboxx.gameboxx.messages;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public enum Language {
     ENGLISH("English", "en"),
@@ -58,10 +57,12 @@ public enum Language {
 
 
     private static final List<String> NAMES = new ArrayList<>();
+    private static final Map<String, List<String>> ALIASES = new HashMap<>();
 
     static {
         for (Language lang : Language.values()) {
             NAMES.add(lang.getName() + " [" + lang.getID() + "]");
+            ALIASES.put(lang.getID(), new ArrayList<String>(Arrays.asList(lang.getName())));
         }
     }
 
@@ -93,5 +94,9 @@ public enum Language {
 
     public static List<String> getNames() {
         return NAMES;
+    }
+
+    public static Map<String, List<String>> getAliases() {
+        return ALIASES;
     }
 }
