@@ -26,6 +26,8 @@
 package info.gameboxx.gameboxx.commands;
 
 import info.gameboxx.gameboxx.GameBoxx;
+import info.gameboxx.gameboxx.commands.api.BaseCmd;
+import info.gameboxx.gameboxx.commands.api.CmdRegistration;
 import info.gameboxx.gameboxx.messages.*;
 import info.gameboxx.gameboxx.options.single.ItemO;
 import info.gameboxx.gameboxx.util.Str;
@@ -36,6 +38,8 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+
+import java.util.Set;
 
 public class GameBoxxCmd implements CommandExecutor {
 
@@ -64,6 +68,14 @@ public class GameBoxxCmd implements CommandExecutor {
             for (MessageConfig cfg : MessageConfig.getConfigs()) {
                 cfg.loadFull();
             }
+
+            Set<BaseCmd> cmds = CmdRegistration.getCommands(GameBoxx.class);
+            if (cmds != null) {
+                for (BaseCmd cmd : cmds) {
+                    cmd.load();
+                }
+            }
+
 
             Msg.get("gameboxx.reloaded", Param.P("type", "all")).send(sender);
             return true;
