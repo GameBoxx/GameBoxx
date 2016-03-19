@@ -62,7 +62,11 @@ public class CmdUsageParser {
                 subCmds.add(((SubCmd)cmd).getSubName());
                 cmd = ((SubCmd)cmd).getParent();
             } while (cmd instanceof SubCmd && ((SubCmd)cmd).getParent() instanceof SubCmd && ((SubCmd)cmd).getParent() != null);
-            baseCmd = (BaseCmd)cmd;
+            if (cmd instanceof BaseCmd) {
+                baseCmd = (BaseCmd)cmd;
+            } else {
+                baseCmd = (BaseCmd)((SubCmd)cmd).getParent();
+            }
         }
 
         usage.add("/" + baseCmd.getName());

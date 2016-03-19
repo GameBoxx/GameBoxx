@@ -51,7 +51,7 @@ public class Saver extends BukkitRunnable {
         try {
             connection = GameBoxx.get().getHikariDataSource().getConnection();
             PreparedStatement preparedStatement = connection.prepareStatement("UPDATE " + currency.getName().toLowerCase() + " SET amount=? WHERE uuid=?");
-            preparedStatement.setDouble(1, user.get(currency.getName()));
+            //preparedStatement.setDouble(1, user.get(currency.getName())); //TODO: Fix this (User#get is unknown)
             preparedStatement.setString(2, user.getUuid().toString());
             preparedStatement.execute();
             preparedStatement.close();
