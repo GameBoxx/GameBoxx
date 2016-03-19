@@ -3,6 +3,7 @@ name: GameBoxx
 version: ${project.version}
 description: ${project.description}
 author: ${project.author}
+authors: ${project.authors}
 softdepend: [Vault]
 commands:
   gameboxx:

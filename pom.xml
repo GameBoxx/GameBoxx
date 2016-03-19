@@ -37,7 +37,8 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <project.authors>[Rojoss, Msrules123, Web_]</project.authors>
+        <project.author>Rojoss</project.author>
+        <project.authors>[Web_]</project.authors>
     </properties>
 
     <repositories>
