@@ -171,6 +171,83 @@ public abstract class Cmd extends BukkitCommand {
     }
 
 
+    /**
+     * Get the {@link BaseCmd} of this command.
+     * <p/>
+     * If this command is a base command it will return itself.
+     * If it's a sub command it will get the base command from the parent.
+     *
+     * @return The {@link BaseCmd} of this command.
+     */
+    public BaseCmd getBaseCmd() {
+        if (isBase()) {
+            return (BaseCmd)this;
+        }
+        Cmd cmd = this;
+        while (cmd.isSub()) {
+            cmd = ((SubCmd)cmd).getParent();
+        }
+        return (BaseCmd)cmd;
+    }
+
+    /**
+     * Check whether or not this command has sub commands.
+     * <p/>
+     * If it does you can get the sub commands with {@link #getSubCmds()}
+     *
+     * @return
+     */
+    public boolean hasSubCmds() {
+        if (arguments.size() < 1) {
+            return false;
+        }
+        for (Argument arg : arguments.values()) {
+            if (arg.option() instanceof SubCmdO) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Try to get an array with sub commands that this command has.
+     * <p/>
+     * If this command doesn't have sub commands this will return {@code null}.
+     * See {@link #hasSubCmds()}
+     * <p/>
+     * This does not get the entire sub command stack.
+     * It will only try to get the sub commands from the command you call this method on.
+     *
+     * @return Array with {@link SubCmd}s (May be {@code null} when the command doesn't have sub commands)
+     */
+    public SubCmd[] getSubCmds() {
+        for (Argument arg : arguments.values()) {
+            if (arg.option() instanceof SubCmdO) {
+                return ((SubCmdO)arg.option()).getSubCmds();
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Check if this command is a {@link BaseCmd}
+     *
+     * @return true when this command is a base command.
+     */
+    public boolean isBase() {
+        return this instanceof BaseCmd;
+    }
+
+    /**
+     * Check if this command is a {@link SubCmd}
+     *
+     * @return true when this command is a sub command.
+     */
+    public boolean isSub() {
+        return this instanceof SubCmd;
+    }
+
+
 
     /**
      * Get a list of {@link SenderType}s that have been added to the blacklist.
