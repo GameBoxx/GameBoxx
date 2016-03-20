@@ -33,8 +33,10 @@ import java.io.File;
 public class SetupCmd extends BaseCmd {
 
     public SetupCmd(File file) {
-        super("setup", new String[] {"arenasetup", "asetup", "aset"}, "View the arena setup status.", "gameboxx.cmd.setup", file);
-
+        super("setup", "arenasetup", "asetup", "aset");
+        file(file);
+        desc("View the arena setup status.");
+        perm("gameboxx.cmd.setup");
     }
 
     @Override

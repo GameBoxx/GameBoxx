@@ -41,7 +41,10 @@ import java.io.File;
 public class SelectCmd extends BaseCmd {
 
     public SelectCmd(File configFile) {
-        super("select", new String[] {"sel"}, "Select an game/arena for editing and such.", "gameboxx.cmd.select", configFile);
+        super("select", "sel");
+        file(configFile);
+        desc("Select an game/arena for editing and such.");
+        perm("gameboxx.cmd.select");
 
         addArgument("game", ArgRequirement.REQUIRED, new StringO()).desc("The game name to select.");
         addArgument("arena", ArgRequirement.REQUIRED, new StringO()).desc("The arena name to select from the game.");

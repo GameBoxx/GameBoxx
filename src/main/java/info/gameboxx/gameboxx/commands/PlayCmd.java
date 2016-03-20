@@ -33,7 +33,10 @@ import java.io.File;
 public class PlayCmd extends BaseCmd {
 
     public PlayCmd(File file) {
-        super("play", new String[] {"join"}, "Play a game!", "gameboxx.cmd.play", file);
+        super("play", "join");
+        file(file);
+        desc("Play a game!");
+        perm("gameboxx.cmd.play");
     }
 
     @Override

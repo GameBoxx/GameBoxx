@@ -37,7 +37,10 @@ import java.io.File;
 public class WandCmd extends BaseCmd {
 
     public WandCmd(File file) {
-        super("wand", new String[] {"selectionwand", "selwand", "swand"}, "Give the cuboid selection wand.", "gameboxx.cmd.wand", file);
+        super("wand", "selectionwand", "selwand", "swand");
+        file(file);
+        desc("Give the cuboid selection wand.");
+        perm("gameboxx.cmd.wand");
 
         addArgument("player", ArgRequirement.REQUIRED_NON_PLAYER, new PlayerO()).desc("A player to give the wand to.");
     }

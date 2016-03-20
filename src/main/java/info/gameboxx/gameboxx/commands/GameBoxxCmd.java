@@ -39,7 +39,9 @@ import java.util.Set;
 public class GameBoxxCmd extends BaseCmd {
 
     public GameBoxxCmd(File file) {
-        super("gameboxx", new String[] {"gamebox", "gb", "gboxx", "gbox"}, "Main GameBoxx command.", file);
+        super("gameboxx", "gamebox", "gb", "gboxx", "gbox");
+        file(file);
+        desc("Main GameBoxx command.");
 
         addArgument("action", ArgRequirement.REQUIRED, new SubCmdO(new Info(this), new Reload(this), new Lang(this))).desc("A sub command.");
     }
@@ -50,7 +52,8 @@ public class GameBoxxCmd extends BaseCmd {
 
     public class Info extends SubCmd<GameBoxxCmd> {
         private Info(GameBoxxCmd gameBoxxCmd) {
-            super(gameBoxxCmd, "info", new String[] {"plugin", "details", "detail"}, "Display plugin information.");
+            super(gameBoxxCmd, "info", "plugin", "details", "detail");
+            desc("Display plugin information.");
         }
 
         @Override
@@ -66,7 +69,9 @@ public class GameBoxxCmd extends BaseCmd {
 
     public class Reload extends SubCmd<GameBoxxCmd> {
         private Reload(GameBoxxCmd gameBoxxCmd) {
-            super(gameBoxxCmd, "reload", new String[] {"load"}, "Reload all the configuration files including messages and such.", "gameboxx.cmd.reload");
+            super(gameBoxxCmd, "reload", "load");
+            desc("Reload all the configuration files including messages and such.");
+            perm("gameboxx.cmd.reload");
         }
 
         @Override
@@ -92,7 +97,9 @@ public class GameBoxxCmd extends BaseCmd {
 
     public class Lang extends SubCmd<GameBoxxCmd> {
         private Lang(GameBoxxCmd gameBoxxCmd) {
-            super(gameBoxxCmd, "language", new String[] {"lang", "locale"}, "Get or set the language used for messages.", "gameboxx.cmd.language");
+            super(gameBoxxCmd, "language", "lang", "locale");
+            desc("Get or set the language used for messages.");
+            perm("gameboxx.cmd.language");
 
             addArgument("language", ArgRequirement.OPTIONAL, new StringO().match(Language.getAliases())).desc("The language name to set.").perm("gameboxx.cmd.language.set");
         }

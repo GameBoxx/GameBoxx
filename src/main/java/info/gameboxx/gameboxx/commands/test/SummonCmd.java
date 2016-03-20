@@ -35,7 +35,10 @@ import java.io.File;
 public class SummonCmd extends BaseCmd {
 
     public SummonCmd(File file) {
-        super("summon", new String[] {"spawnmob", "smob", "spawnentity", "sentity"}, "Summon an entity.", "gameboxx.cmd.summon", file);
+        super("summon", "spawnmob", "smob", "spawnentity", "sentity");
+        file(file);
+        desc("Summon an entity.");
+        perm("gameboxx.cmd.summon");
 
         addArgument("entity", ArgRequirement.REQUIRED, new EntityStackO()).desc("The full entity string which may contain meta and such.");
     }

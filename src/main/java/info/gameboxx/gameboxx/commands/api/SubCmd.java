@@ -55,92 +55,14 @@ public abstract class SubCmd<PARENT extends Cmd> extends Cmd {
     private String subName;
 
     /**
-     * Construct a new command with the given name.
-     * <p/>
-     * The command won't have a description, permission or aliases.
-     *
-     * @param parent The parent {@link Cmd} where this sub command was created.
-     * @param name The name/label of the command.
-     */
-    public SubCmd(PARENT parent, String name) {
-        super(parent.getName() + " " + name);
-        this.parent = parent;
-        this.subName = name;
-    }
-
-    /**
      * Construct a new command with the given name and aliases.
-     * <p/>
-     * The command won't have a description and permission.
      *
      * @param parent The parent {@link Cmd} where this sub command was created.
      * @param name The name/label of the command.
      * @param aliases Aliases for the command.
      */
-    public SubCmd(PARENT parent, String name, String[] aliases) {
+    public SubCmd(PARENT parent, String name, String... aliases) {
         super(parent.getName() + " " + name, aliases);
-        this.parent = parent;
-        this.subName = name;
-    }
-
-    /**
-     * Construct a new command with the given name and description.
-     * <p/>
-     * The command won't have a permission or aliases.
-     *
-     * @param parent The parent {@link Cmd} where this sub command was created.
-     * @param name The name/label of the command.
-     * @param description The description which is shown in the help map and the command help.
-     */
-    public SubCmd(PARENT parent, String name, String description) {
-        super(parent.getName() + " " + name, new String[0], description);
-        this.parent = parent;
-        this.subName = name;
-    }
-
-    /**
-     * Construct a new command with the given name, aliases and description.
-     * <p/>
-     * The command won't have a permission.
-     *
-     * @param parent The parent {@link Cmd} where this sub command was created.
-     * @param name The name/label of the command.
-     * @param aliases Aliases for the command.
-     * @param description The description which is shown in the help map and the command help.
-     */
-    public SubCmd(PARENT parent, String name, String[] aliases, String description) {
-        super(parent.getName() + " " + name, aliases, description);
-        this.parent = parent;
-        this.subName = name;
-    }
-
-    /**
-     * Construct a new command with the given name, aliases, description and permission.
-     * <p/>
-     * The command won't have aliases.
-     *
-     * @param parent The parent {@link Cmd} where this sub command was created.
-     * @param name The name/label of the command.
-     * @param description The description which is shown in the help map and the command help.
-     * @param permission The permission which the sender must have to execute this command.
-     */
-    public SubCmd(PARENT parent, String name, String description, String permission) {
-        super(parent.getName() + " " + name, new String[0], description, permission);
-        this.parent = parent;
-        this.subName = name;
-    }
-
-    /**
-     * Construct a new command with the given name, aliases, description and permission.
-     *
-     * @param parent The parent {@link Cmd} where this sub command was created.
-     * @param name The name/label of the command.
-     * @param aliases Aliases for the command.
-     * @param description The description which is shown in the help map and the command help.
-     * @param permission The permission which the sender must have to execute this command.
-     */
-    public SubCmd(PARENT parent, String name, String[] aliases, String description, String permission) {
-        super(parent.getName() + " " + name, aliases, description, permission);
         this.parent = parent;
         this.subName = name;
     }

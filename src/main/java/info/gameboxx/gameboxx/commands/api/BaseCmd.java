@@ -25,9 +25,7 @@
 
 package info.gameboxx.gameboxx.commands.api;
 
-import info.gameboxx.gameboxx.commands.api.data.Argument;
-import info.gameboxx.gameboxx.commands.api.data.Flag;
-import info.gameboxx.gameboxx.commands.api.data.Modifier;
+import info.gameboxx.gameboxx.commands.api.data.*;
 import info.gameboxx.gameboxx.commands.api.parse.CmdParser;
 import info.gameboxx.gameboxx.commands.api.parse.SubCmdO;
 import info.gameboxx.gameboxx.messages.Msg;
@@ -55,7 +53,7 @@ import java.util.List;
  * Check out the wiki for full details about creating custom commands and to see some example commands.
  * <p/>
  * After calling super in your constructor you can add arguments and such.
- * {@link #addArgument(String, Argument.Requirement, SingleOption)}
+ * {@link #addArgument(String, ArgRequirement, SingleOption)}
  * {@link #addModifier(String, SingleOption)}
  * {@link #addFlag(String)}
  */
@@ -65,92 +63,42 @@ public abstract class BaseCmd extends Cmd {
     private YamlConfiguration config = null;
 
     /**
-     * Construct a new command with the given name.
-     * <p/>
-     * The command won't have a description, permission or aliases.
-     *
-     * @param name The name/label of the command.
-     * @param configFile A .yml {@link File} where the command can be configured.
-     *                   May be {@code null} to prevent the user from modifying the command.
-     */
-    public BaseCmd(String name, File configFile) {
-        this(name, new String[0], "", "", configFile);
-    }
-
-    /**
      * Construct a new command with the given name and aliases.
-     * <p/>
-     * The command won't have a description and permission.
      *
      * @param name The name/label of the command.
      * @param aliases Aliases for the command.
-     * @param configFile A .yml {@link File} where the command can be configured.
-     *                   May be {@code null} to prevent the user from modifying the command.
      */
-    public BaseCmd(String name, String[] aliases, File configFile) {
-        this(name, aliases, "", "", configFile);
-    }
-
-    /**
-     * Construct a new command with the given name and description.
-     * <p/>
-     * The command won't have a permission or aliases.
-     *
-     * @param name The name/label of the command.
-     * @param description The description which is shown in the help map and the command help.
-     * @param configFile A .yml {@link File} where the command can be configured.
-     *                   May be {@code null} to prevent the user from modifying the command.
-     */
-    public BaseCmd(String name, String description, File configFile) {
-        this(name, new String[0], description, "", configFile);
-    }
-
-    /**
-     * Construct a new command with the given name, aliases and description.
-     * <p/>
-     * The command won't have a permission.
-     *
-     * @param name The name/label of the command.
-     * @param aliases Aliases for the command.
-     * @param description The description which is shown in the help map and the command help.
-     * @param configFile A .yml {@link File} where the command can be configured.
-     *                   May be {@code null} to prevent the user from modifying the command.
-     */
-    public BaseCmd(String name, String[] aliases, String description, File configFile) {
-        this(name, aliases, description, "", configFile);
-    }
-
-    /**
-     * Construct a new command with the given name, description and permission.
-     * <p/>
-     * The command won't have aliases.
-     *
-     * @param name The name/label of the command.
-     * @param description The description which is shown in the help map and the command help.
-     * @param permission The permission which the sender must have to execute this command.
-     * @param configFile A .yml {@link File} where the command can be configured.
-     *                   May be {@code null} to prevent the user from modifying the command.
-     */
-    public BaseCmd(String name, String description, String permission, File configFile) {
-        this(name, new String[0], description, permission, configFile);
-    }
-
-    /**
-     * Construct a new command with the given name, aliases, description and permission.
-     *
-     * @param name The name/label of the command.
-     * @param aliases Aliases for the command.
-     * @param description The description which is shown in the help map and the command help.
-     * @param permission The permission which the sender must have to execute this command.
-     * @param configFile A .yml {@link File} where the command can be configured.
-     *                   May be {@code null} to prevent the user from modifying the command.
-     */
-    public BaseCmd(String name, String[] aliases, String description, String permission, File configFile) {
-        super(name, aliases, description, permission);
-        this.configFile = configFile;
-
+    public BaseCmd(String name, String... aliases) {
+        super(name, aliases);
         addFlag("?").desc("Display the full command help.");
     }
+
+    /**
+     * Get the config file where the command can be configured.
+     *
+     * @return The {@link File} set with {@link #file(File)} (May be {@code null} if not set)
+     */
+    public File file() {
+        return configFile;
+    }
+
+    /**
+     * Set the config file where to command can be configured.
+     * <p/>
+     * This file must have a .yml extension.
+     * It will be filled with all descriptions, permissions, aliases, arguments, sub commands, flags, modifiers etc.
+     * <p/>
+     * It's totally fine to set the same file for multiple commands.
+     * <p/>
+     * If no file is set the user won't be able to configure the command.
+     *
+     * @param configFile the {@link File} where the command can be configured.
+     */
+    public void file(File configFile) {
+        this.configFile = configFile;
+    }
+
+
 
 
     /**

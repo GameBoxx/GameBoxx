@@ -61,56 +61,75 @@ public abstract class Cmd extends BukkitCommand {
     private Map<String, Flag> flags = new HashMap<>();
 
     /**
-     * Construct a new command with the given name.
-     * <p/>
-     * The command won't have a description, permission or aliases.
-     *
-     * @param name The name/label of the command.
-     */
-    public Cmd(String name) {
-        super(name, "", "/<command>", new ArrayList<String>());
-        setPermission("");
-    }
-
-    /**
      * Construct a new command with the given name and aliases.
-     * <p/>
-     * The command won't have a description and permission.
      *
      * @param name The name/label of the command.
      * @param aliases Aliases for the command.
      */
-    public Cmd(String name, String[] aliases) {
+    public Cmd(String name, String... aliases) {
         super(name, "", "/<command>", Arrays.asList(aliases));
-        setPermission("");
+    }
+
+
+
+    /**
+     * Get the description of the command.
+     *
+     * @return The description set with {@link #desc(String)}
+     */
+    public String desc() {
+        return getDescription();
     }
 
     /**
-     * Construct a new command with the given name, aliases and description.
+     * Set the description of the command.
      * <p/>
-     * The command won't have a permission.
+     * This description is displayed in the command help map and in the command help with the '-?' flag.
      *
-     * @param name The name/label of the command.
-     * @param aliases Aliases for the command.
-     * @param description The description which is shown in the help map and the command help.
+     * @param description The description to set for the command.
+     * @return command instance
      */
-    public Cmd(String name, String[] aliases, String description) {
-        super(name, description, "/<command>", Arrays.asList(aliases));
-        setPermission("");
+    public void desc(String description) {
+        setDescription(description == null ? "" : description);
     }
 
     /**
-     * Construct a new command with the given name, aliases, description and permission.
+     * Get the permission node required to execute the command.
      *
-     * @param name The name/label of the command.
-     * @param aliases Aliases for the command.
-     * @param description The description which is shown in the help map and the command help.
-     * @param permission The permission which the sender must have to execute this command.
+     * @return The permission set with {@link #perm(String)}
      */
-    public Cmd(String name, String[] aliases, String description, String permission) {
-        super(name, description, "/<command>", Arrays.asList(aliases));
-        setPermission(permission);
+    public String perm() {
+        return getPermission();
     }
+
+    /**
+     * Set the permission node required to execute the command.
+     *
+     * @param permission The permission node to set for the command.
+     */
+    public void perm(String permission) {
+        setPermission(permission == null ? "" : permission);
+    }
+
+
+    /**
+     * Get the {@link Plugin} that registered this command.
+     *
+     * @return {@link Plugin} that registered this command.
+     */
+    public Plugin getPlugin() {
+        return plugin;
+    }
+
+    /**
+     * Get the {@link GameBoxx} instance.
+     *
+     * @return {@link GameBoxx} instance.
+     */
+    public GameBoxx getGB() {
+        return GameBoxx.get();
+    }
+
 
 
     /**
@@ -183,6 +202,7 @@ public abstract class Cmd extends BukkitCommand {
     }
 
 
+
     /**
      * Register a regular command argument/parameter for this command.
      * <p/>
@@ -230,6 +250,7 @@ public abstract class Cmd extends BukkitCommand {
     }
 
 
+
     /**
      * Register a command modifier for this command.
      * <p/>
@@ -272,6 +293,7 @@ public abstract class Cmd extends BukkitCommand {
     public Map<String, Modifier> getModifiers() {
         return modifiers;
     }
+
 
 
     /**
@@ -395,26 +417,6 @@ public abstract class Cmd extends BukkitCommand {
         );
 
         Msg.fromString(msg).send(sender);
-    }
-
-
-
-    /**
-     * Get the {@link Plugin} that registered this command.
-     *
-     * @return {@link Plugin} that registered this command.
-     */
-    public Plugin getPlugin() {
-        return plugin;
-    }
-
-    /**
-     * Get the {@link GameBoxx} instance.
-     *
-     * @return {@link GameBoxx} instance.
-     */
-    public GameBoxx getGB() {
-        return GameBoxx.get();
     }
 
 

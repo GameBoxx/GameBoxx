@@ -39,7 +39,10 @@ import java.io.File;
 public class GiveCmd extends BaseCmd {
 
     public GiveCmd(File file) {
-        super("give", new String[] {"item", "i"}, "Play a game!", "gameboxx.cmd.give", file);
+        super("give", "item", "i");
+        file(file);
+        desc("Play a game!");
+        perm("gameboxx.cmd.give");
 
         addArgument("player", ArgRequirement.REQUIRED_NON_PLAYER, new PlayerO()).desc("The player to give the item to").perm("gameboxx.cmd.give.others");
         addArgument("item", ArgRequirement.REQUIRED, new ItemO()).desc("The full item string which may contain meta and such.");
