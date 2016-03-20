@@ -26,9 +26,7 @@
 package info.gameboxx.gameboxx.commands.api;
 
 import info.gameboxx.gameboxx.GameBoxx;
-import info.gameboxx.gameboxx.commands.api.data.Argument;
-import info.gameboxx.gameboxx.commands.api.data.Flag;
-import info.gameboxx.gameboxx.commands.api.data.Modifier;
+import info.gameboxx.gameboxx.commands.api.data.*;
 import info.gameboxx.gameboxx.commands.api.exception.CmdAlreadyRegisteredException;
 import info.gameboxx.gameboxx.commands.api.parse.CmdParser;
 import info.gameboxx.gameboxx.commands.api.parse.CmdUsageParser;
@@ -185,47 +183,41 @@ public abstract class Cmd extends BukkitCommand {
     }
 
 
-
-    /** @see #addArgument(String, String, String, Argument.Requirement, SingleOption) */
-    public void addArgument(String name, Argument.Requirement requirement, SingleOption option) {
-        addArgument(name, "", "", requirement, option);
-    }
-
-    /** @see #addArgument(String, String, String, Argument.Requirement, SingleOption) */
-    public void addArgument(String name, String description, Argument.Requirement requirement, SingleOption option) {
-        addArgument(name, description, "", requirement, option);
-    }
-
     /**
      * Register a regular command argument/parameter for this command.
      * <p/>
      * When adding multiple arguments the order you add them in determines the indexing of the argument!
-     * <p/>
-     * When the command can be configured the specified data like description and permission are used as defaults for the config.
      *
      * @param name The argument name/key used to identify the argument.
      *             This name must be used with the {@link CmdData} result to get the argument value.
-     * @param description Description that describes the argument used in the command help.
-     * @param permission The permission node required to specify this argument.
-     * @param requirement The requirement for this argument. (See {@link Argument.Requirement} for more info)
+     * @param requirement The requirement for this argument. (See {@link ArgRequirement} for more info)
      * @param option The {@link SingleOption} used for parsing the argument.
      *               This option determines the argument value and everything else.
      *               For example if it's a {@link PlayerO} the argument value must be a player and the result value would be a player.
+     * @return The added {@link Argument}
+     * @throws IllegalArgumentException if an argument with the specified name is already registered for this command
+     *                                  or if the argument option is a sub command option and the command already has an sub command argument.
      */
-    public void addArgument(String name, String description, String permission, Argument.Requirement requirement, SingleOption option) {
-        if (arguments.containsKey(name)) {
+    public Argument addArgument(String name, ArgRequirement requirement, SingleOption option) {
+        Argument argument = new Argument(name, requirement, option);
+
+        //TODO: Also check sub commands etc.
+        if (arguments.containsKey(name.toLowerCase())) {
             throw new IllegalArgumentException("The command already has an argument with the name '" + name + "'!");
         }
-        if (option instanceof SubCmdO) {
+
+        if (argument.option() instanceof SubCmdO) {
             for (Argument arg : arguments.values()) {
-                if (arg.getOption() instanceof SubCmdO) {
+                if (arg.option() instanceof SubCmdO) {
                     throw new IllegalArgumentException("The command already has a sub command argument." +
                             "Commands can only have one sub command option for each set of arguments." +
-                            "It is possible to specify another sub command argument within a sub command. [modifier=" + name + "]");
+                            "It is possible to specify another sub command argument within a sub command. [argument=" + argument.name() + "]");
                 }
             }
         }
-        arguments.put(name.toLowerCase(), new Argument(name, description == null ? "" : description, permission == null ? "" : permission, requirement, option));
+
+        arguments.put(name.toLowerCase(), argument);
+        return argument;
     }
 
     /**
@@ -238,17 +230,6 @@ public abstract class Cmd extends BukkitCommand {
     }
 
 
-
-    /** @see #addModifier(String, String, String, SingleOption) */
-    public void addModifier(String name, SingleOption option) {
-        addModifier(name, "", "", option);
-    }
-
-    /** @see #addModifier(String, String, String, SingleOption) */
-    public void addModifier(String name, String description, SingleOption option) {
-        addModifier(name, description, "", option);
-    }
-
     /**
      * Register a command modifier for this command.
      * <p/>
@@ -257,26 +238,30 @@ public abstract class Cmd extends BukkitCommand {
      * <p/>
      * For example if you register a modifier with the name player and the option is a {@link PlayerO}
      * The user would put player:{player} anywhere in the command to set the modifer value.
-     * <p/>
-     * When the command can be configured the specified data like description and permission are used as defaults for the config.
      *
      * @param name The modifier name/key used to identify the argument.
      *             This name must be used with the {@link CmdData} result to get the modifier value.
      *             This name is also what the user needs to use to specify the modifier. ({name}:{value})
-     * @param description Description that describes the modifier used in the command help.
-     * @param permission The permission node required to specify this modifier.
      * @param option The {@link SingleOption} used for parsing the modifier.
      *               This option determines the modifier value and everything else.
      *               For example if it's a {@link PlayerO} the modifier value must be a player and the result value would be a player.
+     *               This option can't be a sub command option!
+     * @return The added {@link Modifier}
+     * @throws IllegalArgumentException if a modifier with the specified name is already registered for this command or if the modifier has a sub command option.
      */
-    public void addModifier(String name, String description, String permission, SingleOption option) {
-        if (modifiers.containsKey(name)) {
-            throw new IllegalArgumentException("The command already has a modifier with the name '" + name + "'!");
-        }
+    public Modifier addModifier(String name, SingleOption option) {
+        Modifier modifier = new Modifier(name, option);
+
         if (option instanceof SubCmdO) {
             throw new IllegalArgumentException("Modifiers can not be a sub command option! [modifier=" + name + "]");
         }
-        modifiers.put(name.toLowerCase(), new Modifier(name, description == null ? "" : description, permission == null ? "" : permission, option));
+        //TODO: Check sub commands and such too.
+        if (modifiers.containsKey(name.toLowerCase())) {
+            throw new IllegalArgumentException("The command already has a modifier with the name '" + name + "'!");
+        }
+
+        modifiers.put(name.toLowerCase(), modifier);
+        return modifier;
     }
 
     /**
@@ -289,17 +274,6 @@ public abstract class Cmd extends BukkitCommand {
     }
 
 
-
-    /** @see #addFlag(String, String, String) */
-    public void addFlag(String name) {
-        addFlag(name, "", "");
-    }
-
-    /** @see #addFlag(String, String, String) */
-    public void addFlag(String name, String description) {
-        addFlag(name, description, "");
-    }
-
     /**
      * Register a command flag for this command.
      * <p/>
@@ -310,23 +284,27 @@ public abstract class Cmd extends BukkitCommand {
      * <p/>
      * You don't have to prefix the name with a '-'
      * If you do it will be removed so if you want to have the user put '--f' you have to set the name as '--f'
-     * <p/>
-     * When the command can be configured the specified data like description and permission are used as defaults for the config.
      *
      * @param name The flag name/key used to identify the flag.
      *             This name must be used with the {@link CmdData} result to check if the flag was specified.
      *             This name is also what the user needs to use to specify the flag. (-{name})
-     * @param description Description that describes the flag used in the command help.
-     * @param permission The permission node required to specify this flag.
+     *             The name '?' is reserved!
+     * @return The added {@link Flag}
+     * @throws IllegalArgumentException if a flag with the specified name is already registered for this command.
      */
-    public void addFlag(String name, String description, String permission) {
+    public Flag addFlag(String name) {
         if (name.startsWith("-")) {
             name = name.substring(1);
         }
-        if (flags.containsKey(name)) {
+
+        //TODO: Check sub commands and such too.
+        Flag flag = new Flag(name);
+        if (flags.containsKey(name.toLowerCase())) {
             throw new IllegalArgumentException("The command already has a flag with the name '-" + name + "'!");
         }
-        flags.put(name.toLowerCase(), new Flag(name, description == null ? "" : description, permission == null ? "" : permission));
+
+        flags.put(name.toLowerCase(), flag);
+        return flag;
     }
 
     /**
@@ -382,12 +360,12 @@ public abstract class Cmd extends BukkitCommand {
         for (Flag flag : flags.values()) {
             if (sender instanceof Player) {
                 flagFormats.add(Msg.getString("command.flag-entry",
-                        Param.P("name", flag.getName()),
-                        Param.P("description", flag.getDescription().isEmpty() ? noDesc : flag.getDescription()),
-                        Param.P("permission", flag.getPermission().isEmpty() ? none : flag.getPermission())
+                        Param.P("name", flag.name()),
+                        Param.P("description", flag.desc().isEmpty() ? noDesc : flag.desc()),
+                        Param.P("permission", flag.perm().isEmpty() ? none : flag.perm())
                 ));
             } else {
-                flagFormats.add("&a&l-" + flag.getName());
+                flagFormats.add("&a&l-" + flag.name());
             }
         }
 
@@ -395,13 +373,13 @@ public abstract class Cmd extends BukkitCommand {
         for (Modifier mod : modifiers.values()) {
             if (sender instanceof Player) {
                 modifierFormats.add(Msg.getString("command.modifier-entry",
-                        Param.P("name", mod.getName()),
-                        Param.P("description", mod.getDescription().isEmpty() ? noDesc : mod.getDescription()),
-                        Param.P("permission", mod.getPermission().isEmpty() ? none : mod.getPermission()),
-                        Param.P("type", mod.getOption().getTypeName())
+                        Param.P("name", mod.name()),
+                        Param.P("description", mod.desc().isEmpty() ? noDesc : mod.desc()),
+                        Param.P("permission", mod.perm().isEmpty() ? none : mod.perm()),
+                        Param.P("type", mod.option().getTypeName())
                 ));
             } else {
-                modifierFormats.add("&a" + mod.getName() + ":&8[&a" + mod.getOption().getTypeName() + "&8]");
+                modifierFormats.add("&a" + mod.name() + ":&8[&a" + mod.option().getTypeName() + "&8]");
             }
         }
 

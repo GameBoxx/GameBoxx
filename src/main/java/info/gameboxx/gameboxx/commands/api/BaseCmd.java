@@ -55,9 +55,9 @@ import java.util.List;
  * Check out the wiki for full details about creating custom commands and to see some example commands.
  * <p/>
  * After calling super in your constructor you can add arguments and such.
- * {@link #addArgument(String, String, String, Argument.Requirement, SingleOption)}
- * {@link #addModifier(String, String, String, SingleOption)}
- * {@link #addFlag(String, String, String)}
+ * {@link #addArgument(String, Argument.Requirement, SingleOption)}
+ * {@link #addModifier(String, SingleOption)}
+ * {@link #addFlag(String)}
  */
 public abstract class BaseCmd extends Cmd {
 
@@ -149,7 +149,7 @@ public abstract class BaseCmd extends Cmd {
         super(name, aliases, description, permission);
         this.configFile = configFile;
 
-        addFlag("?", "Display the full command help.");
+        addFlag("?").desc("Display the full command help.");
     }
 
 
@@ -210,33 +210,33 @@ public abstract class BaseCmd extends Cmd {
         //Flag - description/permission
         List<Flag> flags = new ArrayList<>(cmd.getFlags().values());
         for (Flag flag : flags) {
-            flag.setDescription((String)loadValue(cfg, name + ".flags." + flag.getName() + ".description", flag.getDescription()));
-            flag.setPermission((String)loadValue(cfg, name + ".flags." + flag.getName() + ".permission", flag.getPermission()));
-            cmd.getFlags().put(flag.getName().toLowerCase(), flag);
+            flag.desc((String)loadValue(cfg, name + ".flags." + flag.name() + ".description", flag.desc()));
+            flag.perm((String)loadValue(cfg, name + ".flags." + flag.name() + ".permission", flag.perm()));
+            cmd.getFlags().put(flag.name().toLowerCase(), flag);
         }
 
         //Modifier - description/permission
         List<Modifier> modifiers = new ArrayList<>(cmd.getModifiers().values());
         for (Modifier mod : modifiers) {
-            mod.setDescription((String)loadValue(cfg, name + ".modifiers." + mod.getName() + ".description", mod.getDescription()));
-            mod.setPermission((String)loadValue(cfg, name + ".modifiers." + mod.getName() + ".permission", mod.getPermission()));
-            cmd.getModifiers().put(mod.getName().toLowerCase(), mod);
+            mod.desc((String)loadValue(cfg, name + ".modifiers." + mod.name() + ".description", mod.desc()));
+            mod.perm((String)loadValue(cfg, name + ".modifiers." + mod.name() + ".permission", mod.perm()));
+            cmd.getModifiers().put(mod.name().toLowerCase(), mod);
         }
 
         //Argument - description/permission and sub commands.
         List<Argument> arguments = new ArrayList<>(cmd.getArguments().values());
         for (Argument arg : arguments) {
-            arg.setDescription((String)loadValue(cfg, name + ".arguments." + arg.getName() + ".description", arg.getDescription()));
-            arg.setPermission((String)loadValue(cfg, name + ".arguments." + arg.getName() + ".permission", arg.getPermission()));
-            cmd.getArguments().put(arg.getName().toLowerCase(), arg);
+            arg.desc((String)loadValue(cfg, name + ".arguments." + arg.name() + ".description", arg.desc()));
+            arg.perm((String)loadValue(cfg, name + ".arguments." + arg.name() + ".permission", arg.perm()));
+            cmd.getArguments().put(arg.name().toLowerCase(), arg);
 
             //Load sub command data recursively
-            if (arg.getOption() instanceof SubCmdO) {
-                for (SubCmd sub : ((SubCmdO)arg.getOption()).getSubCmds()) {
-                    if (!cfg.contains(name + ".arguments." + arg.getName() + ".sub-commands")) {
-                        cfg.createSection(name + ".arguments." + arg.getName() + ".sub-commands");
+            if (arg.option() instanceof SubCmdO) {
+                for (SubCmd sub : ((SubCmdO)arg.option()).getSubCmds()) {
+                    if (!cfg.contains(name + ".arguments." + arg.name() + ".sub-commands")) {
+                        cfg.createSection(name + ".arguments." + arg.name() + ".sub-commands");
                     }
-                    loadData(cfg.getConfigurationSection(name + ".arguments." + arg.getName() + ".sub-commands"), sub);
+                    loadData(cfg.getConfigurationSection(name + ".arguments." + arg.name() + ".sub-commands"), sub);
                 }
             }
         }

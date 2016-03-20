@@ -26,12 +26,11 @@
 package info.gameboxx.gameboxx.commands.api.data;
 
 import info.gameboxx.gameboxx.commands.api.Cmd;
-import info.gameboxx.gameboxx.commands.api.CmdData;
 
 /**
  * A boolean flag which can be used in commands.
  * <p/>
- * Use {@link Cmd#addFlag(String, String, String)} to add a flag to a command.
+ * Use {@link Cmd#addFlag(String)}   to add a flag to a command.
  */
 public class Flag {
 
@@ -39,22 +38,12 @@ public class Flag {
     private String description;
     private String permission;
 
-    /**
-     * Construct a new Flag.
-     * <p/>
-     * Use {@link Cmd#addFlag(String, String, String)} to add a flag to a command.
-     * Which means it shouldn't be needed to use this.
-     *
-     * @param name The flag name/key used to identify the flag.
-     *             This name must be used with the {@link CmdData} result to check if the flag was specified.
-     *             This name is also what the user needs to use to specify the flag. (-{name})
-     * @param description Description that describes the flag used in the command help.
-     * @param permission The permission node required to specify this flag.
-     */
-    public Flag(String name, String description, String permission) {
+    /** Construct a new Flag. */
+    public Flag(String name) {
+        if (name.startsWith("-")) {
+            name = name.substring(1);
+        }
         this.name = name;
-        this.description = description == null ? "" : description;
-        this.permission = permission == null ? "" : permission;
     }
 
     /**
@@ -64,7 +53,7 @@ public class Flag {
      *
      * @return The name of the flag.
      */
-    public String getName() {
+    public String name() {
         return name;
     }
 
@@ -73,19 +62,19 @@ public class Flag {
      *
      * @return The description of the flag. (Empty string when no description)
      */
-    public String getDescription() {
+    public String desc() {
         return description;
     }
 
     /**
      * Set the description of the flag.
-     * <p/>
-     * This is mainly used when the command config file is loaded to override the default value.
      *
      * @param description The description to set. (Empty string for no description)
+     * @return flag instance
      */
-    public void setDescription(String description) {
+    public Flag desc(String description) {
         this.description = description == null ? "" : description;
+        return this;
     }
 
     /**
@@ -93,18 +82,18 @@ public class Flag {
      *
      * @return The permission node required to specify the flag. (Empty string when no node)
      */
-    public String getPermission() {
+    public String perm() {
         return permission;
     }
 
     /**
      * Set the permission node required to specify this flag.
-     * <p/>
-     * This is mainly used when the command config file is loaded to override the default value.
      *
      * @param permission The permission node to set. (Empty string for no permission)
+     * @return flag instance
      */
-    public void setPermission(String permission) {
+    public Flag perm(String permission) {
         this.permission = permission == null ? "" : permission;
+        return this;
     }
 }

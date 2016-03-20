@@ -27,7 +27,7 @@ package info.gameboxx.gameboxx.commands;
 
 import info.gameboxx.gameboxx.commands.api.BaseCmd;
 import info.gameboxx.gameboxx.commands.api.CmdData;
-import info.gameboxx.gameboxx.commands.api.data.Argument;
+import info.gameboxx.gameboxx.commands.api.data.ArgRequirement;
 import info.gameboxx.gameboxx.messages.Msg;
 import info.gameboxx.gameboxx.options.single.PlayerO;
 import info.gameboxx.gameboxx.util.ItemUtil;
@@ -39,7 +39,7 @@ public class WandCmd extends BaseCmd {
     public WandCmd(File file) {
         super("wand", new String[] {"selectionwand", "selwand", "swand"}, "Give the cuboid selection wand.", "gameboxx.cmd.wand", file);
 
-        addArgument("player", "A player to give the wand to.", Argument.Requirement.REQUIRED_NON_PLAYER, new PlayerO());
+        addArgument("player", ArgRequirement.REQUIRED_NON_PLAYER, new PlayerO()).desc("A player to give the wand to.");
     }
 
     @Override

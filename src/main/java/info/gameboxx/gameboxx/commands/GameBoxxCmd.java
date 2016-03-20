@@ -27,7 +27,7 @@ package info.gameboxx.gameboxx.commands;
 
 import info.gameboxx.gameboxx.GameBoxx;
 import info.gameboxx.gameboxx.commands.api.*;
-import info.gameboxx.gameboxx.commands.api.data.Argument;
+import info.gameboxx.gameboxx.commands.api.data.ArgRequirement;
 import info.gameboxx.gameboxx.commands.api.parse.SubCmdO;
 import info.gameboxx.gameboxx.messages.*;
 import info.gameboxx.gameboxx.options.single.StringO;
@@ -41,7 +41,7 @@ public class GameBoxxCmd extends BaseCmd {
     public GameBoxxCmd(File file) {
         super("gameboxx", new String[] {"gamebox", "gb", "gboxx", "gbox"}, "Main GameBoxx command.", file);
 
-        addArgument("action", "A sub command.", Argument.Requirement.REQUIRED, new SubCmdO(new Info(this), new Reload(this), new Lang(this)));
+        addArgument("action", ArgRequirement.REQUIRED, new SubCmdO(new Info(this), new Reload(this), new Lang(this))).desc("A sub command.");
     }
 
     @Override
@@ -94,7 +94,7 @@ public class GameBoxxCmd extends BaseCmd {
         private Lang(GameBoxxCmd gameBoxxCmd) {
             super(gameBoxxCmd, "language", new String[] {"lang", "locale"}, "Get or set the language used for messages.", "gameboxx.cmd.language");
 
-            addArgument("language", "The language name to set.", "gameboxx.cmd.language.set", Argument.Requirement.OPTIONAL, new StringO().match(Language.getAliases()));
+            addArgument("language", ArgRequirement.OPTIONAL, new StringO().match(Language.getAliases())).desc("The language name to set.").perm("gameboxx.cmd.language.set");
         }
 
         @Override

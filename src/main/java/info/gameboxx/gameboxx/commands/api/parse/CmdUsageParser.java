@@ -78,19 +78,19 @@ public class CmdUsageParser {
 
     private void generate(Cmd cmd, CommandSender sender) {
         for (Argument arg : cmd.getArguments().values()) {
-            if (arg.getOption() instanceof SubCmdO) {
+            if (arg.option() instanceof SubCmdO) {
 
                 List<String> subNames = new ArrayList<>();
                 boolean match = false;
 
-                for (SubCmd sub : ((SubCmdO)arg.getOption()).getSubCmds()) {
+                for (SubCmd sub : ((SubCmdO)arg.option()).getSubCmds()) {
                     subNames.add(sub.getSubName());
                     if (subCmds.contains(sub.getSubName())) {
                         usage.add(sub.getSubName());
                         if (JSONFormat) {
                             List<String> permissions = new ArrayList<>();
-                            if (!arg.getPermission().isEmpty()) {
-                                permissions.add(arg.getPermission());
+                            if (!arg.perm().isEmpty()) {
+                                permissions.add(arg.perm());
                             }
                             if (!sub.getPermission().isEmpty()) {
                                 permissions.add(sub.getPermission());
@@ -100,7 +100,7 @@ public class CmdUsageParser {
                                     Param.P("name", sub.getSubName()),
                                     Param.P("description", sub.getDescription().isEmpty() ? Msg.getString("command.no-description") : sub.getDescription()),
                                     Param.P("permission", permissions.isEmpty() ? Msg.getString("command.none") : Str.implode(permissions)),
-                                    Param.P("type", arg.getOption().getTypeName()),
+                                    Param.P("type", arg.option().getTypeName()),
                                     Param.P("aliases", sub.getAliases().isEmpty() ? Msg.getString("command.none") : Str.implode(sub.getAliases()))
                             ));
                         }
@@ -112,10 +112,10 @@ public class CmdUsageParser {
                 }
 
                 if (!match) {
-                    usage.add(arg.getUsageName(sender).replace(arg.getName(), Str.implode(subNames, "|")));
+                    usage.add(arg.usage(sender).replace(arg.name(), Str.implode(subNames, "|")));
                     if (JSONFormat) {
                         List<String> subCmdFormats = new ArrayList<>();
-                        for (SubCmd sub : ((SubCmdO)arg.getOption()).getSubCmds()) {
+                        for (SubCmd sub : ((SubCmdO)arg.option()).getSubCmds()) {
                             subCmdFormats.add(Msg.getString("command.subcmd-general-entry-desc",
                                     Param.P("name", sub.getSubName()),
                                     Param.P("usage", sub.getUsage(sender)),
@@ -126,22 +126,22 @@ public class CmdUsageParser {
                         }
 
                         JSON.add(Msg.getString("command.subcmd-general-entry",
-                                Param.P("name", arg.getUsageName(sender).replace(arg.getName(), Str.implode(subNames, "|"))),
-                                Param.P("description", arg.getDescription().isEmpty() ? Msg.getString("command.no-description") : arg.getDescription()),
-                                Param.P("permission", arg.getPermission().isEmpty() ? Msg.getString("command.none") : arg.getPermission()),
-                                Param.P("type", arg.getOption().getTypeName()),
+                                Param.P("name", arg.usage(sender).replace(arg.name(), Str.implode(subNames, "|"))),
+                                Param.P("description", arg.desc().isEmpty() ? Msg.getString("command.no-description") : arg.desc()),
+                                Param.P("permission", arg.perm().isEmpty() ? Msg.getString("command.none") : arg.perm()),
+                                Param.P("type", arg.option().getTypeName()),
                                 Param.P("subcmds", Str.implode(subCmdFormats, "\n"))
                         ));
                     }
                 }
             } else {
-                usage.add(arg.getUsageName(sender));
+                usage.add(arg.usage(sender));
                 if (JSONFormat) {
                     JSON.add(Msg.getString("command.argument-entry",
-                            Param.P("name", arg.getUsageName(sender)),
-                            Param.P("description", arg.getDescription().isEmpty() ? Msg.getString("command.no-description") : arg.getDescription()),
-                            Param.P("permission", arg.getPermission().isEmpty() ? Msg.getString("command.none") : arg.getPermission()),
-                            Param.P("type", arg.getOption().getTypeName())
+                            Param.P("name", arg.usage(sender)),
+                            Param.P("description", arg.desc().isEmpty() ? Msg.getString("command.no-description") : arg.desc()),
+                            Param.P("permission", arg.perm().isEmpty() ? Msg.getString("command.none") : arg.perm()),
+                            Param.P("type", arg.option().getTypeName())
                     ));
                 }
             }

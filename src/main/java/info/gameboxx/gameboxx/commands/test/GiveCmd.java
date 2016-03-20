@@ -27,7 +27,7 @@ package info.gameboxx.gameboxx.commands.test;
 
 import info.gameboxx.gameboxx.commands.api.BaseCmd;
 import info.gameboxx.gameboxx.commands.api.CmdData;
-import info.gameboxx.gameboxx.commands.api.data.Argument;
+import info.gameboxx.gameboxx.commands.api.data.ArgRequirement;
 import info.gameboxx.gameboxx.options.single.IntO;
 import info.gameboxx.gameboxx.options.single.ItemO;
 import info.gameboxx.gameboxx.options.single.PlayerO;
@@ -41,13 +41,13 @@ public class GiveCmd extends BaseCmd {
     public GiveCmd(File file) {
         super("give", new String[] {"item", "i"}, "Play a game!", "gameboxx.cmd.give", file);
 
-        addArgument("player", "The player to give the item to", "gameboxx.cmd.give.others", Argument.Requirement.REQUIRED_NON_PLAYER, new PlayerO());
-        addArgument("item", "The full item string which may contain meta and such.", Argument.Requirement.REQUIRED, new ItemO());
+        addArgument("player", ArgRequirement.REQUIRED_NON_PLAYER, new PlayerO()).desc("The player to give the item to").perm("gameboxx.cmd.give.others");
+        addArgument("item", ArgRequirement.REQUIRED, new ItemO()).desc("The full item string which may contain meta and such.");
 
-        addModifier("slot", "The slot to put the item in.", new IntO().min(0).max(39));
+        addModifier("slot", new IntO().min(0).max(39)).desc("The slot to put the item in.");
 
-        addFlag("dropfull", "Drop items on the ground if they don't fit?");
-        addFlag("unstack", "Unstack items if they exceed the max stack size?");
+        addFlag("d").desc("Drop items on the ground if they don't fit?");
+        addFlag("u").desc("Unstack items if they exceed the max stack size?");
     }
 
     @Override

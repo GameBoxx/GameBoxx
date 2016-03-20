@@ -27,7 +27,7 @@ package info.gameboxx.gameboxx.commands;
 
 import info.gameboxx.gameboxx.commands.api.BaseCmd;
 import info.gameboxx.gameboxx.commands.api.CmdData;
-import info.gameboxx.gameboxx.commands.api.data.Argument;
+import info.gameboxx.gameboxx.commands.api.data.ArgRequirement;
 import info.gameboxx.gameboxx.game.Arena;
 import info.gameboxx.gameboxx.game.Game;
 import info.gameboxx.gameboxx.messages.Msg;
@@ -43,8 +43,8 @@ public class SelectCmd extends BaseCmd {
     public SelectCmd(File configFile) {
         super("select", new String[] {"sel"}, "Select an game/arena for editing and such.", "gameboxx.cmd.select", configFile);
 
-        addArgument("game", "The game name to select.", Argument.Requirement.REQUIRED, new StringO());
-        addArgument("arena", "The arena name to select from the game.", Argument.Requirement.REQUIRED, new StringO());
+        addArgument("game", ArgRequirement.REQUIRED, new StringO()).desc("The game name to select.");
+        addArgument("arena", ArgRequirement.REQUIRED, new StringO()).desc("The arena name to select from the game.");
     }
 
     @Override

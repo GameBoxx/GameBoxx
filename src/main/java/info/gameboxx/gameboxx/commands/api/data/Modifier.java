@@ -29,39 +29,23 @@ import info.gameboxx.gameboxx.commands.api.Cmd;
 import info.gameboxx.gameboxx.commands.api.CmdData;
 import info.gameboxx.gameboxx.commands.api.parse.CmdParser;
 import info.gameboxx.gameboxx.options.SingleOption;
-import info.gameboxx.gameboxx.options.single.PlayerO;
 
 /**
  * An option modifier which can be used in commands.
  * </p>
- * Use {@link Cmd#addModifier(String, String, String, SingleOption)} to add a modifier to a command.
+ * Use {@link Cmd#addModifier(String, SingleOption)} to add a modifier to a command.
  */
 public class Modifier {
 
     private final String name;
-    private String description;
-    private String permission;
     private final SingleOption option;
 
-    /**
-     * Construct a new Modifier.
-     * <p/>
-     * Use {@link Cmd#addModifier(String, String, String, SingleOption)} to add a modifier to a command.
-     * Which means it shouldn't be needed to use this.
-     *
-     * @param name The modifier name/key used to identify the argument.
-     *             This name must be used with the {@link CmdData} result to get the modifier value.
-     *             This name is also what the user needs to use to specify the modifier. ({name}:{value})
-     * @param description Description that describes the modifier used in the command help.
-     * @param permission The permission node required to specify this modifier.
-     * @param option The {@link SingleOption} used for parsing the modifier.
-     *               This option determines the modifier value and everything else.
-     *               For example if it's a {@link PlayerO} the modifier value must be a player and the result value would be a player.
-     */
-    public Modifier(String name, String description, String permission, SingleOption option) {
+    private String description;
+    private String permission;
+
+    /** Construct a new Modifier. */
+    public Modifier(String name, SingleOption option) {
         this.name = name;
-        this.description = description == null ? "" : description;
-        this.permission = permission == null ? "" : permission;
         this.option = option;
     }
 
@@ -71,7 +55,7 @@ public class Modifier {
      *
      * @return The name of the modifier.
      */
-    public String getName() {
+    public String name() {
         return name;
     }
 
@@ -80,19 +64,19 @@ public class Modifier {
      *
      * @return The description of the modifier. (Empty string when no description)
      */
-    public String getDescription() {
+    public String desc() {
         return description;
     }
 
     /**
      * Set the description of the modifier.
-     * <p/>
-     * This is mainly used when the command config file is loaded to override the default value.
      *
      * @param description The description to set. (Empty string for no description)
+     * @return modifier instance
      */
-    public void setDescription(String description) {
+    public Modifier desc(String description) {
         this.description = description == null ? "" : description;
+        return this;
     }
 
     /**
@@ -100,19 +84,19 @@ public class Modifier {
      *
      * @return The permission node required to specify the modifier. (Empty string when no node)
      */
-    public String getPermission() {
+    public String perm() {
         return permission;
     }
 
     /**
      * Set the permission node required to specify this modifier.
-     * <p/>
-     * This is mainly used when the command config file is loaded to override the default value.
      *
      * @param permission The permission node to set. (Empty string for no permission)
+     * @return modifier instance
      */
-    public void setPermission(String permission) {
+    public Modifier perm(String permission) {
         this.permission = permission == null ? "" : permission;
+        return this;
     }
 
     /**
@@ -123,7 +107,7 @@ public class Modifier {
      *
      * @return The {@link SingleOption} for this modifier.
      */
-    public SingleOption getOption() {
+    public SingleOption option() {
         return option;
     }
 }

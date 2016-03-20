@@ -190,7 +190,7 @@
                         <link>https://hub.spigotmc.org/javadocs/spigot/</link>
                     </links>
                     <linksource>true</linksource>
-                    <excludePackageNames>info.gameboxx.gameboxx.listeners*:info.gameboxx.gameboxx.commands*</excludePackageNames>
+                    <excludePackageNames>info.gameboxx.gameboxx.listeners*</excludePackageNames>
                 </configuration>
             </plugin>
         </plugins>

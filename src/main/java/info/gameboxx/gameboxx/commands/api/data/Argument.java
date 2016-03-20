@@ -29,7 +29,6 @@ import info.gameboxx.gameboxx.commands.api.Cmd;
 import info.gameboxx.gameboxx.commands.api.CmdData;
 import info.gameboxx.gameboxx.commands.api.parse.CmdParser;
 import info.gameboxx.gameboxx.options.SingleOption;
-import info.gameboxx.gameboxx.options.single.PlayerO;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
@@ -37,7 +36,7 @@ import org.bukkit.entity.Player;
 /**
  * A regular command argument.
  * <p/>
- * Use {@link Cmd#addArgument(String, String, String, Requirement, SingleOption)} to add an argument to a command.
+ * Use {@link Cmd#addArgument(String, ArgRequirement, SingleOption)} to add an argument to a command.
  */
 public class Argument {
 
@@ -59,30 +58,15 @@ public class Argument {
     public static final String REQUIRED_NON_PLAYER_SUFFIX = ">";
 
     private final String name;
-    private String description;
-    private String permission;
-    private final Requirement requirement;
+    private final ArgRequirement requirement;
     private final SingleOption option;
 
-    /**
-     * Construct a new Argument.
-     * <p/>
-     * Use {@link Cmd#addArgument(String, String, String, Requirement, SingleOption)} to add an argument to a command.
-     * Which means it shouldn't be needed to use this.
-     *
-     * @param name The argument name/key used to identify the argument.
-     *             This name must be used with the {@link CmdData} result to get the argument value.
-     * @param description Description that describes the argument used in the command help.
-     * @param permission The permission node required to specify this argument.
-     * @param requirement The requirement for this argument. (See {@link Requirement} for more info)
-     * @param option The {@link SingleOption} used for parsing the argument.
-     *               This option determines the argument value and everything else.
-     *               For example if it's a {@link PlayerO} the argument value must be a player and the result value would be a player.
-     */
-    public Argument(String name, String description, String permission, Requirement requirement, SingleOption option) {
+    private String description;
+    private String permission;
+
+    /** Construct a new command Argument. */
+    public Argument(String name, ArgRequirement requirement, SingleOption option) {
         this.name = name;
-        this.description = description == null ? "" : description;
-        this.permission = permission == null ? "" : permission;
         this.requirement = requirement;
         this.option = option;
     }
@@ -93,44 +77,44 @@ public class Argument {
      *
      * @return The name of the argument.
      */
-    public String getName() {
+    public String name() {
         return name;
     }
 
     /**
      * Get the usage name of the argument.
      * <p/>
-     * This will add a prefix/suffix to the argument based on the {@link Requirement}
+     * This will add a prefix/suffix to the argument based on the {@link ArgRequirement}
      * <p/>
-     * It's recommended to use {@link #getUsageName(CommandSender)} to get a more accurate usage string.
+     * It's recommended to use {@link #usage(CommandSender)} to get a more accurate usage string.
      *
      * @return The argument name with a prefix/suffix based on the requirement.
      */
-    public String getUsageName() {
-        if (requirement == Requirement.REQUIRED) {
-            return REQUIRED_PREFIX + getName() + REQUIRED_SUFFIX;
-        } else if (requirement == Requirement.OPTIONAL) {
-            return OPTIONAL_PREFIX + getName() + OPTIONAL_SUFFIX;
-        } else if (requirement == Requirement.REQUIRED_CONSOLE) {
-            return REQUIRED_CONSOLE_PREFIX + getName() + REQUIRED_CONSOLE_SUFFIX;
+    public String usage() {
+        if (requirement == ArgRequirement.REQUIRED) {
+            return REQUIRED_PREFIX + name() + REQUIRED_SUFFIX;
+        } else if (requirement == ArgRequirement.OPTIONAL) {
+            return OPTIONAL_PREFIX + name() + OPTIONAL_SUFFIX;
+        } else if (requirement == ArgRequirement.REQUIRED_CONSOLE) {
+            return REQUIRED_CONSOLE_PREFIX + name() + REQUIRED_CONSOLE_SUFFIX;
         } else {
-            return REQUIRED_NON_PLAYER_PREFIX + getName() + REQUIRED_NON_PLAYER_SUFFIX;
+            return REQUIRED_NON_PLAYER_PREFIX + name() + REQUIRED_NON_PLAYER_SUFFIX;
         }
     }
 
     /**
      * Get the usage name of the argument.
      * <p/>
-     * This will add a prefix/suffix to the argument based on the {@link Requirement} for the specified {@link CommandSender}
-     * @see {@link #isRequired(CommandSender)}
+     * This will add a prefix/suffix to the argument based on the {@link ArgRequirement} for the specified {@link CommandSender}
+     * @see {@link #required(CommandSender)}
      *
      * @return The argument name with a prefix/suffix based on the requirement.
      */
-    public String getUsageName(CommandSender sender) {
-        if (isRequired(sender)) {
-            return REQUIRED_PREFIX + getName() + REQUIRED_SUFFIX;
+    public String usage(CommandSender sender) {
+        if (required(sender)) {
+            return REQUIRED_PREFIX + name() + REQUIRED_SUFFIX;
         } else {
-            return OPTIONAL_PREFIX + getName() + OPTIONAL_SUFFIX;
+            return OPTIONAL_PREFIX + name() + OPTIONAL_SUFFIX;
         }
     }
 
@@ -140,19 +124,19 @@ public class Argument {
      *
      * @return The description of the argument. (Empty string when no description)
      */
-    public String getDescription() {
+    public String desc() {
         return description;
     }
 
     /**
      * Set the description of the argument.
-     * <p/>
-     * This is mainly used when the command config file is loaded to override the default value.
      *
      * @param description The description to set. (Empty string for no description)
+     * @return argument instance
      */
-    public void setDescription(String description) {
+    public Argument desc(String description) {
         this.description = description == null ? "" : description;
+        return this;
     }
 
 
@@ -161,7 +145,7 @@ public class Argument {
      *
      * @return The permission node required to specify the argument. (Empty string when no node)
      */
-    public String getPermission() {
+    public String perm() {
         return permission;
     }
 
@@ -172,32 +156,33 @@ public class Argument {
      *
      * @param permission The permission node to set. (Empty string for no permission)
      */
-    public void setPermission(String permission) {
+    public Argument perm(String permission) {
         this.permission = permission == null ? "" : permission;
+        return this;
     }
 
 
     /**
-     * Get the {@link Requirement} for this argument.
+     * Get the {@link ArgRequirement} for this argument.
      *
-     * @return The {@link Requirement} for this argument.
+     * @return The {@link ArgRequirement} for this argument.
      */
-    public Requirement getRequirement() {
+    public ArgRequirement requirement() {
         return requirement;
     }
 
     /**
      * Check whether or not the argument is required for the the specified {@link CommandSender}
      * <p/>
-     * If the requirement is {@link Requirement#REQUIRED} or if it's {@link Requirement#REQUIRED_CONSOLE} and the sender the console
-     * or if it's {@link Requirement#REQUIRED_NON_PLAYER} and the sender isn't a player this will return true.
+     * If the requirement is {@link ArgRequirement#REQUIRED} or if it's {@link ArgRequirement#REQUIRED_CONSOLE} and the sender the console
+     * or if it's {@link ArgRequirement#REQUIRED_NON_PLAYER} and the sender isn't a player this will return true.
      *
-     * @param sender The {@link CommandSender} to check the {@link Requirement} for.
+     * @param sender The {@link CommandSender} to check the {@link ArgRequirement} for.
      * @return True when required for the specified sender.
      */
-    public boolean isRequired(CommandSender sender) {
-        if (requirement == Requirement.REQUIRED || (requirement == Requirement.REQUIRED_CONSOLE && sender instanceof ConsoleCommandSender) ||
-                (requirement == Requirement.REQUIRED_NON_PLAYER && !(sender instanceof Player))) {
+    public boolean required(CommandSender sender) {
+        if (requirement == ArgRequirement.REQUIRED || (requirement == ArgRequirement.REQUIRED_CONSOLE && sender instanceof ConsoleCommandSender) ||
+                (requirement == ArgRequirement.REQUIRED_NON_PLAYER && !(sender instanceof Player))) {
             return true;
         }
         return false;
@@ -211,27 +196,7 @@ public class Argument {
      *
      * @return The {@link SingleOption} for this argument.
      */
-    public SingleOption getOption() {
+    public SingleOption option() {
         return option;
-    }
-
-
-    /**
-     * The requirement for an argument.
-     * <p/>
-     * If an argument is optional it can be left out in the user input.
-     * If not, it must be specified in the command otherwise it will produce an error message.
-     * <p/>
-     * Use {@link #isRequired(CommandSender)} to check if the argument is required for the specified sender.
-     */
-    public enum Requirement {
-        /** Any type of sender MUST specify the argument. */
-        REQUIRED,
-        /** Any type of sender MAY specify the argument but it's not required. */
-        OPTIONAL,
-        /** The console MUST specify the argument but any other sender MAY specify it. */
-        REQUIRED_CONSOLE,
-        /** The player MAY specify the argument but all the other senders MUST specify it. */
-        REQUIRED_NON_PLAYER
     }
 }

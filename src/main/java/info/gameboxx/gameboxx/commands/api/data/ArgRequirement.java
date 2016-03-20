@@ -23,25 +23,25 @@
  THE SOFTWARE.
  */
 
-package info.gameboxx.gameboxx.commands.test;
+package info.gameboxx.gameboxx.commands.api.data;
 
-import info.gameboxx.gameboxx.commands.api.BaseCmd;
-import info.gameboxx.gameboxx.commands.api.CmdData;
-import info.gameboxx.gameboxx.commands.api.data.ArgRequirement;
-import info.gameboxx.gameboxx.options.single.EntityStackO;
+import org.bukkit.command.CommandSender;
 
-import java.io.File;
-
-public class SummonCmd extends BaseCmd {
-
-    public SummonCmd(File file) {
-        super("summon", new String[] {"spawnmob", "smob", "spawnentity", "sentity"}, "Summon an entity.", "gameboxx.cmd.summon", file);
-
-        addArgument("entity", ArgRequirement.REQUIRED, new EntityStackO()).desc("The full entity string which may contain meta and such.");
-    }
-
-    @Override
-    public void onCommand(CmdData data) {
-        data.getSender().sendMessage("Entity spawned!");
-    }
+/**
+ * The requirement for an argument.
+ * <p/>
+ * If an argument is optional it can be left out in the user input.
+ * If not, it must be specified in the command otherwise it will produce an error message.
+ * <p/>
+ * Use {@link Argument#required(CommandSender)} to check if the argument is required for the specified sender.
+ */
+public enum ArgRequirement {
+    /** Any type of sender MUST specify the argument. */
+    REQUIRED,
+    /** Any type of sender MAY specify the argument but it's not required. */
+    OPTIONAL,
+    /** The console MUST specify the argument but any other sender MAY specify it. */
+    REQUIRED_CONSOLE,
+    /** The player MAY specify the argument but all the other senders MUST specify it. */
+    REQUIRED_NON_PLAYER
 }

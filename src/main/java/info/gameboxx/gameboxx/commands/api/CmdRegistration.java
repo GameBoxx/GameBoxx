@@ -87,11 +87,11 @@ public class CmdRegistration {
     private static void registerCommands(Plugin plugin, Cmd cmd) throws CmdAlreadyRegisteredException, NullPointerException {
         boolean foundSubs = false;
         for (Argument arg : cmd.getArguments().values()) {
-            if (arg.getOption() instanceof SubCmdO) {
+            if (arg.option() instanceof SubCmdO) {
                 foundSubs = true;
-                SubCmd[] subs = ((SubCmdO)arg.getOption()).getSubCmds();
+                SubCmd[] subs = ((SubCmdO)arg.option()).getSubCmds();
                 if (subs == null || subs.length < 1) {
-                    throw new NullPointerException("No sub commands registered for the '" + arg.getName() + "' sub command option in the '" + cmd.getName() + "' command.");
+                    throw new NullPointerException("No sub commands registered for the '" + arg.name() + "' sub command option in the '" + cmd.getName() + "' command.");
                 }
                 for (SubCmd sub : subs) {
                     registerCommands(plugin, sub);

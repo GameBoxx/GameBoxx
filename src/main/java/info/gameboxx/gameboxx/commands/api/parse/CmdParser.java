@@ -105,8 +105,8 @@ public class CmdParser {
                 String name = arg.substring(1).toLowerCase();
                 if (cmd.getFlags().containsKey(name)) {
                     Flag flag = cmd.getFlags().get(name);
-                    if (!flag.getPermission().isEmpty() && !sender.hasPermission(flag.getPermission())) {
-                        error = Msg.getString("no-permission", Param.P("node", flag.getPermission()));
+                    if (!flag.perm().isEmpty() && !sender.hasPermission(flag.perm())) {
+                        error = Msg.getString("no-permission", Param.P("node", flag.perm()));
                         return false;
                     }
 
@@ -127,12 +127,12 @@ public class CmdParser {
 
                 if (cmd.getModifiers().containsKey(name)) {
                     Modifier mod = cmd.getModifiers().get(name);
-                    if (!mod.getPermission().isEmpty() && !sender.hasPermission(mod.getPermission())) {
-                        error = Msg.getString("no-permission", Param.P("node", mod.getPermission()));
+                    if (!mod.perm().isEmpty() && !sender.hasPermission(mod.perm())) {
+                        error = Msg.getString("no-permission", Param.P("node", mod.perm()));
                         return false;
                     }
 
-                    SingleOption option = (SingleOption)cmd.getModifiers().get(name).getOption().clone();
+                    SingleOption option = (SingleOption)cmd.getModifiers().get(name).option().clone();
                     if (!option.parse(sender, value)) {
                         error = option.getError();
                         return false;
@@ -152,7 +152,7 @@ public class CmdParser {
                     break;
                 }
                 Argument argument = new ArrayList<>(cmd.getArguments().values()).get(index);
-                SingleOption option = (SingleOption)argument.getOption().clone();
+                SingleOption option = (SingleOption)argument.option().clone();
                 index++;
 
 
@@ -160,7 +160,7 @@ public class CmdParser {
                 if (option instanceof SubCmdO) {
                     //Find a matching sub command for the input.
                     if (!option.parse(sender, arg)) {
-                        if (!argument.isRequired(sender)) {
+                        if (!argument.required(sender)) {
                             continue;
                         }
                         error = option.getError();
@@ -168,13 +168,13 @@ public class CmdParser {
                     }
 
                     //Permission check for subcmd argument. (Each sub command can have it's own permission too this is the general permission for specifying any sub cmd)
-                    if (!argument.getPermission().isEmpty() && !sender.hasPermission(argument.getPermission())) {
-                        error = Msg.getString("no-permission", Param.P("node", argument.getPermission()));
+                    if (!argument.perm().isEmpty() && !sender.hasPermission(argument.perm())) {
+                        error = Msg.getString("no-permission", Param.P("node", argument.perm()));
                         return false;
                     }
 
                     //Parse sub command as command.
-                    data.getArgs().put(argument.getName().toLowerCase(), option);
+                    data.getArgs().put(argument.name().toLowerCase(), option);
                     argsToParse.remove(arg);
                     if (!parse(((SubCmdO)option).getValue(), sender)) {
                         return false;
@@ -188,7 +188,7 @@ public class CmdParser {
 
                 //Regular option argument.
                 if (!option.parse(sender, arg)) {
-                    if (argument.isRequired(sender)) {
+                    if (argument.required(sender)) {
                         error = option.getError();
                         return false;
                     }
@@ -196,23 +196,23 @@ public class CmdParser {
                 }
 
                 //Permission check to specify the argument.
-                if (!argument.getPermission().isEmpty() && !sender.hasPermission(argument.getPermission())) {
-                    error = Msg.getString("no-permission", Param.P("node", argument.getPermission()));
+                if (!argument.perm().isEmpty() && !sender.hasPermission(argument.perm())) {
+                    error = Msg.getString("no-permission", Param.P("node", argument.perm()));
                     return false;
                 }
 
                 argsToParse.remove(arg);
-                data.getArgs().put(argument.getName().toLowerCase(), option);
+                data.getArgs().put(argument.name().toLowerCase(), option);
                 break;
             }
 
         }
 
         for (Argument arg : cmd.getArguments().values()) {
-            if (arg.isRequired(sender) && !data.getArgs().containsKey(arg.getName().toLowerCase())) {
-                error = Msg.getString("cmdparser.missing-arg", Param.P("arg", arg.getName()),
-                        Param.P("desc", arg.getDescription().isEmpty() ? Msg.getString("cmdparser.no-desc") : arg.getDescription()),
-                        Param.P("type", arg.getOption().getTypeName()), Param.P("usage", cmd.getUsage(sender)), Param.P("cmd", cmd.getName()));
+            if (arg.required(sender) && !data.getArgs().containsKey(arg.name().toLowerCase())) {
+                error = Msg.getString("cmdparser.missing-arg", Param.P("arg", arg.name()),
+                        Param.P("desc", arg.desc().isEmpty() ? Msg.getString("cmdparser.no-desc") : arg.desc()),
+                        Param.P("type", arg.option().getTypeName()), Param.P("usage", cmd.getUsage(sender)), Param.P("cmd", cmd.getName()));
                 return false;
             }
         }
