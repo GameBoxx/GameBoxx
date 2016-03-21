@@ -44,13 +44,16 @@ public class GiveCmd extends BaseCmd {
         desc("Play a game!");
         perm("gameboxx.cmd.give");
 
-        addArgument("player", ArgRequirement.REQUIRED_NON_PLAYER, new PlayerO()).desc("The player to give the item to").perm("gameboxx.cmd.give.others");
-        addArgument("item", ArgRequirement.REQUIRED, new ItemO()).desc("The full item string which may contain meta and such.");
+        addArgument("player", ArgRequirement.REQUIRED_NON_PLAYER, new PlayerO()).desc("The player to give the item to").perm("gameboxx.cmd.give.others").skippable(true);
+        addArgument("item", ArgRequirement.REQUIRED, new ItemO()).desc("The full item string which may contain meta and such.").span(-1);
 
         addModifier("slot", new IntO().min(0).max(39)).desc("The slot to put the item in.");
 
         addFlag("d").desc("Drop items on the ground if they don't fit?");
         addFlag("u").desc("Unstack items if they exceed the max stack size?");
+
+        addConflictLink("slot", "d");
+        addConflictLink("d", "u");
     }
 
     @Override

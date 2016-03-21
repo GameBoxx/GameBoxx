@@ -40,7 +40,7 @@ public class SummonCmd extends BaseCmd {
         desc("Summon an entity.");
         perm("gameboxx.cmd.summon");
 
-        addArgument("entity", ArgRequirement.REQUIRED, new EntityStackO()).desc("The full entity string which may contain meta and such.");
+        addArgument("entity", ArgRequirement.REQUIRED, new EntityStackO()).desc("The full entity string which may contain meta and such.").span(-1);
     }
 
     @Override
