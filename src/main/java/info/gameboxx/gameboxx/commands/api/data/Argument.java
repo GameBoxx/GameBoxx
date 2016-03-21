@@ -62,6 +62,7 @@ public class Argument {
     private final SingleOption option;
 
     private int span = 1;
+    private boolean skippable = false;
 
     private String description;
     private String permission;
@@ -188,6 +189,37 @@ public class Argument {
             return true;
         }
         return false;
+    }
+
+
+    /**
+     * Check whether or not the argument is skippable.
+     *
+     * @see #skippable(boolean)
+     * @return true when the argument is skippable.
+     */
+    public boolean skippable() {
+        return skippable;
+    }
+
+    /**
+     * Set whether or not this argument is skippable.
+     * <p/>
+     * If it's skippable and the parsing fails it will be skipped.
+     * This makes it possible to have optional arguments in the middle of a command.
+     * <p/>
+     * For example a command like /heal [player] [amount]
+     * When the player argument is skippable you can also do /heal [amount]
+     * <p/>
+     * Keep in mind that the argument that follows should be a different type otherwise the parsing will never fail and it will never be able to be skipped.
+     * Like /cmd [int1] [int2] and you make int1 skippable you can't do /cmd [int2] because it would be parsed as int1 still.
+     *
+     * @param skippable Set to true to make the argument skippable
+     * @return argument instance.
+     */
+    public Argument skippable(boolean skippable) {
+        this.skippable = skippable;
+        return this;
     }
 
 
