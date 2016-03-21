@@ -27,6 +27,7 @@ package info.gameboxx.gameboxx.commands.api;
 
 import info.gameboxx.gameboxx.GameBoxx;
 import info.gameboxx.gameboxx.commands.api.data.*;
+import info.gameboxx.gameboxx.commands.api.data.link.*;
 import info.gameboxx.gameboxx.commands.api.exception.CmdAlreadyRegisteredException;
 import info.gameboxx.gameboxx.commands.api.parse.CmdParser;
 import info.gameboxx.gameboxx.commands.api.parse.CmdUsageParser;
@@ -60,6 +61,7 @@ public abstract class Cmd extends BukkitCommand {
     private LinkedHashMap<String, Argument> arguments = new LinkedHashMap<>();
     private Map<String, Modifier> modifiers = new HashMap<>();
     private Map<String, Flag> flags = new HashMap<>();
+    private List<Link> links = new ArrayList<>();
 
     /**
      * Construct a new command with the given name and aliases.
@@ -329,8 +331,8 @@ public abstract class Cmd extends BukkitCommand {
         if (isBase()) {
             return arguments;
         }
-        LinkedHashMap<String, Argument> arguments = new LinkedHashMap<>(this.arguments);
-        arguments.putAll(getBaseCmd().getArguments());
+        LinkedHashMap<String, Argument> arguments = new LinkedHashMap<>(getBaseCmd().getArguments());
+        arguments.putAll(this.arguments);
         return arguments;
     }
 
@@ -390,8 +392,8 @@ public abstract class Cmd extends BukkitCommand {
         if (isBase()) {
             return modifiers;
         }
-        Map<String, Modifier> modifiers = new LinkedHashMap<>(this.modifiers);
-        modifiers.putAll(getBaseCmd().getModifiers());
+        Map<String, Modifier> modifiers = new LinkedHashMap<>(getBaseCmd().getModifiers());
+        modifiers.putAll(this.modifiers);
         return modifiers;
     }
 
@@ -453,9 +455,128 @@ public abstract class Cmd extends BukkitCommand {
         if (isBase()) {
             return flags;
         }
-        Map<String, Flag> flags = new LinkedHashMap<>(this.flags);
-        flags.putAll(getBaseCmd().getFlags());
+        Map<String, Flag> flags = new LinkedHashMap<>(getBaseCmd().getFlags());
+        flags.putAll(this.flags);
         return flags;
+    }
+
+
+
+    /**
+     * Register a {@link} for this command.
+     *
+     * @see Link
+     * @see #addRemoveLink(String, String...)
+     * @see #addRequirementLink(String, ArgRequirement, String...)
+     *
+     * @param link The link instance to add.
+     * @return The added {@link Link}
+     */
+    public Link addLink(Link link) {
+        links.add(link);
+        return link;
+    }
+
+    /**
+     * Register a {@link RemoveLink} for this command.
+     * <p/>
+     * If all the specified names have been specified the removeName will be removed.
+     * This can be the name of an argument, modifier or flag.
+     *
+     * @param removeName The name of the argument, modifier or flag that needs to be removed when the specified names have been specified.
+     * @param names One or more names of arguments, modifiers or flags to check for.
+     *              When all of these names have been specified the argument, modifier or flag with the removeName name will be removed/ignored.
+     * @return The added {@link RemoveLink}
+     */
+    public RemoveLink addRemoveLink(String removeName, String... names) {
+        return (RemoveLink)addLink(new RemoveLink(removeName, names));
+    }
+
+    /**
+     * Register a {@link BlacklistLink} for this command.
+     * <p/>
+     * If all the specified names have been specified the blacklist of this command will be overwritten.
+     * This can be the name of an argument, modifier or flag.
+     *
+     * @param newBlacklist New blacklist array with {@link SenderType}s that will be set when the specified names have been specified.
+     * @param names One or more names of arguments, modifiers or flags to check for.
+     *              When all of these names have been specified the blacklist of this command will be overwritten.
+     * @return The added {@link BlacklistLink}
+     */
+    public BlacklistLink addBlacklistLink(SenderType[] newBlacklist, String... names) {
+        return (BlacklistLink)addLink(new BlacklistLink(newBlacklist, names));
+    }
+
+    /**
+     * Register a {@link RequirementLink} for this command.
+     * <p/>
+     * If all the specified names have been specified the modifyName requirement will be changed to the specified requirement.
+     * The names can be the name of an argument, modifier or flag.
+     * <p/>
+     * The name of the argument to modify can not be a modifier or flag as those don't have requirements.
+     *
+     * @param argName The name of the argument that needs to be modified when the specified names have been specified.
+     *                This must be an Argument and it can not be a modifier or a flag!
+     * @param newRequirement The new {@link ArgRequirement}
+     * @param names One or more names of arguments, modifiers or flags to check for.
+     *              When all of these names have been specified the argument, modifier or flag with the removeName name will be removed/ignored.
+     * @return The added {@link RequirementLink}
+     */
+    public RequirementLink addRequirementLink(String argName, ArgRequirement newRequirement, String... names) {
+        return (RequirementLink)addLink(new RequirementLink(argName, newRequirement, names));
+    }
+
+    /**
+     * Register a {@link ConflictLink} for this command.
+     * <p/>
+     * If one of the names is specified you can not specify another name from the specified names.
+     * The names can be the name of an argument, modifier or flag.
+     *
+     * @param names One or more names of arguments, modifiers or flags to check for.
+     *              If one of the names is specified you can not specify another name from the specified names.
+     * @return The added {@link ConflictLink}
+     */
+    public ConflictLink addConflictLink(String... names) {
+        return (ConflictLink)addLink(new ConflictLink(names));
+    }
+
+    /**
+     * Register a {@link ForceLink} for this command.
+     * <p/>
+     * If one of the names is specified you must specify all the other names too.
+     * The names can be the name of an argument, modifier or flag.
+     *
+     * @param names One or more names of arguments, modifiers or flags to check for.
+     *              If one of the names is specified you must specify all the other names too.
+     * @return The added {@link ForceLink}
+     */
+    public ForceLink addForceLink(String... names) {
+        return (ForceLink)addLink(new ForceLink(names));
+    }
+
+    /**
+     * Get the list with all the registered links.
+     *
+     * @return List with registered links.
+     */
+    public List<Link> getLinks() {
+        return links;
+    }
+
+    /**
+     * Get a list with all the registered links.
+     * <p/>
+     * If this command is a sub command this will include all the links from the parent.
+     *
+     * @return List with registered links.
+     */
+    public List<Link> getAllLinks() {
+        if (isBase()) {
+            return links;
+        }
+        List<Link> links = new ArrayList<>(getBaseCmd().getLinks());
+        links.addAll(this.links);
+        return links;
     }
 
 
