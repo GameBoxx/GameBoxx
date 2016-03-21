@@ -43,6 +43,7 @@ public class CmdParser {
     private Cmd cmd = null;
     private CmdData cmdData = null;
     private String error = "";
+    private int state = 0;
 
     List<String> argsList;
 
@@ -74,7 +75,8 @@ public class CmdParser {
         data.flags = cmd.getAllFlags();
 
         //First time parsing to get most data.
-        data = parse(sender, data);
+        state = 1;
+        data = parse(sender, label, data);
 
         //Parse links
         List<Link> links = cmd.getAllLinks();
@@ -132,11 +134,21 @@ public class CmdParser {
         }
 
         //Parse again with all the links applied.
-        data = parse(sender, data);
+        state = 2;
+        data = parse(sender, label, data);
+        if (data == null) {
+            error = "";
+            return;
+        }
 
         //Check if all the required arguments have been parsed.
         for (Argument arg : data.arguments.values()) {
             if (arg.required(sender) && !cmdData.getArgs().containsKey(arg.name().toLowerCase())) {
+                if (arg.option() instanceof SubCmdO) {
+                    cmd.showSubCmds(sender, label, cmdData.hasMod("page") ? (int)cmdData.getMod("page") : 1);
+                    error = "";
+                    return;
+                }
                 setError(Msg.getString("cmdparser.missing-arg", Param.P("arg", arg.name()),
                         Param.P("desc", arg.desc().isEmpty() ? Msg.getString("cmdparser.no-desc") : arg.desc()),
                         Param.P("type", arg.option().getTypeName()), Param.P("usage", cmd.getUsage(sender, label, inputArgs)), Param.P("cmd", cmd.getName())));
@@ -149,7 +161,7 @@ public class CmdParser {
         }
     }
 
-    private ParseData parse(CommandSender sender, ParseData data) {
+    private ParseData parse(CommandSender sender, String label, ParseData data) {
         data.argsToParse = new ArrayList<>(argsList);
 
         //Go through all the arguments from the input.
@@ -236,6 +248,10 @@ public class CmdParser {
                 //parse the argument.
                 if (!option.parse(sender, arg)) {
                     if (!argument.skippable() || argument.required(sender)) {
+                        if (state == 2 && option instanceof SubCmdO) {
+                            cmd.showSubCmds(sender, label, cmdData.hasMod("page") ? (int)cmdData.getMod("page") : 1);
+                            return null;
+                        }
                         setError(option.getError());
                         break;
                     }
@@ -330,13 +346,18 @@ public class CmdParser {
 
         //Get best match from matches
         matches = new TreeMap<>(matches);
+        SubCmd backupMatch = null;
         for (Map.Entry<Integer, SubCmd> match : matches.entrySet()) {
             //Sub command index must be at least at the same index.
             if (match.getKey() < subCmdIndex) {
+                backupMatch = match.getValue();
                 continue;
             }
             //Return the sub command argument with the lowest index for best match.
             return match.getValue();
+        }
+        if (backupMatch != null) {
+            return backupMatch;
         }
 
         //No match

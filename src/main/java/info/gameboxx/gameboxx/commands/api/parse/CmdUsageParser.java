@@ -49,11 +49,11 @@ public class CmdUsageParser {
     private List<String> usage = new ArrayList<>();
     private List<String> JSON = new ArrayList<>();
 
-    public CmdUsageParser(Cmd cmd, CommandSender sender, String label, String[] args) {
+    public CmdUsageParser(Cmd cmd, CommandSender sender, String label, String[] args, String argumentColor) {
         cmd = CmdParser.getSub(cmd, args);
 
-        usage.add("/" + label);
-        JSON.add("/" + label);
+        usage.add(Msg.getString("command.label-entry", Param.P("label", label)));
+        JSON.add(Msg.getString("command.label-entry", Param.P("label", label)));
 
         Collection<Argument> arguments = cmd.getAllArguments().values();
         for (Argument arg : arguments) {
@@ -74,11 +74,11 @@ public class CmdUsageParser {
 
                     usage.add(sub.getSubName());
                     JSON.add(Msg.getString("command.subcmd-sub-entry",
-                            Param.P("name", sub.getSubName()),
+                            Param.P("name", argumentColor + sub.getSubName()),
                             Param.P("description", sub.getDescription().isEmpty() ? Msg.getString("command.no-description") : sub.getDescription()),
                             Param.P("permission", permissions.isEmpty() ? Msg.getString("command.none") : Str.implode(permissions)),
                             Param.P("type", arg.option().getTypeName()),
-                            Param.P("aliases", sub.getAliases().isEmpty() ? Msg.getString("command.none") : Str.implode(sub.getAliases()))
+                            Param.P("aliases", sub.getSubAliases().isEmpty() ? Msg.getString("command.none") : Str.implode(sub.getSubAliases()))
                     ));
                 } else {
                     //No sub command specified try to display all the options
@@ -95,8 +95,8 @@ public class CmdUsageParser {
                     if (subCmds.length <= MIN_SUB_COMMANDS) {
                         for (SubCmd sub : subCmds) {
                             subCmdFormats.add(Msg.getString("command.subcmd-general-entry-desc",
-                                    Param.P("name", sub.getSubName()),
-                                    Param.P("usage", sub.getUsage(sender, label)),
+                                    Param.P("name", argumentColor + sub.getSubName()),
+                                    Param.P("usage", new CmdUsageParser(sub, sender, label, new String[0], argumentColor).getString()),
                                     Param.P("description", sub.getDescription().isEmpty() ? Msg.getString("command.no-description") : sub.getDescription()),
                                     Param.P("permission", sub.getPermission().isEmpty() ? Msg.getString("command.none") : sub.getPermission()),
                                     Param.P("aliases", sub.getSubAliases().isEmpty() ? Msg.getString("command.none") : Str.implode(sub.getSubAliases()))
@@ -105,8 +105,8 @@ public class CmdUsageParser {
                     } else {
                         for (int i = 0; i < subCmds.length && i < MAX_SUB_COMMANDS; i++) {
                             subCmdFormats.add(Msg.getString("command.subcmd-general-entry-desc-simple",
-                                    Param.P("name", subCmds[i].getSubName()),
-                                    Param.P("usage", subCmds[i].getUsage(sender, label))
+                                    Param.P("name", argumentColor + subCmds[i].getSubName()),
+                                    Param.P("usage", new CmdUsageParser(subCmds[i], sender, label, new String[0], argumentColor).getString())
                             ));
                         }
                     }
@@ -115,7 +115,7 @@ public class CmdUsageParser {
                     }
 
                     JSON.add(Msg.getString("command.subcmd-general-entry",
-                            Param.P("name", arg.usage(sender).replace(arg.name(), usageDisplay)),
+                            Param.P("name", argumentColor + arg.usage(sender).replace(arg.name(), usageDisplay)),
                             Param.P("description", arg.desc().isEmpty() ? Msg.getString("command.no-description") : arg.desc()),
                             Param.P("permission", arg.perm().isEmpty() ? Msg.getString("command.none") : arg.perm()),
                             Param.P("type", arg.option().getTypeName()),
@@ -129,7 +129,7 @@ public class CmdUsageParser {
             //Regular argument
             usage.add(arg.usage(sender));
             JSON.add(Msg.getString("command.argument-entry",
-                    Param.P("name", arg.usage(sender)),
+                    Param.P("name", argumentColor + arg.usage(sender)),
                     Param.P("description", arg.desc().isEmpty() ? Msg.getString("command.no-description") : arg.desc()),
                     Param.P("permission", arg.perm().isEmpty() ? Msg.getString("command.none") : arg.perm()),
                     Param.P("type", arg.option().getTypeName())

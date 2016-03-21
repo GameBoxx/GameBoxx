@@ -30,6 +30,7 @@ import info.gameboxx.gameboxx.commands.api.parse.CmdParser;
 import info.gameboxx.gameboxx.commands.api.parse.SubCmdO;
 import info.gameboxx.gameboxx.messages.Msg;
 import info.gameboxx.gameboxx.options.SingleOption;
+import info.gameboxx.gameboxx.options.single.IntO;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.InvalidConfigurationException;
@@ -69,7 +70,10 @@ public abstract class BaseCmd extends Cmd {
      */
     public BaseCmd(String name, String... aliases) {
         super(name, aliases);
+
         addFlag("?").desc("Display the full command help.");
+        addFlag("l").desc("List all the sub commands.");
+        addModifier("page", new IntO().min(1)).desc("List all sub commands on a specific page.");
     }
 
     /**
@@ -225,6 +229,12 @@ public abstract class BaseCmd extends Cmd {
         //Show help
         if (parser.getData().hasFlag("?")) {
             parser.getCmd().showHelp(sender, label);
+            return true;
+        }
+
+        //Show sub commands
+        if (parser.getData().hasFlag("l")) {
+            parser.getCmd().showSubCmds(sender, label, parser.getData().hasMod("page") ? (int)parser.getData().getMod("page") : 1);
             return true;
         }
 

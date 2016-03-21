@@ -602,7 +602,7 @@ public abstract class Cmd extends BukkitCommand {
      * @return The usage string for the specified sender.
      */
     public String getUsage(CommandSender sender, String label) {
-        return new CmdUsageParser(this, sender, label, new String[0]).getString();
+        return new CmdUsageParser(this, sender, label, new String[0], "").getString();
     }
 
     /**
@@ -617,7 +617,7 @@ public abstract class Cmd extends BukkitCommand {
      * @return The usage string for the specified sender.
      */
     public String getUsage(CommandSender sender, String label, String[] args) {
-        return new CmdUsageParser(this, sender, label, args).getString();
+        return new CmdUsageParser(this, sender, label, args, "").getString();
     }
 
     /**
@@ -653,45 +653,108 @@ public abstract class Cmd extends BukkitCommand {
             blacklisted.add(Str.camelCase(type.toString()));
         }
 
+        String perm = "";
+        if (perm().isEmpty() && getBaseCmd().perm().isEmpty()) {
+            perm = none;
+        } else {
+            if (!perm().isEmpty()) {
+                perm = perm();
+            }
+            if (isSub() && !getBaseCmd().perm().isEmpty()) {
+                if (!perm.isEmpty()) {
+                    perm += " ";
+                }
+                perm += Msg.getString("command.permission-inherit", Param.P("permission", getBaseCmd().perm()));
+            }
+        }
+
         List<String> flagFormats = new ArrayList<>();
-        for (Flag flag : flags.values()) {
+        for (Flag flag : getAllFlags().values()) {
+            boolean inherit = !flags.containsKey(flag.name().toLowerCase()) || flag.name().equals("?") || flag.name().equals("l");
             if (sender instanceof Player) {
-                flagFormats.add(Msg.getString("command.flag-entry",
+                flagFormats.add(Msg.getString(inherit ? "command.flag-entry-inherit" : "command.flag-entry",
                         Param.P("name", flag.name()),
                         Param.P("description", flag.desc().isEmpty() ? noDesc : flag.desc()),
                         Param.P("permission", flag.perm().isEmpty() ? none : flag.perm())
                 ));
             } else {
-                flagFormats.add("&a&l-" + flag.name());
+                flagFormats.add((inherit ? "&a&l-" : "&7&l-") + flag.name());
             }
         }
 
         List<String> modifierFormats = new ArrayList<>();
-        for (Modifier mod : modifiers.values()) {
+        for (Modifier mod : getAllModifiers().values()) {
+            boolean inherit = !modifiers.containsKey(mod.name().toLowerCase()) || mod.name().equals("page");
             if (sender instanceof Player) {
-                modifierFormats.add(Msg.getString("command.modifier-entry",
+                modifierFormats.add(Msg.getString(inherit ? "command.modifier-entry-inherit" : "command.modifier-entry",
                         Param.P("name", mod.name()),
                         Param.P("description", mod.desc().isEmpty() ? noDesc : mod.desc()),
                         Param.P("permission", mod.perm().isEmpty() ? none : mod.perm()),
                         Param.P("type", mod.option().getTypeName())
                 ));
             } else {
-                modifierFormats.add("&a" + mod.name() + ":&8[&a" + mod.option().getTypeName() + "&8]");
+                modifierFormats.add(inherit ? "&a" + mod.name() + ":&8[&a" + mod.option().getTypeName() + "&8]" : "&7" + mod.name() + ":&8[&7" + mod.option().getTypeName() + "&8]");
             }
         }
 
+        String argClr = Msg.getString("command.argument-name-color");
         String msg = Msg.getString("command.help",
                 Param.P("label", label),
                 Param.P("cmd", getBaseCmd().getName()),
-                Param.P("usage", sender instanceof ConsoleCommandSender ? getUsage(sender, label, args) : new CmdUsageParser(this, sender, label, args).getJSON()),
+                Param.P("usage", sender instanceof ConsoleCommandSender ? new CmdUsageParser(this, sender, label, args, argClr).getString() : new CmdUsageParser(this, sender, label, args, argClr).getJSON()),
                 Param.P("description", desc().isEmpty() ? noDesc : desc()),
-                Param.P("permission", perm().isEmpty() ? none : perm()),
+                Param.P("permission", perm),
                 Param.P("aliases", isSub() ? (((SubCmd)this).getSubAliases().isEmpty() ? none : Str.implode(((SubCmd)this).getSubAliases())) : (getAliases().isEmpty() ? none : Str.implode(getAliases()))),
-                Param.P("blacklisted", blacklisted.isEmpty() ? none : Str.implode(blacklisted)),
                 Param.P("flags", flagFormats.isEmpty() ? none : Str.implode(flagFormats, " ")),
                 Param.P("modifiers", modifierFormats.isEmpty() ? none : Str.implode(modifierFormats))
         );
 
+        Msg.fromString(msg).send(sender);
+    }
+
+    public void showSubCmds(CommandSender sender, String label, int page) {
+        SubCmd[] subCmds = getBaseCmd().getSubCmds();
+        if (subCmds == null) {
+            Msg.get("command.no-subcmd").send(sender);
+            return;
+        }
+
+        int commandsPerPage = 8;
+        int pages = subCmds.length / commandsPerPage + 1;
+
+        if (page > pages) {
+            Msg.get("command.page-number-high", Param.P("pages", pages)).send(sender);
+            return;
+        }
+
+        List<String> lines = new ArrayList<>();
+        int start = (page-1) * commandsPerPage;
+        for (int i = start; i < start + commandsPerPage && i < subCmds.length; i++) {
+            String usage = new CmdUsageParser(subCmds[i], sender, label, new String[0], Msg.getString("command.list-argument-name-color")).getJSON();
+            lines.add(Msg.getString("command.list-entry", Param.P("cmd", label), Param.P("subcmd", subCmds[i].getSubName()), Param.P("usage", usage)));
+        }
+
+        String prev;
+        if (page == 1) {
+            prev = Msg.getString("command.list-no-prev");
+        } else {
+            prev = Msg.getString("command.list-prev", Param.P("cmd", label), Param.P("prevpage", page-1));
+        }
+        String next;
+        if (page == pages) {
+            next = Msg.getString("command.list-no-next");
+        } else {
+            next = Msg.getString("command.list-next", Param.P("cmd", label), Param.P("nextpage", page+1));
+        }
+
+        String msg = Msg.getString("command.list",
+                Param.P("cmd", label),
+                Param.P("page", page),
+                Param.P("pages", pages),
+                Param.P("prev", prev),
+                Param.P("next", next),
+                Param.P("commands", Str.implode(lines, "\n"))
+        );
         Msg.fromString(msg).send(sender);
     }
 
