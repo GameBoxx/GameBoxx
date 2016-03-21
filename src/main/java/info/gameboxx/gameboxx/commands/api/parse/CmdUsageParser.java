@@ -99,7 +99,7 @@ public class CmdUsageParser {
                                     Param.P("usage", sub.getUsage(sender, label)),
                                     Param.P("description", sub.getDescription().isEmpty() ? Msg.getString("command.no-description") : sub.getDescription()),
                                     Param.P("permission", sub.getPermission().isEmpty() ? Msg.getString("command.none") : sub.getPermission()),
-                                    Param.P("aliases", sub.getAliases().isEmpty() ? Msg.getString("command.none") : Str.implode(sub.getAliases()))
+                                    Param.P("aliases", sub.getSubAliases().isEmpty() ? Msg.getString("command.none") : Str.implode(sub.getSubAliases()))
                             ));
                         }
                     } else {

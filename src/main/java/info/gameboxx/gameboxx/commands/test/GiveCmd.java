@@ -41,7 +41,7 @@ public class GiveCmd extends BaseCmd {
     public GiveCmd(File file) {
         super("give", "item", "i");
         file(file);
-        desc("Play a game!");
+        desc("Spawn an item and give it to a player.");
         perm("gameboxx.cmd.give");
 
         addArgument("player", ArgRequirement.REQUIRED_NON_PLAYER, new PlayerO()).desc("The player to give the item to").perm("gameboxx.cmd.give.others").skippable(true);

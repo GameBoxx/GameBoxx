@@ -686,7 +686,7 @@ public abstract class Cmd extends BukkitCommand {
                 Param.P("usage", sender instanceof ConsoleCommandSender ? getUsage(sender, label, args) : new CmdUsageParser(this, sender, label, args).getJSON()),
                 Param.P("description", desc().isEmpty() ? noDesc : desc()),
                 Param.P("permission", perm().isEmpty() ? none : perm()),
-                Param.P("aliases", getAliases().isEmpty() ? none : Str.implode(getAliases())),
+                Param.P("aliases", isSub() ? (((SubCmd)this).getSubAliases().isEmpty() ? none : Str.implode(((SubCmd)this).getSubAliases())) : (getAliases().isEmpty() ? none : Str.implode(getAliases()))),
                 Param.P("blacklisted", blacklisted.isEmpty() ? none : Str.implode(blacklisted)),
                 Param.P("flags", flagFormats.isEmpty() ? none : Str.implode(flagFormats, " ")),
                 Param.P("modifiers", modifierFormats.isEmpty() ? none : Str.implode(modifierFormats))
