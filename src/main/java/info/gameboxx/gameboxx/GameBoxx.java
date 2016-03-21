@@ -29,8 +29,7 @@ import com.zaxxer.hikari.HikariDataSource;
 import info.gameboxx.gameboxx.commands.*;
 import info.gameboxx.gameboxx.commands.api.CmdRegistration;
 import info.gameboxx.gameboxx.commands.api.exception.CmdAlreadyRegisteredException;
-import info.gameboxx.gameboxx.commands.test.GiveCmd;
-import info.gameboxx.gameboxx.commands.test.SummonCmd;
+import info.gameboxx.gameboxx.commands.test.*;
 import info.gameboxx.gameboxx.config.PluginCfg;
 import info.gameboxx.gameboxx.game.GameManager;
 import info.gameboxx.gameboxx.listeners.MainListener;
@@ -143,8 +142,16 @@ public class GameBoxx extends JavaPlugin {
 
             CmdRegistration.register(this, new PlayCmd(configFile));
 
+            //Test cmds
             CmdRegistration.register(this, new GiveCmd(configFile));
             CmdRegistration.register(this, new SummonCmd(configFile));
+
+            CmdRegistration.register(this, new BlacklistLinkCmd());
+            CmdRegistration.register(this, new HealCmd()); //Remove link
+            CmdRegistration.register(this, new RequirementLinkCmd());
+            CmdRegistration.register(this, new ConflictLinkCmd());
+            CmdRegistration.register(this, new ForceLinkCmd());
+
         } catch (CmdAlreadyRegisteredException e) {
             e.printStackTrace();
         }

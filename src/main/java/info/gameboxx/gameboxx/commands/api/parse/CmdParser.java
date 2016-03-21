@@ -29,89 +29,148 @@ import info.gameboxx.gameboxx.commands.api.*;
 import info.gameboxx.gameboxx.commands.api.data.Argument;
 import info.gameboxx.gameboxx.commands.api.data.Flag;
 import info.gameboxx.gameboxx.commands.api.data.Modifier;
+import info.gameboxx.gameboxx.commands.api.data.link.*;
 import info.gameboxx.gameboxx.messages.Msg;
 import info.gameboxx.gameboxx.messages.Param;
 import info.gameboxx.gameboxx.options.SingleOption;
 import info.gameboxx.gameboxx.util.Str;
+import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public class CmdParser {
 
-    private List<String> argsToParse;
-    private Cmd executor = null;
-
-    private CmdData data = null;
+    private Cmd cmd = null;
+    private CmdData cmdData = null;
     private String error = "";
 
-    public CmdParser(BaseCmd baseCmd, CommandSender sender, String[] args) {
+    List<String> argsList;
+
+    public CmdParser(BaseCmd baseCmd, CommandSender sender, String[] inputArgs) {
         //Combine quoted arguments
-        String argStr = Str.implode(args, " ");
-        argsToParse = Str.splitQuotes(argStr, ' ', true);
-
-        //Remove quotes at start and end from arguments.
-        for (int i = 0; i < argsToParse.size(); i++) {
-            String arg = argsToParse.get(i);
-            if (arg.startsWith("'") || arg.startsWith("\"") || arg.startsWith("\\\"")) {
-                arg = arg.substring(1);
-            }
-            if (arg.endsWith("'") || arg.endsWith("\"") || arg.endsWith("\\\"")) {
-                arg = arg.substring(0, arg.length()-1);
-            }
-            argsToParse.set(i, arg);
+        String input = Str.implode(inputArgs, " ");
+        argsList = Str.splitQuotes(input, ' ', true);
+        for (int i = 0; i < argsList.size(); i++) {
+            argsList.set(i, Str.removeQuotes(argsList.get(i)));
         }
 
-        //Create CmdData and set base cmd as executor
-        data = new CmdData(sender, args);
-        executor = baseCmd;
+        cmd = getSub(baseCmd, sender, inputArgs);
+        cmdData = new CmdData(sender, inputArgs);
 
-        //Recursively parse the command and it's sub commands.
-        parse(baseCmd, sender);
-
-        //If there are arguments that aren't parsed give an error.
-        if (error.isEmpty() && argsToParse.size() > 0) {
-            error = Msg.getString("cmdparser.unknown-arg", Param.P("input", argsToParse.get(0)), Param.P("usage", baseCmd.getUsage(sender)), Param.P("cmd", baseCmd.getName()));
+        //Check basic command permission.
+        if (cmd.isSub() && !cmd.getBaseCmd().perm().isEmpty() && !sender.hasPermission(cmd.getBaseCmd().perm())) {
+            error = Msg.getString("no-permission", Param.P("node", cmd.getPermission()));
+            return;
         }
-    }
+        if (!cmd.perm().isEmpty() && !sender.hasPermission(cmd.perm())) {
+            error = Msg.getString("no-permission", Param.P("node", cmd.getPermission()));
+            return;
+        }
 
-    private boolean parse(Cmd cmd, CommandSender sender) {
+        //Create ParseData with the data from the command.
+        ParseData data = new ParseData();
+        data.arguments = cmd.getAllArguments();
+        data.modifiers = cmd.getAllModifiers();
+        data.flags = cmd.getAllFlags();
+
+        //First time parsing to get most data.
+        data = parse(sender, data);
+
+        //Parse links
+        List<Link> links = cmd.getAllLinks();
+        for (Link link : links) {
+            List<String> names = Arrays.asList(link.names());
+            boolean specified = data.specifiedNames.containsAll(names);
+
+            if (link instanceof RemoveLink) {
+                if (specified) {
+                    data.arguments.remove(((RemoveLink)link).removeName());
+                    data.modifiers.remove(((RemoveLink)link).removeName());
+                    data.flags.remove(((RemoveLink)link).removeName());
+                }
+            } else if (link instanceof RequirementLink) {
+                if (specified) {
+                    if (data.arguments.get(((RequirementLink)link).argName()) != null) {
+                        data.arguments.get(((RequirementLink)link).argName()).requirement(((RequirementLink)link).requirement());
+                    }
+                }
+            } else if (link instanceof BlacklistLink) {
+                if (specified) {
+                    cmd.clearSenderBlacklist();
+                    cmd.blacklistSenders(((BlacklistLink)link).blacklist());
+                }
+            } else if (link instanceof ConflictLink || link instanceof ForceLink) {
+                List<String> linkNames = new ArrayList<>();
+                for (String name : link.names()) {
+                    if (data.specifiedNames.contains(name)) {
+                        linkNames.add(name);
+                    }
+                }
+                if (link instanceof ConflictLink) {
+                    if (linkNames.size() > 1) {
+                        //TODO: set error
+                        error = "ConflictLink Conflicting names have been specified!";
+                        return;
+                    }
+                } else {
+                    if (linkNames.size() > 0 && !specified) {
+                        //TODO: set error
+                        error = "ForceLink not all names have been specified!";
+                        return;
+                    }
+                }
+            }
+        }
+
         //Check if sender is blacklisted.
         Cmd.SenderType senderType = Cmd.SenderType.getType(sender);
         if (senderType != null) {
             if (cmd.getSenderBlacklist().contains(senderType)) {
                 error = Msg.getString("cmdparser.sender-blacklisted", Param.P("type", Msg.getString("cmdparser.sender-blacklist." + senderType.toString().toLowerCase())));
-                return false;
+                return;
             }
         }
 
-        //Check command permission.
-        if (!cmd.getPermission().isEmpty() && !sender.hasPermission(cmd.getPermission())) {
-            error = Msg.getString("no-permission", Param.P("node", cmd.getPermission()));
-            return false;
+        //Parse again with all the links applied.
+        data = parse(sender, data);
+
+        //Check if all the required arguments have been parsed.
+        for (Argument arg : data.arguments.values()) {
+            if (arg.required(sender) && !cmdData.getArgs().containsKey(arg.name().toLowerCase())) {
+                setError(Msg.getString("cmdparser.missing-arg", Param.P("arg", arg.name()),
+                        Param.P("desc", arg.desc().isEmpty() ? Msg.getString("cmdparser.no-desc") : arg.desc()),
+                        Param.P("type", arg.option().getTypeName()), Param.P("usage", cmd.getUsage(sender)), Param.P("cmd", cmd.getName())));
+            }
         }
 
-        //Go through all the arguments from the user input.
+        //Check if all the user input has been parsed
+        if (data.argsToParse.size() > 0) {
+            setError(Msg.getString("cmdparser.unknown-arg", Param.P("input", data.argsToParse.get(0)), Param.P("usage", baseCmd.getUsage(sender)), Param.P("cmd", baseCmd.getName())));
+        }
+    }
+
+    private ParseData parse(CommandSender sender, ParseData data) {
+        data.argsToParse = new ArrayList<>(argsList);
+
+        //Go through all the arguments from the input.
         int index = 0;
-        List<String> args = new ArrayList<>(argsToParse);
-        for (String arg : args) {
-            if (!argsToParse.contains(arg)) {
-                continue;
-            }
+        List<String> args = new ArrayList<>(data.argsToParse);
+        for (int i = 0; i < args.size(); i++) {
+            String arg = args.get(i);
 
             //Parse - Flags
             if (arg.startsWith("-")) {
                 String name = arg.substring(1).toLowerCase();
-                if (cmd.getFlags().containsKey(name)) {
-                    Flag flag = cmd.getFlags().get(name);
+                if (data.flags.containsKey(name)) {
+                    data.argsToParse.remove(arg);
+                    data.specifiedNames.add(name);
+                    Flag flag = data.flags.get(name);
                     if (!flag.perm().isEmpty() && !sender.hasPermission(flag.perm())) {
-                        error = Msg.getString("no-permission", Param.P("node", flag.perm()));
-                        return false;
+                        setError(Msg.getString("no-permission", Param.P("node", flag.perm())));
+                        continue;
                     }
-
-                    data.getFlags().add(name);
-                    argsToParse.remove(arg);
+                    cmdData.getFlags().add(name);
                     continue;
                 }
             }
@@ -125,114 +184,165 @@ public class CmdParser {
                     value = split[1];
                 }
 
-                if (cmd.getModifiers().containsKey(name)) {
-                    Modifier mod = cmd.getModifiers().get(name);
+                if (data.modifiers.containsKey(name)) {
+                    data.argsToParse.remove(arg);
+                    data.specifiedNames.add(name);
+                    Modifier mod = data.modifiers.get(name);
                     if (!mod.perm().isEmpty() && !sender.hasPermission(mod.perm())) {
-                        error = Msg.getString("no-permission", Param.P("node", mod.perm()));
-                        return false;
+                        setError(Msg.getString("no-permission", Param.P("node", mod.perm())));
+                        continue;
                     }
 
-                    SingleOption option = (SingleOption)cmd.getModifiers().get(name).option().clone();
+                    SingleOption option = (SingleOption)mod.option().clone();
                     if (!option.parse(sender, value)) {
-                        error = option.getError();
-                        return false;
+                        setError(option.getError());
+                        continue;
                     }
 
-                    data.getModifiers().put(name, option);
-                    argsToParse.remove(arg);
+                    cmdData.getModifiers().put(name, option);
                     continue;
                 }
             }
 
 
             //Look for regular arguments that matches the current argument input.
-            //Skip optional arguments if parsing failed for current argument input.
+            //This loop is here for skippable arguments to parse the same input again with the next argument if the previous one was skipped.
             while (true) {
-                if (index >= cmd.getArguments().size()) {
+                if (index >= data.arguments.size()) {
                     break;
                 }
-                Argument argument = new ArrayList<>(cmd.getArguments().values()).get(index);
+
+                Argument argument = new ArrayList<>(data.arguments.values()).get(index);
                 SingleOption option = (SingleOption)argument.option().clone();
                 index++;
 
-
-                //Sub command argument.
-                if (option instanceof SubCmdO) {
-                    //Find a matching sub command for the input.
-                    if (!option.parse(sender, arg)) {
-                        if (!argument.required(sender)) {
-                            continue;
-                        }
-                        error = option.getError();
-                        return false;
-                    }
-
-                    //Permission check for subcmd argument. (Each sub command can have it's own permission too this is the general permission for specifying any sub cmd)
-                    if (!argument.perm().isEmpty() && !sender.hasPermission(argument.perm())) {
-                        error = Msg.getString("no-permission", Param.P("node", argument.perm()));
-                        return false;
-                    }
-
-                    //Parse sub command as command.
-                    data.getArgs().put(argument.name().toLowerCase(), option);
-                    argsToParse.remove(arg);
-                    if (!parse(((SubCmdO)option).getValue(), sender)) {
-                        return false;
-                    }
-                    if (!(executor instanceof SubCmd)) {
-                        executor = ((SubCmdO)option).getValue();
-                    }
-                    break;
-                }
-
-
-                //Regular option argument.
+                //parse the argument.
                 if (!option.parse(sender, arg)) {
-                    if (argument.required(sender)) {
-                        error = option.getError();
-                        return false;
+                    if (!argument.skippable() || argument.required(sender)) {
+                        setError(option.getError());
+                        break;
                     }
+                    //If parsing fails and the argument is a skippable optional argument ignore it and try parse the next one.
                     continue;
                 }
 
                 //Permission check to specify the argument.
                 if (!argument.perm().isEmpty() && !sender.hasPermission(argument.perm())) {
-                    error = Msg.getString("no-permission", Param.P("node", argument.perm()));
-                    return false;
+                    setError(Msg.getString("no-permission", Param.P("node", argument.perm())));
+                    break;
                 }
 
-                argsToParse.remove(arg);
-                data.getArgs().put(argument.name().toLowerCase(), option);
+                data.argsToParse.remove(arg);
+                data.specifiedNames.add(argument.name().toLowerCase());
+                cmdData.getArgs().put(argument.name().toLowerCase(), option);
                 break;
             }
 
         }
 
-        for (Argument arg : cmd.getArguments().values()) {
-            if (arg.required(sender) && !data.getArgs().containsKey(arg.name().toLowerCase())) {
-                error = Msg.getString("cmdparser.missing-arg", Param.P("arg", arg.name()),
-                        Param.P("desc", arg.desc().isEmpty() ? Msg.getString("cmdparser.no-desc") : arg.desc()),
-                        Param.P("type", arg.option().getTypeName()), Param.P("usage", cmd.getUsage(sender)), Param.P("cmd", cmd.getName()));
-                return false;
-            }
-        }
-
-        return true;
-    }
-
-    public CmdData getData() {
         return data;
     }
 
+    private void setError(String error) {
+        if (this.error.isEmpty()) {
+            this.error = error;
+        }
+    }
+
+    public static Cmd getSub(Cmd cmd, String[] inputArgs) {
+        return getSub(cmd, Bukkit.getConsoleSender(), inputArgs);
+    }
+
+    public static Cmd getSub(Cmd cmd, CommandSender sender, String[] inputArgs) {
+        //Sub command
+        if (cmd.isSub()) {
+            return cmd;
+        }
+
+        //Get sub commands and the argument index of it.
+        SubCmd[] subCmds = null;
+        int subCmdIndex = -1;
+        List<Argument> args = new ArrayList<>(cmd.getArguments().values());
+        for (int i = 0; i < args.size(); i++) {
+            Argument arg = args.get(i);
+            if (arg.option() instanceof SubCmdO) {
+                subCmds = ((SubCmdO)arg.option()).getSubCmds();
+                subCmdIndex = i;
+                break;
+            }
+        }
+        //No sub commands
+        if (subCmds == null || subCmds.length < 1) {
+            return cmd;
+        }
+
+        //Combine quoted arguments.
+        String input = Str.implode(inputArgs, " ");
+        List<String> argList = Str.splitQuotes(input, ' ', true);
+        for (int i = 0; i < argList.size(); i++) {
+            argList.set(i, Str.removeQuotes(argList.get(i)));
+        }
+
+        //Get all the matching sub commands.
+        Map<Integer, SubCmd> matches = new HashMap<>();
+        int index = 0;
+        for (String arg : argList) {
+            //Skip flags and modifiers for indexing.
+            if (arg.startsWith("-") || arg.contains(":")) {
+                continue;
+            }
+            //Try to get a match
+            for (SubCmd sub : cmd.getSubCmds()) {
+                if (sub.getSubName().equalsIgnoreCase(arg.toLowerCase()) || sub.getAliases().contains(arg.toLowerCase())) {
+                    matches.put(index, sub);
+                    break;
+                }
+            }
+            index++;
+        }
+
+        //No matches
+        if (matches.size() < 0) {
+            return cmd;
+        }
+
+        //Get best match from matches
+        matches = new TreeMap<>(matches);
+        for (Map.Entry<Integer, SubCmd> match : matches.entrySet()) {
+            //Sub command index must be at least at the same index.
+            if (match.getKey() < subCmdIndex) {
+                continue;
+            }
+            //Return the sub command argument with the lowest index for best match.
+            return match.getValue();
+        }
+
+        //No match
+        return cmd;
+    }
+
+    public CmdData getData() {
+        return cmdData;
+    }
+
     public boolean success() {
-        return data != null && executor != null && error.isEmpty();
+        return error.isEmpty();
     }
 
     public String getError() {
         return error;
     }
 
-    public Cmd getExecutor() {
-        return executor;
+    public Cmd getCmd() {
+        return cmd;
+    }
+
+    private class ParseData {
+        public LinkedHashMap<String, Argument> arguments = new LinkedHashMap<>();
+        public Map<String, Modifier> modifiers = new HashMap<>();
+        public Map<String, Flag> flags = new HashMap<>();
+
+        public List<String> argsToParse;
+        public List<String> specifiedNames = new ArrayList<>();
     }
 }

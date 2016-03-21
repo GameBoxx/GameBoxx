@@ -39,7 +39,6 @@ import org.bukkit.plugin.Plugin;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -218,19 +217,20 @@ public abstract class BaseCmd extends Cmd {
     @Override
     public boolean execute(CommandSender sender, String label, String[] args) {
         CmdParser parser = new CmdParser(this, sender, args);
-        if (parser.success()) {
-            if (parser.getData().hasFlag("?")) {
-                parser.getExecutor().showHelp(sender, label);
-            } else {
-                parser.getExecutor().onCommand(parser.getData());
-            }
-        } else {
-            if ((parser.getData() != null && parser.getData().hasFlag("?")) || Arrays.asList(args).contains("-?")) {
-                parser.getExecutor().showHelp(sender, label);
-            } else {
-                Msg.fromString(parser.getError()).send(sender);
-            }
+
+        //Show help
+        if (parser.getData().hasFlag("?")) {
+            parser.getCmd().showHelp(sender, label);
+            return true;
         }
+
+        //Execute command or show error.
+        if (parser.success()) {
+            parser.getCmd().onCommand(parser.getData());
+        } else {
+            Msg.fromString(parser.getError()).send(sender);
+        }
+
         return true;
     }
 }
