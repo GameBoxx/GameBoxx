@@ -151,6 +151,7 @@ public class GameBoxx extends JavaPlugin {
             CmdRegistration.register(this, new RequirementLinkCmd());
             CmdRegistration.register(this, new ConflictLinkCmd());
             CmdRegistration.register(this, new ForceLinkCmd());
+            CmdRegistration.register(this, new SpanCmd());
 
         } catch (CmdAlreadyRegisteredException e) {
             e.printStackTrace();

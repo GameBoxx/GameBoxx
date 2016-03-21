@@ -216,6 +216,24 @@ public class CmdParser {
                 SingleOption option = (SingleOption)argument.option().clone();
                 index++;
 
+                //Argument span. (merge multiple arguments together)
+                List<String> argStrings = new ArrayList<>();
+                int span = argument.span();
+                if (span > 1 || span == -1) {
+                    if (span == -1) {
+                        span = args.size()+1;
+                    }
+                    argStrings.add(arg);
+                    while (argStrings.size() < span) {
+                        i++;
+                        if (i >= args.size()) {
+                            break;
+                        }
+                        argStrings.add(args.get(i));
+                    }
+                    arg = Str.implode(argStrings, " ");
+                }
+
                 //parse the argument.
                 if (!option.parse(sender, arg)) {
                     if (!argument.skippable() || argument.required(sender)) {
@@ -223,6 +241,9 @@ public class CmdParser {
                         break;
                     }
                     //If parsing fails and the argument is a skippable optional argument ignore it and try parse the next one.
+                    if (argStrings.size() > 0) {
+                        i -= (argStrings.size() - 1);
+                    }
                     continue;
                 }
 
@@ -232,7 +253,13 @@ public class CmdParser {
                     break;
                 }
 
-                data.argsToParse.remove(arg);
+                if (argStrings.size() > 1) {
+                    for (String a : argStrings) {
+                        data.argsToParse.remove(a);
+                    }
+                } else {
+                    data.argsToParse.remove(arg);
+                }
                 data.specifiedNames.add(argument.name().toLowerCase());
                 cmdData.getArgs().put(argument.name().toLowerCase(), option);
                 break;
