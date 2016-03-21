@@ -51,9 +51,6 @@ public class GiveCmd extends BaseCmd {
 
         addFlag("d").desc("Drop items on the ground if they don't fit?");
         addFlag("u").desc("Unstack items if they exceed the max stack size?");
-
-        addConflictLink("slot", "d");
-        addConflictLink("d", "u");
     }
 
     @Override
