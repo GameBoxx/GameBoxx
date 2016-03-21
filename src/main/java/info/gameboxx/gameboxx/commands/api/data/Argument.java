@@ -61,6 +61,8 @@ public class Argument {
     private final ArgRequirement requirement;
     private final SingleOption option;
 
+    private int span = 1;
+
     private String description;
     private String permission;
 
@@ -187,6 +189,36 @@ public class Argument {
         }
         return false;
     }
+
+
+    /**
+     * Get the argument span for this argument.
+     * 
+     * @see #span(int)
+     * @return The amount of span.
+     */
+    public int span() {
+        return span;
+    }
+
+    /**
+     * Set the argument span for this argument.
+     * <p/>
+     * By default arguments have a span of one.
+     * When the span is greater than 1 it will try to combine multiple arguments in one.
+     * <p/>
+     * If the span is -1 it can have a infinite amount of arguments.
+     * However, this can obviously only be used for the last argument.
+     * There are no internal checks for this but it just won't span if you do it wrong.
+     *
+     * @param span The amount of span.
+     * @return argument instance
+     */
+    public Argument span(int span) {
+        this.span = span;
+        return this;
+    }
+
 
     /**
      * Get the {@link SingleOption} for this argument.
