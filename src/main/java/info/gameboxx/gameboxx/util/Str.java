@@ -578,4 +578,23 @@ public class Str {
         return value;
     }
 
+    /**
+     * Remove quotes from the beginning and the end of the string.
+     * <p/>
+     * It will only remove the quotes when the string starts with a quote and ends with a quote.
+     * The quote on the end must be the same quote as the the quote in the beginning.
+     *
+     * @param string The string to remove the quotes from.
+     * @return Modified string.
+     */
+    public static String removeQuotes(String string) {
+        String[] quotes = new String[] {"'", "\"", "\\'", "\\\""};
+        for (String quote : quotes) {
+            if (string.startsWith(quote) && string.endsWith(quote)) {
+                return string.substring(1, string.length()-1);
+            }
+        }
+        return string;
+    }
+
 }
