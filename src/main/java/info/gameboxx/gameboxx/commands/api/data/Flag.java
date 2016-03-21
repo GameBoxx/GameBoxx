@@ -35,8 +35,8 @@ import info.gameboxx.gameboxx.commands.api.Cmd;
 public class Flag {
 
     private final String name;
-    private String description;
-    private String permission;
+    private String description = "";
+    private String permission = "";
 
     /** Construct a new Flag. */
     public Flag(String name) {

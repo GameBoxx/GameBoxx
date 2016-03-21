@@ -81,7 +81,7 @@ public abstract class Cmd extends BukkitCommand {
      * @return The description set with {@link #desc(String)}
      */
     public String desc() {
-        return getDescription();
+        return getDescription() == null ? "" : getDescription();
     }
 
     /**
@@ -102,7 +102,7 @@ public abstract class Cmd extends BukkitCommand {
      * @return The permission set with {@link #perm(String)}
      */
     public String perm() {
-        return getPermission();
+        return getPermission() == null ? "" : getPermission();
     }
 
     /**
@@ -172,6 +172,7 @@ public abstract class Cmd extends BukkitCommand {
             e.printStackTrace();
         }
     }
+
 
 
     /**
@@ -317,7 +318,11 @@ public abstract class Cmd extends BukkitCommand {
      * @return Map with registered arguments.
      */
     public LinkedHashMap<String, Argument> getArguments() {
-        return arguments;
+        LinkedHashMap<String, Argument> clone = new LinkedHashMap<>();
+        for (Map.Entry<String, Argument> entry : arguments.entrySet()) {
+            clone.put(entry.getKey(), entry.getValue().clone());
+        }
+        return clone;
     }
 
     /**
@@ -329,10 +334,10 @@ public abstract class Cmd extends BukkitCommand {
      */
     public LinkedHashMap<String, Argument> getAllArguments() {
         if (isBase()) {
-            return arguments;
+            return getArguments();
         }
         LinkedHashMap<String, Argument> arguments = new LinkedHashMap<>(getBaseCmd().getArguments());
-        arguments.putAll(this.arguments);
+        arguments.putAll(this.getArguments());
         return arguments;
     }
 
@@ -378,7 +383,7 @@ public abstract class Cmd extends BukkitCommand {
      * @return Map with registered modifiers.
      */
     public Map<String, Modifier> getModifiers() {
-        return modifiers;
+        return new HashMap<>(modifiers);
     }
 
     /**
@@ -390,7 +395,7 @@ public abstract class Cmd extends BukkitCommand {
      */
     public Map<String, Modifier> getAllModifiers() {
         if (isBase()) {
-            return modifiers;
+            return new HashMap<>(modifiers);
         }
         Map<String, Modifier> modifiers = new LinkedHashMap<>(getBaseCmd().getModifiers());
         modifiers.putAll(this.modifiers);
@@ -439,7 +444,7 @@ public abstract class Cmd extends BukkitCommand {
      * @return Map with registered flags.
      */
     public Map<String, Flag> getFlags() {
-        return flags;
+        return new HashMap<>(flags);
     }
 
     /**
@@ -453,7 +458,7 @@ public abstract class Cmd extends BukkitCommand {
      */
     public Map<String, Flag> getAllFlags() {
         if (isBase()) {
-            return flags;
+            return new HashMap<>(flags);
         }
         Map<String, Flag> flags = new LinkedHashMap<>(getBaseCmd().getFlags());
         flags.putAll(this.flags);
@@ -560,7 +565,7 @@ public abstract class Cmd extends BukkitCommand {
      * @return List with registered links.
      */
     public List<Link> getLinks() {
-        return links;
+        return new ArrayList<>(links);
     }
 
     /**
@@ -572,7 +577,7 @@ public abstract class Cmd extends BukkitCommand {
      */
     public List<Link> getAllLinks() {
         if (isBase()) {
-            return links;
+            return new ArrayList<>(links);
         }
         List<Link> links = new ArrayList<>(getBaseCmd().getLinks());
         links.addAll(this.links);
@@ -647,8 +652,8 @@ public abstract class Cmd extends BukkitCommand {
         String msg = Msg.getString("command.help",
                 Param.P("label", label),
                 Param.P("usage", sender instanceof ConsoleCommandSender ? getUsage(sender) : new CmdUsageParser(this, sender, true).getJSON()),
-                Param.P("description", getDescription().isEmpty() ? noDesc : getDescription()),
-                Param.P("permission", getPermission().isEmpty() ? none : getPermission()),
+                Param.P("description", desc().isEmpty() ? noDesc : desc()),
+                Param.P("permission", perm().isEmpty() ? none : perm()),
                 Param.P("aliases", getAliases().isEmpty() ? none : Str.implode(getAliases())),
                 Param.P("blacklisted", blacklisted.isEmpty() ? none : Str.implode(blacklisted)),
                 Param.P("flags", flagFormats.isEmpty() ? none : Str.implode(flagFormats, " ")),

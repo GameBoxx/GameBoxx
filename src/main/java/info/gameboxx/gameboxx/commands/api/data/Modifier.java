@@ -40,8 +40,8 @@ public class Modifier {
     private final String name;
     private final SingleOption option;
 
-    private String description;
-    private String permission;
+    private String description = "";
+    private String permission = "";
 
     /** Construct a new Modifier. */
     public Modifier(String name, SingleOption option) {

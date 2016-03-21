@@ -38,7 +38,7 @@ import org.bukkit.entity.Player;
  * <p/>
  * Use {@link Cmd#addArgument(String, ArgRequirement, SingleOption)} to add an argument to a command.
  */
-public class Argument {
+public class Argument implements Cloneable {
 
     /** Prefix for required arguments */
     public static final String REQUIRED_PREFIX = "{";
@@ -58,14 +58,14 @@ public class Argument {
     public static final String REQUIRED_NON_PLAYER_SUFFIX = ">";
 
     private final String name;
-    private final ArgRequirement requirement;
+    private ArgRequirement requirement;
     private final SingleOption option;
 
     private int span = 1;
     private boolean skippable = false;
 
-    private String description;
-    private String permission;
+    private String description = "";
+    private String permission = "";
 
     /** Construct a new command Argument. */
     public Argument(String name, ArgRequirement requirement, SingleOption option) {
@@ -175,6 +175,17 @@ public class Argument {
     }
 
     /**
+     * Set the {@link ArgRequirement} for this argument.
+     *
+     * @param requirement The {@link ArgRequirement} to set for this argument.
+     * @return argument instance
+     */
+    public Argument requirement(ArgRequirement requirement) {
+        this.requirement = requirement;
+        return this;
+    }
+
+    /**
      * Check whether or not the argument is required for the the specified {@link CommandSender}
      * <p/>
      * If the requirement is {@link ArgRequirement#REQUIRED} or if it's {@link ArgRequirement#REQUIRED_CONSOLE} and the sender the console
@@ -262,5 +273,10 @@ public class Argument {
      */
     public SingleOption option() {
         return option;
+    }
+
+    @Override
+    public Argument clone() {
+        return new Argument(name, requirement, (SingleOption)option.clone()).desc(description).perm(permission).span(span).skippable(skippable);
     }
 }
