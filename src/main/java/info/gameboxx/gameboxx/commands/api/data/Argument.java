@@ -95,13 +95,13 @@ public class Argument implements Cloneable {
      */
     public String usage() {
         if (requirement == ArgRequirement.REQUIRED) {
-            return REQUIRED_PREFIX + name() + REQUIRED_SUFFIX;
+            return REQUIRED_PREFIX + usageName() + REQUIRED_SUFFIX;
         } else if (requirement == ArgRequirement.OPTIONAL) {
-            return OPTIONAL_PREFIX + name() + OPTIONAL_SUFFIX;
+            return OPTIONAL_PREFIX + (skippable() ? "" : "*") + usageName() + OPTIONAL_SUFFIX;
         } else if (requirement == ArgRequirement.REQUIRED_CONSOLE) {
-            return REQUIRED_CONSOLE_PREFIX + name() + REQUIRED_CONSOLE_SUFFIX;
+            return REQUIRED_CONSOLE_PREFIX + (skippable() ? "" : "*") + usageName() + REQUIRED_CONSOLE_SUFFIX;
         } else {
-            return REQUIRED_NON_PLAYER_PREFIX + name() + REQUIRED_NON_PLAYER_SUFFIX;
+            return REQUIRED_NON_PLAYER_PREFIX + (skippable() ? "" : "*") + usageName() + REQUIRED_NON_PLAYER_SUFFIX;
         }
     }
 
@@ -115,10 +115,14 @@ public class Argument implements Cloneable {
      */
     public String usage(CommandSender sender) {
         if (required(sender)) {
-            return REQUIRED_PREFIX + name() + REQUIRED_SUFFIX;
+            return REQUIRED_PREFIX + usageName() + REQUIRED_SUFFIX;
         } else {
-            return OPTIONAL_PREFIX + name() + OPTIONAL_SUFFIX;
+            return OPTIONAL_PREFIX + (skippable() ? "" : "*") + usageName() + OPTIONAL_SUFFIX;
         }
+    }
+
+    private String usageName() {
+        return name() + (span == -1 ? "..." : "");
     }
 
 
