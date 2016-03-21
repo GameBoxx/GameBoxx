@@ -67,40 +67,23 @@ public class CmdRegistration {
             throw new CmdAlreadyRegisteredException(plugin, command);
         }
 
-        command.load();
-        registerCommands(plugin, command);
-
-        commands.put(plugin.getClass(), pluginCommands);
-    }
-
-    /**
-     * Recursively register commands and sub commands in the command map.
-     * <p/>
-     * The base command will always be registered.
-     * And the most bottom sub commands will be registered.
-     *
-     * @param plugin The plugin that owns the command.
-     * @param cmd The command that needs to be registered.
-     * @throws CmdAlreadyRegisteredException when the command is already registered.
-     * @throws NullPointerException when the command has a sub command option without sub commands.
-     */
-    private static void registerCommands(Plugin plugin, Cmd cmd) throws CmdAlreadyRegisteredException, NullPointerException {
-        boolean foundSubs = false;
-        for (Argument arg : cmd.getArguments().values()) {
+        command.register(plugin);
+        for (Argument arg : command.getArguments().values()) {
             if (arg.option() instanceof SubCmdO) {
-                foundSubs = true;
                 SubCmd[] subs = ((SubCmdO)arg.option()).getSubCmds();
                 if (subs == null || subs.length < 1) {
-                    throw new NullPointerException("No sub commands registered for the '" + arg.name() + "' sub command option in the '" + cmd.getName() + "' command.");
+                    throw new NullPointerException("No sub commands registered for the '" + arg.name() + "' sub command option in the '" + command.getName() + "' command.");
                 }
                 for (SubCmd sub : subs) {
-                    registerCommands(plugin, sub);
+                    sub.register(plugin);
                 }
+                break;
             }
         }
-        if (!foundSubs || cmd instanceof BaseCmd) {
-            cmd.register(plugin);
-        }
+
+        command.load();
+
+        commands.put(plugin.getClass(), pluginCommands);
     }
 
 

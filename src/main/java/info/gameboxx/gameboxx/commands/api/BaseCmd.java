@@ -83,7 +83,7 @@ public abstract class BaseCmd extends Cmd {
     }
 
     /**
-     * Set the config file where to command can be configured.
+     * Set the config file where the command can be configured.
      * <p/>
      * This file must have a .yml extension.
      * It will be filled with all descriptions, permissions, aliases, arguments, sub commands, flags, modifiers etc.
@@ -97,7 +97,6 @@ public abstract class BaseCmd extends Cmd {
     public void file(File configFile) {
         this.configFile = configFile;
     }
-
 
 
 

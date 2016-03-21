@@ -56,6 +56,7 @@ public abstract class Cmd extends BukkitCommand {
     private Plugin plugin;
 
     private List<SenderType> senderBlacklist = new ArrayList<>();
+
     private LinkedHashMap<String, Argument> arguments = new LinkedHashMap<>();
     private Map<String, Modifier> modifiers = new HashMap<>();
     private Map<String, Flag> flags = new HashMap<>();
@@ -182,12 +183,9 @@ public abstract class Cmd extends BukkitCommand {
     public BaseCmd getBaseCmd() {
         if (isBase()) {
             return (BaseCmd)this;
+        } else {
+            return ((SubCmd)this).getParent();
         }
-        Cmd cmd = this;
-        while (cmd.isSub()) {
-            cmd = ((SubCmd)cmd).getParent();
-        }
-        return (BaseCmd)cmd;
     }
 
     /**
@@ -195,18 +193,10 @@ public abstract class Cmd extends BukkitCommand {
      * <p/>
      * If it does you can get the sub commands with {@link #getSubCmds()}
      *
-     * @return
+     * @return true when this command has sub commands.
      */
     public boolean hasSubCmds() {
-        if (arguments.size() < 1) {
-            return false;
-        }
-        for (Argument arg : arguments.values()) {
-            if (arg.option() instanceof SubCmdO) {
-                return true;
-            }
-        }
-        return false;
+        return getSubCmds() != null;
     }
 
     /**
@@ -214,13 +204,13 @@ public abstract class Cmd extends BukkitCommand {
      * <p/>
      * If this command doesn't have sub commands this will return {@code null}.
      * See {@link #hasSubCmds()}
-     * <p/>
-     * This does not get the entire sub command stack.
-     * It will only try to get the sub commands from the command you call this method on.
      *
      * @return Array with {@link SubCmd}s (May be {@code null} when the command doesn't have sub commands)
      */
     public SubCmd[] getSubCmds() {
+        if (isSub() || arguments.size() < 1) {
+            return null;
+        }
         for (Argument arg : arguments.values()) {
             if (arg.option() instanceof SubCmdO) {
                 return ((SubCmdO)arg.option()).getSubCmds();
@@ -293,22 +283,24 @@ public abstract class Cmd extends BukkitCommand {
      *               For example if it's a {@link PlayerO} the argument value must be a player and the result value would be a player.
      * @return The added {@link Argument}
      * @throws IllegalArgumentException if an argument with the specified name is already registered for this command
-     *                                  or if the argument option is a sub command option and the command already has an sub command argument.
+     *                                  if the argument option is a sub command option and the command already has an sub command argument
+     *                                  or if the argument option is a sub command option and the command is a sub command.
      */
     public Argument addArgument(String name, ArgRequirement requirement, SingleOption option) {
         Argument argument = new Argument(name, requirement, option);
 
-        //TODO: Also check sub commands etc.
-        if (arguments.containsKey(name.toLowerCase())) {
+        if (getAllArguments().containsKey(name.toLowerCase())) {
             throw new IllegalArgumentException("The command already has an argument with the name '" + name + "'!");
         }
 
         if (argument.option() instanceof SubCmdO) {
+            if (isSub()) {
+                throw new IllegalArgumentException("Sub commands can not have sub command arguments. [argument=" + name + "]");
+            }
             for (Argument arg : arguments.values()) {
                 if (arg.option() instanceof SubCmdO) {
                     throw new IllegalArgumentException("The command already has a sub command argument." +
-                            "Commands can only have one sub command option for each set of arguments." +
-                            "It is possible to specify another sub command argument within a sub command. [argument=" + argument.name() + "]");
+                            "Commands can only have one sub command option. [argument=" + name + "]");
                 }
             }
         }
@@ -323,6 +315,22 @@ public abstract class Cmd extends BukkitCommand {
      * @return Map with registered arguments.
      */
     public LinkedHashMap<String, Argument> getArguments() {
+        return arguments;
+    }
+
+    /**
+     * Get the map with all the registered arguments.
+     * <p/>
+     * If this command is a sub command this will include all the arguments from the parent.
+     *
+     * @return Map with registered arguments.
+     */
+    public LinkedHashMap<String, Argument> getAllArguments() {
+        if (isBase()) {
+            return arguments;
+        }
+        LinkedHashMap<String, Argument> arguments = new LinkedHashMap<>(this.arguments);
+        arguments.putAll(getBaseCmd().getArguments());
         return arguments;
     }
 
@@ -353,8 +361,8 @@ public abstract class Cmd extends BukkitCommand {
         if (option instanceof SubCmdO) {
             throw new IllegalArgumentException("Modifiers can not be a sub command option! [modifier=" + name + "]");
         }
-        //TODO: Check sub commands and such too.
-        if (modifiers.containsKey(name.toLowerCase())) {
+
+        if (getAllModifiers().containsKey(name.toLowerCase())) {
             throw new IllegalArgumentException("The command already has a modifier with the name '" + name + "'!");
         }
 
@@ -368,6 +376,22 @@ public abstract class Cmd extends BukkitCommand {
      * @return Map with registered modifiers.
      */
     public Map<String, Modifier> getModifiers() {
+        return modifiers;
+    }
+
+    /**
+     * Get a map with all the registered modifiers.
+     * <p/>
+     * If this command is a sub command this will include all the modifiers from the parent.
+     *
+     * @return Map with registered modifiers.
+     */
+    public Map<String, Modifier> getAllModifiers() {
+        if (isBase()) {
+            return modifiers;
+        }
+        Map<String, Modifier> modifiers = new LinkedHashMap<>(this.modifiers);
+        modifiers.putAll(getBaseCmd().getModifiers());
         return modifiers;
     }
 
@@ -396,9 +420,8 @@ public abstract class Cmd extends BukkitCommand {
             name = name.substring(1);
         }
 
-        //TODO: Check sub commands and such too.
         Flag flag = new Flag(name);
-        if (flags.containsKey(name.toLowerCase())) {
+        if (getAllFlags().containsKey(name.toLowerCase())) {
             throw new IllegalArgumentException("The command already has a flag with the name '-" + name + "'!");
         }
 
@@ -414,6 +437,24 @@ public abstract class Cmd extends BukkitCommand {
      * @return Map with registered flags.
      */
     public Map<String, Flag> getFlags() {
+        return flags;
+    }
+
+    /**
+     * Get a map with all the registered flags.
+     * <p/>
+     * The flag names do not have the '-' in front of it.
+     * <p/>
+     * If this command is a sub command this will include all the flags from the parent.
+     *
+     * @return Map with registered flags.
+     */
+    public Map<String, Flag> getAllFlags() {
+        if (isBase()) {
+            return flags;
+        }
+        Map<String, Flag> flags = new LinkedHashMap<>(this.flags);
+        flags.putAll(getBaseCmd().getFlags());
         return flags;
     }
 
@@ -507,7 +548,7 @@ public abstract class Cmd extends BukkitCommand {
      * The {@link CmdParser} will generate {@link CmdData} which is provided in this method.
      * With the {@link CmdData} you can get arguments, modifiers, flags, the sender and the original input.
      * <p/>
-     * If the command has a sub command argument and it's specified the {@link #onCommand(CmdData)} for that specific sub command will be executed instead.
+     * If the command has a sub command argument and it's specified, the {@link #onCommand(CmdData)} for that specific sub command will be executed instead.
      *
      * @param data the {@link CmdData} generated by the {@link CmdParser} containing all the parsed arguments, modifiers, flags etc.
      */

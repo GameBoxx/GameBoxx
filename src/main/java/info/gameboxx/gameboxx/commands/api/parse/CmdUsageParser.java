@@ -55,19 +55,7 @@ public class CmdUsageParser {
         this.cmd = cmd;
         this.JSONFormat = JSONFormat;
 
-        if (cmd instanceof BaseCmd) {
-            baseCmd = (BaseCmd)cmd;
-        } else {
-            do {
-                subCmds.add(((SubCmd)cmd).getSubName());
-                cmd = ((SubCmd)cmd).getParent();
-            } while (cmd instanceof SubCmd && ((SubCmd)cmd).getParent() instanceof SubCmd && ((SubCmd)cmd).getParent() != null);
-            if (cmd instanceof BaseCmd) {
-                baseCmd = (BaseCmd)cmd;
-            } else {
-                baseCmd = (BaseCmd)((SubCmd)cmd).getParent();
-            }
-        }
+        baseCmd = cmd.getBaseCmd();
 
         usage.add("/" + baseCmd.getName());
         if (JSONFormat) {

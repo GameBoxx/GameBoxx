@@ -25,7 +25,7 @@
 
 package info.gameboxx.gameboxx.commands.api;
 
-import info.gameboxx.gameboxx.commands.api.data.Argument;
+import info.gameboxx.gameboxx.commands.api.data.ArgRequirement;
 import info.gameboxx.gameboxx.commands.api.parse.SubCmdO;
 import info.gameboxx.gameboxx.options.SingleOption;
 
@@ -36,20 +36,20 @@ import info.gameboxx.gameboxx.options.SingleOption;
  * <p/>
  * Sub commands don't have to be registered with the {@link CmdRegistration}
  * <p/>
- * To use sub commands you add a regular argument with {@link #addArgument(String, String, String, Argument.Requirement, SingleOption)}
+ * To use sub commands you add a regular argument with {@link #addArgument(String, ArgRequirement, SingleOption)}
  * The option of the argument must be a {@link SubCmdO}
  * In the constructor of the {@link SubCmdO} you create instances of all the sub commands.
  * <p/>
  * Check out the wiki for full details about creating custom commands and to see some example commands.
  * <p/>
  * After calling super in your constructor you can add arguments and such just like {@link BaseCmd}s.
- * {@link #addArgument(String, String, String, Argument.Requirement, SingleOption)}
- * {@link #addModifier(String, String, String, SingleOption)}
- * {@link #addFlag(String, String, String)}
+ * {@link #addArgument(String, ArgRequirement, SingleOption)}
+ * {@link #addModifier(String, SingleOption)}
+ * {@link #addFlag(String)}
  *
  * @param <PARENT> The parent {@link Cmd} where this sub command was created.
  */
-public abstract class SubCmd<PARENT extends Cmd> extends Cmd {
+public abstract class SubCmd<PARENT extends BaseCmd> extends Cmd {
 
     private PARENT parent;
     private String subName;
@@ -57,7 +57,7 @@ public abstract class SubCmd<PARENT extends Cmd> extends Cmd {
     /**
      * Construct a new command with the given name and aliases.
      *
-     * @param parent The parent {@link Cmd} where this sub command was created.
+     * @param parent The parent {@link BaseCmd} where this sub command was created.
      * @param name The name/label of the command.
      * @param aliases Aliases for the command.
      */
@@ -69,12 +69,9 @@ public abstract class SubCmd<PARENT extends Cmd> extends Cmd {
 
 
     /**
-     * Get the parent {@link Cmd} that registered this sub command as argument.
-     * <p/>
-     * Sub commands can have other sub commands too.
-     * Which means this parent command might not be a {@link BaseCmd}
+     * Get the parent {@link BaseCmd} that registered this sub command as argument.
      *
-     * @return The parent {@link Cmd}
+     * @return The parent {@link BaseCmd}
      */
     public PARENT getParent() {
         return parent;
