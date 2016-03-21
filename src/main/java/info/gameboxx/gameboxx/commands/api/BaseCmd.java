@@ -164,6 +164,9 @@ public abstract class BaseCmd extends Cmd {
         //Flag - description/permission
         List<Flag> flags = new ArrayList<>(cmd.getFlags().values());
         for (Flag flag : flags) {
+            if (flag.name().equals("?") || flag.name().equals("l")) {
+                continue;
+            }
             flag.desc((String)loadValue(cfg, name + ".flags." + flag.name() + ".description", flag.desc()));
             flag.perm((String)loadValue(cfg, name + ".flags." + flag.name() + ".permission", flag.perm()));
             cmd.getFlags().put(flag.name().toLowerCase(), flag);
@@ -172,6 +175,9 @@ public abstract class BaseCmd extends Cmd {
         //Modifier - description/permission
         List<Modifier> modifiers = new ArrayList<>(cmd.getModifiers().values());
         for (Modifier mod : modifiers) {
+            if (mod.name().equals("page")) {
+                continue;
+            }
             mod.desc((String)loadValue(cfg, name + ".modifiers." + mod.name() + ".description", mod.desc()));
             mod.perm((String)loadValue(cfg, name + ".modifiers." + mod.name() + ".permission", mod.perm()));
             cmd.getModifiers().put(mod.name().toLowerCase(), mod);
