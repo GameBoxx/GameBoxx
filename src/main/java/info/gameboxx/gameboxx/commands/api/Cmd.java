@@ -70,7 +70,9 @@ public abstract class Cmd extends BukkitCommand {
      * @param aliases Aliases for the command.
      */
     public Cmd(String name, String... aliases) {
-        super(name, "", "/<command>", Arrays.asList(aliases));
+        super(name, "", "", Arrays.asList(aliases));
+        setPermission("");
+        setDescription("");
     }
 
 
@@ -157,6 +159,8 @@ public abstract class Cmd extends BukkitCommand {
      * @throws CmdAlreadyRegisteredException When the command is already registered.
      */
     public void register(Plugin plugin) throws CmdAlreadyRegisteredException {
+        setUsage(getUsage(plugin.getServer().getConsoleSender(), getBaseCmd().getName()));
+
         if (this.plugin != null) {
             throw new CmdAlreadyRegisteredException(plugin, this);
         }
@@ -597,8 +601,23 @@ public abstract class Cmd extends BukkitCommand {
      * @param sender The {@link CommandSender} to generate the usage string for.
      * @return The usage string for the specified sender.
      */
-    public String getUsage(CommandSender sender) {
-        return new CmdUsageParser(this, sender).getString();
+    public String getUsage(CommandSender sender, String label) {
+        return new CmdUsageParser(this, sender, label, new String[0]).getString();
+    }
+
+    /**
+     * Get the usage string for the specified {@link CommandSender}
+     * <p/>
+     * The string is generated using the {@link CmdUsageParser}
+     * <p/>
+     * Can be used for both specific sub commands and base commands.
+     * If it's a base command it will list all the sub command options.
+     *
+     * @param sender The {@link CommandSender} to generate the usage string for.
+     * @return The usage string for the specified sender.
+     */
+    public String getUsage(CommandSender sender, String label, String[] args) {
+        return new CmdUsageParser(this, sender, label, args).getString();
     }
 
     /**
@@ -610,8 +629,20 @@ public abstract class Cmd extends BukkitCommand {
      * @param sender The {@link CommandSender} to send the message to.
      */
     public void showHelp(CommandSender sender, String label) {
+        showHelp(sender, label, new String[0]);
+    }
+
+    /**
+     * Display a detailed help message to the specified {@link CommandSender}
+     * <p/>
+     * If the sender is a player or console it will display 'all' details.
+     * If it's not it will only display the usage string.
+     *
+     * @param sender The {@link CommandSender} to send the message to.
+     */
+    public void showHelp(CommandSender sender, String label, String[] args) {
         if ((!(sender instanceof Player) && sender instanceof Entity) || sender instanceof BlockCommandSender) {
-            Msg.fromString(getUsage(sender)).send(sender);
+            Msg.fromString(getUsage(sender, label, args)).send(sender);
             return;
         }
         String none = Msg.getString("command.none");
@@ -651,7 +682,8 @@ public abstract class Cmd extends BukkitCommand {
 
         String msg = Msg.getString("command.help",
                 Param.P("label", label),
-                Param.P("usage", sender instanceof ConsoleCommandSender ? getUsage(sender) : new CmdUsageParser(this, sender, true).getJSON()),
+                Param.P("cmd", getBaseCmd().getName()),
+                Param.P("usage", sender instanceof ConsoleCommandSender ? getUsage(sender, label, args) : new CmdUsageParser(this, sender, label, args).getJSON()),
                 Param.P("description", desc().isEmpty() ? noDesc : desc()),
                 Param.P("permission", perm().isEmpty() ? none : perm()),
                 Param.P("aliases", getAliases().isEmpty() ? none : Str.implode(getAliases())),

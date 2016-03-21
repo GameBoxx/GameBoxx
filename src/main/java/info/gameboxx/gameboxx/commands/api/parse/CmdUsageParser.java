@@ -25,7 +25,6 @@
 
 package info.gameboxx.gameboxx.commands.api.parse;
 
-import info.gameboxx.gameboxx.commands.api.BaseCmd;
 import info.gameboxx.gameboxx.commands.api.Cmd;
 import info.gameboxx.gameboxx.commands.api.SubCmd;
 import info.gameboxx.gameboxx.commands.api.data.Argument;
@@ -35,107 +34,108 @@ import info.gameboxx.gameboxx.util.Str;
 import org.bukkit.command.CommandSender;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 public class CmdUsageParser {
 
-    private Cmd cmd;
-    private List<String> subCmds = new ArrayList<>();
-    private BaseCmd baseCmd = null;
-    private List<String> usage = new ArrayList<>();
+    /** If the command has this amount of sub commands it will display the simple description. */
+    public static int MIN_SUB_COMMANDS = 5;
+    /** If the command has more than this amount of sub commands it will only display sub commands up to this number. */
+    public static int MAX_SUB_COMMANDS = 10;
 
-    private boolean JSONFormat = false;
+    private List<String> subCmds = new ArrayList<>();
+
+    private List<String> usage = new ArrayList<>();
     private List<String> JSON = new ArrayList<>();
 
-    public CmdUsageParser(Cmd cmd, CommandSender sender) {
-        this(cmd, sender, false);
-    }
+    public CmdUsageParser(Cmd cmd, CommandSender sender, String label, String[] args) {
+        cmd = CmdParser.getSub(cmd, args);
 
-    public CmdUsageParser(Cmd cmd, CommandSender sender, boolean JSONFormat) {
-        this.cmd = cmd;
-        this.JSONFormat = JSONFormat;
+        usage.add("/" + label);
+        JSON.add("/" + label);
 
-        baseCmd = cmd.getBaseCmd();
+        Collection<Argument> arguments = cmd.getAllArguments().values();
+        for (Argument arg : arguments) {
 
-        usage.add("/" + baseCmd.getName());
-        if (JSONFormat) {
-            JSON.add("/" + baseCmd.getName());
-        }
-        generate(baseCmd, sender);
-    }
-
-    private void generate(Cmd cmd, CommandSender sender) {
-        for (Argument arg : cmd.getArguments().values()) {
+            //Sub command
             if (arg.option() instanceof SubCmdO) {
+                if (cmd instanceof SubCmd) {
+                    //Display specific sub command.
+                    SubCmd sub = (SubCmd)cmd;
 
-                List<String> subNames = new ArrayList<>();
-                boolean match = false;
-
-                for (SubCmd sub : ((SubCmdO)arg.option()).getSubCmds()) {
-                    subNames.add(sub.getSubName());
-                    if (subCmds.contains(sub.getSubName())) {
-                        usage.add(sub.getSubName());
-                        if (JSONFormat) {
-                            List<String> permissions = new ArrayList<>();
-                            if (!arg.perm().isEmpty()) {
-                                permissions.add(arg.perm());
-                            }
-                            if (!sub.getPermission().isEmpty()) {
-                                permissions.add(sub.getPermission());
-                            }
-
-                            JSON.add(Msg.getString("command.subcmd-sub-entry",
-                                    Param.P("name", sub.getSubName()),
-                                    Param.P("description", sub.getDescription().isEmpty() ? Msg.getString("command.no-description") : sub.getDescription()),
-                                    Param.P("permission", permissions.isEmpty() ? Msg.getString("command.none") : Str.implode(permissions)),
-                                    Param.P("type", arg.option().getTypeName()),
-                                    Param.P("aliases", sub.getAliases().isEmpty() ? Msg.getString("command.none") : Str.implode(sub.getAliases()))
-                            ));
-                        }
-
-                        generate(sub, sender);
-                        match = true;
-                        break;
+                    List<String> permissions = new ArrayList<>();
+                    if (!arg.perm().isEmpty()) {
+                        permissions.add(arg.perm());
                     }
-                }
+                    if (!sub.getPermission().isEmpty()) {
+                        permissions.add(sub.getPermission());
+                    }
 
-                if (!match) {
-                    usage.add(arg.usage(sender).replace(arg.name(), Str.implode(subNames, "|")));
-                    if (JSONFormat) {
-                        List<String> subCmdFormats = new ArrayList<>();
-                        for (SubCmd sub : ((SubCmdO)arg.option()).getSubCmds()) {
+                    usage.add(sub.getSubName());
+                    JSON.add(Msg.getString("command.subcmd-sub-entry",
+                            Param.P("name", sub.getSubName()),
+                            Param.P("description", sub.getDescription().isEmpty() ? Msg.getString("command.no-description") : sub.getDescription()),
+                            Param.P("permission", permissions.isEmpty() ? Msg.getString("command.none") : Str.implode(permissions)),
+                            Param.P("type", arg.option().getTypeName()),
+                            Param.P("aliases", sub.getAliases().isEmpty() ? Msg.getString("command.none") : Str.implode(sub.getAliases()))
+                    ));
+                } else {
+                    //No sub command specified try to display all the options
+                    SubCmd[] subCmds = cmd.getSubCmds();
+                    List<String> subNames = new ArrayList<>();
+                    for (SubCmd sub : subCmds) {
+                        subNames.add(sub.getSubName());
+                    }
+
+                    String usageDisplay = Str.implode(subNames, "|", "|", 0, MIN_SUB_COMMANDS) + (subNames.size() > MIN_SUB_COMMANDS ? "|..." : "");
+                    usage.add(arg.usage(sender).replace(arg.name(), usageDisplay));
+
+                    List<String> subCmdFormats = new ArrayList<>();
+                    if (subCmds.length <= MIN_SUB_COMMANDS) {
+                        for (SubCmd sub : subCmds) {
                             subCmdFormats.add(Msg.getString("command.subcmd-general-entry-desc",
                                     Param.P("name", sub.getSubName()),
-                                    Param.P("usage", sub.getUsage(sender)),
+                                    Param.P("usage", sub.getUsage(sender, label)),
                                     Param.P("description", sub.getDescription().isEmpty() ? Msg.getString("command.no-description") : sub.getDescription()),
                                     Param.P("permission", sub.getPermission().isEmpty() ? Msg.getString("command.none") : sub.getPermission()),
                                     Param.P("aliases", sub.getAliases().isEmpty() ? Msg.getString("command.none") : Str.implode(sub.getAliases()))
                             ));
                         }
-
-                        JSON.add(Msg.getString("command.subcmd-general-entry",
-                                Param.P("name", arg.usage(sender).replace(arg.name(), Str.implode(subNames, "|"))),
-                                Param.P("description", arg.desc().isEmpty() ? Msg.getString("command.no-description") : arg.desc()),
-                                Param.P("permission", arg.perm().isEmpty() ? Msg.getString("command.none") : arg.perm()),
-                                Param.P("type", arg.option().getTypeName()),
-                                Param.P("subcmds", Str.implode(subCmdFormats, "\n"))
-                        ));
+                    } else {
+                        for (int i = 0; i < subCmds.length && i < MAX_SUB_COMMANDS; i++) {
+                            subCmdFormats.add(Msg.getString("command.subcmd-general-entry-desc-simple",
+                                    Param.P("name", subCmds[i].getSubName()),
+                                    Param.P("usage", subCmds[i].getUsage(sender, label))
+                            ));
+                        }
                     }
-                }
-            } else {
-                usage.add(arg.usage(sender));
-                if (JSONFormat) {
-                    JSON.add(Msg.getString("command.argument-entry",
-                            Param.P("name", arg.usage(sender)),
+                    if (subCmds.length >= MAX_SUB_COMMANDS) {
+                        subCmdFormats.add(Msg.getString("command.subcmd-more", Param.P("amt", subCmds.length - MAX_SUB_COMMANDS)));
+                    }
+
+                    JSON.add(Msg.getString("command.subcmd-general-entry",
+                            Param.P("name", arg.usage(sender).replace(arg.name(), usageDisplay)),
                             Param.P("description", arg.desc().isEmpty() ? Msg.getString("command.no-description") : arg.desc()),
                             Param.P("permission", arg.perm().isEmpty() ? Msg.getString("command.none") : arg.perm()),
-                            Param.P("type", arg.option().getTypeName())
+                            Param.P("type", arg.option().getTypeName()),
+                            Param.P("subcmds", Str.implode(subCmdFormats, "\n"))
                     ));
                 }
+
+                continue;
             }
+
+            //Regular argument
+            usage.add(arg.usage(sender));
+            JSON.add(Msg.getString("command.argument-entry",
+                    Param.P("name", arg.usage(sender)),
+                    Param.P("description", arg.desc().isEmpty() ? Msg.getString("command.no-description") : arg.desc()),
+                    Param.P("permission", arg.perm().isEmpty() ? Msg.getString("command.none") : arg.perm()),
+                    Param.P("type", arg.option().getTypeName())
+            ));
         }
     }
-
 
 
     public String getString() {
@@ -144,13 +144,5 @@ public class CmdUsageParser {
 
     public String getJSON() {
         return Str.implode(JSON, " ");
-    }
-
-    public Cmd getCmd() {
-        return cmd;
-    }
-
-    public BaseCmd getBaseCmd() {
-        return baseCmd;
     }
 }

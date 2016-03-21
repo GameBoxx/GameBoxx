@@ -34,7 +34,6 @@ import info.gameboxx.gameboxx.messages.Msg;
 import info.gameboxx.gameboxx.messages.Param;
 import info.gameboxx.gameboxx.options.SingleOption;
 import info.gameboxx.gameboxx.util.Str;
-import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 
 import java.util.*;
@@ -47,7 +46,7 @@ public class CmdParser {
 
     List<String> argsList;
 
-    public CmdParser(BaseCmd baseCmd, CommandSender sender, String[] inputArgs) {
+    public CmdParser(BaseCmd baseCmd, CommandSender sender, String label, String[] inputArgs) {
         //Combine quoted arguments
         String input = Str.implode(inputArgs, " ");
         argsList = Str.splitQuotes(input, ' ', true);
@@ -55,7 +54,7 @@ public class CmdParser {
             argsList.set(i, Str.removeQuotes(argsList.get(i)));
         }
 
-        cmd = getSub(baseCmd, sender, inputArgs);
+        cmd = getSub(baseCmd, inputArgs);
         cmdData = new CmdData(sender, inputArgs);
 
         //Check basic command permission.
@@ -140,13 +139,13 @@ public class CmdParser {
             if (arg.required(sender) && !cmdData.getArgs().containsKey(arg.name().toLowerCase())) {
                 setError(Msg.getString("cmdparser.missing-arg", Param.P("arg", arg.name()),
                         Param.P("desc", arg.desc().isEmpty() ? Msg.getString("cmdparser.no-desc") : arg.desc()),
-                        Param.P("type", arg.option().getTypeName()), Param.P("usage", cmd.getUsage(sender)), Param.P("cmd", cmd.getName())));
+                        Param.P("type", arg.option().getTypeName()), Param.P("usage", cmd.getUsage(sender, label, inputArgs)), Param.P("cmd", cmd.getName())));
             }
         }
 
         //Check if all the user input has been parsed
         if (data.argsToParse.size() > 0) {
-            setError(Msg.getString("cmdparser.unknown-arg", Param.P("input", data.argsToParse.get(0)), Param.P("usage", baseCmd.getUsage(sender)), Param.P("cmd", baseCmd.getName())));
+            setError(Msg.getString("cmdparser.unknown-arg", Param.P("input", data.argsToParse.get(0)), Param.P("usage", baseCmd.getUsage(sender, label, inputArgs)), Param.P("cmd", baseCmd.getName())));
         }
     }
 
@@ -277,10 +276,6 @@ public class CmdParser {
     }
 
     public static Cmd getSub(Cmd cmd, String[] inputArgs) {
-        return getSub(cmd, Bukkit.getConsoleSender(), inputArgs);
-    }
-
-    public static Cmd getSub(Cmd cmd, CommandSender sender, String[] inputArgs) {
         //Sub command
         if (cmd.isSub()) {
             return cmd;

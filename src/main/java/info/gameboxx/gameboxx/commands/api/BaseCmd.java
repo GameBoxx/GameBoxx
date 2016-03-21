@@ -220,7 +220,7 @@ public abstract class BaseCmd extends Cmd {
      */
     @Override
     public boolean execute(CommandSender sender, String label, String[] args) {
-        CmdParser parser = new CmdParser(this, sender, args);
+        CmdParser parser = new CmdParser(this, sender, label, args);
 
         //Show help
         if (parser.getData().hasFlag("?")) {
