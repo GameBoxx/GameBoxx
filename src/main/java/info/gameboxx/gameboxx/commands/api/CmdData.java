@@ -285,19 +285,22 @@ public class CmdData {
     /**
      * Get the player related to the command.
      * <p/>
-     * This can either be the player from the specified argument or the sender.
+     * This can either be the player from the specified argument/modifier or the sender.
      * <p/>
-     * It will first try to get the player from the specified argument.
-     * The argument must be a {@link PlayerO} argument and it must contain a {@link Player} value.
+     * It will first try to get the player from the specified argument or modifier.
+     * The argument or modifier must be a {@link PlayerO} argument and it must contain a {@link Player} value.
      * <p/>
-     * If it fails to get the player from the argument it will try to get the player from the {@link CommandSender}
+     * If it fails to get the player from the argument or modifier it will try to get the player from the {@link CommandSender}
      * If this also fails (if the sender isn't a player) this will return {@code null}.
      *
-     * @return The {@link Player} from the specified argument or the {@link Player} {@link CommandSender}. (May be {@code null} if both fail)
+     * @return The {@link Player} from the specified argument/modifier or the {@link Player} {@link CommandSender}. (May be {@code null} if both fail)
      */
     public Player getPlayer(String argument) {
         if (getArg(argument) instanceof Player) {
             return (Player)getArg(argument);
+        }
+        if (getMod(argument) instanceof Player) {
+            return (Player)getMod(argument);
         }
         if (sender instanceof Player) {
             return (Player)sender;
