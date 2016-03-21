@@ -320,7 +320,7 @@ public class CmdParser {
             }
             //Try to get a match
             for (SubCmd sub : cmd.getSubCmds()) {
-                if (sub.getSubName().equalsIgnoreCase(arg.toLowerCase()) || sub.getAliases().contains(arg.toLowerCase())) {
+                if (sub.getSubName().equalsIgnoreCase(arg.toLowerCase()) || sub.getSubAliases().contains(arg.toLowerCase())) {
                     matches.put(index, sub);
                     break;
                 }

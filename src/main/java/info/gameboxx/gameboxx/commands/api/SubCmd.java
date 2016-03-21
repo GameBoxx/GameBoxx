@@ -29,6 +29,10 @@ import info.gameboxx.gameboxx.commands.api.data.ArgRequirement;
 import info.gameboxx.gameboxx.commands.api.parse.SubCmdO;
 import info.gameboxx.gameboxx.options.SingleOption;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 /**
  * Sub custom command.
  * <p/>
@@ -53,6 +57,7 @@ public abstract class SubCmd<PARENT extends BaseCmd> extends Cmd {
 
     private PARENT parent;
     private String subName;
+    private List<String> aliases = new ArrayList<>();
 
     /**
      * Construct a new command with the given name and aliases.
@@ -62,9 +67,10 @@ public abstract class SubCmd<PARENT extends BaseCmd> extends Cmd {
      * @param aliases Aliases for the command.
      */
     public SubCmd(PARENT parent, String name, String... aliases) {
-        super(parent.getName() + " " + name, aliases);
+        super(parent.getName() + " " + name, new String[0]);
         this.parent = parent;
         this.subName = name;
+        this.aliases.addAll(Arrays.asList(aliases));
     }
 
 
@@ -100,6 +106,29 @@ public abstract class SubCmd<PARENT extends BaseCmd> extends Cmd {
     public void setSubName(String subName) {
         this.subName = subName;
         setName(parent.getName() + " " + subName);
+    }
+
+    /**
+     * Get the aliases of the sub command.
+     * <p/>
+     * The {@link #getAliases()} will return an empty list for sub commands.
+     * This actually returns the list of aliases that have been set in the constructor/configured.
+     *
+     * @return The list of sub command aliases.
+     */
+    public List<String> getSubAliases() {
+        return aliases;
+    }
+
+    /**
+     * Set the aliases of the sub command.
+     * <p/>
+     * This will override the aliases specified in the constructor and the ones from the config.
+     *
+     * @param aliases New list of aliases to set
+     */
+    public void setSubAliases(List<String> aliases) {
+        this.aliases = aliases;
     }
 
 }

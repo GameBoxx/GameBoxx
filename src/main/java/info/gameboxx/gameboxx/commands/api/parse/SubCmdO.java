@@ -56,7 +56,7 @@ public class SubCmdO extends SingleOption<SubCmd, SubCmdO> {
     @Override
     public boolean parse(CommandSender sender, String input) {
         for (SubCmd sub : subCmds) {
-            if (sub.getSubName().equalsIgnoreCase(input) || sub.getAliases().contains(input.toLowerCase())) {
+            if (sub.getSubName().equalsIgnoreCase(input) || sub.getSubAliases().contains(input.toLowerCase())) {
                 value = sub;
                 return true;
             }

@@ -144,9 +144,13 @@ public abstract class BaseCmd extends Cmd {
 
         //Command - aliases
         if (!cfg.contains(name + ".aliases")) {
-            cfg.set(name + ".aliases", cmd.getAliases());
+            cfg.set(name + ".aliases", cmd.isSub() ? ((SubCmd)cmd).getSubAliases() : cmd.getAliases());
         } else {
-            cmd.setAliases(cfg.getStringList(name + ".aliases"));
+            if (cmd.isSub()) {
+                ((SubCmd)cmd).setSubAliases(cfg.getStringList(name + ".aliases"));
+            } else {
+                cmd.setAliases(cfg.getStringList(name + ".aliases"));
+            }
         }
 
         //Command - description/permission
