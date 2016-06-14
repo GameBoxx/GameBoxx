@@ -25,14 +25,14 @@
 
 package info.gameboxx.gameboxx.nms.entity;
 
-import net.minecraft.server.v1_9_R1.NBTTagCompound;
-import org.bukkit.craftbukkit.v1_9_R1.entity.CraftEntity;
+import net.minecraft.server.v1_10_R1.NBTTagCompound;
+import org.bukkit.craftbukkit.v1_10_R1.entity.CraftEntity;
 import org.bukkit.entity.Entity;
 
-public class EntityUtils_V1_9_R1 implements EntityUtils {
+public class EntityUtils_V1_10_R1 implements EntityUtils {
 
     public void setTag(Entity entity, EntityUtils.Tag tagName, boolean state) {
-        net.minecraft.server.v1_9_R1.Entity nmsEntity = ((CraftEntity)entity).getHandle();
+        net.minecraft.server.v1_10_R1.Entity nmsEntity = ((CraftEntity)entity).getHandle();
         NBTTagCompound nbt = new NBTTagCompound();
         nmsEntity.e(nbt);
         nbt.setBoolean(tagName.getName(), state);
@@ -40,7 +40,7 @@ public class EntityUtils_V1_9_R1 implements EntityUtils {
     }
 
     public boolean getTag(Entity entity, EntityUtils.Tag tagName) {
-        net.minecraft.server.v1_9_R1.Entity nmsEntity = ((CraftEntity)entity).getHandle();
+        net.minecraft.server.v1_10_R1.Entity nmsEntity = ((CraftEntity)entity).getHandle();
         NBTTagCompound nbt = new NBTTagCompound();
         nmsEntity.e(nbt);
         return nbt.getBoolean(tagName.getName());

@@ -23,27 +23,32 @@
  *  THE SOFTWARE.
  */
 
-package info.gameboxx.gameboxx.system.npc.v1_9_R1;
+package info.gameboxx.gameboxx.system.npc.v1_10_R1;
+
+import com.google.common.base.Preconditions;
+import com.google.common.collect.Lists;
+import info.gameboxx.gameboxx.system.npc.SkinProfile;
+import net.minecraft.server.v1_10_R1.WorldServer;
+import org.bukkit.Location;
+import org.bukkit.craftbukkit.v1_10_R1.CraftWorld;
+
+import java.util.List;
 
 
-import com.mojang.authlib.GameProfile;
-import org.bukkit.Bukkit;
-import org.bukkit.craftbukkit.v1_9_R1.entity.CraftPlayer;
+public abstract class NPC implements info.gameboxx.gameboxx.system.npc.NPC {
 
-import java.util.UUID;
+    private List<String> commands = Lists.newArrayList();
 
+    private WorldServer world;
 
-public class SkinProfile implements info.gameboxx.gameboxx.system.npc.SkinProfile {
+    private SkinProfile skinProfile;
 
-    private GameProfile gameProfile;
-
-    public SkinProfile(GameProfile gameProfile) {
-        this.gameProfile = gameProfile;
+    public NPC(Location location) {
+        Preconditions.checkNotNull(location);
+        world = ((CraftWorld)location.getWorld()).getHandle();
     }
 
-    public void setSkin(UUID uuid) {
-        GameProfile temp = ((CraftPlayer)Bukkit.getPlayer(uuid)).getProfile();
-        gameProfile.getProperties().removeAll("textures");
-        gameProfile.getProperties().putAll("textures", temp.getProperties().get("textures"));
+    public SkinProfile getSkinProfile() {
+        return skinProfile;
     }
 }

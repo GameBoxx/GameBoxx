@@ -26,14 +26,14 @@
 package info.gameboxx.gameboxx.nms.worldloader;
 
 import info.gameboxx.gameboxx.GameBoxx;
-import net.minecraft.server.v1_9_R1.Chunk;
-import net.minecraft.server.v1_9_R1.MinecraftServer;
+import net.minecraft.server.v1_10_R1.Chunk;
+import net.minecraft.server.v1_10_R1.MinecraftServer;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.WorldCreator;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.craftbukkit.v1_9_R1.CraftServer;
+import org.bukkit.craftbukkit.v1_10_R1.CraftServer;
 import org.bukkit.generator.ChunkGenerator;
 import org.bukkit.plugin.Plugin;
 
@@ -44,7 +44,7 @@ import java.util.logging.Level;
 /**
  * @author Friwi (https://www.spigotmc.org/resources/lib-asyncworldloader.7370/)
  */
-public class WorldLoader_V1_9_R1 implements info.gameboxx.gameboxx.nms.worldloader.WorldLoader {
+public class WorldLoader_V1_10_R1 implements info.gameboxx.gameboxx.nms.worldloader.WorldLoader {
     //TODO: Recreate this (It's a mess and needs to be updated to 1.9)
 
     private GameBoxx gb;
@@ -55,7 +55,7 @@ public class WorldLoader_V1_9_R1 implements info.gameboxx.gameboxx.nms.worldload
     private Chunk wait = null;
     private ChunkGenerator generator = null;
 
-    public WorldLoader_V1_9_R1(GameBoxx gb) {
+    public WorldLoader_V1_10_R1(GameBoxx gb) {
         this.gb = gb;
     }
 
@@ -84,7 +84,7 @@ public class WorldLoader_V1_9_R1 implements info.gameboxx.gameboxx.nms.worldload
         aborted = false;
         wait = null;
         ret = null;
-        final net.minecraft.server.v1_9_R1.WorldType type = net.minecraft.server.v1_9_R1.WorldType.getType(creator.type().getName());
+        final net.minecraft.server.v1_10_R1.WorldType type = net.minecraft.server.v1_10_R1.WorldType.getType(creator.type().getName());
 
         File folder = new File(getWorldContainer(), name);
         if ((folder.exists()) && (!folder.isDirectory())) {

@@ -25,9 +25,9 @@
 
 package info.gameboxx.gameboxx.nms.util;
 
-import net.minecraft.server.v1_9_R1.IChatBaseComponent;
-import net.minecraft.server.v1_9_R1.Packet;
-import org.bukkit.craftbukkit.v1_9_R1.entity.CraftPlayer;
+import net.minecraft.server.v1_10_R1.IChatBaseComponent;
+import net.minecraft.server.v1_10_R1.Packet;
+import org.bukkit.craftbukkit.v1_10_R1.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 
 import java.util.Collection;
@@ -35,7 +35,7 @@ import java.util.Collection;
 /**
  * NMS Utilities for version 1.9 R1
  */
-public class NMSUtil_V1_9_R1 {
+public class NMSUtil_V1_10_R1 {
 
     /**
      * Send a packet to the specified player.

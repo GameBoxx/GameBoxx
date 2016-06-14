@@ -27,11 +27,11 @@ package info.gameboxx.gameboxx.nms.item;
 
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
-import info.gameboxx.gameboxx.nms.util.NMSUtil_V1_9_R1;
+import info.gameboxx.gameboxx.nms.util.NMSUtil_V1_10_R1;
 import info.gameboxx.gameboxx.util.Utils;
-import net.minecraft.server.v1_9_R1.IChatBaseComponent;
+import net.minecraft.server.v1_10_R1.IChatBaseComponent;
 import org.apache.commons.codec.binary.Base64;
-import org.bukkit.craftbukkit.v1_9_R1.inventory.CraftMetaBook;
+import org.bukkit.craftbukkit.v1_10_R1.inventory.CraftMetaBook;
 import org.bukkit.inventory.meta.BookMeta;
 import org.bukkit.inventory.meta.SkullMeta;
 import org.json.simple.JSONObject;
@@ -41,7 +41,7 @@ import org.json.simple.parser.ParseException;
 import java.lang.reflect.Field;
 import java.util.*;
 
-public class ItemUtils_V1_9_R1 implements ItemUtils {
+public class ItemUtils_V1_10_R1 implements ItemUtils {
 
     public BookMeta setBookPages(BookMeta meta, List<String> JSONPages) {
         if (meta == null) {
@@ -51,7 +51,7 @@ public class ItemUtils_V1_9_R1 implements ItemUtils {
             CraftMetaBook craftMetaBook = (CraftMetaBook)meta;
             craftMetaBook.pages.clear();
             for (String JSON : JSONPages) {
-                craftMetaBook.pages.add(NMSUtil_V1_9_R1.serializeChat(JSON));
+                craftMetaBook.pages.add(NMSUtil_V1_10_R1.serializeChat(JSON));
             }
         } catch (Exception e) {}
         return meta;
