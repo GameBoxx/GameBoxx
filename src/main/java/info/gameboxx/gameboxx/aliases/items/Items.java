@@ -25,6 +25,7 @@
 
 package info.gameboxx.gameboxx.aliases.items;
 
+import org.apache.commons.lang.WordUtils;
 import org.bukkit.Material;
 import org.bukkit.material.MaterialData;
 
@@ -43,6 +44,15 @@ public class Items {
     private static final List<ItemData> items = new ArrayList<>();
     private static final HashMap<String, ItemData> itemLookup = new HashMap<>();
     private static final HashMap<String, String> matchLookup = new HashMap<>();
+
+    /**
+     * Get all the registered items.
+     *
+     * @return List with {@link ItemData} for all the registered items.
+     */
+    public static List<ItemData> getItems() {
+        return items;
+    }
 
     /**
      * Get the {@link ItemData} for the specified MaterialData.
@@ -73,9 +83,10 @@ public class Items {
         }
         key = material.toString().toLowerCase() + "-0";
         if (itemLookup.containsKey(key)) {
-            return itemLookup.get(key);
+            ItemData itemData = itemLookup.get(key);
+            return new ItemData(itemData.getName(), material, data);
         }
-        return new ItemData(material.toString().toLowerCase().replace("_", " "), material, data);
+        return new ItemData(WordUtils.capitalizeFully(material.toString(), new char[] {'_'}).replace("_", " "), material, data);
     }
 
     /**
@@ -133,7 +144,7 @@ public class Items {
         //Get item from string
         if (matchLookup.containsKey(search)) {
             ItemData match = itemLookup.get(matchLookup.get(search));
-            return getItem(match.getType(), match.getData() > 0 ? match.getData() : data);
+            return getItem(match.getType(), data > 0 ? data : match.getData());
         }
 
         //No match
@@ -238,7 +249,9 @@ public class Items {
 
         //Register match strings
         for (String match : item.getMatchStrings()) {
-            matchLookup.put(match, key);
+            if (!matchLookup.containsKey(match)) {
+                matchLookup.put(match, key);
+            }
         }
     }
 

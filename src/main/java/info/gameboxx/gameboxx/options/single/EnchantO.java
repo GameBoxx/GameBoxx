@@ -35,6 +35,10 @@ import info.gameboxx.gameboxx.util.Utils;
 import org.bukkit.command.CommandSender;
 import org.bukkit.enchantments.Enchantment;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 public class EnchantO extends SingleOption<Enchant, EnchantO> {
 
     private boolean ignoreMax = true;
@@ -47,7 +51,7 @@ public class EnchantO extends SingleOption<Enchant, EnchantO> {
     @Override
     public boolean parse(CommandSender sender, String input) {
         String[] split = input.split(":");
-        Integer level = 0;
+        Integer level = 1;
 
         Enchantment enchant = Enchantments.get(split[0]);
         if (enchant == null) {
@@ -93,6 +97,41 @@ public class EnchantO extends SingleOption<Enchant, EnchantO> {
     public String getTypeName() {
         return "Enchantment";
     }
+
+    @Override
+    public List<String> onComplete(CommandSender sender, String prefix, String input) {
+        List<String> suggestions = new ArrayList<>();
+
+        String[] data = input.split(":", -1);
+        if (data.length <= 1) {
+            for (String key : Enchantments.getAliasMap().keySet()) {
+                String name = key.replace(" ", "");
+                if (name.toLowerCase().startsWith(data[0].toLowerCase())) {
+                    suggestions.add(prefix + name);
+                }
+            }
+            if (data[0].length() > 0) {
+                for (List<String> aliases : Enchantments.getAliasMap().values()) {
+                    for (String alias : aliases) {
+                        String name = alias.replace(" ", "");
+                        if (name.toLowerCase().startsWith(data[0].toLowerCase())) {
+                            suggestions.add(prefix + name);
+                        }
+                    }
+                }
+            }
+        } else if (data.length <= 2) {
+            if (data[1].isEmpty()) {
+                for (int i = 1; i <= 5; i++) {
+                    suggestions.add(prefix + data[0] + ":" + i);
+                }
+            }
+        }
+
+        Collections.sort(suggestions);
+        return suggestions;
+    }
+
 
     @Override
     public EnchantO clone() {

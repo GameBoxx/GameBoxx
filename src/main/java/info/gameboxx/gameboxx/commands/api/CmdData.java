@@ -26,10 +26,12 @@
 package info.gameboxx.gameboxx.commands.api;
 
 import info.gameboxx.gameboxx.commands.api.data.Argument;
+import info.gameboxx.gameboxx.commands.api.data.TabCompleteData;
 import info.gameboxx.gameboxx.commands.api.parse.CmdParser;
 import info.gameboxx.gameboxx.options.SingleOption;
 import info.gameboxx.gameboxx.options.single.PlayerO;
 import info.gameboxx.gameboxx.options.single.StringO;
+import info.gameboxx.gameboxx.util.Pair;
 import org.bukkit.command.BlockCommandSender;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
@@ -51,6 +53,8 @@ public class CmdData {
     private Map<String, SingleOption> arguments = new HashMap<>();
     private Map<String, SingleOption> modifiers = new HashMap<>();
     private List<String> flags = new ArrayList<>();
+
+    private Map<Integer, TabCompleteData> dataValues = new HashMap();
 
     /**
      * Construct new CmdData.

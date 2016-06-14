@@ -36,6 +36,10 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 public class PotionO extends SingleOption<PotionEffect, PotionO> {
 
     @Override
@@ -49,7 +53,7 @@ public class PotionO extends SingleOption<PotionEffect, PotionO> {
         String[] split = input.split(":");
         Color color = null;
         Integer amplifier = 0;
-        Integer duration = Integer.MAX_VALUE;
+        Integer duration = 600; //30 seconds default
 
         PotionEffectType type = PotionEffects.get(split[0]);
         if (type == null) {
@@ -57,36 +61,32 @@ public class PotionO extends SingleOption<PotionEffect, PotionO> {
             return false;
         }
 
-        if (split.length > 1) {
-            split = split[1].split("\\.");
-
-            if (split.length > 0 && !split[0].isEmpty()) {
-                amplifier = Parse.Int(split[0]);
-                if (amplifier == null) {
-                    error = Msg.getString("potion.invalid-amplifier", Param.P("input", split[0]));
-                    return false;
-                }
+        if (split.length > 1 && !split[1].isEmpty()) {
+            amplifier = Parse.Int(split[1]);
+            if (amplifier == null) {
+                error = Msg.getString("potion.invalid-amplifier", Param.P("input", split[0]));
+                return false;
             }
+        }
 
-            if (split.length > 1 && !split[1].isEmpty()) {
-                duration = Parse.Int(split[1]);
-                if (duration == null) {
-                    error = Msg.getString("potion.invalid-duration", Param.P("input", split[1]));
-                    return false;
-                }
-                if (duration < 0) {
-                    duration = Integer.MAX_VALUE;
-                }
+        if (split.length > 2 && !split[2].isEmpty()) {
+            duration = Parse.Int(split[2]);
+            if (duration == null) {
+                error = Msg.getString("potion.invalid-duration", Param.P("input", split[1]));
+                return false;
             }
+            if (duration < 0) {
+                duration = Integer.MAX_VALUE;
+            }
+        }
 
-            if (split.length > 2 && !split[2].isEmpty()) {
-                ColorO colorOption = new ColorO();
-                if (!colorOption.parse(split[2])) {
-                    error = colorOption.getError();
-                    return false;
-                }
-                color = colorOption.getValue();
+        if (split.length > 3 && !split[3].isEmpty()) {
+            ColorO colorOption = new ColorO();
+            if (!colorOption.parse(split[3])) {
+                error = colorOption.getError();
+                return false;
             }
+            color = colorOption.getValue();
         }
 
         value = color == null ? new PotionEffect(type, duration, amplifier, ambient) : new PotionEffect(type, duration, amplifier, ambient, ambient, color);
@@ -116,6 +116,50 @@ public class PotionO extends SingleOption<PotionEffect, PotionO> {
     @Override
     public String getTypeName() {
         return "Potion";
+    }
+
+    @Override
+    public List<String> onComplete(CommandSender sender, String prefix, String input) {
+        List<String> suggestions = new ArrayList<>();
+
+        String[] data = input.split(":", -1);
+        if (data.length <= 1) {
+            for (String key : PotionEffects.getAliasMap().keySet()) {
+                String name = key.replace(" ", "");
+                if (name.toLowerCase().startsWith(data[0].toLowerCase())) {
+                    suggestions.add(prefix + name);
+                }
+            }
+            if (data[0].length() > 0) {
+                for (List<String> aliases : PotionEffects.getAliasMap().values()) {
+                    for (String alias : aliases) {
+                        String name = alias.replace(" ", "");
+                        if (name.toLowerCase().startsWith(data[0].toLowerCase())) {
+                            suggestions.add(prefix + name);
+                        }
+                    }
+                }
+            }
+        } else if (data.length <= 2) {
+            if (data[1].isEmpty()) {
+                for (int i = 0; i < 3; i++) {
+                    suggestions.add(prefix + data[0] + ":" + i);
+                }
+            }
+        } else if (data.length <= 3) {
+            int[] times = new int[] {-1, 60, 100, 200, 600, 1200, 3600, 6000};
+            for (int ticks : times) {
+                if (Integer.toString(ticks).startsWith(data[2].toLowerCase())) {
+                    suggestions.add(prefix + data[0] + ":" + data[1] + ":" + ticks);
+                }
+            }
+        } else if (data.length <= 4) {
+            ColorO color = new ColorO();
+            suggestions.addAll(color.onComplete(sender, prefix + data[0] + ":" + data[1] + ":" + data[2] + ":", data[3]));
+        }
+
+        Collections.sort(suggestions);
+        return suggestions;
     }
 
     @Override

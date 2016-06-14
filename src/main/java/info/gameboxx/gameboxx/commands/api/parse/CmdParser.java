@@ -26,9 +26,7 @@
 package info.gameboxx.gameboxx.commands.api.parse;
 
 import info.gameboxx.gameboxx.commands.api.*;
-import info.gameboxx.gameboxx.commands.api.data.Argument;
-import info.gameboxx.gameboxx.commands.api.data.Flag;
-import info.gameboxx.gameboxx.commands.api.data.Modifier;
+import info.gameboxx.gameboxx.commands.api.data.*;
 import info.gameboxx.gameboxx.commands.api.data.link.*;
 import info.gameboxx.gameboxx.messages.Msg;
 import info.gameboxx.gameboxx.messages.Param;
@@ -42,12 +40,21 @@ public class CmdParser {
 
     private Cmd cmd = null;
     private CmdData cmdData = null;
+    private TabCompleteData tabCompleteData;
     private String error = "";
+
     private int state = 0;
+    private boolean showHelp = false;
 
     List<String> argsList;
 
     public CmdParser(BaseCmd baseCmd, CommandSender sender, String label, String[] inputArgs) {
+        this(baseCmd, sender, label, inputArgs, true);
+    }
+
+    public CmdParser(BaseCmd baseCmd, CommandSender sender, String label, String[] inputArgs, boolean showHelp) {
+        this.showHelp = showHelp;
+
         //Combine quoted arguments
         String input = Str.implode(inputArgs, " ");
         argsList = Str.splitQuotes(input, ' ', true);
@@ -144,7 +151,7 @@ public class CmdParser {
         //Check if all the required arguments have been parsed.
         for (Argument arg : data.arguments.values()) {
             if (arg.required(sender) && !cmdData.getArgs().containsKey(arg.name().toLowerCase())) {
-                if (arg.option() instanceof SubCmdO) {
+                if (showHelp && arg.option() instanceof SubCmdO) {
                     cmd.showSubCmds(sender, label, cmdData.hasMod("page") ? (int)cmdData.getMod("page") : 1);
                     error = "";
                     return;
@@ -174,6 +181,7 @@ public class CmdParser {
             if (arg.startsWith("-")) {
                 String name = arg.substring(1).toLowerCase();
                 if (data.flags.containsKey(name)) {
+                    tabCompleteData = null;
                     data.argsToParse.remove(arg);
                     data.specifiedNames.add(name);
                     Flag flag = data.flags.get(name);
@@ -205,6 +213,7 @@ public class CmdParser {
                     }
 
                     SingleOption option = (SingleOption)mod.option().clone();
+                    tabCompleteData = new TabCompleteData(name, option, arg);
                     if (!option.parse(sender, value)) {
                         setError(option.getError());
                         continue;
@@ -246,9 +255,10 @@ public class CmdParser {
                 }
 
                 //parse the argument.
+                tabCompleteData = new TabCompleteData(argument.name(), option, arg);
                 if (!option.parse(sender, arg)) {
                     if (!argument.skippable() || argument.required(sender)) {
-                        if (state == 2 && option instanceof SubCmdO) {
+                        if (showHelp && state == 2 && option instanceof SubCmdO) {
                             cmd.showSubCmds(sender, label, cmdData.hasMod("page") ? (int)cmdData.getMod("page") : 1);
                             return null;
                         }
@@ -275,11 +285,15 @@ public class CmdParser {
                 } else {
                     data.argsToParse.remove(arg);
                 }
+
                 data.specifiedNames.add(argument.name().toLowerCase());
                 cmdData.getArgs().put(argument.name().toLowerCase(), option);
                 break;
             }
 
+            if (arg.trim().isEmpty()) {
+                tabCompleteData = null;
+            }
         }
 
         return data;
@@ -366,6 +380,10 @@ public class CmdParser {
 
     public CmdData getData() {
         return cmdData;
+    }
+
+    public TabCompleteData getTabCompleteData() {
+        return tabCompleteData;
     }
 
     public boolean success() {

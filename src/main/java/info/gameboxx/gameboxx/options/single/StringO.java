@@ -193,6 +193,37 @@ public class StringO extends SingleOption<String, StringO> {
     }
 
     @Override
+    public List<String> onComplete(CommandSender sender, String prefix, String input) {
+        List<String> suggestions = new ArrayList<>();
+
+        if (matchList != null && !matchList.isEmpty()) {
+            for (String match : matchList) {
+                if (match.toLowerCase().startsWith(input.toLowerCase())) {
+                    suggestions.add(prefix + match);
+                }
+            }
+        }
+
+        if (matchMap != null && !matchMap.isEmpty()) {
+            for (String match : matchMap.keySet()) {
+                if (match.toLowerCase().startsWith(input.toLowerCase())) {
+                    suggestions.add(prefix + match);
+                }
+            }
+            for (List<String> matches : matchMap.values()) {
+                for (String match : matches) {
+                    if ((suggestions.size() < 20 || input.length() > 1) && match.toLowerCase().startsWith(input)) {
+                        suggestions.add(prefix + match);
+                    }
+                }
+            }
+        }
+
+        Collections.sort(suggestions);
+        return suggestions;
+    }
+
+    @Override
     public StringO clone() {
         return super.cloneData(new StringO().minChars(minChars).maxChars(maxChars).match(matchList).match(matchMap).matchRegex(regex));
     }

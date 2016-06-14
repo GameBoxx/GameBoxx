@@ -30,13 +30,13 @@ import info.gameboxx.gameboxx.messages.Param;
 import info.gameboxx.gameboxx.options.SingleOption;
 import info.gameboxx.gameboxx.util.Parse;
 import info.gameboxx.gameboxx.util.Utils;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.World;
+import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -102,7 +102,7 @@ public class BlockO extends SingleOption<Block, BlockO> {
             } else if ((data.equals("#") || data.equals("^")) && !(sender instanceof Player)) {
                 error = Msg.getString("selector-console-player", Param.P("type", data));
                 return false;
-            } else if (data.startsWith("@") || data.startsWith("#") || input.startsWith("^")) {
+            } else if (data.startsWith("@") || data.startsWith("#") || data.startsWith("^")) {
                 //Get block/location from player
                 PlayerO playerOption = new PlayerO();
                 playerOption.parse(sender, data.substring(1));
@@ -110,13 +110,13 @@ public class BlockO extends SingleOption<Block, BlockO> {
                     error = playerOption.getError();
                     return false;
                 }
-                if (input.startsWith("#")) {
+                if (data.startsWith("#")) {
                     Block b = playerOption.getValue().getTargetBlock(Utils.TRANSPARENT_MATERIALS, 128);
                     if (b == null) {
                         error = Msg.getString("block.no-target");
                     }
                     location = b.getLocation();
-                } else if (input.startsWith("^")) {
+                } else if (data.startsWith("^")) {
                     List<Block> blocks = playerOption.getValue().getLastTwoTargetBlocks(Utils.TRANSPARENT_MATERIALS, 128);
                     Block block = blocks.get(1);
                     if (block.getType() == Material.AIR) {
@@ -128,6 +128,7 @@ public class BlockO extends SingleOption<Block, BlockO> {
                     location = playerOption.getValue().getLocation();
                 }
             } else {
+                Bukkit.broadcastMessage("> world");
                 //Get world.
                 WorldO worldOption = new WorldO();
                 worldOption.parse(sender, data);
@@ -221,6 +222,78 @@ public class BlockO extends SingleOption<Block, BlockO> {
     @Override
     public String getTypeName() {
         return "Block";
+    }
+
+    @Override
+    public List<String> onComplete(CommandSender sender, String prefix, String input) {
+        List<String> suggestions = new ArrayList<>();
+
+        //Start completion
+        if (input.isEmpty()) {
+            if (!(sender instanceof ConsoleCommandSender)) {
+                suggestions.add(prefix + "@");
+            }
+            if (sender instanceof Player) {
+                suggestions.add(prefix + "#");
+                suggestions.add(prefix + "^");
+            }
+            suggestions.add(prefix + "~");
+            Location location = Utils.getLocation(sender);
+            if (location != null) {
+                suggestions.add(prefix + location.getBlockX());
+            }
+            return suggestions;
+        }
+
+        //Complete player
+        if (input.startsWith("@") || input.startsWith("#") || input.startsWith("^")) {
+            PlayerO player = new PlayerO();
+            return player.onComplete(sender, prefix + input.substring(0, 1), input.substring(1));
+        }
+
+        //Complete world/player
+        if (input.contains(":")) {
+            String[] split = input.split(":");
+            if (split.length < 2 || split[1].isEmpty()) {
+                if (!(sender instanceof ConsoleCommandSender)) {
+                    suggestions.add(prefix + split[0] + ":@");
+                }
+                if (sender instanceof Player) {
+                    suggestions.add(prefix + split[0] + ":#");
+                    suggestions.add(prefix + split[0] + ":^");
+                }
+            }
+            if (split.length < 2 || (!split[1].startsWith("@") && !split[1].startsWith("#") && !split[1].startsWith("^"))) {
+                WorldO world = new WorldO();
+                suggestions.addAll(world.onComplete(sender, prefix + split[0] + ":", split.length < 2 ? "" : split[1]));
+            } else if (!split[1].isEmpty()) {
+                PlayerO player = new PlayerO();
+                suggestions.addAll(player.onComplete(sender, prefix + split[0] + ":" + split[1].substring(0, 1), split[1].substring(1)));
+            }
+            return suggestions;
+        }
+
+        //Complete coordinates
+        Location location = Utils.getLocation(sender);
+        if (location == null) {
+            return suggestions;
+        }
+
+        String[] split = input.split(",");
+        if (split.length < 1 || split[0].isEmpty()) {
+            suggestions.add(prefix + "" + location.getBlockX());
+            suggestions.add(prefix + "~");
+        } else if (split.length < 2 || split[1].isEmpty()) {
+            String p = prefix + split[0] + ",";
+            suggestions.add(p + location.getBlockY());
+            suggestions.add(p + "~");
+        } else if (split.length < 3 || split[2].isEmpty()) {
+            String p = prefix + split[0] + "," + split[1] + ",";
+            suggestions.add(p + location.getBlockZ());
+            suggestions.add(p + "~");
+        }
+
+        return suggestions;
     }
 
     @Override

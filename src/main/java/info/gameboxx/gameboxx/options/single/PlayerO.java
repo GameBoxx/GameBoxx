@@ -33,7 +33,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import java.util.UUID;
+import java.util.*;
 
 public class PlayerO extends SingleOption<Player, PlayerO> {
 
@@ -109,6 +109,25 @@ public class PlayerO extends SingleOption<Player, PlayerO> {
     @Override
     public String getTypeName() {
         return "Player";
+    }
+
+    @Override
+    public List<String> onComplete(CommandSender sender, String prefix, String input) {
+        List<String> suggestions = new ArrayList<>();
+
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            if (input.trim().isEmpty() || player.getName().toLowerCase().startsWith(input) || Str.stripColor(player.getDisplayName()).startsWith(input)) {
+                if (sender instanceof Player) {
+                    if (!((Player)sender).canSee(player)) {
+                        continue;
+                    }
+                }
+                suggestions.add(prefix + player.getName());
+            }
+        }
+
+        Collections.sort(suggestions);
+        return suggestions;
     }
 
     @Override

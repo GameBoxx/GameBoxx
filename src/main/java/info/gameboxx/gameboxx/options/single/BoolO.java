@@ -30,35 +30,29 @@ import info.gameboxx.gameboxx.messages.Param;
 import info.gameboxx.gameboxx.options.SingleOption;
 import org.bukkit.command.CommandSender;
 
+import java.util.*;
+
 public class BoolO extends SingleOption<Boolean, BoolO> {
+
+    public static List<String> TRUE_VALUES = new ArrayList<>(Arrays.asList("true", "yes", "t", "y", "1", "+", "v"));
+    public static List<String> FALSE_VALUES = new ArrayList<>(Arrays.asList("false", "no", "f", "n", "0", "-", "x"));
 
     @Override
     public boolean parse(CommandSender sender, String input) {
         input = input.toLowerCase();
-        switch (input) {
-            case "true":
-            case "t":
-            case "yes":
-            case "y":
-            case "+":
-            case "v":
-            case "1":
-                value = true;
-                break;
-            case "false":
-            case "f":
-            case "no":
-            case "n":
-            case "-":
-            case "x":
-            case "0":
-                value = false;
-                break;
-            default:
-                error = Msg.getString("boolean.invalid", Param.P("input", input));
-                return false;
+
+        if (TRUE_VALUES.contains(input.toLowerCase())) {
+            value = true;
+            return true;
         }
-        return true;
+
+        if (FALSE_VALUES.contains(input.toLowerCase())) {
+            value = false;
+            return true;
+        }
+
+        error = Msg.getString("boolean.invalid", Param.P("input", input));
+        return false;
     }
 
     @Override
@@ -74,6 +68,25 @@ public class BoolO extends SingleOption<Boolean, BoolO> {
     @Override
     public String getTypeName() {
         return "Boolean";
+    }
+
+    @Override
+    public List<String> onComplete(CommandSender sender, String prefix, String input) {
+        List<String> suggestions = new ArrayList<>();
+
+        for (String string : TRUE_VALUES) {
+            if (input.isEmpty() || string.startsWith(input)) {
+                suggestions.add(prefix + string);
+            }
+        }
+        for (String string : FALSE_VALUES) {
+            if (input.isEmpty() || string.startsWith(input)) {
+                suggestions.add(prefix + string);
+            }
+        }
+
+        Collections.sort(suggestions);
+        return suggestions;
     }
 
     public static String display(Boolean bool) {

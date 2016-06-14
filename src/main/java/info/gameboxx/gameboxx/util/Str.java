@@ -328,7 +328,7 @@ public class Str {
             }
         }
 
-        if (result.trim().isEmpty()) {
+        if (result.isEmpty()) {
             return result;
         }
         return result.substring(0, result.length() - lastGlue.length());
@@ -429,10 +429,7 @@ public class Str {
             }
             if (ch == split && quote == 0) {
                 //Start new section for split char when not quoted.
-                String ss = section.toString();
-                if (ss != null && !ss.trim().isEmpty()) {
-                    sections.add(section.toString());
-                }
+                sections.add(section.toString());
                 section.setLength(0);
                 continue;
             }
@@ -462,10 +459,7 @@ public class Str {
             section.append(ch);
         }
         //Add last section
-        String ss = section.toString();
-        if (ss != null && !ss.trim().isEmpty()) {
-            sections.add(section.toString());
-        }
+        sections.add(section.toString());
 
         return sections;
     }
@@ -510,10 +504,7 @@ public class Str {
             }
             if (ch == split && quote == 0) {
                 //Start new section for split char when not quoted.
-                String ss = section.toString();
-                if (ss != null && !ss.trim().isEmpty()) {
-                    sections.add(section.toString());
-                }
+                sections.add(section.toString());
                 section.setLength(0);
                 continue;
             }
@@ -540,10 +531,7 @@ public class Str {
             section.append(ch);
         }
         //Add last section
-        String ss = section.toString();
-        if (ss != null && !ss.trim().isEmpty()) {
-            sections.add(section.toString());
-        }
+        sections.add(section.toString());
 
         return sections;
     }

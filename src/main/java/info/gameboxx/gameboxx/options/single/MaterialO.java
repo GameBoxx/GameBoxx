@@ -34,6 +34,10 @@ import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
 import org.bukkit.material.MaterialData;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 public class MaterialO extends SingleOption<MaterialData, MaterialO> {
 
     private boolean blocks = false;
@@ -99,7 +103,29 @@ public class MaterialO extends SingleOption<MaterialData, MaterialO> {
     }
 
     @Override
+    public List<String> onComplete(CommandSender sender, String prefix, String input) {
+        List<String> suggestions = new ArrayList<>();
+
+        if (input.length() < 2) {
+            return suggestions;
+        }
+
+        for (ItemData item : Items.getItems()) {
+            if (blocks && !item.getType().isBlock()) {
+                continue;
+            }
+            String name = item.getName().replace(" ", "");
+            if (name.toLowerCase().startsWith(input.toLowerCase())) {
+                suggestions.add(prefix + name);
+            }
+        }
+
+        Collections.sort(suggestions);
+        return suggestions;
+    }
+
+    @Override
     public MaterialO clone() {
-        return super.cloneData(new MaterialO());
+        return super.cloneData(new MaterialO().blocks(blocks));
     }
 }

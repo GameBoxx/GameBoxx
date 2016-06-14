@@ -33,8 +33,7 @@ import info.gameboxx.gameboxx.util.Random;
 import org.bukkit.Color;
 import org.bukkit.command.CommandSender;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 public class ColorO extends SingleOption<Color, ColorO> {
 
@@ -149,6 +148,25 @@ public class ColorO extends SingleOption<Color, ColorO> {
     @Override
     public String getTypeName() {
         return "Color";
+    }
+
+    @Override
+    public List<String> onComplete(CommandSender sender, String prefix, String input) {
+        List<String> suggestions = new ArrayList<>();
+
+        for (String preset : PRESETS.keySet()) {
+            if (input.isEmpty() || preset.toLowerCase().startsWith(input)) {
+                suggestions.add(prefix + preset);
+            }
+        }
+
+        if (input.isEmpty() || input.startsWith("*")) {
+            suggestions.add(prefix + "*");
+            suggestions.add(prefix + "**");
+        }
+
+        Collections.sort(suggestions);
+        return suggestions;
     }
 
     @Override

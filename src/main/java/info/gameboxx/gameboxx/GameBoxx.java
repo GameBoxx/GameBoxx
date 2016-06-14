@@ -146,12 +146,19 @@ public class GameBoxx extends JavaPlugin {
             CmdRegistration.register(this, new GiveCmd(configFile));
             CmdRegistration.register(this, new SummonCmd(configFile));
 
+            //Link tests
             CmdRegistration.register(this, new BlacklistLinkCmd());
             CmdRegistration.register(this, new HealCmd()); //Remove link
             CmdRegistration.register(this, new RequirementLinkCmd());
             CmdRegistration.register(this, new ConflictLinkCmd());
             CmdRegistration.register(this, new ForceLinkCmd());
             CmdRegistration.register(this, new SpanCmd());
+
+            //Tab completion tests
+            CmdRegistration.register(this, new SetBlockCmd());
+            CmdRegistration.register(this, new PotionCmd());
+            CmdRegistration.register(this, new EnchantCmd());
+            CmdRegistration.register(this, new ParticleCmd());
 
         } catch (CmdAlreadyRegisteredException e) {
             e.printStackTrace();

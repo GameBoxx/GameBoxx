@@ -253,4 +253,44 @@ public abstract class BaseCmd extends Cmd {
 
         return true;
     }
+
+    @Override
+    public List<String> tabComplete(CommandSender sender, String alias, String[] args) {
+        //No arguments
+        if (getAllArguments().size() == 0) {
+            return new ArrayList<>();
+        }
+
+        TabCompleteData data = null;
+
+        if (args.length == 0 || args.length == 1 && args[0].trim().isEmpty()) {
+            //Get option from first argument if nothing is specified yet.
+            Argument arg = new ArrayList<>(getArguments().values()).get(0);
+            data = new TabCompleteData(arg.name(), arg.option(), "");
+        } else {
+            //Parse the input
+            CmdParser parser = new CmdParser(getBaseCmd(), sender, alias, args, false);
+            data = parser.getTabCompleteData();
+
+            //Get the first unparsed argument for blank input
+            if (data == null) {
+                String lastArg = args[args.length - 1];
+                if (lastArg.trim().isEmpty()) {
+                    List<Argument> arguments = new ArrayList<>(parser.getCmd().getAllArguments().values());
+                    for (Argument arg : arguments) {
+                        String argName = arg.name().toLowerCase();
+                        if (!parser.getData().hasArg(argName) || parser.getData().getArg(argName) == null) {
+                            data = new TabCompleteData(arg.name().toLowerCase(), arg.option(), lastArg);
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+
+        if (data == null) {
+            return new ArrayList<>();
+        }
+        return data.getOption().onComplete(sender, data.getInput());
+    }
 }

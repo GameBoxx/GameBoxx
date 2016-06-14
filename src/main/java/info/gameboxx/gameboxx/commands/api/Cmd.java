@@ -146,6 +146,15 @@ public abstract class Cmd extends BukkitCommand {
         return false;
     }
 
+    /**
+     * Called when the command is being tab completed from {@link BukkitCommand}.
+     * This method is implemented in the {@link BaseCmd}
+     */
+    @Override
+    public List<String> tabComplete(CommandSender sender, String alias, String[] args) {
+        return new ArrayList<>();
+    }
+
 
     /**
      * Used by the {@link CmdRegistration} to register the command.

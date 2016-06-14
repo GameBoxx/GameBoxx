@@ -30,8 +30,13 @@ import info.gameboxx.gameboxx.messages.Param;
 import info.gameboxx.gameboxx.options.SingleOption;
 import info.gameboxx.gameboxx.util.Numbers;
 import info.gameboxx.gameboxx.util.Parse;
+import info.gameboxx.gameboxx.util.Utils;
+import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
 import org.bukkit.util.Vector;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class VectorO extends SingleOption<Vector, VectorO> {
 
@@ -83,6 +88,27 @@ public class VectorO extends SingleOption<Vector, VectorO> {
     @Override
     public String getTypeName() {
         return "Vector";
+    }
+
+    @Override
+    public List<String> onComplete(CommandSender sender, String prefix, String input) {
+        List<String> suggestions = new ArrayList<>();
+
+        Location location = Utils.getLocation(sender);
+        if (location == null) {
+            return suggestions;
+        }
+
+        String[] split = input.split(",");
+        if (split.length < 1 || split[0].isEmpty()) {
+            suggestions.add(prefix + location.getBlockX());
+        } else if (split.length < 2 || split[1].isEmpty()) {
+            suggestions.add(prefix + split[0] + "," + location.getBlockY());
+        } else if (split.length < 3 || split[2].isEmpty()) {
+            suggestions.add(prefix + split[0] + "," + split[1] + "," + location.getBlockZ());
+        }
+
+        return suggestions;
     }
 
     @Override

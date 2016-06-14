@@ -29,6 +29,9 @@ import info.gameboxx.gameboxx.messages.Msg;
 import info.gameboxx.gameboxx.messages.Param;
 import org.bukkit.command.CommandSender;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * A {@link Option} with a single value.
  *
@@ -220,6 +223,29 @@ public abstract class SingleOption<O, S extends SingleOption> extends Option<S> 
      * @return Whether or not the parsing was successful.
      */
     public abstract boolean parse(CommandSender sender, String input);
+
+
+    /**
+     * Called when tab completing an command using a option.
+     *
+     * @param sender The {@link CommandSender} that is tab completing the option.
+     * @param input The input given so far which needs to be tab completed. (May be empty)
+     * @return List of possible strings.
+     */
+    public List<String> onComplete(CommandSender sender, String input) {
+        return onComplete(sender, "", input);
+    }
+
+    /**
+     * Called when tab completing an command using a option.
+     *
+     * @param sender The {@link CommandSender} that is tab completing the option.
+     * @param input The input given so far which needs to be tab completed. (May be empty)
+     * @return List of possible strings.
+     */
+    public List<String> onComplete(CommandSender sender, String prefix, String input) {
+        return new ArrayList<>();
+    }
 
     /**
      * Used for the {@link #clone()} method to copy data in a new instance.

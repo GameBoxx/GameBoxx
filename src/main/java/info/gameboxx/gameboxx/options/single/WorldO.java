@@ -33,7 +33,7 @@ import info.gameboxx.gameboxx.util.Utils;
 import org.bukkit.*;
 import org.bukkit.command.CommandSender;
 
-import java.util.UUID;
+import java.util.*;
 
 public class WorldO extends SingleOption<World, WorldO> {
 
@@ -97,6 +97,20 @@ public class WorldO extends SingleOption<World, WorldO> {
     @Override
     public String getTypeName() {
         return "World";
+    }
+
+    @Override
+    public List<String> onComplete(CommandSender sender, String prefix, String input) {
+        List<String> suggestions = new ArrayList<>();
+
+        for (World world : Bukkit.getWorlds()) {
+            if (input.trim().isEmpty() || world.getName().toLowerCase().startsWith(input)) {
+                suggestions.add(prefix + world.getName());
+            }
+        }
+
+        Collections.sort(suggestions);
+        return suggestions;
     }
 
     @Override
