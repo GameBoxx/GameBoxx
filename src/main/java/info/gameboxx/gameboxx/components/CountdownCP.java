@@ -139,7 +139,7 @@ public class CountdownCP extends GameComponent {
      * Starts the countdown associated with this class.
      */
     public void startCountdown() {
-        runnable.runTaskTimer(getAPI(), 0L, TICKS_IN_SECOND);
+        runnable.runTaskTimer(getAPI(), TICKS_IN_SECOND, TICKS_IN_SECOND);
     }
 
     /**
