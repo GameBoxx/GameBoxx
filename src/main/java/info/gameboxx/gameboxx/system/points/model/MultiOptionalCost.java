@@ -23,30 +23,29 @@
  *  THE SOFTWARE.
  */
 
-package info.gameboxx.gameboxx.system.points.cost;
+package info.gameboxx.gameboxx.system.points.model;
 
 
-import info.gameboxx.gameboxx.system.points.model.Currency;
-import info.gameboxx.gameboxx.system.points.model.MultiOptionalCost;
-import info.gameboxx.gameboxx.user.User;
+public abstract class MultiOptionalCost<T> extends Cost {
 
-public class PointCost extends MultiOptionalCost<Currency> {
+    private final T[] options;
 
-    private String currency;
+    public MultiOptionalCost(String id, T[] options) {
+        super(id);
+        this.options = options;
+    }
 
-    public PointCost(String currency, double amount) {
-        super("points", amount, Currency.values());
+    public MultiOptionalCost(String id, double amount, T[] options) {
+        super(id, amount);
+        this.options = options;
+    }
 
-        this.currency = currency;
+    public T[] getOptions() {
+        return options;
     }
 
     @Override
-    public boolean canAfford(User user) {
-        return user.getCurrency(currency) >= getCost();
-    }
-
-    @Override
-    public void apply(User user) {
-        user.takeCurrency(currency, getCost());
+    public boolean isMultiOptional() {
+        return true;
     }
 }
